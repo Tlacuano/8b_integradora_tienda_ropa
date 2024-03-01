@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
+import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
-import mx.edu.utez.services_clothing_shop.model.people.BeanPeople;
+import mx.edu.utez.services_clothing_shop.model.people.BeanPerson;
+import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -31,9 +34,25 @@ public class BeanUser {
     private List<BeanUserRoles> roles;
 
     //relacion uno a uno con la tabla people
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user")
     @PrimaryKeyJoinColumn
-    private BeanPeople person;
+    private BeanPerson person;
+
+    //relacion muchos a uno con la tabla status
+    @ManyToOne
+    @JoinColumn(name = "fk_id_status")
+    private BeanStatus status;
+
+    //relacion uno a muchos con la tabla de products
+    @OneToMany(mappedBy = "user")
+    private List<BeanProduct> products;
+    
+    //relacion uno a muchos con la tabla de wish_list
+    @OneToMany(mappedBy = "user")
+    private List<BeanWishList> wish_list;
+
+
+
 
 
 

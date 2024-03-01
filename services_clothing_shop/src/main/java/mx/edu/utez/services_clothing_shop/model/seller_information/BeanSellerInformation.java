@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.people.BeanPeople;
+import mx.edu.utez.services_clothing_shop.model.people.BeanPerson;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -27,5 +27,5 @@ public class BeanSellerInformation {
     @OneToOne
     @MapsId
     @JoinColumn(name = "fk_id_user")
-    private BeanPeople person;
+    private BeanPerson person;
 }

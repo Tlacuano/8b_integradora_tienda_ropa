@@ -10,7 +10,6 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.List;
 import java.util.UUID;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
