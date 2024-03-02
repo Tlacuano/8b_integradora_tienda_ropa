@@ -6,10 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
+import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -25,6 +27,10 @@ public class BeanOrderHasProducts {
             strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_order_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id_order_product;
+
+
+    @Column(name = "amount")
+    private int amount;
 
     //relacion muchos a uno con la tabla de orders
     @ManyToOne
@@ -42,8 +48,13 @@ public class BeanOrderHasProducts {
     private BeanStatus status;
 
     //relacion uno a uno con la tabla de reviews
-    @OneToOne(mappedBy = "order_has_products")
+    @OneToOne(mappedBy = "order_has_product")
     private BeanReview review;
+
+    //relacion uno a muchos con la tabla de requests_return_product
+    @OneToMany(mappedBy = "order_has_product")
+    private List<BeanRequestReturnProduct> request_return_product;
+
 
 
 }

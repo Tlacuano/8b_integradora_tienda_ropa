@@ -1,11 +1,11 @@
-package mx.edu.utez.services_clothing_shop.model.product_gallery;
+package mx.edu.utez.services_clothing_shop.model.request_become_seller;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -14,23 +14,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "product_gallery")
-public class BeanProductGallery {
+@Table(name = "requests_become_seller")
+public class BeanRequestBecomeSeller {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id_image", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_image;
+    @Column(name = "id_request_become_seller", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID id_request_become_seller;
 
-    @Column(name="image", length = 100)
-    private String image;
+    @Column(name = "rejection_reason", length = 255)
+    private String rejection_reason;
 
-    //relacion muchos a uno con la tabla de products
+    //relacion muchos a uno con la tabla de users
     @ManyToOne
-    @JoinColumn(name = "fk_id_product")
-    private BeanProduct product;
+    @JoinColumn(name = "fk_id_user")
+    private BeanUser user;
 
     //relacion muchos a uno con la tabla de status
     @ManyToOne

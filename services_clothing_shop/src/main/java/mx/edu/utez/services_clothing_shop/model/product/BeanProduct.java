@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.oder_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
+import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
+import mx.edu.utez.services_clothing_shop.model.shopping_car.BeanShopingCar;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
@@ -28,6 +30,18 @@ public class BeanProduct {
             strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id_product;
+
+    @Column(name = "product_name", length = 30)
+    private String product_name;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "amount")
+    private int amount;
 
     //relacion muchos a uno con la tabla de subcategories
     @ManyToOne
@@ -54,6 +68,14 @@ public class BeanProduct {
 
     //relacion uno a muchos con la tabla de wishlists
     @OneToMany(mappedBy = "product")
-    private List<BeanWishList> wishlist;
+    private List<BeanWishList> wish_list;
+
+    //relacion uno a muchos con la tabla de shopping_car
+    @OneToMany(mappedBy = "product")
+    private List<BeanShopingCar> shopping_car;
+
+    //relacion uno a muchos con la tabla request sell product
+    @OneToMany(mappedBy = "product")
+    private List<BeanRequestSellProduct> request_sell_product;
 
 }

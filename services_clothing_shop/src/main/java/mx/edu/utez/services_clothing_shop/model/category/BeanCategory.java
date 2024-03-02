@@ -25,6 +25,12 @@ public class BeanCategory {
     @Column(name = "id_category", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id_category;
 
+    @Column(name = "category", length = 60)
+    private String category;
+
+    @Column(name = "image", length = 100)
+    private String image;
+
     //relacion muchos a uno con la tabla status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")

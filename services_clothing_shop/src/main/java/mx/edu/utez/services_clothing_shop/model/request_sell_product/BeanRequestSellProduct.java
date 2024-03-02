@@ -1,11 +1,11 @@
-package mx.edu.utez.services_clothing_shop.model.wish_list;
+package mx.edu.utez.services_clothing_shop.model.request_sell_product;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -14,28 +14,27 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "wish_list")
-public class BeanWishList {
+@Table(name = "requests_sell_product")
+public class BeanRequestSellProduct {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id_wish", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_wish;
+    @Column(name = "id_request_sell_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID id_request_sell_product;
 
-    @Column(name="amount")
-    private int amount;
+    @Column(name ="reject_reason", length = 255)
+    private String reject_reason;
+
 
     //relacion muchos a uno con la tabla de products
     @ManyToOne
     @JoinColumn(name = "fk_id_product")
     private BeanProduct product;
 
-    //relacion muchos a uno con la tabla de users
+    //relacion muchos a uno con la tabla de status
     @ManyToOne
-    @JoinColumn(name = "fk_id_user")
-    private BeanUser user;
-
-
+    @JoinColumn(name = "fk_id_status")
+    private BeanStatus status;
 }

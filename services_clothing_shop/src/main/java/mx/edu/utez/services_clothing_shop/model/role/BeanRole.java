@@ -24,6 +24,9 @@ public class BeanRole {
     @Column(name = "id_role", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id_role;
 
+    @Column(name = "role_name", length = 50)
+    private String role_name;
+
     //relacion muchos a muchos con la tabla users
     @OneToMany(mappedBy = "role")
     private List<BeanUserRoles> users;

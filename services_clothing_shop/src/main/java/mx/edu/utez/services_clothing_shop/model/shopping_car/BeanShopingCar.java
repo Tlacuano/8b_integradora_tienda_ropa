@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.model.wish_list;
+package mx.edu.utez.services_clothing_shop.model.shopping_car;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,28 +14,26 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "wish_list")
-public class BeanWishList {
+@Table(name = "shopping_car")
+public class BeanShopingCar {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id_wish", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_wish;
+    @Column(name = "id_shopping", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID id_shopping;
 
-    @Column(name="amount")
+    @Column(name = "amount")
     private int amount;
 
-    //relacion muchos a uno con la tabla de products
-    @ManyToOne
-    @JoinColumn(name = "fk_id_product")
-    private BeanProduct product;
-
-    //relacion muchos a uno con la tabla de users
+    //relacion uno a muchos con la tabla de users
     @ManyToOne
     @JoinColumn(name = "fk_id_user")
     private BeanUser user;
 
-
+    //relacion uno a muchos con la tabla de products
+    @ManyToOne
+    @JoinColumn(name = "fk_id_product")
+    private BeanProduct product;
 }

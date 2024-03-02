@@ -1,11 +1,10 @@
-package mx.edu.utez.services_clothing_shop.model.product_gallery;
+package mx.edu.utez.services_clothing_shop.model.return_product_gallery;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -14,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "product_gallery")
-public class BeanProductGallery {
+@Table(name = "return_product_gallery")
+public class BeanReturnProductGallery {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -24,16 +23,11 @@ public class BeanProductGallery {
     @Column(name = "id_image", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id_image;
 
-    @Column(name="image", length = 100)
+    @Column(name = "image", length = 100)
     private String image;
 
-    //relacion muchos a uno con la tabla de products
+    //relacion muchos a uno con la tabla de return products
     @ManyToOne
-    @JoinColumn(name = "fk_id_product")
-    private BeanProduct product;
-
-    //relacion muchos a uno con la tabla de status
-    @ManyToOne
-    @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    @JoinColumn(name = "fk_id_request_return_product")
+    private BeanRequestReturnProduct return_product;
 }
