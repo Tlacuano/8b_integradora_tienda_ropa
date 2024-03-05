@@ -18,11 +18,9 @@ import java.util.UUID;
 public class BeanTypeStatus {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_type_status", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_type_status;
+    private UUID idTypeStatus;
 
     //relacion uno a muchos con la tabla de status
     @OneToMany(mappedBy = "fk_id_type_status")

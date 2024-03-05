@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.category.BeanCategory;
-import mx.edu.utez.services_clothing_shop.model.oder_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
@@ -30,19 +30,17 @@ import java.util.UUID;
 public class BeanStatus {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_status", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_status;
+    private UUID idStatus;
 
-    @Column(name="status", length = 50)
+    @Column(name = "status", length = 50)
     private String status;
 
     //relacion muchos a uno con la tabla de tipos de status
     @ManyToOne
     @JoinColumn(name = "fk_id_type_status")
-    private BeanTypeStatus type_status;
+    private BeanTypeStatus typeStatus;
 
     //relacion uno a muchos con la tabla de users
     @OneToMany(mappedBy = "status")
@@ -66,32 +64,31 @@ public class BeanStatus {
 
     //relacion uno a muchos con la tabla de producct gallery
     @OneToMany(mappedBy = "status")
-    private List<BeanProductGallery> product_gallery;
+    private List<BeanProductGallery> productGallery;
 
     //relacion uno a muchos con la tabla de orders has products
     @OneToMany(mappedBy = "status")
-    private List<BeanOrderHasProducts> order_has_products;
+    private List<BeanOrderHasProducts> orderHasProducts;
 
     //relacion uno a muchos con la tabla request sell product
     @OneToMany(mappedBy = "status")
-    private List<BeanRequestSellProduct> request_sell_product;
+    private List<BeanRequestSellProduct> requestSellProduct;
 
     //relacion uno a muchos con la tabla de request data change
     @OneToMany(mappedBy = "status")
-    private List<BeanRequestDataChange> request_data_change;
+    private List<BeanRequestDataChange> requestDataChange;
 
     //relacion uno a muchos con la tabla de request return product
     @OneToMany(mappedBy = "status")
-    private List<BeanRequestReturnProduct> request_return_product;
+    private List<BeanRequestReturnProduct> requestReturnProduct;
 
     //relacion uno a muchos con la tabla de request become seller
     @OneToMany(mappedBy = "status")
-    private List<BeanRequestBecomeSeller> request_become_seller;
+    private List<BeanRequestBecomeSeller> requestBecomeSeller;
 
     //relacion uno a muchos con la tabla de payments cards
     @OneToMany(mappedBy = "status")
-    private List<BeanPaymentCard> payments_cards;
-
+    private List<BeanPaymentCard> paymentsCards;
 
 
 }

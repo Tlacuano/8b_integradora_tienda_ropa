@@ -20,29 +20,27 @@ import java.util.UUID;
 public class BeanAddress {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_address", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_address;
+    private UUID idAddress;
 
-    @Column(name="address", length = 100)
+    @Column(name = "address", length = 100)
     private String address;
 
-    @Column(name="references_addres", length = 255)
-    private String references_address;
+    @Column(name = "references_addres", length = 255)
+    private String referencesAddress;
 
-    @Column(name="postal_code", length = 5)
-    private String postal_code;
+    @Column(name = "postal_code", length = 5)
+    private String postalCode;
 
-    @Column(name="state", length = 100)
+    @Column(name = "state", length = 100)
     private String state;
 
-    @Column(name="street", length = 50)
+    @Column(name = "street", length = 50)
     private String street;
 
     @Column(name = "cologne", length = 50)
-    private String cologne;
+    private String neighborhood;
 
     //reaccion uno a muchos con la tabla de people
     @ManyToOne

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.oder_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,14 +20,12 @@ import java.util.UUID;
 public class BeanRequestReturnProduct {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_request_return_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_request_return_product;
+    private UUID idRequestReturnProduct;
 
-    @Column(name ="reject_reason", length = 255)
-    private String reject_reason;
+    @Column(name = "rejection_reason", length = 255)
+    private String rejectionReason;
 
     //relacion muchos a uno con la tabla de status
     @ManyToOne
@@ -36,12 +34,12 @@ public class BeanRequestReturnProduct {
 
     //relacion muchos a uno con la tabla de orders has products
     @ManyToOne
-    @JoinColumn(name = "fk_id_order_product")
-    private BeanOrderHasProducts order_has_product;
+    @JoinColumn(name = "order_has_product") // TODO: Fix column not found
+    private BeanOrderHasProducts orderHasProduct;
 
     //relacion uno a muchos con la tabla de return product gallery
     @OneToMany(mappedBy = "return_product")
-    private List<BeanReturnProductGallery> return_product_gallery;
+    private List<BeanReturnProductGallery> returnProductGallery;
 
 
 }

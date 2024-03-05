@@ -19,11 +19,9 @@ import java.util.UUID;
 public class BeanCategory {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_category", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_category;
+    private UUID idCategory;
 
     @Column(name = "category", length = 60)
     private String category;

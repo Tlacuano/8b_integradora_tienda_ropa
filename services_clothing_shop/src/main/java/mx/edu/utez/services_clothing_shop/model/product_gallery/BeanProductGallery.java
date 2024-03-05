@@ -18,13 +18,11 @@ import java.util.UUID;
 public class BeanProductGallery {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_image", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_image;
+    private UUID idImage;
 
-    @Column(name="image", length = 100)
+    @Column(name = "image", length = 100)
     private String image;
 
     //relacion muchos a uno con la tabla de products

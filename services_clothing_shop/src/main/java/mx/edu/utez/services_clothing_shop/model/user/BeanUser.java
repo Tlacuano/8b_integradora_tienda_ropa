@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
-import mx.edu.utez.services_clothing_shop.model.shopping_car.BeanShopingCar;
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShopingCart;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
@@ -26,20 +26,18 @@ import java.util.UUID;
 public class BeanUser {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_user", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_user;
+    private UUID idUser;
 
-    @Column(name="password", length = 255)
+    @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name="email", length = 100, unique = true)
+    @Column(name = "email", length = 100, unique = true)
     private String email;
 
-    @Column(name="verification_code", length = 255)
-    private String verification_code;
+    @Column(name = "verification_code", length = 255)
+    private String verificationCode;
 
 
     //relacion muchos a muchos con la tabla roles
@@ -59,26 +57,20 @@ public class BeanUser {
     //relacion uno a muchos con la tabla de products
     @OneToMany(mappedBy = "user")
     private List<BeanProduct> products;
-    
+
     //relacion uno a muchos con la tabla de wish_list
     @OneToMany(mappedBy = "user")
-    private List<BeanWishList> wish_list;
+    private List<BeanWishList> wishList;
 
     //relacion uno a muchos con la tabla de shopping_car
     @OneToMany(mappedBy = "user")
-    private List<BeanShopingCar> shopping_car;
+    private List<BeanShopingCart> shoppingCart;
 
     //relacion uno a muchos con la tabla de request data change
     @OneToMany(mappedBy = "user")
-    private List<BeanRequestDataChange> request_data_change;
+    private List<BeanRequestDataChange> requestDataChange;
 
     //relacion uno a muchos con la tabla de request becom seller
     @OneToMany(mappedBy = "user")
-    private List<BeanRequestBecomeSeller> request_become_seller;
-
-
-
-
-
-
+    private List<BeanRequestBecomeSeller> requestBecomeSeller;
 }

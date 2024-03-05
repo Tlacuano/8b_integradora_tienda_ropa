@@ -20,22 +20,20 @@ import java.util.UUID;
 public class BeanPaymentCard {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_payment_card", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_payment_card;
+    private UUID idPaymentCard;
 
     @Column(name = "cardholder_name", length = 100)
-    private String cardholder_name;
+    private String cardholderName;
 
     @Column(name = "card_number", length = 30)
-    private String card_number;
+    private String cardNumber;
 
     @Column(name = "expiration_date", length = 5)
-    private String expiration_date;
+    private String expirationDate;
 
-    @Column(name="cvv", length = 3)
+    @Column(name = "cvv", length = 3)
     private String cvv;
 
     //relacion muchos a uno con la tabla de person
