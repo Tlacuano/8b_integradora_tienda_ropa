@@ -17,21 +17,21 @@ import java.util.UUID;
 public class BeanSellerInformation {
     @Id
     @GeneratedValue(generator = "UUID")
-    private UUID id_seller_information;
+    private UUID idSellerInformation;
 
-    @Column(name="tax_identification_number", length = 20)
+    @Column(name = "tax_identification_number", length = 20)
     private String taxIdentificationNumber;
 
-    @Column(name="secondary_phone_number", length =30)
+    @Column(name = "secondary_phone_number", length = 30)
     private String secondaryPhoneNumber;
 
-    @Column(name="privacy_policy_agreement")
+    @Column(name = "privacy_policy_agreement")
     private boolean privacyPolicyAgreement;
 
-    @Column(name="image_identification", length = 100)
+    @Column(name = "image_identification", length = 100)
     private String imageIdentification;
 
-    @Column(name="curp", length = 18)
+    @Column(name = "curp", length = 18)
     private String curp;
 
     //relacion uno a uno con la tabla people

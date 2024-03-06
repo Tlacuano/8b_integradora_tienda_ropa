@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.oder_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
-import mx.edu.utez.services_clothing_shop.model.shopping_car.BeanShopingCar;
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShopingCart;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
@@ -25,14 +25,12 @@ import java.util.UUID;
 public class BeanProduct {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_product;
+    private UUID idProduct;
 
     @Column(name = "product_name", length = 30)
-    private String product_name;
+    private String productName;
 
     @Column(name = "description")
     private String description;
@@ -60,22 +58,22 @@ public class BeanProduct {
 
     //rekacuib ybi a muchos con la tabla de product_gallery
     @OneToMany(mappedBy = "product")
-    private List<BeanProductGallery> product_gallery;
+    private List<BeanProductGallery> productGallery;
 
     //relacion uno a muchos con la tabla order has products
     @OneToMany(mappedBy = "product")
-    private List<BeanOrderHasProducts> order_has_products;
+    private List<BeanOrderHasProducts> orderHasProducts;
 
     //relacion uno a muchos con la tabla de wishlists
     @OneToMany(mappedBy = "product")
-    private List<BeanWishList> wish_list;
+    private List<BeanWishList> wishList;
 
-    //relacion uno a muchos con la tabla de shopping_car
+    //relacion uno a muchos con la tabla de shopping_cart
     @OneToMany(mappedBy = "product")
-    private List<BeanShopingCar> shopping_car;
+    private List<BeanShopingCart> shoppingCart;
 
     //relacion uno a muchos con la tabla request sell product
     @OneToMany(mappedBy = "product")
-    private List<BeanRequestSellProduct> request_sell_product;
+    private List<BeanRequestSellProduct> requestSellProduct;
 
 }
