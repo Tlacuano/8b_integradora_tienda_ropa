@@ -3,5 +3,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface RequestsBecomeSellerRepository extends JpaRepository<BeanRequestsBecomeSeller, UUID>{
+public interface IRequestsBecomeSeller extends JpaRepository<BeanRequestsBecomeSeller, UUID>{
 }
