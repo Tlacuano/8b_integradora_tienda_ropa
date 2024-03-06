@@ -10,7 +10,7 @@ import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasP
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
-import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestBecomeSeller;
+import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
@@ -84,7 +84,7 @@ public class BeanStatus {
 
     //relacion uno a muchos con la tabla de request become seller
     @OneToMany(mappedBy = "status")
-    private List<BeanRequestBecomeSeller> requestBecomeSeller;
+    private List<BeanRequestsBecomeSeller> requestBecomeSeller;
 
     //relacion uno a muchos con la tabla de payments cards
     @OneToMany(mappedBy = "status")
