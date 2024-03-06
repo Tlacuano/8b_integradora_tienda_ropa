@@ -16,9 +16,19 @@ public class ShoppingCartController {
     @Autowired
     private SopphingCartServices shoppingCartServices;
 
+    @GetMapping("/get-all")
+    public ResponseEntity<List<BeanShopingCart>> getAllShoppingCarts() {
+        List<BeanShopingCart> shoppingCarts = shoppingCartServices.getAllShoppingCarts();
+        if (shoppingCarts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(shoppingCarts);
+        }
+    }
+
     @GetMapping("/get-shopping-cart/{userEmail}")
     public ResponseEntity<List<BeanShopingCart>> findShoppingCarsByUserEmail(@PathVariable String userEmail) {
-        List<BeanShopingCart> shoppingCarts = shoppingCartServices.findShoppingCarsByUserEmail(userEmail);
+        List<BeanShopingCart> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
         if (shoppingCarts.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {

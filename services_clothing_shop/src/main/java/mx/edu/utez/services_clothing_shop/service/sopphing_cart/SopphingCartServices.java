@@ -13,13 +13,16 @@ public class SopphingCartServices {
     IShoppingCart shoppingCartRepository;
 
 
-    public List<BeanShopingCart> findShoppingCarsByUserEmail(String userEmail) {
-        return shoppingCartRepository.findByUserEmail(userEmail);
+    public List<BeanShopingCart> findShoppingCartsByUserEmail(String userEmail) {
+        return shoppingCartRepository.findAllByUser_Email(userEmail);
     }
     public BeanShopingCart saveShoppingCar(BeanShopingCart shoppingCart) {
         return shoppingCartRepository.save(shoppingCart);
     }
     public void deleteShoppingCartById(UUID shoppingCartId) {
         shoppingCartRepository.deleteById(shoppingCartId);
+    }
+    public List<BeanShopingCart> getAllShoppingCarts() {
+        return shoppingCartRepository.findAll();
     }
 }
