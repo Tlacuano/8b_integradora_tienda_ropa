@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.services.product_gallery;
+package mx.edu.utez.services_clothing_shop.service.product_gallery;
 
 import org.springframework.stereotype.Service;
 
