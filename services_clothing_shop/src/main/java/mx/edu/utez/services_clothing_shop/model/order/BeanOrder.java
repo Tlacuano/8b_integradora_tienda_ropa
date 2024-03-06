@@ -21,16 +21,14 @@ import java.util.UUID;
 public class BeanOrder {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_order", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idOrder;
 
-    @Column(name="order_date")
+    @Column(name = "order_date")
     private LocalDate orderDate;
 
-    @Column(name="order_number", length = 100)
+    @Column(name = "order_number", length = 100)
     private String orderNumber;
 
     //relacion muchos a uno con la tabla de address
@@ -46,7 +44,4 @@ public class BeanOrder {
     @ManyToOne
     @JoinColumn(name = "fk_id_payment_card")
     private BeanPaymentCard paymentCard;
-
-
-
 }
