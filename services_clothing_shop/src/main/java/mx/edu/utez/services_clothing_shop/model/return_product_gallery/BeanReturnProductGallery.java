@@ -17,11 +17,9 @@ import java.util.UUID;
 public class BeanReturnProductGallery {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_image", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_image;
+    private UUID idImage;
 
     @Column(name = "image", length = 100)
     private String image;
@@ -29,5 +27,5 @@ public class BeanReturnProductGallery {
     //relacion muchos a uno con la tabla de return products
     @ManyToOne
     @JoinColumn(name = "fk_id_request_return_product")
-    private BeanRequestReturnProduct return_product;
+    private BeanRequestReturnProduct returnProduct;
 }

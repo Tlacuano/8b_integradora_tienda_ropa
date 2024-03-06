@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
-import mx.edu.utez.services_clothing_shop.model.oder_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,13 +25,13 @@ public class BeanOrder {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_order", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_order;
+    private UUID idOrder;
 
-    @Column(name="oreder_date")
-    private LocalDate order_date;
+    @Column(name="order_date")
+    private LocalDate orderDate;
 
     @Column(name="order_number", length = 100)
-    private String order_number;
+    private String orderNumber;
 
     //relacion muchos a uno con la tabla de address
     @ManyToOne
@@ -40,12 +40,12 @@ public class BeanOrder {
 
     //relacion uno a muchos con la tabla de orders_has_products
     @OneToMany(mappedBy = "order")
-    private List<BeanOrderHasProducts> order_has_products;
+    private List<BeanOrderHasProducts> orderHasProducts;
 
     //relacion muchos a uno con la tabla de payment_cards
     @ManyToOne
     @JoinColumn(name = "fk_id_payment_card")
-    private BeanPaymentCard payment_card;
+    private BeanPaymentCard paymentCard;
 
 
 

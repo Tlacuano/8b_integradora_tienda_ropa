@@ -18,14 +18,12 @@ import java.util.UUID;
 public class BeanRole {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_role", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_role;
+    private UUID idRole;
 
     @Column(name = "role_name", length = 50)
-    private String role_name;
+    private String roleName;
 
     //relacion muchos a muchos con la tabla users
     @OneToMany(mappedBy = "role")
