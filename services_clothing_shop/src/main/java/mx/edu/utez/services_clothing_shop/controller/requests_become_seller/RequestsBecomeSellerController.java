@@ -31,13 +31,13 @@ public class RequestsBecomeSellerController {
     }
 
     @PostMapping
-    public BeanRequestsBecomeSeller createRequest(@RequestBody BeanRequestsBecomeSeller request) {
-        return requestsBecomeSellerService.createRequest(request);
+    public BeanRequestsBecomeSeller postRequest(@RequestBody BeanRequestsBecomeSeller request) {
+        return requestsBecomeSellerService.postRequest(request);
     }
 
     @PutMapping("/{id}")
-    public BeanRequestsBecomeSeller updateRequest(@PathVariable UUID id, @RequestBody BeanRequestsBecomeSeller request) {
-        return requestsBecomeSellerService.updateRequest(id, request);
+    public BeanRequestsBecomeSeller putRequest(@PathVariable UUID id, @RequestBody BeanRequestsBecomeSeller request) {
+        return requestsBecomeSellerService.putRequest(id, request);
     }
 
     @DeleteMapping("/{id}")

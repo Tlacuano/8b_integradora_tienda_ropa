@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 
+import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.RequestsBecomeSellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +27,21 @@ public class RequestsBecomeSellerService {
         return requestsBecomeSellerRepository.findById(id);
     }
 
-    public BeanRequestsBecomeSeller createRequest(BeanRequestsBecomeSeller request) {
+    @Transactional
+    public BeanRequestsBecomeSeller postRequest(BeanRequestsBecomeSeller request) {
         return requestsBecomeSellerRepository.save(request);
     }
 
-    public BeanRequestsBecomeSeller updateRequest(UUID id, BeanRequestsBecomeSeller request) {
+    @Transactional
+    public BeanRequestsBecomeSeller putRequest(UUID id, BeanRequestsBecomeSeller request) {
         if (requestsBecomeSellerRepository.existsById(id)) {
             return requestsBecomeSellerRepository.save(request);
         } else {
-            throw new RequestsNotFoundException("La solicitud con el ID " + id + " no fue encontrada.");
+            throw new RequestsNotFoundException("La solicitud no fue encontrada.");
         }
     }
 
+    @Transactional
     public void deleteRequest(UUID id) {
         requestsBecomeSellerRepository.deleteById(id);
     }
