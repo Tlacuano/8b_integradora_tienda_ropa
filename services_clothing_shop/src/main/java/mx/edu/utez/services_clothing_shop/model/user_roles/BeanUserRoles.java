@@ -19,12 +19,9 @@ import java.util.UUID;
 public class BeanUserRoles {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_user_role", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_user_role;
-
+    private UUID idUserRole;
 
     //relacion muchos a uno con la tabla users
     @ManyToOne

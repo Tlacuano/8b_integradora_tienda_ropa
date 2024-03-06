@@ -18,14 +18,12 @@ import java.util.UUID;
 public class BeanRequestBecomeSeller {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_request_become_seller", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_request_become_seller;
+    private UUID idRequestBecomeSeller;
 
     @Column(name = "rejection_reason", length = 255)
-    private String rejection_reason;
+    private String rejectionReason;
 
     //relacion muchos a uno con la tabla de users
     @ManyToOne

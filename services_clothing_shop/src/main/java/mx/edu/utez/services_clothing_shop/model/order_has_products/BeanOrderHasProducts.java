@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.model.oder_has_products;
+package mx.edu.utez.services_clothing_shop.model.order_has_products;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class BeanOrderHasProducts {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_order_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_order_product;
+    private UUID idOrderProduct;
 
 
     @Column(name = "amount")
@@ -48,13 +48,10 @@ public class BeanOrderHasProducts {
     private BeanStatus status;
 
     //relacion uno a uno con la tabla de reviews
-    @OneToOne(mappedBy = "order_has_product")
+    @OneToOne(mappedBy = "orderHasProduct")
     private BeanReview review;
 
     //relacion uno a muchos con la tabla de requests_return_product
-    @OneToMany(mappedBy = "order_has_product")
-    private List<BeanRequestReturnProduct> request_return_product;
-
-
-
+    @OneToMany(mappedBy = "orderHasProduct")
+    private List<BeanRequestReturnProduct> requestReturnProduct;
 }

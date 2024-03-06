@@ -31,32 +31,29 @@ public class BeanPerson {
     @Column(name = "name", length = 30)
     private String name;
 
-    @Column(name= "last_name", length = 30)
-    private String last_name;
+    @Column(name = "last_name", length = 30)
+    private String lastName;
 
-    @Column(name="second_last_name", length = 30)
-    private String second_last_name;
+    @Column(name = "second_last_name", length = 30)
+    private String secondLastName;
 
-    @Column(name="picture", length = 100)
+    @Column(name = "picture", length = 100)
     private String picture;
 
-    @Column(name="birthday")
+    @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Column(name="phone_number", length = 30)
-    private String phone_number;
+    @Column(name = "phone_number", length = 30)
+    private String phoneNumber;
 
-    @Column(name="gender")
+    @Column(name = "gender")
     private String gender;
 
     //relacion uno a uno con la tabla seller_information
     @OneToOne(mappedBy = "person", orphanRemoval = true)
-    private BeanSellerInformation seller_information;
+    private BeanSellerInformation sellerInformation;
 
     //relacion uno a muchos con la tabla de payment_cards
     @OneToMany(mappedBy = "person")
-    private List<BeanPaymentCard> payment_cards;
-
-
-
+    private List<BeanPaymentCard> paymentCards;
 }

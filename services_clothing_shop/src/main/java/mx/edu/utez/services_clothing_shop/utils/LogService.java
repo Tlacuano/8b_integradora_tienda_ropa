@@ -13,28 +13,26 @@ import java.util.UUID;
 public class LogService {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_control", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_control;
+    private UUID idControl;
 
-    @Column(name="action", length = 100)
+    @Column(name = "action", length = 100)
     private String action;
 
-    @Column(name="table_name", length = 100)
-    private String table_name;
+    @Column(name = "table_name", length = 100)
+    private String tableName;
 
-    @Column(name="old_value")
-    private String old_value;
+    @Column(name = "old_value")
+    private String oldValue;
 
-    @Column(name="new_value")
-    private String new_value;
+    @Column(name = "new_value")
+    private String newValue;
 
-    @Column(name="user_name", length = 100)
-    private String user_name;
+    @Column(name = "user_name", length = 100)
+    private String user_Name;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDate created_at;
+    private LocalDate createdAt;
 }

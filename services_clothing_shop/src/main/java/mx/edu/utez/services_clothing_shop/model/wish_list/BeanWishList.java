@@ -18,13 +18,11 @@ import java.util.UUID;
 public class BeanWishList {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_wish", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_wish;
+    private UUID idWish;
 
-    @Column(name="amount")
+    @Column(name = "amount")
     private int amount;
 
     //relacion muchos a uno con la tabla de products

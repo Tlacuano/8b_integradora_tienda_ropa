@@ -18,17 +18,15 @@ import java.util.UUID;
 public class BeanRequestDataChange {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_request_data_change", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_request_data_change;
+    private UUID idRequestDataChange;
 
     @Column(name = "new_user_information", columnDefinition = "JSON")
-    private String new_user_information;
+    private String newUserInformation;
 
-    @Column(name="rejection_reason", length = 255)
-    private String rejection_reason;
+    @Column(name = "rejection_reason", length = 255)
+    private String rejectionReason;
 
     //relacion muchos a uno con la tabla de users
     @ManyToOne

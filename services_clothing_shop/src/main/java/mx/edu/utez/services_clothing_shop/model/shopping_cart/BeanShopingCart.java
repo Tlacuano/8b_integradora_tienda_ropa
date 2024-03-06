@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.model.shopping_car;
+package mx.edu.utez.services_clothing_shop.model.shopping_cart;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,14 +15,12 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "shopping_car")
-public class BeanShopingCar {
+public class BeanShopingCart {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id_shopping", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
-    private UUID id_shopping;
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id_shopping_cart", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID idShoppingCart;
 
     @Column(name = "amount")
     private int amount;
