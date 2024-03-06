@@ -23,7 +23,7 @@ public class BeanTypeStatus {
     private UUID idTypeStatus;
 
     //relacion uno a muchos con la tabla de status
-    @OneToMany(mappedBy = "fk_id_type_status")
+    @OneToMany(mappedBy = "typeStatus")
     private List<BeanStatus> status;
 
 }

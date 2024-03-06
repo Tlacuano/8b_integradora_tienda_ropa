@@ -39,7 +39,6 @@ public class BeanUser {
     @Column(name = "verification_code", length = 255)
     private String verificationCode;
 
-
     //relacion muchos a muchos con la tabla roles
     @OneToMany(mappedBy = "user")
     private List<BeanUserRoles> roles;

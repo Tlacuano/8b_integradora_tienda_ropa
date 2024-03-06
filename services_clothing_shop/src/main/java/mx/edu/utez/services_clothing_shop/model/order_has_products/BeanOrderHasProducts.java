@@ -48,10 +48,10 @@ public class BeanOrderHasProducts {
     private BeanStatus status;
 
     //relacion uno a uno con la tabla de reviews
-    @OneToOne(mappedBy = "order_has_product") // TODO: Fix column not found
+    @OneToOne(mappedBy = "orderHasProduct")
     private BeanReview review;
 
     //relacion uno a muchos con la tabla de requests_return_product
-    @OneToMany(mappedBy = "order_has_product") // TODO: Fix column not found
+    @OneToMany(mappedBy = "orderHasProduct")
     private List<BeanRequestReturnProduct> requestReturnProduct;
 }

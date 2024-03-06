@@ -42,7 +42,7 @@ public class BeanPaymentCard {
     private BeanPerson person;
 
     //relacion uno a muchos con la tabla de orders
-    @OneToMany(mappedBy = "payment_card")
+    @OneToMany(mappedBy = "paymentCard")
     private List<BeanOrder> orders;
 
     //relacion muchos a uno con la tabla de status

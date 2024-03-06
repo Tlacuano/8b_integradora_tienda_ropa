@@ -38,7 +38,7 @@ public class BeanRequestReturnProduct {
     private BeanOrderHasProducts orderHasProduct;
 
     //relacion uno a muchos con la tabla de return product gallery
-    @OneToMany(mappedBy = "return_product")
+    @OneToMany(mappedBy = "returnProduct")
     private List<BeanReturnProductGallery> returnProductGallery;
 
 
