@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.order;
 
+import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.order.IOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,5 +15,10 @@ public class OrderService {
 
     public Page<BeanOrder> getOrdersByUserEmail(String email, Pageable page) {
         return orderRepository.findAllByAddress_Person_User_Email(email, page);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public BeanOrder saveOrder(BeanOrder order) {
+        return orderRepository.save(order);
     }
 }

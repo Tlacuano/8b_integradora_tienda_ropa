@@ -5,7 +5,6 @@ import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,5 +18,11 @@ public class OrderController {
     @PostMapping("/orders-by-user-email")
     public Page<BeanOrder> getOrdersByUserEmail(@RequestBody UserEmailPageRequestDTO userEmailPageRequestDTO) {
         return orderService.getOrdersByUserEmail(userEmailPageRequestDTO.getEmail(), userEmailPageRequestDTO.getPage());
+    }
+
+    // TODO: Deserialize address and payment card ID
+    @PostMapping("/save-order")
+    public BeanOrder saveOrder(@RequestBody BeanOrder order) {
+        return orderService.saveOrder(order);
     }
 }
