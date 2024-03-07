@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.address;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,7 +40,7 @@ public class BeanAddress {
     @Column(name = "street", length = 50)
     private String street;
 
-    @Column(name = "cologne", length = 50)
+    @Column(name = "neighborhood", length = 50)
     private String neighborhood;
 
     //reaccion uno a muchos con la tabla de people
@@ -54,5 +55,6 @@ public class BeanAddress {
 
     //relacion uno a muchos con la tabla de orders
     @OneToMany(mappedBy = "address")
+    @JsonIgnore
     private List<BeanOrder> orders;
 }

@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.review;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,5 +35,6 @@ public class BeanReview {
     //relacion uno a uno (el id aqqui)
     @OneToOne
     @JoinColumn(name = "fk_id_order_product")
+    @JsonIgnore
     private BeanOrderHasProducts orderHasProduct;
 }
