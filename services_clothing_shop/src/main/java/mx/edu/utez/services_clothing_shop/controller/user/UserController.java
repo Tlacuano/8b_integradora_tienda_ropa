@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.controller.user;
 
-import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
 import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
@@ -37,32 +36,30 @@ public class UserController {
     }
 
     @PostMapping("/saveAccount")
-    public ResponseEntity<BeanUser> saveAccount(@Validated @RequestBody RequestPostAccountDTO user){
+    public ResponseEntity<BeanUser> postAccount(@Validated @RequestBody RequestPostAccountDTO user){
         //verificar si el correo ya existe
         if(userService.existsByEmail(user.getEmail())){
             throw new RuntimeException("user.email.exists");
         }
-
+        //traer el rol con el que se va a registrar el usuario
         BeanRole role = roleService.getRoleById(user.getRole());
         if(role == null){
             throw new RuntimeException("other");
         }
 
-        List<BeanRole> roles = new ArrayList<>();
-        roles.add(role);
-
-
-
+        //mepear la informacion del usuario
+        BeanUser newUser = new BeanUser();
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(user.getPassword());
 
         //guardar el usuario
-        BeanUser toSaveUser = new BeanUser();
-        toSaveUser.setEmail(user.getEmail());
-        toSaveUser.setPassword(user.getPassword());
+        newUser = userService.postAccount(newUser);
 
+        //guardar el rol del usuario
 
 
         return new ResponseEntity<>(
-                userService.postAccount(toSaveUser),
+                newUser,
                 HttpStatus.OK
         );
     }

@@ -15,3 +15,7 @@ values
 insert ignore into user_roles(id_user_role, fk_id_role, fk_id_user)
 values
        (UUID_TO_BIN('aee50784-dbf7-11ee-8508-64006a586a6a'), UUID_TO_BIN('101b3ce2-dbf4-11ee-8508-64006a586a6a'), UUID_TO_BIN('3efeb060-dbf7-11ee-8508-64006a586a6a'));
+
+
+
+
