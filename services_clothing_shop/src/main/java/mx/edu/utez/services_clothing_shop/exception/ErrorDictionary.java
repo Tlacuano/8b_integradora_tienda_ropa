@@ -14,6 +14,7 @@ public class ErrorDictionary {
         //error messages user
         errorMessages.put("user.email.notnull", "El email es obligatorio.");
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
+        errorMessages.put("user.email.exists", "El email no esta disponible.");
 
     }
 

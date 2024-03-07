@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.controller.user;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.projections.IGetPageUsers;
 import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,21 @@ public class UserController {
     }
 
     @PostMapping("/saveAccount")
-    public String saveAccount(@Valid @RequestBody RequestPostAccountDTO user){
-        return null;
+    public ResponseEntity<BeanUser> saveAccount(@Validated @RequestBody RequestPostAccountDTO user){
+        //verificar si el correo ya existe
+        if(userService.existsByEmail(user.getEmail())){
+            throw new RuntimeException("user.email.exists");
+        }
+
+        //guardar el usuario
+        BeanUser toSavaUser = new BeanUser();
+        toSavaUser.setEmail(user.getEmail());
+        toSavaUser.setPassword(user.getPassword());
+
+
+        return new ResponseEntity<>(
+                userService.postAccount(toSavaUser),
+                HttpStatus.OK
+        );
     }
 }
