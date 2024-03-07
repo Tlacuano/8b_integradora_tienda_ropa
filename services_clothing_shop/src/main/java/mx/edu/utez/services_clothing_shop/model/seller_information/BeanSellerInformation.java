@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.seller_information;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,5 +39,6 @@ public class BeanSellerInformation {
     @OneToOne
     @MapsId
     @JoinColumn(name = "fk_id_user")
+    @JsonIgnore
     private BeanPerson person;
 }

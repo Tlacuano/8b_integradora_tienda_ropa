@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.product_gallery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class BeanProductGallery {
     //relacion muchos a uno con la tabla de products
     @ManyToOne
     @JoinColumn(name = "fk_id_product")
+    @JsonIgnore
     private BeanProduct product;
 
     //relacion muchos a uno con la tabla de status

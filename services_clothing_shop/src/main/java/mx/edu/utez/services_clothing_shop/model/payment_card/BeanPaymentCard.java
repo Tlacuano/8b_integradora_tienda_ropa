@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.payment_card;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,10 +40,12 @@ public class BeanPaymentCard {
     //relacion muchos a uno con la tabla de person
     @ManyToOne
     @JoinColumn(name = "fk_id_user")
+    @JsonIgnore
     private BeanPerson person;
 
     //relacion uno a muchos con la tabla de orders
     @OneToMany(mappedBy = "paymentCard")
+    @JsonIgnore
     private List<BeanOrder> orders;
 
     //relacion muchos a uno con la tabla de status
