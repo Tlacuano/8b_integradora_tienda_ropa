@@ -22,6 +22,9 @@ public class BeanTypeStatus {
     @Column(name = "id_type_status", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idTypeStatus;
 
+    @Column(name = "name_type_status", length = 100)
+    private String nameTypeStatus;
+
     //relacion uno a muchos con la tabla de status
     @OneToMany(mappedBy = "typeStatus")
     private List<BeanStatus> status;
