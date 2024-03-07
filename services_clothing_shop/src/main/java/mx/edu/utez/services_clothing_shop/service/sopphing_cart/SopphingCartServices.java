@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.sopphing_cart;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShopingCart;
+
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,16 +14,18 @@ public class SopphingCartServices {
     IShoppingCart shoppingCartRepository;
 
 
-    public List<BeanShopingCart> findShoppingCartsByUserEmail(String userEmail) {
+    public List<BeanShoppingCart> findShoppingCartsByUserEmail(String userEmail) {
         return shoppingCartRepository.findAllByUser_Email(userEmail);
     }
-    public BeanShopingCart saveShoppingCar(BeanShopingCart shoppingCart) {
+
+
+    public BeanShoppingCart saveShoppingCar(BeanShoppingCart shoppingCart) {
         return shoppingCartRepository.save(shoppingCart);
     }
     public void deleteShoppingCartById(UUID shoppingCartId) {
         shoppingCartRepository.deleteById(shoppingCartId);
     }
-    public List<BeanShopingCart> getAllShoppingCarts() {
+    public List<BeanShoppingCart> getAllShoppingCarts() {
         return shoppingCartRepository.findAll();
     }
 }

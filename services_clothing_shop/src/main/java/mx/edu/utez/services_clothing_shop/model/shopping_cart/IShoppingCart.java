@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface IShoppingCart extends JpaRepository<BeanShopingCart,UUID> {
-    List<BeanShopingCart> findAllByUser_Email(String userEmail);
+public interface IShoppingCart extends JpaRepository<BeanShoppingCart,UUID> {
+    List<BeanShoppingCart> findAllByUser_Email(String userEmail);
 }

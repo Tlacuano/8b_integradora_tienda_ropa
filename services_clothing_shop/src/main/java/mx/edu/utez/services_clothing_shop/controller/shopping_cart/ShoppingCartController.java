@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShopingCart;
+
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.service.sopphing_cart.SopphingCartServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -17,8 +19,8 @@ public class ShoppingCartController {
     private SopphingCartServices shoppingCartServices;
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<BeanShopingCart>> getAllShoppingCarts() {
-        List<BeanShopingCart> shoppingCarts = shoppingCartServices.getAllShoppingCarts();
+    public ResponseEntity<List<BeanShoppingCart>> getAllShoppingCarts() {
+        List<BeanShoppingCart> shoppingCarts = shoppingCartServices.getAllShoppingCarts();
         if (shoppingCarts.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
@@ -26,9 +28,13 @@ public class ShoppingCartController {
         }
     }
 
-    @GetMapping("/get-shopping-cart/{userEmail}")
-    public ResponseEntity<List<BeanShopingCart>> findShoppingCarsByUserEmail(@PathVariable String userEmail) {
-        List<BeanShopingCart> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
+    @PostMapping("/get-shopping-cart")
+    public ResponseEntity<List<BeanShoppingCart>> findShoppingCarsByUserEmail(@RequestBody Map<String, String> requestBody) {
+        String userEmail = requestBody.get("userEmail");
+        if(userEmail == null || userEmail.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<BeanShoppingCart> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
         if (shoppingCarts.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
@@ -36,8 +42,8 @@ public class ShoppingCartController {
         }
     }
     @PostMapping("/save-new-shopping-cart")
-    public ResponseEntity<BeanShopingCart> createShoppingCar(@RequestBody BeanShopingCart shoppingCart) {
-        BeanShopingCart savedShoppingCart = shoppingCartServices.saveShoppingCar(shoppingCart);
+    public ResponseEntity<BeanShoppingCart> createShoppingCar(@RequestBody BeanShoppingCart shoppingCart) {
+        BeanShoppingCart savedShoppingCart = shoppingCartServices.saveShoppingCar(shoppingCart);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedShoppingCart);
     }
     @DeleteMapping("/delete-shopping-cart/{shoppingCartId}")
