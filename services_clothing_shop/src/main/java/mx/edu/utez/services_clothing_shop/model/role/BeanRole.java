@@ -28,7 +28,6 @@ public class BeanRole {
 
 
     //relacion muchos a muchos con la tabla users
-    @JsonIgnore
     @OneToMany(mappedBy = "role")
     @JsonIgnore
     private List<BeanUserRoles> users;

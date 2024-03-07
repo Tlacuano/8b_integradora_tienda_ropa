@@ -10,6 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface IUser extends JpaRepository<BeanUser, UUID> {
-
     Page<IGetPageUsers> findAllBy (Pageable pageable);
 }

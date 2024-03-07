@@ -1,17 +1,16 @@
 package mx.edu.utez.services_clothing_shop.model.user.projections;
 
-import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
-
 import java.util.List;
+import java.util.UUID;
 
 public interface IGetPageUsers {
+    UUID getIdUser();
     String getEmail();
-    UserRolesProjection getRoles();
+    IGetPageUsersUserRolesProjection getRoles();
 
-    interface UserRolesProjection {
-        List<RolesProjection> getRole();
-
-        interface RolesProjection {
+    interface IGetPageUsersUserRolesProjection {
+        List<IGetPageUsersRolesProjection> getRole();
+        interface IGetPageUsersRolesProjection {
             String getRoleName();
         }
     }
