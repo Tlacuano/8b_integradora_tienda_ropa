@@ -4,14 +4,14 @@ import lombok.Data;
 import org.springframework.data.domain.Pageable;
 
 @Data
-public class UserEmailPageRequestDTO {
+public class RequestUserEmailPageRequestDTO {
     private String email;
     private Pageable page;
 
-    public UserEmailPageRequestDTO() {
+    public RequestUserEmailPageRequestDTO() {
     }
 
-    public UserEmailPageRequestDTO(String email, Pageable page) {
+    public RequestUserEmailPageRequestDTO(String email, Pageable page) {
         this.email = email;
         this.page = page;
     }

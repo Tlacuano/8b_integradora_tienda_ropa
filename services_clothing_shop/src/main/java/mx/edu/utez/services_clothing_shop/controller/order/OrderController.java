@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.order;
 
-import mx.edu.utez.services_clothing_shop.controller.order.dto.UserEmailPageRequestDTO;
+import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderDTO;
+import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestUserEmailPageRequestDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,11 @@ public class OrderController {
 
     // TODO: Infinite response loop in address and payment card
     @PostMapping("/orders-by-user-email")
-    public Page<BeanOrder> getOrdersByUserEmail(@RequestBody UserEmailPageRequestDTO userEmailPageRequestDTO) {
-        return orderService.getOrdersByUserEmail(userEmailPageRequestDTO.getEmail(), userEmailPageRequestDTO.getPage());
+    public Page<ResponseOrderDTO> getOrdersByUserEmail(@RequestBody RequestUserEmailPageRequestDTO userEmailPageRequestDTO) {
+        Page<BeanOrder> orders = orderService.getOrdersByUserEmail(userEmailPageRequestDTO.getEmail(), userEmailPageRequestDTO.getPage());
+        return orders.map(order -> new ResponseOrderDTO().toOrderDTO(order));
     }
 
-    // TODO: Deserialize address and payment card ID
     @PostMapping("/save-order")
     public BeanOrder saveOrder(@RequestBody BeanOrder order) {
         return orderService.saveOrder(order);
