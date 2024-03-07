@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RequestPostAccountDTO {
-    @NotNull(message = "El email es obligatorio")
+
+    @NotNull(message = "user.email.notnull")
     private String email;
-    @NotNull(message = "La contraseña es obligatoria")
+    @NotNull(message = "user.password.notnull")
     private String password;
 }
