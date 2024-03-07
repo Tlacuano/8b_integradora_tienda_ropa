@@ -14,6 +14,10 @@ public class PaymentCardService {
     private IPaymentCard paymentCardRepository;
 
     public Page<BeanPaymentCard> getPaymentCardByUserEmail(String email, Pageable page) {
-        return paymentCardRepository.findAllByPerson_User_Email(email, page);
+        return paymentCardRepository.findAllByUser_Email(email, page);
+    }
+
+    public BeanPaymentCard savePaymentCard(BeanPaymentCard paymentCard) {
+        return paymentCardRepository.saveAndFlush(paymentCard);
     }
 }

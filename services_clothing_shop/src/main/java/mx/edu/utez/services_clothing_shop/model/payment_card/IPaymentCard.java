@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface IPaymentCard extends JpaRepository<BeanPaymentCard, UUID>{
-    Page<BeanPaymentCard> findAllByPerson_User_Email (String email, Pageable page);
+    Page<BeanPaymentCard> findAllByUser_Email (String email, Pageable page);
 }
