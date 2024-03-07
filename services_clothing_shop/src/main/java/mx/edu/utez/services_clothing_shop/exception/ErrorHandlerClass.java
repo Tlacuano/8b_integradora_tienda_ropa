@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @ControllerAdvice
-public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
 
     @Autowired
     private ErrorDictionary errorDictionary;
@@ -39,5 +39,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return new ResponseEntity<>(errors, headers, status);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        String errorCode = ex.getMessage();
+        String errorMessage = errorDictionary.getErrorMessage(errorCode);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", errorMessage);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
 
 }
