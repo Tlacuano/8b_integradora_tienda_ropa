@@ -28,12 +28,12 @@ public class BeanOrder {
     @Column(name = "order_date", nullable = false)
     private LocalDate orderDate;
 
-    @Column(name = "order_number", length = 100, nullable = false, unique = true)
+    @Column(name = "order_number", length = 100, nullable = false, unique = true, updatable = false)
     private String orderNumber;
 
     //relacion muchos a uno con la tabla de address
     @ManyToOne
-    @JoinColumn(name = "fk_id_address", nullable = false)
+    @JoinColumn(name = "fk_id_address", nullable = false, updatable = false)
     private BeanAddress address;
 
     //relacion uno a muchos con la tabla de orders_has_products
@@ -42,6 +42,6 @@ public class BeanOrder {
 
     //relacion muchos a uno con la tabla de payment_cards
     @ManyToOne
-    @JoinColumn(name = "fk_id_payment_card", nullable = false)
+    @JoinColumn(name = "fk_id_payment_card", nullable = false, updatable = false)
     private BeanPaymentCard paymentCard;
 }
