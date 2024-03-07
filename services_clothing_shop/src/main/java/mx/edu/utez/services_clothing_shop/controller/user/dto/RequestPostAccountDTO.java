@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 public class RequestPostAccountDTO {
@@ -12,4 +14,7 @@ public class RequestPostAccountDTO {
     private String email;
     @NotNull(message = "user.password.notnull")
     private String password;
+
+    @NotNull
+    private UUID role;
 }
