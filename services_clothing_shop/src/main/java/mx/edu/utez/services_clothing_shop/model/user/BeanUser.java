@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShopingCart;
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
@@ -59,17 +60,21 @@ public class BeanUser {
 
     //relacion uno a muchos con la tabla de wish_list
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<BeanWishList> wishList;
 
     //relacion uno a muchos con la tabla de shopping_car
     @OneToMany(mappedBy = "user")
-    private List<BeanShopingCart> shoppingCart;
+    @JsonIgnore
+    private List<BeanShoppingCart> shoppingCart;
 
     //relacion uno a muchos con la tabla de request data change
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<BeanRequestDataChange> requestDataChange;
 
     //relacion uno a muchos con la tabla de request becom seller
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<BeanRequestBecomeSeller> requestBecomeSeller;
 }

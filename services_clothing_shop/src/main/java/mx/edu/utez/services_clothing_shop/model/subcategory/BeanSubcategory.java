@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.subcategory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,5 +43,6 @@ public class BeanSubcategory {
 
     //relacion uno a muchos con la tabla de products
     @OneToMany(mappedBy = "subcategory")
+    @JsonIgnore
     private List<BeanProduct> products;
 }
