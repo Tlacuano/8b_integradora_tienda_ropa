@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.type_status;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class BeanTypeStatus {
 
     //relacion uno a muchos con la tabla de status
     @OneToMany(mappedBy = "typeStatus")
+    @JsonIgnore
     private List<BeanStatus> status;
 
 }
