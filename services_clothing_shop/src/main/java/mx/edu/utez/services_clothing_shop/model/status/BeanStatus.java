@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.status;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,50 +45,62 @@ public class BeanStatus {
 
     //relacion uno a muchos con la tabla de users
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanUser> user;
 
     //relacion uno a muchos con la tabla de address
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanAddress> address;
 
     //relacion uno a muchos con la tabla categories
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanCategory> category;
 
     //relacion uno a muchos con la tabla subcategories
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanSubcategory> subcategory;
 
     //relacion uno a muchos con la tabla products
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanProduct> product;
 
     //relacion uno a muchos con la tabla de producct gallery
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanProductGallery> productGallery;
 
     //relacion uno a muchos con la tabla de orders has products
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanOrderHasProducts> orderHasProducts;
 
     //relacion uno a muchos con la tabla request sell product
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanRequestSellProduct> requestSellProduct;
 
     //relacion uno a muchos con la tabla de request data change
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanRequestDataChange> requestDataChange;
 
     //relacion uno a muchos con la tabla de request return product
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanRequestReturnProduct> requestReturnProduct;
 
     //relacion uno a muchos con la tabla de request become seller
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanRequestBecomeSeller> requestBecomeSeller;
 
     //relacion uno a muchos con la tabla de payments cards
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<BeanPaymentCard> paymentsCards;
 
 
