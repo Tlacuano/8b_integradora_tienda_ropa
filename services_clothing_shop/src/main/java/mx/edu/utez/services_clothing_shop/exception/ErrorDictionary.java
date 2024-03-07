@@ -13,8 +13,8 @@ public class ErrorDictionary {
     static {
         //error messages user
         errorMessages.put("user.email.notnull", "El email es obligatorio.");
+        errorMessages.put("user.email.invalid", "El email no es válido.");
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
-
     }
 
     public String getErrorMessage(String errorCode) {
