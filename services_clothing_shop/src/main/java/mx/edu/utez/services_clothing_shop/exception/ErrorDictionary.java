@@ -26,7 +26,8 @@ public class ErrorDictionary {
         errorMessages.put("payment.cvv.invalid", "El código de seguridad no es válido.");
         errorMessages.put("payment.cvv.size", "El código de seguridad debe tener 3 o 4 dígitos.");
         errorMessages.put("payment.minimum.card", "El usuario debe tener registrada al menos una tarjeta de crédito.");
-        errorMessages.put("payment.notFound", "La tarjeta de crédito no fue encontrada.");
+        errorMessages.put("payment.card.notFound", "La tarjeta de crédito no fue encontrada.");
+        errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
     }
 
     public String getErrorMessage(String errorCode) {

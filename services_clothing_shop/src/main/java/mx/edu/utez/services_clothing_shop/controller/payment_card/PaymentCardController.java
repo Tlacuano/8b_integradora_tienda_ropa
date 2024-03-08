@@ -33,7 +33,12 @@ public class PaymentCardController {
     }
 
     @PostMapping("/save-payment-card")
-    public ResponseEntity<BeanPaymentCard> savePaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) {
+    public ResponseEntity<RequestPaymentCardDTO> savePaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) {
+
+        if (paymentCardService.cardIsRegistered(paymentCard.getCardNumber(), paymentCard.getIdUser())) {
+            throw new RuntimeException("payment.card.registered");
+        }
+
         BeanPaymentCard beanPaymentCard = new BeanPaymentCard();
         beanPaymentCard.setIdPaymentCard(paymentCard.getIdPaymentCard());
         beanPaymentCard.setCardholderName(paymentCard.getCardholderName());
@@ -49,7 +54,9 @@ public class PaymentCardController {
         user.setIdUser(paymentCard.getIdUser());
         beanPaymentCard.setUser(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body(paymentCardService.savePaymentCard(beanPaymentCard));
+        paymentCardService.savePaymentCard(beanPaymentCard);
+
+        return ResponseEntity.status(HttpStatus.OK).body(paymentCard);
     }
 
     @PostMapping("/delete-payment-card")

@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.payment_card;
 
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,6 @@ public interface IPaymentCard extends JpaRepository<BeanPaymentCard, UUID> {
     boolean existsByCardNumberAndUser_Email(String cardNumber, String email);
 
     void deleteByCardNumberAndUser_Email(String cardNumber, String email);
+
+    boolean existsByCardNumberAndUser_IdUser(String cardNumber, UUID idUser);
 }

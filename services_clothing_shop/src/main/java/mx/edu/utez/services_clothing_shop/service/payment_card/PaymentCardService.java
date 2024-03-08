@@ -41,4 +41,9 @@ public class PaymentCardService {
     public boolean cardIsFromUser(String cardNumber, String email) {
         return paymentCardRepository.existsByCardNumberAndUser_Email(cardNumber, email);
     }
+
+    @Transactional(rollbackOn = {Exception.class})
+    public boolean cardIsRegistered(String cardNumber, UUID idUser) {
+        return paymentCardRepository.existsByCardNumberAndUser_IdUser(cardNumber, idUser);
+    }
 }
