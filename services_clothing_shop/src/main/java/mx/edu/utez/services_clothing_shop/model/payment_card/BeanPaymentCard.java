@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.card_status.BeanCardStatus;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -51,5 +52,5 @@ public class BeanPaymentCard {
     //relacion muchos a uno con la tabla de status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    private BeanCardStatus status;
 }
