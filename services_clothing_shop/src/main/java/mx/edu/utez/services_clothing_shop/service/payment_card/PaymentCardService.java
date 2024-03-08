@@ -22,7 +22,7 @@ public class PaymentCardService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public void savePaymentCard(BeanPaymentCard paymentCard) {
+    public void postPaymentCard(BeanPaymentCard paymentCard) {
         paymentCardRepository.saveAndFlush(paymentCard);
     }
 
