@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
@@ -77,4 +78,8 @@ public class BeanUser {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<BeanRequestBecomeSeller> requestBecomeSeller;
+
+    //relacion uno a muchos con la tabla de payment_cards
+    @OneToMany(mappedBy = "user")
+    private List<BeanPaymentCard> paymentCards;
 }
