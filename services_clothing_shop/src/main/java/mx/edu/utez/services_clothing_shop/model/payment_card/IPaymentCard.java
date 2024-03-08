@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.model.payment_card;
 
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

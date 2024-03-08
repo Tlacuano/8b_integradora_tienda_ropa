@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class RequestPaymentCardDTO {
     }
 
     public RequestPaymentCardDTO(String cardholderName, String cardNumber, String expirationDate, String cvv, UUID idUser, UUID idStatus) {
-//        this.cardholderName = cardholderName;
+        this.cardholderName = cardholderName;
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.cvv = cvv;
