@@ -28,7 +28,7 @@ public class BeanAddress {
     @Column(name = "address", length = 100)
     private String address;
 
-    @Column(name = "references_addres", length = 255)
+    @Column(name = "references_address", length = 255)
     private String referencesAddress;
 
     @Column(name = "postal_code", length = 5)
