@@ -23,12 +23,9 @@ import java.util.UUID;
 public class BeanOrderHasProducts {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_order_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idOrderProduct;
-
 
     @Column(name = "amount")
     private int amount;
