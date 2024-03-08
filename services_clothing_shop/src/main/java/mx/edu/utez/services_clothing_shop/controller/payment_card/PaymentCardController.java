@@ -5,8 +5,8 @@ import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.RequestDel
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.RequestPaymentCardByUserEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.RequestPaymentCardDTO;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.ResponsePaymentCardDTO;
+import mx.edu.utez.services_clothing_shop.model.card_status.BeanCardStatus;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.payment_card.PaymentCardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class PaymentCardController {
         beanPaymentCard.setExpirationDate(paymentCard.getExpirationDate());
         beanPaymentCard.setCvv(paymentCard.getCvv());
 
-        BeanStatus status = new BeanStatus();
+        BeanCardStatus status = new BeanCardStatus();
         status.setIdStatus(paymentCard.getIdStatus());
         beanPaymentCard.setStatus(status);
 
