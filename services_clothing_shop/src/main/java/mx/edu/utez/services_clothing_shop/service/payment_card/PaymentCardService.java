@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Service
 public class PaymentCardService {
@@ -23,8 +22,8 @@ public class PaymentCardService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public BeanPaymentCard savePaymentCard(BeanPaymentCard paymentCard) {
-        return paymentCardRepository.saveAndFlush(paymentCard);
+    public void savePaymentCard(BeanPaymentCard paymentCard) {
+        paymentCardRepository.saveAndFlush(paymentCard);
     }
 
     @Transactional(rollbackOn = {Exception.class})
