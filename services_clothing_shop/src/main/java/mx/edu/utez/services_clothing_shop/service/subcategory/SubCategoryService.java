@@ -1,9 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.subcategory;
 
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.subcategory.ISubCategory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +11,13 @@ import java.util.List;
 
 @Service
 public class SubCategoryService {
-
-    @Autowired
-    private ISubCategory iSubCategory;
+    private final ISubCategory iSubCategory;
+    public SubCategoryService(ISubCategory iSubCategory) {
+        this.iSubCategory = iSubCategory;
+    }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<BeanSubcategory>> findAll() {
+    public ResponseEntity<List<BeanSubcategory>> getSubcategories() {
         try {
             List<BeanSubcategory> subcategories = iSubCategory.findAll();
             return ResponseEntity.ok(subcategories);
@@ -27,8 +26,21 @@ public class SubCategoryService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<BeanSubcategory> getSubcategory(BeanSubcategory subcategory) {
+        try {
+            if (iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
+                return ResponseEntity.ok(iSubCategory.findByIdSubcategory(subcategory.getIdSubcategory()));
+            } else {
+                return ResponseEntity.status(400).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanSubcategory> insert(BeanSubcategory subcategory) {
+    public ResponseEntity<BeanSubcategory> postSubcategory(BeanSubcategory subcategory) {
         try {
             return ResponseEntity.status(201).body(iSubCategory.save(subcategory));
         } catch (Exception e) {
@@ -37,9 +49,9 @@ public class SubCategoryService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanSubcategory> update(BeanSubcategory subcategory) {
+    public ResponseEntity<BeanSubcategory> putSubcategory(BeanSubcategory subcategory) {
         try {
-            if (iSubCategory.existsBySubcategory(subcategory.getSubcategory())) {
+            if (iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
                 return ResponseEntity.status(201).body(iSubCategory.save(subcategory));
             } else {
                 return ResponseEntity.status(400).build();
@@ -50,19 +62,13 @@ public class SubCategoryService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<Boolean> updateStatus(String subcategory) {
+    public ResponseEntity<Boolean> putStatusSubcategory(BeanSubcategory subcategory) {
         try {
-            if (iSubCategory.existsBySubcategory(subcategory)) {
-                BeanSubcategory beanSubcategory = iSubCategory.findBySubcategory(subcategory);
-                BeanStatus status = beanSubcategory.getStatus();
-                if (status.getStatus().equals("ACTIVE")) {
-                    status.setStatus("INACTIVE");
-                } else {
-                    status.setStatus("ACTIVE");
-                }
-                beanSubcategory.setStatus(status);
+            if (iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
+                BeanSubcategory beanSubcategory = iSubCategory.findByIdSubcategory(subcategory.getIdSubcategory());
+                beanSubcategory.setStatus(!beanSubcategory.isStatus());
                 iSubCategory.save(beanSubcategory);
-                return ResponseEntity.status(201).body(true);
+                return ResponseEntity.status(200).body(true);
             } else {
                 return ResponseEntity.status(400).body(false);
             }
