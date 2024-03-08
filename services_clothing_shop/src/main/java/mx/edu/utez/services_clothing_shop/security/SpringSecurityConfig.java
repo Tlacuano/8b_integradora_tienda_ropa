@@ -92,7 +92,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/subcategories/put-subcategory").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/subcategories/put-status-subcategory").permitAll()
 
-                                .anyRequest()
+                                .anyRequest().permitAll()
                 ).csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(management ->
                         management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
