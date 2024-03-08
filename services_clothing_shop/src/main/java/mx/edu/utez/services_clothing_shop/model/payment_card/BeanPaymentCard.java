@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class BeanPaymentCard {
     @ManyToOne
     @JoinColumn(name = "fk_id_user")
     @JsonIgnore
-    private BeanPerson person;
+    private BeanUser user;
 
     //relacion uno a muchos con la tabla de orders
     @OneToMany(mappedBy = "paymentCard")
