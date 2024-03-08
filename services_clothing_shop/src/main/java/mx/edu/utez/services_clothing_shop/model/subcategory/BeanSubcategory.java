@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.category.BeanCategory;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -36,10 +35,8 @@ public class BeanSubcategory {
     @JoinColumn(name = "fk_id_category")
     private BeanCategory category;
 
-    //relacion muchos a uno con la tabla status
-    @ManyToOne
-    @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
+    private boolean status;
 
     //relacion uno a muchos con la tabla de products
     @OneToMany(mappedBy = "subcategory")

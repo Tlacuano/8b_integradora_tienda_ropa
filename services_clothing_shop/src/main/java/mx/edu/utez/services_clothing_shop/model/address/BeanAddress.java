@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class BeanAddress {
     @Column(name = "address", length = 100)
     private String address;
 
-    @Column(name = "references_addres", length = 255)
+    @Column(name = "references_address", length = 255)
     private String referencesAddress;
 
     @Column(name = "postal_code", length = 5)
@@ -51,7 +51,7 @@ public class BeanAddress {
     //relacion muchos a uno con la tabla de estados
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    private BeanAddressStatus status;
 
     //relacion uno a muchos con la tabla de orders
     @OneToMany(mappedBy = "address")
