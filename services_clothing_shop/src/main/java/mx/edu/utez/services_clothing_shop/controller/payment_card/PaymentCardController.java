@@ -22,15 +22,15 @@ public class PaymentCardController {
     @Autowired
     private PaymentCardService paymentCardService;
 
-    @PostMapping("/payment-card-by-user-email")
+    @PostMapping("/get-payment-card-by-user-email")
     public ResponseEntity<Page<ResponsePaymentCardDTO>> getPaymentCardByUserEmail(@Valid @RequestBody RequestPaymentCardByUserEmailDTO requestBody) {
         Page<BeanPaymentCard> paymentCards = paymentCardService.getPaymentCardByUserEmail(requestBody.getEmail(), requestBody.getPage());
         Page<ResponsePaymentCardDTO> dtoPage = paymentCards.map(paymentCard -> new ResponsePaymentCardDTO().toPaymentCardDTO(paymentCard));
         return ResponseEntity.status(HttpStatus.OK).body(dtoPage);
     }
 
-    @PostMapping("/save-payment-card")
-    public ResponseEntity<RequestPaymentCardDTO> savePaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) {
+    @PostMapping("/post-payment-card")
+    public ResponseEntity<RequestPaymentCardDTO> postPaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) {
 
         if (paymentCardService.cardIsRegistered(paymentCard.getCardNumber(), paymentCard.getIdUser())) {
             throw new RuntimeException("payment.card.registered");
@@ -51,7 +51,7 @@ public class PaymentCardController {
         user.setIdUser(paymentCard.getIdUser());
         beanPaymentCard.setUser(user);
 
-        paymentCardService.savePaymentCard(beanPaymentCard);
+        paymentCardService.postPaymentCard(beanPaymentCard);
 
         return ResponseEntity.status(HttpStatus.OK).body(paymentCard);
     }
