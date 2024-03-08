@@ -2,8 +2,6 @@ package mx.edu.utez.services_clothing_shop.service.category;
 
 import mx.edu.utez.services_clothing_shop.model.category.BeanCategory;
 import mx.edu.utez.services_clothing_shop.model.category.ICategory;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +12,13 @@ import java.util.List;
 
 @Service
 public class CategoryService {
-
-    @Autowired
-    private ICategory iCategory;
+    private final ICategory iCategory;
+    public CategoryService(ICategory iCategory) {
+        this.iCategory = iCategory;
+    }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<BeanCategory>> findAll() {
+    public ResponseEntity<List<BeanCategory>> getCategories() {
         try {
             List<BeanCategory> categories = iCategory.findAll();
             return ResponseEntity.ok(categories);
@@ -28,8 +27,17 @@ public class CategoryService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<BeanCategory> getCategory(BeanCategory category) {
+        try {
+            return ResponseEntity.ok(iCategory.findByIdCategory(category.getIdCategory()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanCategory> insert(BeanCategory category) {
+    public ResponseEntity<BeanCategory> postCategory(BeanCategory category) {
         try {
             return ResponseEntity.status(201).body(iCategory.save(category));
         } catch (Exception e) {
@@ -38,9 +46,9 @@ public class CategoryService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanCategory> update(BeanCategory category) {
+    public ResponseEntity<BeanCategory> putCategory(BeanCategory category) {
         try {
-            if (iCategory.existsByCategory(category.getCategory())) {
+            if (iCategory.existsByIdCategory(category.getIdCategory())) {
                 return ResponseEntity.status(201).body(iCategory.save(category));
             } else {
                 return ResponseEntity.status(400).build();
@@ -51,17 +59,11 @@ public class CategoryService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<Boolean> updateStatus(String category) {
+    public ResponseEntity<Boolean> putStatusCategory(BeanCategory category) {
         try {
-            if (iCategory.existsByCategory(category)) {
-                BeanCategory beanCategory = iCategory.findByCategory(category);
-                BeanStatus status = beanCategory.getStatus();
-                if (status.getStatus().equals("ACTIVE")) {
-                    status.setStatus("INACTIVE");
-                } else {
-                    status.setStatus("ACTIVE");
-                }
-                beanCategory.setStatus(status);
+            if (iCategory.existsByIdCategory(category.getIdCategory())) {
+                BeanCategory beanCategory = iCategory.findByIdCategory(category.getIdCategory());
+                beanCategory.setStatus(!beanCategory.isStatus());
                 iCategory.save(beanCategory);
                 return ResponseEntity.status(201).body(true);
             } else {
