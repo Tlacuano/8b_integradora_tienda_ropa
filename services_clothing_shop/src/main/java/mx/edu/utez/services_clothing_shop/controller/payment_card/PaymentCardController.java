@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.payment_card;
 
 import jakarta.validation.Valid;
+import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.RequestDeletePaymentCardDTO;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.RequestPaymentCardByUserEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.RequestPaymentCardDTO;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.ResponsePaymentCardDTO;
@@ -14,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+import java.util.logging.Logger;
+
 @RestController
 @RequestMapping("venta-ropa/api/payment-card")
 @CrossOrigin(origins = "*")
@@ -25,7 +29,7 @@ public class PaymentCardController {
     public ResponseEntity<Page<ResponsePaymentCardDTO>> getPaymentCardByUserEmail(@Valid @RequestBody RequestPaymentCardByUserEmailDTO requestBody) {
         Page<BeanPaymentCard> paymentCards = paymentCardService.getPaymentCardByUserEmail(requestBody.getEmail(), requestBody.getPage());
         Page<ResponsePaymentCardDTO> dtoPage = paymentCards.map(paymentCard -> new ResponsePaymentCardDTO().toPaymentCardDTO(paymentCard));
-        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(dtoPage);
     }
 
     @PostMapping("/save-payment-card")
@@ -45,6 +49,22 @@ public class PaymentCardController {
         user.setIdUser(paymentCard.getIdUser());
         beanPaymentCard.setUser(user);
 
-        return new ResponseEntity<>(paymentCardService.savePaymentCard(beanPaymentCard), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(paymentCardService.savePaymentCard(beanPaymentCard));
+    }
+
+    @PostMapping("/delete-payment-card")
+    public ResponseEntity<Boolean> deletePaymentCard(@Valid @RequestBody RequestDeletePaymentCardDTO requestBody) {
+        try {
+            if (!paymentCardService.cardIsFromUser(requestBody.getCardNumber(), requestBody.getEmail())) {
+                throw new RuntimeException("payment.card.notFound");
+            }
+            if (paymentCardService.countPaymentCardByUserEmail(requestBody.getEmail()) <= 1) {
+                throw new RuntimeException("payment.minimum.card");
+            }
+            paymentCardService.deletePaymentCard(requestBody.getCardNumber(), requestBody.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 }
