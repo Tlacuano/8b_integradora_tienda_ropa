@@ -52,8 +52,4 @@ public class BeanPerson {
     //relacion uno a uno con la tabla seller_information
     @OneToOne(mappedBy = "person", orphanRemoval = true)
     private BeanSellerInformation sellerInformation;
-
-    //relacion uno a muchos con la tabla de payment_cards
-    @OneToMany(mappedBy = "person")
-    private List<BeanPaymentCard> paymentCards;
 }
