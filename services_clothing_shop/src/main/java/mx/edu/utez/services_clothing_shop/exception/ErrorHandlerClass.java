@@ -37,7 +37,7 @@ public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
         });
 
         return new ResponseEntity<>(
-                new CustomResponse<>(errors, "", true, 400)
+                new CustomResponse<>(errors, "Error en los datos enviados", true, 400)
                 , headers, status);
     }
 
@@ -47,7 +47,10 @@ public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
         String errorMessage = errorDictionary.getErrorMessage(errorCode);
         Map<String, String> errors = new HashMap<>();
         errors.put("error", errorMessage);
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(errors, "Error en los datos enviados", true, 400)
+                , HttpStatus.BAD_REQUEST);
     }
 
 }
