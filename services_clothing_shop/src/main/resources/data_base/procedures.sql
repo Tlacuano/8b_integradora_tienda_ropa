@@ -14,9 +14,7 @@ CREATE PROCEDURE `sp_post_order`(
     IN p_order_date DATE,
     IN p_order_id_address VARCHAR(255),
     IN p_order_id_payment_card VARCHAR(255),
-    IN p_order_number VARCHAR(100),
-    OUT p_order_id VARCHAR(255),
-    OUT p_message VARCHAR(255)
+    IN p_order_number VARCHAR(100)
 )
 BEGIN
     DECLARE v_order_id BINARY(16);
@@ -31,7 +29,6 @@ BEGIN
     WHERE fk_id_user = UUID_TO_BIN(p_user_id);
 
     IF total_products_in_shopping_cart = 0 THEN
-        SET p_message = 'The shopping cart is empty';
         ROLLBACK;
     ELSE
         -- 2. Insert a new record into the orders table
@@ -57,16 +54,33 @@ BEGIN
             IF total_products_inserted = total_products_in_shopping_cart THEN
                 -- 6. Delete the products from the shopping cart
                 DELETE FROM shopping_cart WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-                SET p_order_id = BIN_TO_UUID(v_order_id);
-                SET p_message = 'The order was created successfully';
+                -- 7. Get the address and payment card information
+                SELECT BIN_TO_UUID(v_order_id)         AS id_order,
+                       BIN_TO_UUID(a.id_address)       AS id_address,
+                       a.address                       AS address,
+                       a.references_address            AS references_address,
+                       a.postal_code                   AS postal_code,
+                       a.state                         AS state,
+                       a.street                        AS street,
+                       a.neighborhood                  AS neighborhood,
+                       ast.status                      AS address_status,
+                       BIN_TO_UUID(pc.id_payment_card) AS id_payment_card,
+                       pc.cardholder_name              AS cardholder_name,
+                       pc.card_number                  AS card_number,
+                       pc.expiration_date              AS expiration_date,
+                       pcs.status                      AS card_status
+                FROM address a
+                         JOIN payment_cards pc ON a.fk_id_user = pc.fk_id_user
+                         JOIN address_status as ast ON a.fk_id_status = ast.id_status
+                         JOIN card_status pcs ON pc.fk_id_status = pcs.id_status
+                WHERE a.id_address = UUID_TO_BIN(p_order_id_address)
+                  AND pc.id_payment_card = UUID_TO_BIN(p_order_id_payment_card);
                 COMMIT;
             ELSE
-                SET p_message = 'The products could not be inserted into the order';
                 ROLLBACK;
             END IF;
 
         ELSE
-            SET p_message = 'The order could not be created';
             ROLLBACK;
         END IF;
     END IF;
