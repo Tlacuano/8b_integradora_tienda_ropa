@@ -117,7 +117,7 @@ insert ignore into products (id_product, product_name, description, price, amoun
 values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'), 'playera',
         'playera de algodon', 200.0, 1,
         uuid_to_bin('9e9df4fd-036d-48b1-85e8-4f8f4389f1d4'), 1,
-        uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4')),
+        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6')),
        (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'), 'pantalon',
         'pantalon de mezclilla', 300.5, 5,
         uuid_to_bin('80c49d95-7edf-4475-91b6-74ef025d2c15'), 1,
@@ -125,7 +125,7 @@ values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'), 'playera',
        (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'), 'zapatos',
         'zapatos de piel', 400.5, 3,
         uuid_to_bin('1e2029f0-25b3-4954-bfb7-17a778f12612'), 1,
-        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'));
+        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'));
 
 insert ignore into product_gallery (id_image, fk_id_product, image, fk_id_status)
 values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b28'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'),
