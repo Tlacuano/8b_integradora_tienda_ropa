@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "shopping_car")
+@Table(name = "shopping_cart")
 public class BeanShoppingCart {
     @Id
     @GeneratedValue(generator = "UUID")
