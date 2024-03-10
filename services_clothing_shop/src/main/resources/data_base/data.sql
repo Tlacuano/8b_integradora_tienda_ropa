@@ -191,18 +191,3 @@ values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b28'), uuid_to_bin('58d09d
        (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b30'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'),
         uuid_to_bin('0d64c931-8f3c-4b0c-a16b-dad013cdaeb4'), 'No cumple con los requisitos');
 
-/*inserts to roles*/
-insert ignore into roles(id_role, role_name)
-values
-        (UUID_TO_BIN('101b3ce2-dbf4-11ee-8508-64006a586a6a'), 'ADMINISTRADOR'),
-        (UUID_TO_BIN('101b5bf7-dbf4-11ee-8508-64006a586a6a'), 'COMPRADOR'),
-        (UUID_TO_BIN('101b5d84-dbf4-11ee-8508-64006a586a6a'), 'VENDEDOR');
-
-/*insert to usera*/
-insert ignore into users(id_user,email)
-values
-       (UUID_TO_BIN('3efeb060-dbf7-11ee-8508-64006a586a6a'), 'root@gmail.com');
-
-insert ignore into user_roles(id_user_role, fk_id_role, fk_id_user)
-values
-       (UUID_TO_BIN('aee50784-dbf7-11ee-8508-64006a586a6a'), UUID_TO_BIN('101b3ce2-dbf4-11ee-8508-64006a586a6a'), UUID_TO_BIN('3efeb060-dbf7-11ee-8508-64006a586a6a'));
