@@ -28,6 +28,8 @@ public class ErrorDictionary {
         errorMessages.put("payment.minimum.card", "El usuario debe tener registrada al menos una tarjeta de crédito.");
         errorMessages.put("payment.card.notFound", "La tarjeta de crédito no fue encontrada.");
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
+        //error messages order
+        errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
     }
 
     public String getErrorMessage(String errorCode) {
