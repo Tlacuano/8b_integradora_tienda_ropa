@@ -26,6 +26,7 @@ public class BeanRole {
     @Column(name = "role_name", length = 50)
     private String roleName;
 
+
     //relacion muchos a muchos con la tabla users
     @OneToMany(mappedBy = "role")
     @JsonIgnore
