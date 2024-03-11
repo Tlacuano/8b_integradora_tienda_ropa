@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +8,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShopingCart;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
@@ -46,10 +46,8 @@ public class BeanProduct {
     @JoinColumn(name = "fk_id_subcategory")
     private BeanSubcategory subcategory;
 
-    //relacion muchos a uno con la tabla de status
-    @ManyToOne
-    @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
+    private boolean status;
 
     //relacion muchos a uno con la tabla de users
     @ManyToOne
@@ -62,18 +60,22 @@ public class BeanProduct {
 
     //relacion uno a muchos con la tabla order has products
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<BeanOrderHasProducts> orderHasProducts;
 
     //relacion uno a muchos con la tabla de wishlists
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<BeanWishList> wishList;
 
     //relacion uno a muchos con la tabla de shopping_cart
     @OneToMany(mappedBy = "product")
-    private List<BeanShopingCart> shoppingCart;
+    @JsonIgnore
+    private List<BeanShoppingCart> shoppingCart;
 
     //relacion uno a muchos con la tabla request sell product
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<BeanRequestSellProduct> requestSellProduct;
 
 }

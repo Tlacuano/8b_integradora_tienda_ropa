@@ -1,10 +1,10 @@
 package mx.edu.utez.services_clothing_shop.model.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,11 +30,11 @@ public class BeanCategory {
     private String image;
 
     //relacion muchos a uno con la tabla status
-    @ManyToOne
-    @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
+    private boolean status;
 
     //relacion uno a muchos con la tabla subcategories
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<BeanSubcategory> subcategories;
 }

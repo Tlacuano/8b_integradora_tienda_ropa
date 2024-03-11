@@ -14,8 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "shopping_car")
-public class BeanShopingCart {
+@Table(name = "shopping_cart")
+public class BeanShoppingCart {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

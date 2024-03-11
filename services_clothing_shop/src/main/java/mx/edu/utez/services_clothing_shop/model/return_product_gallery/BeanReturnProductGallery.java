@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.return_product_gallery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,5 +28,6 @@ public class BeanReturnProductGallery {
     //relacion muchos a uno con la tabla de return products
     @ManyToOne
     @JoinColumn(name = "fk_id_request_return_product")
+    @JsonIgnore
     private BeanRequestReturnProduct returnProduct;
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -33,5 +33,5 @@ public class BeanRequestSellProduct {
     //relacion muchos a uno con la tabla de status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    private BeanRequestStatus status;
 }
