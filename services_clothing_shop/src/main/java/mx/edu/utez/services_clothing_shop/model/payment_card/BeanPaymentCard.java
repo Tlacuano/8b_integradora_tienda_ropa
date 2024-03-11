@@ -5,9 +5,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.card_status.BeanCardStatus;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
-import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -25,23 +26,23 @@ public class BeanPaymentCard {
     @Column(name = "id_payment_card", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idPaymentCard;
 
-    @Column(name = "cardholder_name", length = 100)
+    @Column(name = "cardholder_name", length = 100, nullable = false, updatable = false)
     private String cardholderName;
 
-    @Column(name = "card_number", length = 30)
+    @Column(name = "card_number", length = 30, nullable = false, updatable = false)
     private String cardNumber;
 
-    @Column(name = "expiration_date", length = 5)
+    @Column(name = "expiration_date", length = 5, nullable = false, updatable = false)
     private String expirationDate;
 
     @Column(name = "cvv", length = 3)
     private String cvv;
 
-    //relacion muchos a uno con la tabla de person
+    //relacion muchos a uno con la tabla de users
     @ManyToOne
     @JoinColumn(name = "fk_id_user")
     @JsonIgnore
-    private BeanPerson person;
+    private BeanUser user;
 
     //relacion uno a muchos con la tabla de orders
     @OneToMany(mappedBy = "paymentCard")
@@ -51,5 +52,5 @@ public class BeanPaymentCard {
     //relacion muchos a uno con la tabla de status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    private BeanCardStatus status;
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
+import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "requests_become_seller")
-public class BeanRequestBecomeSeller {
+public class BeanRequestsBecomeSeller {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -33,5 +33,5 @@ public class BeanRequestBecomeSeller {
     //relacion muchos a uno con la tabla de status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    private BeanRequestStatus status;
 }

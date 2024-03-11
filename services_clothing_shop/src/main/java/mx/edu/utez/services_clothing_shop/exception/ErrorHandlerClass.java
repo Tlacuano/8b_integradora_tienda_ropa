@@ -1,26 +1,26 @@
 package mx.edu.utez.services_clothing_shop.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 @ControllerAdvice
 public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
 
-    @Autowired
-    private ErrorDictionary errorDictionary;
+    private final ErrorDictionary errorDictionary;
+
+    public ErrorHandlerClass(ErrorDictionary errorDictionary) {
+        this.errorDictionary = errorDictionary;
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -36,7 +36,9 @@ public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
             errors.put(error.getField(), customMessage);
         });
 
-        return new ResponseEntity<>(errors, headers, status);
+        return new ResponseEntity<>(
+                new CustomResponse<>(errors, "Error en los datos enviados", true, 400)
+                , headers, status);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -45,7 +47,10 @@ public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
         String errorMessage = errorDictionary.getErrorMessage(errorCode);
         Map<String, String> errors = new HashMap<>();
         errors.put("error", errorMessage);
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(errors, "Error en los datos enviados", true, 400)
+                , HttpStatus.BAD_REQUEST);
     }
 
 }

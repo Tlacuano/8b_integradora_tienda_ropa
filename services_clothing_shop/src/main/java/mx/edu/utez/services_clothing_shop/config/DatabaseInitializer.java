@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +15,14 @@ import java.util.logging.Logger;
 @Configuration
 public class DatabaseInitializer {
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+    private final ResourceLoader resourceLoader;
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
+
+    public DatabaseInitializer(ResourceLoader resourceLoader, DataSource dataSource) {
+        this.resourceLoader = resourceLoader;
+        this.dataSource = dataSource;
+    }
 
     @Bean
     CommandLineRunner initDatabase(){

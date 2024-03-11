@@ -9,7 +9,6 @@ import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasP
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
@@ -47,10 +46,8 @@ public class BeanProduct {
     @JoinColumn(name = "fk_id_subcategory")
     private BeanSubcategory subcategory;
 
-    //relacion muchos a uno con la tabla de status
-    @ManyToOne
-    @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
+    private boolean status;
 
     //relacion muchos a uno con la tabla de users
     @ManyToOne

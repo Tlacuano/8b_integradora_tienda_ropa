@@ -16,21 +16,37 @@ public class UserService {
     @Autowired
     private IUser userRepository;
 
-    //save new user
+    //exist
+    @Transactional(rollbackOn = {Exception.class})
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
+    }
+
+    //get
     @Transactional(rollbackOn = {Exception.class})
     public Page<IGetPageUsers> getPageUsers(Pageable pageable){
         return userRepository.findAllBy(pageable);
     }
 
+    @Transactional(rollbackOn = {Exception.class})
+    public BeanUser getByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
 
+
+    //post
     @Transactional(rollbackOn = {Exception.class})
     public BeanUser postAccount(BeanUser user){
         return userRepository.saveAndFlush(user);
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public boolean existsByEmail(String email){
-        return userRepository.existsByEmail(email);
+    public void postRoleUser(String roleId, String userId){
+        userRepository.postRoleUser(roleId, userId);
     }
+
+
+
+
 
 }
