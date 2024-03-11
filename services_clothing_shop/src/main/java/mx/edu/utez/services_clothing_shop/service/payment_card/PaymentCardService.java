@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -22,8 +23,13 @@ public class PaymentCardService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public void postPaymentCard(BeanPaymentCard paymentCard) {
-        paymentCardRepository.saveAndFlush(paymentCard);
+    public BeanPaymentCard postPaymentCard(BeanPaymentCard paymentCard) {
+        return paymentCardRepository.saveAndFlush(paymentCard);
+    }
+
+    @Transactional(rollbackOn = {Exception.class})
+    public Map<String, Object> putPaymentCardStatus(UUID idCard, String status) {
+        return paymentCardRepository.putPaymentCardStatus(idCard.toString(), status);
     }
 
     @Transactional(rollbackOn = {Exception.class})

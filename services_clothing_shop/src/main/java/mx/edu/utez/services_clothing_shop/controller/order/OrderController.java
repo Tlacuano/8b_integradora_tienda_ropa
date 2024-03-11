@@ -43,9 +43,9 @@ public class OrderController {
             order.setOrderNumber(orderNumberGenerator());
             Map<String, Object> response = orderService.postOrder(order);
 
-            if (response.containsKey("error_message")) {
-                String errorMessage = (String) response.get("error_message");
-                throw new Exception(errorMessage);
+            if (response.containsKey("message")) {
+                String errorMessage = (String) response.get("message");
+                throw new RuntimeException(errorMessage);
             }
 
             if (!response.isEmpty() && response.containsKey("id_order")) {

@@ -8,6 +8,7 @@ import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsB
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -77,11 +78,9 @@ public class RequestsBecomeSellerService {
     }
 
 
-    public Page<RequestsBecomeSellerDTO> getAllRequests(int page, int size) {
+    public Page<IRequestsBecomeSeller.StatusProjection> findAllStatuses(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<BeanRequestsBecomeSeller> pageResult = IRequestsBecomeSeller.findAll(pageable);
-
-        return pageResult.map(this::convertToDTO);
+        return IRequestsBecomeSeller.findAllStatuses(pageable);
     }
 
     private RequestsBecomeSellerDTO convertToDTO(BeanRequestsBecomeSeller request) {
