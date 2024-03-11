@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestBecomeSeller;
+import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
@@ -47,5 +47,5 @@ public class BeanRequestStatus {
     //relacion uno a muchos con la tabla de request become seller
     @OneToMany(mappedBy = "status")
     @JsonIgnore
-    private List<BeanRequestBecomeSeller> requestBecomeSeller;
+    private List<BeanRequestsBecomeSeller> requestBecomeSeller;
 }
