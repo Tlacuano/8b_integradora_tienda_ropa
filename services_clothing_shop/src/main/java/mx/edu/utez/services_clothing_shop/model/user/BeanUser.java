@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestBecomeSeller;
+import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
@@ -75,7 +75,7 @@ public class BeanUser {
     //relacion uno a muchos con la tabla de request becom seller
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private List<BeanRequestBecomeSeller> requestBecomeSeller;
+    private List<BeanRequestsBecomeSeller> requestBecomeSeller;
 
     //relacion uno a muchos con la tabla de payment_cards
     @OneToMany(mappedBy = "user")
