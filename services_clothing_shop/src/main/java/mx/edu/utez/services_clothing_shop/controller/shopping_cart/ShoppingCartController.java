@@ -7,6 +7,7 @@ import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,21 +36,29 @@ public class ShoppingCartController {
         }
     }
     @PostMapping("/save-new-shopping-cart")
-    public CustomResponse<BeanShoppingCart> createShoppingCar(@RequestBody BeanShoppingCart shoppingCart) {
-        return shoppingCartServices.saveShoppingCar(shoppingCart);
+    public ResponseEntity<List<GetShoppingCartDTO>> createShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
+        CustomResponse<BeanShoppingCart> response = shoppingCartServices.saveShoppingCar(shoppingCart);
+        if (response.isError()) {
+            return ResponseEntity.status(response.getStatus()).build();
+        } else {
+            GetShoppingCartDTO newShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response.getData());
+            return ResponseEntity.ok(Collections.singletonList(newShoppingCartDTO));
+        }
     }
+
     @DeleteMapping("/delete-shopping-cart/{shoppingCartId}")
     public CustomResponse<BeanShoppingCart> deleteShoppingCart(@PathVariable UUID shoppingCartId) {
             return shoppingCartServices.deleteShoppingCartById(shoppingCartId);
     }
 
     @PutMapping("/update-shopping-cart")
-    public ResponseEntity<CustomResponse<BeanShoppingCart>> updateShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
+    public ResponseEntity<List<GetShoppingCartDTO>> updateShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
         CustomResponse<BeanShoppingCart> response = shoppingCartServices.updateShoppingCartById(shoppingCart);
         if (response.isError()) {
-            return ResponseEntity.status(response.getStatus()).body(response);
+            return ResponseEntity.status(response.getStatus()).build();
         } else {
-            return ResponseEntity.ok(response);
+            GetShoppingCartDTO updatedShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response.getData());
+            return ResponseEntity.ok(Collections.singletonList(updatedShoppingCartDTO));
         }
     }
 }
