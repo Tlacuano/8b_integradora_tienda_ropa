@@ -10,5 +10,4 @@ public class RequestsBecomeSellerDTO {
     private UUID userId;
     private UUID statusId;
 
-
 }
