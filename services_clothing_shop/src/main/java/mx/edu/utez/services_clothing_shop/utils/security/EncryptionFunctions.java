@@ -16,17 +16,21 @@ import java.util.logging.Logger;
 @Component
 public class EncryptionFunctions {
 
-    @Value("${secret-key}")
     private static String KEY;
     private static final String ALGORITHM = "AES";
-    private final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+
+    @Value("${secret-key}")
+    public void setKey(String key) {
+        EncryptionFunctions.KEY = key;
+    }
 
     public static String encryptString(String value){
         String dataEncrypt = "";
         try {
             Key key = generateKey();
 
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             byte[] initializationVector = new byte[16];
 
             new SecureRandom().nextBytes(initializationVector);
@@ -53,7 +57,7 @@ public class EncryptionFunctions {
             String urlDecode = URLDecoder.decode(value.replaceAll("\\+","%2B"), "UTF-8");
             Key key = generateKey();
 
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             byte[] decodeValue = Base64.getDecoder().decode(urlDecode);
             byte[] initializationVector = new byte[16];
 
