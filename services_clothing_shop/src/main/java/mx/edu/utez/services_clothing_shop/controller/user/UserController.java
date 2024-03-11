@@ -102,4 +102,22 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/change-status")
+    public ResponseEntity<Object> changeStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
+        BeanUser user = userService.getByEmail(payload.getEmail());
+
+        if(user == null){
+            throw new RuntimeException("user.email.exists");
+        }
+
+        user.setStatus(!user.isStatus());
+
+        userService.postAccount(user);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(true, "Estado de la cuenta cambiado correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
 }
