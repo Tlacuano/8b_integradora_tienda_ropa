@@ -28,6 +28,11 @@ public class UserService {
         return userRepository.findAllBy(pageable);
     }
 
+    @Transactional(rollbackOn = {Exception.class})
+    public BeanUser getByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
 
     //post
     @Transactional(rollbackOn = {Exception.class})

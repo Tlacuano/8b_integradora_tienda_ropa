@@ -12,8 +12,11 @@ import java.util.UUID;
 
 @Repository
 public interface IUser extends JpaRepository<BeanUser, UUID> {
-    Page<IGetPageUsers> findAllBy (Pageable pageable);
     boolean existsByEmail(String email);
+    Page<IGetPageUsers> findAllBy (Pageable pageable);
+
+    BeanUser findByEmail(String email);
+
 
     @Query(value = "CALL sp_post_role_user(:p_role_id, :p_user_id)", nativeQuery = true)
     boolean postRoleUser(
