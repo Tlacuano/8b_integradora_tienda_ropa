@@ -8,11 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
-public class SubCategoryService {
+public class SubcategoryService {
     private final ISubCategory iSubCategory;
-    public SubCategoryService(ISubCategory iSubCategory) {
+    public SubcategoryService(ISubCategory iSubCategory) {
         this.iSubCategory = iSubCategory;
     }
 
@@ -27,10 +28,10 @@ public class SubCategoryService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<BeanSubcategory> getSubcategory(BeanSubcategory subcategory) {
+    public ResponseEntity<BeanSubcategory> getSubcategory(UUID idSubcategory) {
         try {
-            if (iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
-                return ResponseEntity.ok(iSubCategory.findByIdSubcategory(subcategory.getIdSubcategory()));
+            if (iSubCategory.existsByIdSubcategory(idSubcategory)) {
+                return ResponseEntity.ok(iSubCategory.findByIdSubcategory(idSubcategory));
             } else {
                 return ResponseEntity.status(400).build();
             }
