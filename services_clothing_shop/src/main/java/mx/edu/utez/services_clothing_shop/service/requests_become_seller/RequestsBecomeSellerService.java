@@ -2,54 +2,105 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 
 import jakarta.transaction.Transactional;
+import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerDTO;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
+
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.RequestsBecomeSellerRepository;
+
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+
+import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller.StatusProjection;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class RequestsBecomeSellerService {
-    private final RequestsBecomeSellerRepository requestsBecomeSellerRepository;
+
 
     public RequestsBecomeSellerService(RequestsBecomeSellerRepository requestsBecomeSellerRepository) {
         this.requestsBecomeSellerRepository = requestsBecomeSellerRepository;
     }
 
+    private final IRequestsBecomeSeller IRequestsBecomeSeller;
+    private final IRequestStatus IRequestStatus;
 
-    public Optional<BeanRequestsBecomeSeller> getRequestById(UUID id) {
-        return requestsBecomeSellerRepository.findById(id);
+
+
+    public RequestsBecomeSellerService(IRequestsBecomeSeller IRequestsBecomeSeller, IRequestStatus IRequestStatus) {
+        this.IRequestsBecomeSeller = IRequestsBecomeSeller;
+        this.IRequestStatus = IRequestStatus;
     }
 
     @Transactional
-    public BeanRequestsBecomeSeller postRequest(BeanRequestsBecomeSeller request) {
-        return requestsBecomeSellerRepository.save(request);
-    }
+    public RequestsBecomeSellerDTO putRequestStatus(UUID requestId, String status, String rejectionReason) {
+        Optional<BeanRequestsBecomeSeller> existingRequestOptional = IRequestsBecomeSeller.findById(requestId);
+        if (existingRequestOptional.isPresent()) {
+            BeanRequestsBecomeSeller existingRequest = existingRequestOptional.get();
+            BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
+                    .orElseThrow(() -> new IllegalArgumentException("Estado no válido: " + status));
 
-    @Transactional
-    public BeanRequestsBecomeSeller putRequest(UUID id, BeanRequestsBecomeSeller request) {
-        if (requestsBecomeSellerRepository.existsById(id)) {
-            return requestsBecomeSellerRepository.save(request);
+            existingRequest.setStatus(requestStatus);
+            existingRequest.setRejectionReason(rejectionReason);
+            BeanRequestsBecomeSeller updatedRequest = IRequestsBecomeSeller.save(existingRequest);
+
+            return convertToDTO(updatedRequest);
         } else {
             throw new RequestsNotFoundException("La solicitud no fue encontrada.");
         }
     }
 
-    @Transactional
-    public void deleteRequest(UUID id) {
-        requestsBecomeSellerRepository.deleteById(id);
+    public Optional<RequestsBecomeSellerDTO> getRequestByEmail(String email) {
+        Optional<BeanRequestsBecomeSeller> requestOptional = IRequestsBecomeSeller.findByUserEmail(email);
+        return requestOptional.map(this::convertToDTO);
     }
 
-    public Page<BeanRequestsBecomeSeller> getAllRequestsBecomeSeller(Pageable pageable) {
-        return requestsBecomeSellerRepository.findAll(pageable);
+    @Transactional
+    public RequestsBecomeSellerDTO postRequest(String email) {
+        Optional<BeanRequestsBecomeSeller> existingRequestOptional = IRequestsBecomeSeller.findByUserEmail(email);
+        if (existingRequestOptional.isPresent()) {
+            BeanRequestsBecomeSeller existingRequest = existingRequestOptional.get();
+            BeanUser user = existingRequest.getUser();
+            if (user == null) {
+                throw new UserNotFoundException("El usuario no fue encontrado.");
+            }
+            BeanRequestsBecomeSeller request = new BeanRequestsBecomeSeller();
+            request.setUser(user);
+
+            Optional<BeanRequestStatus> pendingStatusOptional = IRequestStatus.findByStatus("Pendiente");
+            BeanRequestStatus pendingStatus = pendingStatusOptional.orElseThrow(() -> new IllegalStateException("El estado 'Pendiente' no se encontró en la base de datos"));
+
+            request.setStatus(pendingStatus);
+
+            BeanRequestsBecomeSeller savedRequest = IRequestsBecomeSeller.save(request);
+
+            return convertToDTO(savedRequest);
+        } else {
+            throw new RequestsNotFoundException("La solicitud no fue encontrada.");
+        }
+    }
+
+
+    public Page<IRequestsBecomeSeller.StatusProjection> findAllStatuses(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return IRequestsBecomeSeller.findAllStatuses(pageable);
+    }
+
+    private RequestsBecomeSellerDTO convertToDTO(BeanRequestsBecomeSeller request) {
+        RequestsBecomeSellerDTO dto = new RequestsBecomeSellerDTO();
+        dto.setIdRequestBecomeSeller(request.getIdRequestBecomeSeller());
+        dto.setRejectionReason(request.getRejectionReason());
+        dto.setUserId(request.getUser().getIdUser());
+        dto.setStatusId(request.getStatus().getIdStatus());
+        return dto;
     }
 
     public class RequestsNotFoundException extends RuntimeException {
@@ -58,4 +109,9 @@ public class RequestsBecomeSellerService {
         }
     }
 
+    public class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
+    }
 }

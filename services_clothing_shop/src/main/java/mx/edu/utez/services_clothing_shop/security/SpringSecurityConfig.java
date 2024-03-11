@@ -80,9 +80,11 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-data-change/get-requests-data-change").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-data-change/put-status-request-data-change/**").permitAll()
 
+
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-data-change/get-status-request-return-product/**").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-data-change/put-status-request-return-product/**").permitAll()
 
+                                                  
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/categories/get-category").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/get-category/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/post-category").permitAll()

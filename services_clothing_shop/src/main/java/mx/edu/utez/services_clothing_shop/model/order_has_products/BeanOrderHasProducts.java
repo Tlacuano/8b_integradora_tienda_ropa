@@ -1,14 +1,15 @@
 package mx.edu.utez.services_clothing_shop.model.order_has_products;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
+import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
-import mx.edu.utez.services_clothing_shop.model.status.BeanStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -22,12 +23,9 @@ import java.util.UUID;
 public class BeanOrderHasProducts {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id_order_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idOrderProduct;
-
 
     @Column(name = "amount")
     private int amount;
@@ -45,10 +43,11 @@ public class BeanOrderHasProducts {
     //relacion muchos a uno con la tabla de status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
-    private BeanStatus status;
+    private BeanOrderStatus status;
 
     //relacion uno a uno con la tabla de reviews
     @OneToOne(mappedBy = "orderHasProduct")
+    @JsonIgnore
     private BeanReview review;
 
     //relacion uno a muchos con la tabla de requests_return_product
