@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_become_seller;
 
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerDTO;
+import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.service.requests_become_seller.RequestsBecomeSellerService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
@@ -52,8 +53,7 @@ public class RequestsBecomeSellerController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<CustomResponse<Page<RequestsBecomeSellerDTO>>> getAllRequests(@RequestParam int page, @RequestParam int size) {
-        Page<RequestsBecomeSellerDTO> requestPage = requestsBecomeSellerService.getAllRequests(page, size);
-        return ResponseEntity.ok(new CustomResponse<>(requestPage, "All requests retrieved", false, 200));
+    public Page<IRequestsBecomeSeller.StatusProjection> getAllRequests(@RequestParam int page, @RequestParam int size) {
+        return requestsBecomeSellerService.findAllStatuses(page, size);
     }
 }
