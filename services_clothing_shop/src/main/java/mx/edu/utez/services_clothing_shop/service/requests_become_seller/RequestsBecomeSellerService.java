@@ -3,15 +3,11 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
-<<<<<<< Updated upstream
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.RequestsBecomeSellerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-=======
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
->>>>>>> Stashed changes
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,7 +20,6 @@ import java.util.UUID;
 public class RequestsBecomeSellerService {
     private final RequestsBecomeSellerRepository requestsBecomeSellerRepository;
 
-    @Autowired
     public RequestsBecomeSellerService(RequestsBecomeSellerRepository requestsBecomeSellerRepository) {
         this.requestsBecomeSellerRepository = requestsBecomeSellerRepository;
     }
