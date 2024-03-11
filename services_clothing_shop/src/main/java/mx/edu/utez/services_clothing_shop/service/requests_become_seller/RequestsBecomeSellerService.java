@@ -8,7 +8,7 @@ import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsB
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller.StatusProjection;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
