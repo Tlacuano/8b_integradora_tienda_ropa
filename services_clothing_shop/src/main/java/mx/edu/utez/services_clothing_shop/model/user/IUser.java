@@ -16,7 +16,7 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     boolean existsByEmail(String email);
 
     @Query(value = "CALL sp_post_role_user(:p_role_id, :p_user_id)", nativeQuery = true)
-    void postRoleUser(
+    boolean postRoleUser(
             @Param("p_role_id") String roleId,
             @Param("p_user_id") String userId
     );

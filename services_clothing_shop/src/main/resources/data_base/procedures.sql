@@ -6,6 +6,8 @@ CREATE PROCEDURE `sp_post_role_user`(
 BEGIN
     INSERT INTO user_roles(id_user_role, fk_id_role, fk_id_user)
     VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(p_role_id), UUID_TO_BIN(p_user_id));
+
+    SELECT status FROM users WHERE id_user = UUID_TO_BIN(p_user_id);
 END $$
 DELIMITER ;
 

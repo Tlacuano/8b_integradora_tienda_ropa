@@ -49,6 +49,7 @@ public class UserController {
 
         String encodedPassword = EncryptionFunctions.encryptString(user.getPassword());
         toSaveUser.setPassword(encodedPassword);
+        toSaveUser.setStatus(true);
 
         toSaveUser = userService.postAccount(toSaveUser);
 
@@ -57,6 +58,8 @@ public class UserController {
                 user.getRole().toString(),
                 toSaveUser.getIdUser().toString()
         );
+
+        //save personal information
 
 
 
