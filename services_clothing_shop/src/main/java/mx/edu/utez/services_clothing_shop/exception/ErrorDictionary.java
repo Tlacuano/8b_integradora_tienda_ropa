@@ -16,6 +16,19 @@ public class ErrorDictionary {
         errorMessages.put("user.email.invalid", "El email no es válido.");
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("user.email.exists", "El email no esta disponible.");
+
+        //error messages person
+        errorMessages.put("person.name.notnull", "El nombre es obligatorio.");
+        errorMessages.put("person.name.pattern", "El nombre no debe contener números ni caracteres especiales.");
+        errorMessages.put("person.lastName.notnull", "El primer apellido es obligatorio.");
+        errorMessages.put("person.lastName.pattern", "El primer apellido no debe contener números ni caracteres especiales.");
+        errorMessages.put("person.secondLastName.pattern", "El segundo apellido no debe contener números ni caracteres especiales.");
+        errorMessages.put("person.phoneNumber.notnull", "El número de teléfono es obligatorio.");
+        errorMessages.put("person.phoneNumber.pattern", "El número de teléfono no es válido.");
+        errorMessages.put("person.birthday.notnull", "La fecha de nacimiento es obligatoria.");
+        errorMessages.put("person.birthday.age", "El usuario debe ser mayor de edad.");
+        errorMessages.put("person.gender.notnull", "El género es obligatorio.");
+
         //error messages payment card
         errorMessages.put("payment.cardholderName.notnull", "El nombre del titular de la tarjeta es obligatorio.");
         errorMessages.put("payment.cardNumber.notnull", "El número de la tarjeta es obligatorio.");

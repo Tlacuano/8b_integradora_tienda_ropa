@@ -46,8 +46,9 @@ public class BeanPerson {
     @Column(name = "phone_number", length = 30)
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private String gender;
+    private GenderEnum gender;
 
     //relacion uno a uno con la tabla seller_information
     @OneToOne(mappedBy = "person", orphanRemoval = true)
