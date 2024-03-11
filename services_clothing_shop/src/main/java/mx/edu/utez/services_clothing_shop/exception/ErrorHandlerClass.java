@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.exception;
 
+import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -35,7 +36,9 @@ public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
             errors.put(error.getField(), customMessage);
         });
 
-        return new ResponseEntity<>(errors, headers, status);
+        return new ResponseEntity<>(
+                new CustomResponse<>(errors, "Error en los datos enviados", true, 400)
+                , headers, status);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -44,7 +47,10 @@ public class ErrorHandlerClass extends ResponseEntityExceptionHandler {
         String errorMessage = errorDictionary.getErrorMessage(errorCode);
         Map<String, String> errors = new HashMap<>();
         errors.put("error", errorMessage);
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(errors, "Error en los datos enviados", true, 400)
+                , HttpStatus.BAD_REQUEST);
     }
 
 }
