@@ -53,8 +53,13 @@ public class SubcategoryController {
     }
 
     @PutMapping("/put-subcategory")
-    public ResponseEntity<BeanSubcategory> putSubcategory(@RequestBody BeanSubcategory subcategory) {
-        return subcategoryService.putSubcategory(subcategory);
+    public ResponseEntity<CustomResponse<BeanSubcategory>> putSubcategory(@RequestBody BeanSubcategory subcategory) {
+        BeanSubcategory updatedSubcategory = subcategoryService.putSubcategory(subcategory).getBody();
+        if (updatedSubcategory != null) {
+            return new ResponseEntity<>(new CustomResponse<>(updatedSubcategory, "Subcategoria actualizada", false, 201), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Subcategoria no actualizada", true, 400), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/put-status-subcategory")
