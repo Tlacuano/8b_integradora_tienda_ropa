@@ -4,6 +4,7 @@ import lombok.Data;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,9 +33,11 @@ public class ResponseProductDTO {
         dto.setSubcategory(product.getSubcategory().getSubcategory());
         dto.setCategory(product.getSubcategory().getCategory().getCategory());
         dto.setStatus(product.isStatus());
+        List<String> imageUrls = new ArrayList<>();
         for (BeanProductGallery gallery : product.getProductGallery()) {
-            dto.getProductGallery().add(gallery.getImage());
+            imageUrls.add(gallery.getImage());
         }
+        dto.setProductGallery(imageUrls);
         return dto;
     }
 }
