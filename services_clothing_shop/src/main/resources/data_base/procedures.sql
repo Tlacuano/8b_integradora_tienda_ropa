@@ -11,6 +11,22 @@ BEGIN
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS `sp_delate_user`;
+DELIMITER $$
+CREATE PROCEDURE `sp_delate_user`(
+    IN p_email VARCHAR(255),
+    BEGIN
+
+        UPDATE users
+        SET
+        password = CONCAT(p_mail, '_deleted'),
+    email = '',
+    status = 0
+        WHERE email = p_email;
+
+END $$
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS `sp_post_order`;
 DELIMITER $$
 CREATE PROCEDURE `sp_post_order`(
