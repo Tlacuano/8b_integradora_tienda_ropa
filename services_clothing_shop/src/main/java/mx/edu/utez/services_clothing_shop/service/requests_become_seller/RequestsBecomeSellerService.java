@@ -4,15 +4,10 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerDTO;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
-
-import mx.edu.utez.services_clothing_shop.model.request_become_seller.RequestsBecomeSellerRepository;
-
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-
-import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller.StatusProjection;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,14 +20,8 @@ import java.util.UUID;
 @Service
 public class RequestsBecomeSellerService {
 
-
-    public RequestsBecomeSellerService(RequestsBecomeSellerRepository requestsBecomeSellerRepository) {
-        this.requestsBecomeSellerRepository = requestsBecomeSellerRepository;
-    }
-
     private final IRequestsBecomeSeller IRequestsBecomeSeller;
     private final IRequestStatus IRequestStatus;
-
 
 
     public RequestsBecomeSellerService(IRequestsBecomeSeller IRequestsBecomeSeller, IRequestStatus IRequestStatus) {
