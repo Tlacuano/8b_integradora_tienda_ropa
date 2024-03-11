@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Service
 public class UserService {
-    @Autowired
-    private IUser userRepository;
+    private final IUser userRepository;
+
+    public UserService(IUser userRepository) {
+        this.userRepository = userRepository;
+    }
 
     //exist
     @Transactional(rollbackOn = {Exception.class})
@@ -26,6 +29,11 @@ public class UserService {
     @Transactional(rollbackOn = {Exception.class})
     public Page<IGetPageUsers> getPageUsers(Pageable pageable){
         return userRepository.findAllBy(pageable);
+    }
+
+    @Transactional(rollbackOn = {Exception.class})
+    public BeanUser getByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
 
@@ -40,7 +48,10 @@ public class UserService {
         userRepository.postRoleUser(roleId, userId);
     }
 
-
+    @Transactional(rollbackOn = {Exception.class})
+    public void deleteAccount(String email){
+        userRepository.deleteAccount(email);
+    }
 
 
 
