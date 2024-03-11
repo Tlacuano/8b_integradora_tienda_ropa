@@ -1,6 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.user;
 
-import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestGetByEmailDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/get-by-email")
-    public ResponseEntity<Object> getByEmail(@Validated @RequestBody RequestGetByEmailDTO payload){
+    public ResponseEntity<Object> getByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(userService.getByEmail(payload.getEmail()), "Usuario encontrado", false, 200),
                 HttpStatus.OK
@@ -90,6 +90,15 @@ public class UserController {
 
         return new ResponseEntity<>(
                 new CustomResponse<>(true, "Cuenta registrada correctamente", false, 201),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/delete-account")
+    public ResponseEntity<Object> deleteAccount(@Validated @RequestBody RequestActionByEmailDTO payload){
+        userService.deleteAccount(payload.getEmail());
+        return new ResponseEntity<>(
+                new CustomResponse<>(true, "Cuenta eliminada correctamente", false, 200),
                 HttpStatus.OK
         );
     }

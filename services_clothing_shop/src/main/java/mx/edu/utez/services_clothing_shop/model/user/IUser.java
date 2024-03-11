@@ -17,10 +17,14 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
 
     BeanUser findByEmail(String email);
 
-
     @Query(value = "CALL sp_post_role_user(:p_role_id, :p_user_id)", nativeQuery = true)
     boolean postRoleUser(
             @Param("p_role_id") String roleId,
             @Param("p_user_id") String userId
+    );
+
+    @Query(value = "CALL sp_delete_user(:p_email)", nativeQuery = true)
+    String deleteAccount(
+            @Param("p_email") String email
     );
 }

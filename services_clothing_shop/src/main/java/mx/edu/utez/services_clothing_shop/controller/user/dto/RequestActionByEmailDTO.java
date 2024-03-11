@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class RequestGetByEmailDTO {
+public class RequestActionByEmailDTO {
     @NotBlank(message = "user.email.notnull")
     private String email;
 }

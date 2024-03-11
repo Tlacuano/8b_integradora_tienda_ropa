@@ -11,21 +11,67 @@ BEGIN
 END $$
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `sp_delate_user`;
+
+
+
+DROP PROCEDURE IF EXISTS `sp_delete_user`;
 DELIMITER $$
-CREATE PROCEDURE `sp_delate_user`(
+CREATE PROCEDURE `sp_delete_user`(
     IN p_email VARCHAR(255),
-    BEGIN
+    OUT result BOOLEAN)
+BEGIN
+    DECLARE v_user_id BINARY(16);
 
-        UPDATE users
-        SET
-        password = CONCAT(p_mail, '_deleted'),
-    email = '',
-    status = 0
-        WHERE email = p_email;
+    SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
 
-END $$
+
+    UPDATE users
+    SET
+        password = '',
+        email = CONCAT(p_email, '_deleted'),
+        status = 0
+    WHERE id_user = v_user_id;
+
+    UPDATE people
+    SET
+        name = 'Cuenta no disponible',
+        last_name = '',
+        second_last_name = '',
+        picture = '',
+        gender = 'otros',
+        phone_number = ''
+    WHERE fk_id_user = v_user_id;
+
+    UPDATE sellers_information
+    SET
+        curp = '',
+        tax_identification_number = '',
+        secondary_phone_number = '',
+        image_identification = '',
+        privacy_policy_agreement = 0
+    WHERE fk_id_user = v_user_id;
+
+    UPDATE payment_cards
+    SET
+        cvv = '',
+        card_number = '',
+        cardholder_name = '',
+        expiration_date = ''
+    WHERE fk_id_user = v_user_id;
+
+
+    UPDATE products
+    SET
+        status = 0
+    WHERE fk_id_user = v_user_id;
+
+    SELECT NOT status FROM users WHERE id_user = v_user_id;
+END$$
 DELIMITER ;
+
+
+
+
 
 DROP PROCEDURE IF EXISTS `sp_post_order`;
 DELIMITER $$
