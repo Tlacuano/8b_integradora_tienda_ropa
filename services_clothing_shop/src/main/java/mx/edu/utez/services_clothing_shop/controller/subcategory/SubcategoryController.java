@@ -43,8 +43,13 @@ public class SubcategoryController {
     }
 
     @PostMapping("/post-subcategory")
-    public ResponseEntity<BeanSubcategory> postSubcategory(@RequestBody BeanSubcategory subcategory) {
-        return subcategoryService.postSubcategory(subcategory);
+    public ResponseEntity<CustomResponse<BeanSubcategory>> postSubcategory(@RequestBody BeanSubcategory subcategory) {
+        BeanSubcategory newSubcategory = subcategoryService.postSubcategory(subcategory).getBody();
+        if (newSubcategory != null) {
+            return new ResponseEntity<>(new CustomResponse<>(newSubcategory, "Subcategoria guardada", false, 201), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Subcategoria no guardada", true, 400), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/put-subcategory")
