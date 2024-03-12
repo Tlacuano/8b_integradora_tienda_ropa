@@ -5,6 +5,7 @@ import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.role.IRole;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Transactional
@@ -21,4 +22,11 @@ public class RoleService {
     public BeanRole getRoleById(UUID id) {
         return roleRepository.findById(id).get();
     }
+
+    @Transactional(rollbackOn = {Exception.class})
+    public List<BeanRole> getRolesByEmail() {
+        return roleRepository.findAll();
+    }
+
+
 }
