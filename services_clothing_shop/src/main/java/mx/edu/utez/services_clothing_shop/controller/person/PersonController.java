@@ -23,6 +23,8 @@ public class PersonController {
         this.userService = userService;
         this.personService = personService;
     }
+
+
     @PostMapping("/post-personal-information")
     public ResponseEntity<Object> postPersonalInformation(@Validated @RequestBody RequestPutPersonalInformationDTO payload){
         BeanUser user = userService.getByEmail(payload.getEmail());
