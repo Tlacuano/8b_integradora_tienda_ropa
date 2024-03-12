@@ -251,14 +251,11 @@ DROP PROCEDURE IF EXISTS `sp_post_product_gallery`;
 DELIMITER $$
 CREATE PROCEDURE `sp_post_product_gallery`(
     IN p_product_id VARCHAR(255),
-    IN p_image_url_1 VARCHAR(255),
-    IN p_image_url_2 VARCHAR(255),
-    IN p_image_url_3 VARCHAR(255),
-    IN p_image_url_4 VARCHAR(255),
-    IN p_image_url_5 VARCHAR(255)
+    IN p_image_url VARCHAR(255),
+    IN p_status_id VARCHAR(255)
 )
 BEGIN
-    DECLARE v_product_id BINARY(16);
+    DECLARE v_total_products INT;
     DECLARE v_total_images INT;
 
     -- 0. Start the transaction
@@ -266,20 +263,16 @@ BEGIN
 
     -- 1. Verify if the product exists
     SELECT COUNT(*)
-    INTO v_total_images
+    INTO v_total_products
     FROM products
     WHERE id_product = UUID_TO_BIN(p_product_id);
 
-    IF v_total_images = 0 THEN
+    IF v_total_products = 0 THEN
         SELECT 'Product does not exist' AS message;
     ELSE
         -- 2. Insert the images into the product_gallery table
         INSERT INTO product_gallery(fk_id_product, fk_id_status, id_image, image)
-        VALUES (UUID_TO_BIN(p_product_id), UUID_TO_BIN('f02ff8b1-dd67-11ee-8508-64006a586a6a'), UUID_TO_BIN(UUID()), p_image_url_1,),
-               (UUID_TO_BIN(p_product_id), UUID_TO_BIN('bc43ef1a-13a2-4b67-bb13-f1d376e5b510'), UUID_TO_BIN(UUID()), p_image_url_2),
-               (UUID_TO_BIN(p_product_id), UUID_TO_BIN('bc43ef1a-13a2-4b67-bb13-f1d376e5b510'), UUID_TO_BIN(UUID()), p_image_url_3,),
-               (UUID_TO_BIN(p_product_id), UUID_TO_BIN('bc43ef1a-13a2-4b67-bb13-f1d376e5b510'), UUID_TO_BIN(UUID()), p_image_url_4,),
-               (UUID_TO_BIN(p_product_id), UUID_TO_BIN('bc43ef1a-13a2-4b67-bb13-f1d376e5b510'), UUID_TO_BIN(UUID()), p_image_url_5,);
+        VALUES (UUID_TO_BIN(p_product_id), UUID_TO_BIN(p_status_id), UUID_TO_BIN(UUID()), p_image_url)
 
         -- 3. Verify if the images were inserted
         SELECT COUNT(*)
@@ -287,8 +280,8 @@ BEGIN
         FROM product_gallery
         WHERE fk_id_product = UUID_TO_BIN(p_product_id);
 
-        IF v_total_images = 5 THEN
-           --Get the images of the product inserted
+        IF v_total_images = 1 THEN
+           --Get the image of the product inserted
             SELECT id_image, image
             FROM product_gallery
             WHERE fk_id_product = UUID_TO_BIN(p_product_id);
