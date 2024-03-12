@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BeanProduct> getProductsByUser(String email, Pageable page) {
+    public Page<BeanProduct> getProductsByUserEmail(String email, Pageable page) {
         return iProduct.findAllByUser_Email(email, page);
     }
 

@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.product;
 
+import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductByUserEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.ResponseProductDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
@@ -27,27 +28,22 @@ public class ProductController {
     @GetMapping("/get-products")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProducts(Pageable page) {
         Page<BeanProduct> beanProductPage = productService.getProducts(page);
+        return getCustomResponseResponseEntity(beanProductPage);
+    }
+
+    @PostMapping("/get-products-by-user")
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByUserEmail(@RequestBody RequestProductByUserEmailDTO requestDTO) {
+        Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
+        return getCustomResponseResponseEntity(beanProductPage);
+    }
+
+    private ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getCustomResponseResponseEntity(Page<BeanProduct> beanProductPage) {
         if (beanProductPage != null) {
             Page<ResponseProductDTO> productDTOPage = beanProductPage.map(ResponseProductDTO::toProductDTO);
             return new ResponseEntity<>(new CustomResponse<>(productDTOPage, "Productos encontrados", false, 200), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new CustomResponse<>(null, "Productos no encontrados", true, 404), HttpStatus.NOT_FOUND);
         }
-    }
-
-    private ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getCustomResponseResponseEntity(List<BeanProduct> beanProducts) {
-        if (beanProducts != null) {
-            List<ResponseProductDTO> productDTOS = beanProducts.stream().map(ResponseProductDTO::toProductDTO).toList();
-            return new ResponseEntity<>(new CustomResponse<>(productDTOS, "Productos encontrados", false, 200), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Productos no encontrados", true, 404), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("/get-products-by-user")
-    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsByUser(@RequestBody BeanUser user) {
-        List<BeanProduct> beanProducts = productService.getProductsByUser(user).getBody();
-        return getCustomResponseResponseEntity(beanProducts);
     }
 
     @PostMapping("/get-product")
