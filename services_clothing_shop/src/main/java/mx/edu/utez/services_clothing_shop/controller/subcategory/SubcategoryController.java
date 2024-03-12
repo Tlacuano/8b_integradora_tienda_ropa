@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("venta-ropa/api/subcategories")
 @CrossOrigin(origins = "*")
@@ -35,7 +33,7 @@ public class SubcategoryController {
 
     @PostMapping("/get-subcategory")
     public ResponseEntity<CustomResponse<ResponseSubcategoryDTO>> getSubcategory(@RequestBody BeanSubcategory subcategory) {
-        BeanSubcategory retrievedSubcategory = subcategoryService.getSubcategory(subcategory.getIdSubcategory()).getBody();
+        BeanSubcategory retrievedSubcategory = subcategoryService.getSubcategory(subcategory.getIdSubcategory());
         if (retrievedSubcategory != null) {
             ResponseSubcategoryDTO responseDTO = ResponseSubcategoryDTO.toSubcategoryDTO(retrievedSubcategory);
             return new ResponseEntity<>(new CustomResponse<>(responseDTO, "Subcategoria encontrada", false, 200), HttpStatus.OK);
@@ -46,7 +44,7 @@ public class SubcategoryController {
 
     @PostMapping("/post-subcategory")
     public ResponseEntity<CustomResponse<BeanSubcategory>> postSubcategory(@RequestBody BeanSubcategory subcategory) {
-        BeanSubcategory newSubcategory = subcategoryService.postSubcategory(subcategory).getBody();
+        BeanSubcategory newSubcategory = subcategoryService.postSubcategory(subcategory);
         if (newSubcategory != null) {
             return new ResponseEntity<>(new CustomResponse<>(newSubcategory, "Subcategoria guardada", false, 201), HttpStatus.CREATED);
         } else {
@@ -56,7 +54,7 @@ public class SubcategoryController {
 
     @PutMapping("/put-subcategory")
     public ResponseEntity<CustomResponse<BeanSubcategory>> putSubcategory(@RequestBody BeanSubcategory subcategory) {
-        BeanSubcategory updatedSubcategory = subcategoryService.putSubcategory(subcategory).getBody();
+        BeanSubcategory updatedSubcategory = subcategoryService.putSubcategory(subcategory);
         if (updatedSubcategory != null) {
             return new ResponseEntity<>(new CustomResponse<>(updatedSubcategory, "Subcategoria actualizada", false, 201), HttpStatus.CREATED);
         } else {
@@ -66,7 +64,7 @@ public class SubcategoryController {
 
     @PutMapping("/put-status-subcategory")
     public ResponseEntity<CustomResponse<Boolean>> putStatusSubcategory(@RequestBody BeanSubcategory subcategory) {
-        Boolean updatedStatus = subcategoryService.putStatusSubcategory(subcategory).getBody();
+        Boolean updatedStatus = subcategoryService.putStatusSubcategory(subcategory);
         if (updatedStatus != null) {
             return new ResponseEntity<>(new CustomResponse<>(updatedStatus, "Estatus de subcategoria actualizado", false, 201), HttpStatus.CREATED);
         } else {
