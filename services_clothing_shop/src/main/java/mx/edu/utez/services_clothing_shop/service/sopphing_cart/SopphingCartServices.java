@@ -4,12 +4,13 @@ import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.GetShoppi
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,39 +33,28 @@ public class SopphingCartServices {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    public CustomResponse<BeanShoppingCart> saveShoppingCar(BeanShoppingCart shoppingCart) {
-        return new CustomResponse<>(
-                shoppingCartRepository.save(shoppingCart),
-                "ok",
-                false,
-                200
-        );
+    public BeanShoppingCart saveShoppingCar(BeanShoppingCart shoppingCart) {
+        return shoppingCartRepository.save(shoppingCart);
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    public CustomResponse<BeanShoppingCart> deleteShoppingCartById(UUID shoppingCartId) {
-        try {
-            BeanShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElse(null);
-            if (shoppingCart != null) {
-                shoppingCartRepository.delete(shoppingCart);
-                return new CustomResponse<>(null, "ok", false, 200);
-            } else {
-                return new CustomResponse<>(null, "Not found", true, 404);
-            }
-        } catch (Exception e) {
-            return new CustomResponse<>(null, "Error", true, 500);
+    public void deleteShoppingCartById(UUID shoppingCartId) {
+        BeanShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElse(null);
+        if (shoppingCart != null) {
+            shoppingCartRepository.delete(shoppingCart);
         }
     }
 
+
     @Transactional(rollbackFor = {Exception.class})
-    public CustomResponse<BeanShoppingCart> updateShoppingCartById(BeanShoppingCart shoppingCart) {
-        BeanShoppingCart shoppingCart1 = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
-        if (shoppingCart1 != null) {
-            return new CustomResponse<>(shoppingCartRepository.saveAndFlush(shoppingCart), "ok", false, 200);
+    public BeanShoppingCart updateShoppingCartById(@RequestBody BeanShoppingCart shoppingCart) {
+        BeanShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
+        if (existingShoppingCart != null) {
+            existingShoppingCart.setAmount(shoppingCart.getAmount());
+            return shoppingCartRepository.save(existingShoppingCart);
         } else {
-            return new CustomResponse<>(null, "Not found", true, 404);
+            return null;
         }
-
     }
 
 

@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
 
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.GetShoppingCartDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponseShoppingCartUserDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.service.sopphing_cart.SopphingCartServices;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -38,13 +37,13 @@ public class ShoppingCartController {
         }
     }
     @PostMapping("/post-shopping-cart")
-    public ResponseEntity<List<GetShoppingCartDTO>> createShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
-        CustomResponse<BeanShoppingCart> response = shoppingCartServices.saveShoppingCar(shoppingCart);
-        if (response.isError()) {
+    public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> createShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
+        BeanShoppingCart response = shoppingCartServices.saveShoppingCar(shoppingCart);
+        if (response == null) {
             return ResponseEntity.status(new CustomResponse<>(null, "Error al guardar el carrito de compras", true, 500).getStatus()).build();
         } else {
-            GetShoppingCartDTO newShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response.getData());
-            return ResponseEntity.ok(Collections.singletonList(newShoppingCartDTO));
+            GetShoppingCartDTO newShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response);
+            return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(newShoppingCartDTO), "ok", false, 200));
         }
     }
 
@@ -59,13 +58,14 @@ public class ShoppingCartController {
     }
 
     @PutMapping("/put-shopping-cart")
-    public ResponseEntity<List<GetShoppingCartDTO>> updateShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
-        CustomResponse<BeanShoppingCart> response = shoppingCartServices.updateShoppingCartById(shoppingCart);
-        if (response.isError()) {
+    public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> updateShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
+        BeanShoppingCart response = shoppingCartServices.updateShoppingCartById(shoppingCart);
+        if (response==null) {
+            System.out.println("entro aki");
             return ResponseEntity.status(new CustomResponse<>(null, "Error al actualizar el carrito de compras", true, 500).getStatus()).build();
         } else {
-            GetShoppingCartDTO updatedShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response.getData());
-            return ResponseEntity.ok(Collections.singletonList(updatedShoppingCartDTO));
+            GetShoppingCartDTO updatedShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response);
+            return new ResponseEntity<>(new CustomResponse<>(Collections.singletonList(updatedShoppingCartDTO),"ok", false, 200),HttpStatus.OK);
         }
     }
 }
