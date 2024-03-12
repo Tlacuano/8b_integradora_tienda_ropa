@@ -70,9 +70,6 @@ END$$
 DELIMITER ;
 
 
-
-
-
 -- Procedure to change the status of a payment card
 DROP PROCEDURE IF EXISTS `sp_put_payment_card_status`;
 DELIMITER $$
