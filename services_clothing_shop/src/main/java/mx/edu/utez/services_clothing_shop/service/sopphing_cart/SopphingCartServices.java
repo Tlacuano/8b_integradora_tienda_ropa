@@ -30,8 +30,9 @@ public class SopphingCartServices {
         }
         return shoppingCartDTOs;
     }
+
     @Transactional(rollbackFor = {Exception.class})
-    public CustomResponse<BeanShoppingCart>  saveShoppingCar(BeanShoppingCart shoppingCart) {
+    public CustomResponse<BeanShoppingCart> saveShoppingCar(BeanShoppingCart shoppingCart) {
         return new CustomResponse<>(
                 shoppingCartRepository.save(shoppingCart),
                 "ok",
@@ -42,30 +43,28 @@ public class SopphingCartServices {
 
     @Transactional(rollbackFor = {Exception.class})
     public CustomResponse<BeanShoppingCart> deleteShoppingCartById(UUID shoppingCartId) {
-        try{
+        try {
             BeanShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElse(null);
-            if(shoppingCart != null){
-                return new CustomResponse<>(null, "ok",false, 200);
-            }else{
-                return new CustomResponse<>(null,"Not found",true,404);
+            if (shoppingCart != null) {
+                shoppingCartRepository.delete(shoppingCart);
+                return new CustomResponse<>(null, "ok", false, 200);
+            } else {
+                return new CustomResponse<>(null, "Not found", true, 404);
             }
-        }catch(Exception e){
-            return new CustomResponse<>(null,"Error",true,500);
-
+        } catch (Exception e) {
+            return new CustomResponse<>(null, "Error", true, 500);
         }
     }
+
     @Transactional(rollbackFor = {Exception.class})
     public CustomResponse<BeanShoppingCart> updateShoppingCartById(BeanShoppingCart shoppingCart) {
-        try{
-            BeanShoppingCart shoppingCart1 = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
-            if(shoppingCart1 != null){
-                return new CustomResponse<>(shoppingCartRepository.save(shoppingCart), "ok",false, 200);
-            }else{
-                return new CustomResponse<>(null,"Not found",true,404);
-            }
-        }catch(Exception e){
-            return new CustomResponse<>(null,"Error",true,500);
+        BeanShoppingCart shoppingCart1 = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
+        if (shoppingCart1 != null) {
+            return new CustomResponse<>(shoppingCartRepository.saveAndFlush(shoppingCart), "ok", false, 200);
+        } else {
+            return new CustomResponse<>(null, "Not found", true, 404);
         }
+
     }
 
 
