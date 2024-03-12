@@ -6,9 +6,151 @@ CREATE PROCEDURE `sp_post_role_user`(
 BEGIN
     INSERT INTO user_roles(id_user_role, fk_id_role, fk_id_user)
     VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(p_role_id), UUID_TO_BIN(p_user_id));
+
+    SELECT status FROM users WHERE id_user = UUID_TO_BIN(p_user_id);
 END $$
 DELIMITER ;
 
+
+
+
+DROP PROCEDURE IF EXISTS `sp_delete_user`;
+DELIMITER $$
+CREATE PROCEDURE `sp_delete_user`(
+    IN p_email VARCHAR(255),
+    OUT result BOOLEAN)
+BEGIN
+    DECLARE v_user_id BINARY(16);
+
+    SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
+
+
+    UPDATE users
+    SET
+        password = '',
+        email = CONCAT(p_email, '_deleted'),
+        status = 0
+    WHERE id_user = v_user_id;
+
+    UPDATE people
+    SET
+        name = 'Cuenta no disponible',
+        last_name = '',
+        second_last_name = '',
+        picture = '',
+        gender = 'otros',
+        phone_number = ''
+    WHERE fk_id_user = v_user_id;
+
+    UPDATE sellers_information
+    SET
+        curp = '',
+        tax_identification_number = '',
+        secondary_phone_number = '',
+        image_identification = '',
+        privacy_policy_agreement = 0
+    WHERE fk_id_user = v_user_id;
+
+    UPDATE payment_cards
+    SET
+        cvv = '',
+        card_number = '',
+        cardholder_name = '',
+        expiration_date = ''
+    WHERE fk_id_user = v_user_id;
+
+
+    UPDATE products
+    SET
+        status = 0
+    WHERE fk_id_user = v_user_id;
+
+    SELECT NOT status FROM users WHERE id_user = v_user_id;
+END$$
+DELIMITER ;
+
+
+
+
+
+-- Procedure to change the status of a payment card
+DROP PROCEDURE IF EXISTS `sp_put_payment_card_status`;
+DELIMITER $$
+CREATE PROCEDURE IF NOT EXISTS `sp_put_payment_card_status`(
+    IN p_payment_card_id VARCHAR(255),
+    IN p_status VARCHAR(15)
+)
+BEGIN
+    DECLARE v_user_id BINARY(16);
+    DECLARE v_total_payment_cards INT;
+    DECLARE v_status_id BINARY(16);
+    DECLARE v_default_payment_card_id BINARY(16);
+    START TRANSACTION;
+
+    -- 1. Verify if the payment card exists
+    SELECT COUNT(*)
+    INTO v_total_payment_cards
+    FROM payment_cards
+    WHERE id_payment_card = UUID_TO_BIN(p_payment_card_id);
+
+    IF v_total_payment_cards = 0 THEN
+        SELECT 'Payment card does not exist' AS error_message;
+        ROLLBACK;
+    ELSE
+        -- 2. Get the user id of the payment card
+        SELECT fk_id_user
+        INTO v_user_id
+        FROM payment_cards
+        WHERE id_payment_card = UUID_TO_BIN(p_payment_card_id);
+
+        -- 3. Verify if the status exists
+        SELECT id_status
+        INTO v_status_id
+        FROM card_status
+        WHERE status = p_status;
+
+        IF v_status_id IS NULL THEN
+            SELECT 'Status does not exist' AS error_message;
+            ROLLBACK;
+        ELSE
+            -- 4. Verify if the user has at least one payment card with the status default
+            SELECT id_payment_card
+            INTO v_default_payment_card_id
+            FROM payment_cards pc
+                     JOIN card_status cs ON pc.fk_id_status = cs.id_status
+            WHERE pc.fk_id_user = v_user_id
+              AND cs.status = 'Predeterminada';
+
+            IF UUID_TO_BIN(p_payment_card_id) = v_default_payment_card_id THEN
+                SELECT 'You can not change the status of the default payment card' AS error_message;
+                ROLLBACK;
+            ELSE
+                IF p_status = 'Predeterminada' AND v_default_payment_card_id IS NOT NULL THEN
+                    -- 5. Update the status of the payment card
+                    UPDATE payment_cards
+                    SET fk_id_status = v_status_id
+                    WHERE id_payment_card = UUID_TO_BIN(p_payment_card_id);
+                    -- 6. Update the status of the payment card that was default
+                    UPDATE payment_cards
+                    SET fk_id_status = (SELECT id_status FROM card_status WHERE status = 'Habilitada')
+                    WHERE id_payment_card = v_default_payment_card_id;
+                    SELECT 'El estado de la tarjeta fue actualizado' AS message;
+                    COMMIT;
+                ELSE
+                    -- 6. Update the status of the payment card
+                    UPDATE payment_cards
+                    SET fk_id_status = v_status_id
+                    WHERE id_payment_card = UUID_TO_BIN(p_payment_card_id);
+                    SELECT 'El estado de la tarjeta fue actualizado' AS message;
+                    COMMIT;
+                END IF;
+            END IF;
+        END IF;
+    END IF;
+END $$
+DELIMITER ;
+
+-- Procedure to insert a new order
 DROP PROCEDURE IF EXISTS `sp_post_order`;
 DELIMITER $$
 CREATE PROCEDURE `sp_post_order`(

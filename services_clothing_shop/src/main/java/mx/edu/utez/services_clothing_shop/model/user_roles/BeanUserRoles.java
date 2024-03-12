@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.user_roles;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class BeanUserRoles {
     private UUID idUserRole;
 
     //relacion muchos a uno con la tabla users
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fk_id_user")
     private BeanUser user;

@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.person;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,12 +21,13 @@ import java.util.UUID;
 public class BeanPerson {
     @Id
     @Column(name = "id_person")
-    private UUID id_person;
+    private UUID idPerson;
 
     //relacion uno a uno con la tabla users, usamos la misma llave primaria
     @OneToOne
     @MapsId
     @JoinColumn(name = "fk_id_user")
+    @JsonIgnore
     private BeanUser user;
 
     @Column(name = "name", length = 30)
@@ -46,8 +48,9 @@ public class BeanPerson {
     @Column(name = "phone_number", length = 30)
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private String gender;
+    private GenderEnum gender;
 
     //relacion uno a uno con la tabla seller_information
     @OneToOne(mappedBy = "person", orphanRemoval = true)

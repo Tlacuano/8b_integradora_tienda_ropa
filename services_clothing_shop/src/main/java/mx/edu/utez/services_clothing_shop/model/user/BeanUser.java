@@ -54,6 +54,7 @@ public class BeanUser {
     private boolean status;
 
     //relacion uno a muchos con la tabla de products
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<BeanProduct> products;
 

@@ -15,6 +15,7 @@ insert ignore into order_status (id_status, status)
 values (uuid_to_bin('9b8c35d0-7870-41c6-8719-745eaaae1a13'), 'Preparacion'),
        (uuid_to_bin('a5c21dd3-dd66-11ee-8508-64006a586a6a'), 'Entregado'),
        (uuid_to_bin('a5c223d6-dd66-11ee-8508-64006a586a6a'), 'Rembolsado'),
+       (uuid_to_bin('a5c223d6-dd66-12ee-8508-64006a586a6a'), 'Enviado'),
        (uuid_to_bin('a5c225a4-dd66-11ee-8508-64006a586a6a'), 'Cancelado');
 
 insert ignore into card_status (id_status, status)
