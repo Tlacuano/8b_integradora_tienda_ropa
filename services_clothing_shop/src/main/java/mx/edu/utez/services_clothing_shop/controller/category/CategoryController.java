@@ -50,8 +50,13 @@ public class CategoryController {
     }
 
     @PutMapping("/put-category")
-    public ResponseEntity<BeanCategory> putCategory(@RequestBody BeanCategory category) {
-        return categoryService.putCategory(category);
+    public ResponseEntity<CustomResponse<BeanCategory>> putCategory(@RequestBody BeanCategory category) {
+        BeanCategory updatedCategory = categoryService.putCategory(category);
+        if (updatedCategory != null) {
+            return new ResponseEntity<>(new CustomResponse<>(updatedCategory, "Categoría actualizada", false, 201), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Categoría no actualizada", true, 400), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/put-status-category")
