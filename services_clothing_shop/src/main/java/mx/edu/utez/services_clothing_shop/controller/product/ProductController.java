@@ -3,19 +3,13 @@ package mx.edu.utez.services_clothing_shop.controller.product;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductByUserEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.ResponseProductDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.product.ProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("venta-ropa/api/products")
@@ -48,7 +42,7 @@ public class ProductController {
 
     @PostMapping("/get-product")
     public ResponseEntity<CustomResponse<ResponseProductDTO>> getProduct(@RequestBody BeanProduct product) {
-        BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct()).getBody();
+        BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct());
         if (retrievedProduct != null) {
             ResponseProductDTO responseDTO = ResponseProductDTO.toProductDTO(retrievedProduct);
             return new ResponseEntity<>(new CustomResponse<>(responseDTO, "Producto encontrado", false, 200), HttpStatus.OK);
@@ -59,19 +53,19 @@ public class ProductController {
 
     @PostMapping("/post-product")
     public ResponseEntity<CustomResponse<BeanProduct>> postProduct(@RequestBody BeanProduct product) {
-        ResponseEntity<BeanProduct> newProduct = productService.postProduct(product);
-        try {
-            return new ResponseEntity<>(new CustomResponse<>(Objects.requireNonNull(newProduct.getBody()), "Producto registrado correctamente", false, 200), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
+        BeanProduct newProduct = productService.postProduct(product);
+        if (newProduct != null) {
+            return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Producto no registrado", true, 400), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/put-product")
     public ResponseEntity<CustomResponse<BeanProduct>> putProduct(@RequestBody BeanProduct product) {
-        ResponseEntity<BeanProduct> updatedProduct = productService.putProduct(product);
+        BeanProduct updatedProduct = productService.putProduct(product);
         try {
-            return new ResponseEntity<>(new CustomResponse<>(Objects.requireNonNull(updatedProduct.getBody()), "Producto actualizado correctamente", false, 200), HttpStatus.OK);
+            return new ResponseEntity<>(new CustomResponse<>(updatedProduct, "Producto actualizado correctamente", false, 200), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
         }
@@ -79,11 +73,11 @@ public class ProductController {
 
     @PutMapping("/put-status-product")
     public ResponseEntity<CustomResponse<Boolean>> putStatusProduct(@RequestBody BeanProduct product) {
-        ResponseEntity<Boolean> status = productService.putStatusProduct(product.getIdProduct());
-        try {
-            return new ResponseEntity<>(new CustomResponse<>(true, Objects.requireNonNull(status.getBody()).toString(), false, 200), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(false, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
+        Boolean statusUpdated = productService.putStatusProduct(product.getIdProduct());
+        if (statusUpdated) {
+            return new ResponseEntity<>(new CustomResponse<>(statusUpdated, "Estatus del producto actualizado correctamente", false, 200), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(statusUpdated, "Estatus del producto no actualizado", true, 400), HttpStatus.BAD_REQUEST);
         }
     }
 }
