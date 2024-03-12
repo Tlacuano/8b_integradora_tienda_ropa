@@ -40,8 +40,13 @@ public class CategoryController {
     }
 
     @PostMapping("/post-category")
-    public ResponseEntity<BeanCategory> postCategory(@RequestBody BeanCategory category) {
-        return categoryService.postCategory(category);
+    public ResponseEntity<CustomResponse<BeanCategory>> postCategory(@RequestBody BeanCategory category) {
+        BeanCategory newCategory = categoryService.postCategory(category);
+        if (newCategory != null) {
+            return new ResponseEntity<>(new CustomResponse<>(newCategory, "Categoría guardada", false, 201), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Categoría no guardada", true, 400), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/put-category")
