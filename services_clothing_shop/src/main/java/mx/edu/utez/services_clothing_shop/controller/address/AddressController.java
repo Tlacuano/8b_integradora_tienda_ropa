@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.address;
 
+import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.service.address.AddressService;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,10 @@ public class AddressController {
     }
 
     @GetMapping("/get-addresses")
-    public ResponseEntity<List<BeanAddress>> getAddresses(){
-        return addressService.getAddresses();
+    public ResponseEntity<List<ResponseAddressDTO>> getAddressese(){
+        ResponseEntity<List<ResponseAddressDTO>> responseEntity = addressService.getAddresses();
+        List<ResponseAddressDTO> responseAddresses = responseEntity.getBody();
+        return ResponseEntity.status(responseEntity.getStatusCode()).body(responseAddresses);
     }
 
     @PostMapping("/get-address")
