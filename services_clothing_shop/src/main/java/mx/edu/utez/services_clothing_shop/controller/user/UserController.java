@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.controller.user;
 
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.person.PersonService;
@@ -9,11 +10,13 @@ import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import mx.edu.utez.services_clothing_shop.utils.validations.ValidatesFunctions;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 
 
 @RestController
@@ -31,11 +34,16 @@ public class UserController {
 
     @GetMapping("/get-page")
     ResponseEntity<Object> getPageUsers(Pageable pageable){
+        Page<BeanUser> users = userService.getPageUsers(pageable);
+        Page<ResponsePageUsersDTO> pageUsers = users.map(ResponsePageUsersDTO::fromUser);
+
+
         return new ResponseEntity<>(
-                new CustomResponse<>(userService.getPageUsers(pageable), "Usuarios encontrados",false, 200),
+                new CustomResponse<>(pageUsers, "Usuarios encontrados",false, 200),
                 HttpStatus.OK
         );
     }
+
 
     @PostMapping("/get-by-email")
     public ResponseEntity<Object> getByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){
@@ -117,6 +125,20 @@ public class UserController {
 
         return new ResponseEntity<>(
                 new CustomResponse<>(true, "Estado de la cuenta cambiado correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/get-roles-by-email")
+    public ResponseEntity<Object> getRolesByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){
+        BeanUser user = userService.getByEmail(payload.getEmail());
+
+        if(user == null){
+            throw new RuntimeException("user.email.exists");
+        }
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(user.getRoles(), "Roles encontrados", false, 200),
                 HttpStatus.OK
         );
     }

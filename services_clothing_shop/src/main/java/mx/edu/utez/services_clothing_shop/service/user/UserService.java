@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional;
 
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
-import mx.edu.utez.services_clothing_shop.model.user.projections.IGetPageUsers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,7 @@ public class UserService {
 
     //get
     @Transactional(rollbackOn = {Exception.class})
-    public Page<IGetPageUsers> getPageUsers(Pageable pageable){
+    public Page<BeanUser> getPageUsers(Pageable pageable){
         return userRepository.findAllBy(pageable);
     }
 
@@ -52,7 +50,5 @@ public class UserService {
     public void deleteAccount(String email){
         userRepository.deleteAccount(email);
     }
-
-
 
 }

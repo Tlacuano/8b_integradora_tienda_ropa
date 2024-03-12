@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.model.user;
 
-import mx.edu.utez.services_clothing_shop.model.user.projections.IGetPageUsers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,12 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface IUser extends JpaRepository<BeanUser, UUID> {
     boolean existsByEmail(String email);
-    Page<IGetPageUsers> findAllBy (Pageable pageable);
+    Page<BeanUser> findAllBy (Pageable pageable);
 
     BeanUser findByEmail(String email);
 
@@ -27,4 +27,5 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     String deleteAccount(
             @Param("p_email") String email
     );
+
 }
