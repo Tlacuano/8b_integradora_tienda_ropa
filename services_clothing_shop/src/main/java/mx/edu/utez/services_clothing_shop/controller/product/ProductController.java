@@ -5,6 +5,9 @@ import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.product.ProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +25,14 @@ public class ProductController {
     public ProductController(ProductService productService) {this.productService = productService;}
 
     @GetMapping("/get-products")
-    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProducts() {
-        List<BeanProduct> beanProducts = productService.getProducts().getBody();
-        return getCustomResponseResponseEntity(beanProducts);
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProducts(Pageable page) {
+        Page<BeanProduct> beanProductPage = productService.getProducts(page);
+        if (beanProductPage != null) {
+            Page<ResponseProductDTO> productDTOPage = beanProductPage.map(ResponseProductDTO::toProductDTO);
+            return new ResponseEntity<>(new CustomResponse<>(productDTOPage, "Productos encontrados", false, 200), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Productos no encontrados", true, 404), HttpStatus.NOT_FOUND);
+        }
     }
 
     private ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getCustomResponseResponseEntity(List<BeanProduct> beanProducts) {
