@@ -45,7 +45,7 @@ public class ProductService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public Boolean putStatusProduct(UUID idProduct) {
-BeanProduct product = iProduct.findByIdProduct(idProduct);
+    BeanProduct product = iProduct.findByIdProduct(idProduct);
         if (product != null) {
             product.setStatus(!product.isStatus());
             iProduct.save(product);
