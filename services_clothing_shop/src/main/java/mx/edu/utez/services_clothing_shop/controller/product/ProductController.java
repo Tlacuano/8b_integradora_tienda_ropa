@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.product;
 
+import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductByUserEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.ResponseProductDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -19,14 +20,14 @@ public class ProductController {
 
     public ProductController(ProductService productService) {this.productService = productService;}
 
-    @GetMapping("/get-products")
+    @PostMapping("/get-products")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProducts(Pageable page) {
         Page<BeanProduct> beanProductPage = productService.getProducts(page);
         return getCustomResponseResponseEntity(beanProductPage);
     }
 
     @PostMapping("/get-products-by-user")
-    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByUserEmail(@RequestBody RequestProductByUserEmailDTO requestDTO) {
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
         Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
         return getCustomResponseResponseEntity(beanProductPage);
     }

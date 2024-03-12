@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("venta-ropa/api/categories")
 @CrossOrigin(origins = "*")
@@ -21,7 +19,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/get-categories")
+    @PostMapping("/get-categories")
     public ResponseEntity<CustomResponse<Page<BeanCategory>>> getCategories(Pageable page) {
         Page<BeanCategory> categories = categoryService.getCategories(page);
         if (categories != null) {
@@ -32,8 +30,13 @@ public class CategoryController {
     }
 
     @PostMapping("/get-category")
-    public ResponseEntity<BeanCategory> getCategory(@RequestBody BeanCategory category) {
-        return categoryService.getCategory(category);
+    public ResponseEntity<CustomResponse<BeanCategory>> getCategory(@RequestBody BeanCategory category) {
+        BeanCategory retrievedCategory = categoryService.getCategory(category);
+        if (retrievedCategory != null) {
+            return new ResponseEntity<>(new CustomResponse<>(retrievedCategory, "Categoría encontrada", false, 200), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Categoría no encontrada", true, 404), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/post-category")
