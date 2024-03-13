@@ -3,14 +3,13 @@ package mx.edu.utez.services_clothing_shop.service.address;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
-import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,47 +18,24 @@ public class AddressService {
     public AddressService(IAddress iAddress){
         this.iAddress = iAddress;
     }
-
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ResponseAddressDTO>> getAddresses(){
-        try {
+    public List<ResponseAddressDTO> getAddresses(){
             List<BeanAddress> addresses = iAddress.findAll();
-            List<ResponseAddressDTO>  responseDTOs = addresses.stream()
-                    .map(this::mapToAddressResponseDTO)
+            List<ResponseAddressDTO> responseDTOs = addresses.stream()
+                    .map(ResponseAddressDTO::toAddressDTO)
                     .collect(Collectors.toList());
-            return ResponseEntity.ok(responseDTOs);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    private ResponseAddressDTO mapToAddressResponseDTO(BeanAddress beanAddress) {
-         ResponseAddressDTO dto = new ResponseAddressDTO();
-         dto.setIdAddress(beanAddress.getIdAddress());
-         dto.setAddress(beanAddress.getAddress());
-         dto.setReferencesAddress(beanAddress.getReferencesAddress());
-         dto.setPostalCode(beanAddress.getPostalCode());
-         dto.setState(beanAddress.getState());
-         dto.setStreet(beanAddress.getStreet());
-         dto.setNeighborhood(beanAddress.getNeighborhood());
-         UUID personId = beanAddress.getPerson() != null ? beanAddress.getPerson().getId_person() : null;
-         dto.setUserID(personId);
-         UUID statusId = beanAddress.getStatus() != null ? beanAddress.getStatus().getIdStatus() : null;
-         dto.setStatusID(statusId);
-         List<UUID> orderIds = beanAddress.getOrders().stream()
-                 .map(BeanOrder::getIdOrder)
-                 .collect(Collectors.toList());
-         dto.setOrderIDs(orderIds);
-         return dto;
+            return responseDTOs;
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<BeanAddress> getAddress(BeanAddress address){
+    public ResponseEntity<ResponseAddressDTO> getAddress(BeanAddress address){
         try {
             if(iAddress.existsByIdAddress(address.getIdAddress())){
-                return ResponseEntity.ok(iAddress.findByIdAddress(address.getIdAddress()));
+                BeanAddress foundAddress = iAddress.findByIdAddress(address.getIdAddress());
+                ResponseAddressDTO responseDTO = ResponseAddressDTO.toAddressDTO(foundAddress);
+                return ResponseEntity.ok(responseDTO);
             } else {
-                return ResponseEntity.status(400).build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -67,9 +43,28 @@ public class AddressService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
+    public ResponseAddressDTO get(ResponseAddressDTO addressDTO){
+        //validar que se cumpla cl responseDTO
+        //llenar un newaadd con la inf dada del dto
+        BeanAddress beanAddress = new BeanAddress();
+        beanAddress.setAddress(addressDTO.getAddress());
+        beanAddress.setReferencesAddress(addressDTO.getReferencesAddress());
+        //llenar por completo
+        return addressDTO;
+
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<BeanAddress> postAddress(BeanAddress address){
         try {
-            return ResponseEntity.status(200).body(iAddress.save(address));
+            if(address.getPerson() != null){
+                System.out.println("id found: " +address.getIdAddress());
+                System.out.println("name: "+address.getPerson().getName());
+            } else {
+                System.out.println( "no esta");
+            }
+            BeanAddress saveAddress = iAddress.save(address);
+            return ResponseEntity.status(200).body(iAddress.saveAndFlush(saveAddress));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
