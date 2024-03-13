@@ -7,5 +7,5 @@ import java.util.UUID;
 
 @Repository
 public interface IImageProductStatus extends JpaRepository<BeanImageProductStatus, UUID> {
-    BeanImageProductStatus findByStatusContainingIgnoreCase(String status);
+    BeanImageProductStatus findByStatus(String status);
 }
