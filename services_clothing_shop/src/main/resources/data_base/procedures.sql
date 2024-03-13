@@ -246,51 +246,66 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Procedure to insert a new productGallery
+-- Procedure to insert a new product gallery
 DROP PROCEDURE IF EXISTS `sp_post_product_gallery`;
 DELIMITER $$
 CREATE PROCEDURE `sp_post_product_gallery`(
     IN p_product_id VARCHAR(255),
-    IN p_image_url VARCHAR(255),
+    IN p_image VARCHAR(255),
     IN p_status_id VARCHAR(255)
 )
 BEGIN
     DECLARE v_total_products INT;
     DECLARE v_total_images INT;
+    DECLARE v_new_total_images INT;
 
-    -- 0. Start the transaction
+    -- Declare handler for SQL exceptions
+    DECLARE exit handler for sqlexception
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    -- Start the transaction
     START TRANSACTION;
 
-    -- 1. Verify if the product exists
+-- 1. Verify if the product exists
     SELECT COUNT(*)
     INTO v_total_products
     FROM products
-    WHERE id_product = UUID_TO_BIN(p_product_id);
+    WHERE id_product = UUID_TO_BIN(p_product_id)
+    FOR UPDATE;
 
     IF v_total_products = 0 THEN
         SELECT 'Product does not exist' AS message;
+        -- Rollback the transaction if the product does not exist
+        ROLLBACK;
     ELSE
-        -- 2. Insert the images into the product_gallery table
-        INSERT INTO product_gallery(fk_id_product, fk_id_status, id_image, image)
-        VALUES (UUID_TO_BIN(p_product_id), UUID_TO_BIN(p_status_id), UUID_TO_BIN(UUID()), p_image_url)
-
-        -- 3. Verify if the images were inserted
+        -- 2. Verify how many images the product has
         SELECT COUNT(*)
         INTO v_total_images
         FROM product_gallery
         WHERE fk_id_product = UUID_TO_BIN(p_product_id);
 
-        IF v_total_images = 1 THEN
-           --Get the image of the product inserted
-            SELECT id_image, image
-            FROM product_gallery
-            WHERE fk_id_product = UUID_TO_BIN(p_product_id);
+        -- 3. Insert a new image into the product gallery
+        INSERT INTO product_gallery(fk_id_product, fk_id_status, id_image, image)
+        VALUES (UUID_TO_BIN(p_product_id), UUID_TO_BIN(p_status_id), UUID_TO_BIN(UUID()), p_image);
+
+        -- 4. Verify if the image was inserted
+        SELECT COUNT(*)
+        INTO v_new_total_images
+        FROM product_gallery
+        WHERE fk_id_product = UUID_TO_BIN(p_product_id);
+
+        IF v_new_total_images > v_total_images THEN
+            SELECT 'Image was inserted' AS message;
+            -- Commit the transaction if the image was inserted
+            COMMIT;
         ELSE
-            SELECT 'Images were not inserted' AS message;
+            SELECT 'Image was not inserted' AS message;
+            -- Rollback the transaction if the image was not inserted
+            ROLLBACK;
         END IF;
     END IF;
-
-    -- 4. Commit the transaction
-    COMMIT;
 END $$
 DELIMITER ;
