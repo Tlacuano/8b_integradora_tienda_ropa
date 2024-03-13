@@ -63,38 +63,55 @@ public class ProductController {
 
     @PostMapping("/post-product")
     public ResponseEntity<CustomResponse<BeanProduct>> postProduct(@RequestBody BeanProduct product) {
-        BeanProduct newProduct = productService.postProduct(product);
-        if (newProduct != null) {
-            List<String> images = new ArrayList<>();
-            for (BeanProductGallery image : product.getProductGallery()) {
-                assert false;
-                images.add(image.getImage());
+        BeanProduct newProduct = null;
+        try {
+            newProduct = productService.postProduct(product);
+            if (newProduct != null) {
+                List<String> images = new ArrayList<>();
+                for (BeanProductGallery image : product.getProductGallery()) {
+                    images.add(image.getImage());
+                }
+                List<BeanProductGallery> productGallery = productGalleryService.postProductGallery(newProduct, images);
+                newProduct.setProductGallery(productGallery);
+                return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(new CustomResponse<>(null, "Producto no registrado", true, 400), HttpStatus.BAD_REQUEST);
             }
-            List<BeanProductGallery> productGallery = productGalleryService.postProductGallery(product.getIdProduct().toString(), images);
-            newProduct.setProductGallery(productGallery);
-            return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Producto no registrado", true, 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            if (newProduct != null) {
+                productGalleryService.deleteProductGallery(newProduct);
+                productService.deleteProduct(newProduct.getIdProduct());
+            }
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al registrar el producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/put-product")
     public ResponseEntity<CustomResponse<BeanProduct>> putProduct(@RequestBody BeanProduct product) {
-        BeanProduct updatedProduct = productService.putProduct(product);
         try {
-            return new ResponseEntity<>(new CustomResponse<>(updatedProduct, "Producto actualizado correctamente", false, 200), HttpStatus.OK);
+            BeanProduct updatedProduct = productService.putProduct(product);
+            if (updatedProduct != null) {
+                return new ResponseEntity<>(new CustomResponse<>(updatedProduct, "Producto actualizado correctamente", false, 200), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new CustomResponse<>(null, "Producto no actualizado", true, 400), HttpStatus.BAD_REQUEST);
+            }
         } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al actualizar el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/put-status-product")
     public ResponseEntity<CustomResponse<Boolean>> putStatusProduct(@RequestBody BeanProduct product) {
-        Boolean statusUpdated = productService.putStatusProduct(product.getIdProduct());
-        if (statusUpdated) {
-            return new ResponseEntity<>(new CustomResponse<>(statusUpdated, "Estatus del producto actualizado correctamente", false, 200), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(statusUpdated, "Estatus del producto no actualizado", true, 400), HttpStatus.BAD_REQUEST);
+        try {
+            Boolean statusUpdated = productService.putStatusProduct(product.getIdProduct());
+            if (statusUpdated) {
+                return new ResponseEntity<>(new CustomResponse<>(true, "Estatus del producto actualizado correctamente", false, 200), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new CustomResponse<>(false, "Estatus del producto no actualizado", true, 400), HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(false, "Se produjo un error al actualizar el estatus del producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
