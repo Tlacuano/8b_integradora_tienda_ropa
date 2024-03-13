@@ -3,7 +3,6 @@ package mx.edu.utez.services_clothing_shop.service.address;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,30 +27,14 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ResponseAddressDTO> getAddress(BeanAddress address){
-        try {
+    public ResponseEntity<?> getAddress(BeanAddress address){
             if(iAddress.existsByIdAddress(address.getIdAddress())){
                 BeanAddress foundAddress = iAddress.findByIdAddress(address.getIdAddress());
                 ResponseAddressDTO responseDTO = ResponseAddressDTO.toAddressDTO(foundAddress);
                 return ResponseEntity.ok(responseDTO);
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                return ResponseEntity.notFound().build();
             }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @Transactional(rollbackFor = {SQLException.class})
-    public ResponseAddressDTO get(ResponseAddressDTO addressDTO){
-        //validar que se cumpla cl responseDTO
-        //llenar un newaadd con la inf dada del dto
-        BeanAddress beanAddress = new BeanAddress();
-        beanAddress.setAddress(addressDTO.getAddress());
-        beanAddress.setReferencesAddress(addressDTO.getReferencesAddress());
-        //llenar por completo
-        return addressDTO;
-
     }
 
     @Transactional(rollbackFor = {SQLException.class})
