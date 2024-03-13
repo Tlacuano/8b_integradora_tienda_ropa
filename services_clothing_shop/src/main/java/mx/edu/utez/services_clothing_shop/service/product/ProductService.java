@@ -35,12 +35,12 @@ public class ProductService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public BeanProduct postProduct(BeanProduct product) {
-        return iProduct.save(product);
+        return iProduct.saveAndFlush(product);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public BeanProduct putProduct(BeanProduct product) {
-        return iProduct.save(product);
+        return iProduct.saveAndFlush(product);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -48,9 +48,17 @@ public class ProductService {
     BeanProduct product = iProduct.findByIdProduct(idProduct);
         if (product != null) {
             product.setStatus(!product.isStatus());
-            iProduct.save(product);
+            iProduct.saveAndFlush(product);
             return true;
         }
         return false;
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public void deleteProduct(UUID idProduct) {
+        BeanProduct product = iProduct.findByIdProduct(idProduct);
+        if (product != null) {
+            iProduct.delete(product);
+        }
     }
 }
