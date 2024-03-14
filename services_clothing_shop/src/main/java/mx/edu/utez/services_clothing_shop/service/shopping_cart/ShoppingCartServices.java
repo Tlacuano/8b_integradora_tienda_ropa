@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.service.sopphing_cart;
+package mx.edu.utez.services_clothing_shop.service.shopping_cart;
 
 
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class SopphingCartServices {
+public class ShoppingCartServices {
 
     private final IShoppingCart shoppingCartRepository;
 
-    public SopphingCartServices(IShoppingCart shoppingCartRepository) {
+    public ShoppingCartServices(IShoppingCart shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
     }
 
