@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { getRoleS, isLoggedInS} from "@/utils/security/sessionFunctions";
 
 Vue.use(VueRouter)
 
@@ -11,21 +12,11 @@ const router = new VueRouter({
   ]
 });
 
-//verifica si el usuario esta logeado
-function isLoggedIn() {
-  return !!localStorage.getItem("token");
-}
-
-//obtiene el rol del usuario
-function getRole() {
-  //implementar servicio para obtener el rol del usuario
-  return "rol";
-}
 
 router.beforeEach((to, from, next) => {
   const { requiresAuth, roles } = to.meta;
-  const isAuthenticated = isLoggedIn();
-  const role = getRole();
+  const isAuthenticated = isLoggedInS();
+  const role = getRoleS();
 
   if (!requiresAuth){
     next();

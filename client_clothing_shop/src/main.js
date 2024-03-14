@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 import App from './App.vue'
 import router from './router'
+import store from './store/store'
 
 import './assets/main.css'
 
@@ -30,8 +31,18 @@ library.add(fas);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 
+
+window.addEventListener('beforeunload', () => {
+  store.dispatch('prepareForReload');
+});
+
+
 new Vue({
   router,
-  render: (h) => h(App)
+  store,
+  render: (h) => h(App),
+  created() {
+    this.$store.dispatch('restoreAuthData');
+  }
 }).$mount('#app')
 
