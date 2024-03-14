@@ -2,10 +2,11 @@ package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
 
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.GetShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
-import mx.edu.utez.services_clothing_shop.service.sopphing_cart.SopphingCartServices;
+import mx.edu.utez.services_clothing_shop.service.shopping_cart.ShoppingCartServices;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -14,9 +15,9 @@ import java.util.*;
 @RequestMapping("venta-ropa/api/shopping-carts")
 public class ShoppingCartController {
 
-    private final SopphingCartServices shoppingCartServices;
+    private final ShoppingCartServices shoppingCartServices;
 
-    public ShoppingCartController(SopphingCartServices shoppingCartServices) {
+    public ShoppingCartController(ShoppingCartServices shoppingCartServices) {
         this.shoppingCartServices = shoppingCartServices;
     }
 
@@ -39,7 +40,7 @@ public class ShoppingCartController {
         }
     }
     @PostMapping("/post-shopping-cart")
-    public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> createShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
+    public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> createShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
         BeanShoppingCart response = shoppingCartServices.saveShoppingCar(shoppingCart);
         if (response == null) {
             return ResponseEntity.status(new CustomResponse<>(null, "Error al guardar el carrito de compras", true, 500).getStatus()).build();
@@ -64,7 +65,7 @@ public class ShoppingCartController {
     }
 
     @PutMapping("/put-shopping-cart")
-    public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> updateShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
+    public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> updateShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
         BeanShoppingCart response = shoppingCartServices.updateShoppingCartById(shoppingCart);
         if (response==null) {
             return ResponseEntity.status(new CustomResponse<>(null, "Error al actualizar el carrito de compras", true, 500).getStatus()).build();
