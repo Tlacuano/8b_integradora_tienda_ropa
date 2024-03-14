@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("venta-ropa/api/shopping-carts")
@@ -23,17 +20,22 @@ public class ShoppingCartController {
         this.shoppingCartServices = shoppingCartServices;
     }
 
+
     @PostMapping("/get-shopping-cart")
     public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> findShoppingCarsByUserEmail(@RequestBody Map<String, String> requestBody) {
         String userEmail = requestBody.get("userEmail");
         if(userEmail == null || userEmail.isEmpty()) {
             return new ResponseEntity<>(new CustomResponse<>(null, "El correo del usuario es requerido", true, 400), HttpStatus.BAD_REQUEST);
         }
-        List<GetShoppingCartDTO> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
-        if (shoppingCarts.isEmpty()) {
+        List<BeanShoppingCart> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
+        List<GetShoppingCartDTO> shoppingCartDTOs = new ArrayList<>();
+        for (BeanShoppingCart cart : shoppingCarts) {
+            shoppingCartDTOs.add(GetShoppingCartDTO.fromShoppingCart(cart));
+        }
+        if (shoppingCartDTOs.isEmpty()) {
             return new ResponseEntity<>(new CustomResponse<>(null,"No se encontraron carritos de compras", true, 404), HttpStatus.NOT_FOUND);
         } else {
-            return ResponseEntity.ok(new CustomResponse<>(shoppingCarts, "ok", false, 200));
+            return ResponseEntity.ok(new CustomResponse<>(shoppingCartDTOs, "ok", false, 200));
         }
     }
     @PostMapping("/post-shopping-cart")
@@ -50,8 +52,12 @@ public class ShoppingCartController {
     @DeleteMapping("/delete-shopping-cart/{shoppingCartId}")
     public ResponseEntity<CustomResponse<BeanShoppingCart>> deleteShoppingCart(@PathVariable UUID shoppingCartId) {
             try{
-                shoppingCartServices.deleteShoppingCartById(shoppingCartId);
-                return new ResponseEntity<>(new CustomResponse<>(null, "Carrito de compras eliminado", false, 200), HttpStatus.OK);
+                if(shoppingCartId != null){
+                    shoppingCartServices.deleteShoppingCartById(shoppingCartId);
+                    return new ResponseEntity<>(new CustomResponse<>(null, "Carrito de compras eliminado", false, 200), HttpStatus.OK);
+                }else{
+                    return new ResponseEntity<>(new CustomResponse<>(null, "El id del carrito de compras es requerido", true, 400), HttpStatus.BAD_REQUEST);
+                }
             }catch(Exception e){
                 return new ResponseEntity<>(new CustomResponse<>(null, "Error al eliminar el carrito de compras", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -61,7 +67,6 @@ public class ShoppingCartController {
     public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> updateShoppingCart(@RequestBody BeanShoppingCart shoppingCart) {
         BeanShoppingCart response = shoppingCartServices.updateShoppingCartById(shoppingCart);
         if (response==null) {
-            System.out.println("entro aki");
             return ResponseEntity.status(new CustomResponse<>(null, "Error al actualizar el carrito de compras", true, 500).getStatus()).build();
         } else {
             GetShoppingCartDTO updatedShoppingCartDTO = GetShoppingCartDTO.fromShoppingCart(response);

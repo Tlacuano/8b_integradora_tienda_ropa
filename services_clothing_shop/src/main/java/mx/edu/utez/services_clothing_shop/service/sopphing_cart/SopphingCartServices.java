@@ -1,16 +1,12 @@
 package mx.edu.utez.services_clothing_shop.service.sopphing_cart;
 
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.GetShoppingCartDTO;
+
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
-import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,13 +19,8 @@ public class SopphingCartServices {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    public List<GetShoppingCartDTO> findShoppingCartsByUserEmail(String userEmail) {
-        List<BeanShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUser_Email(userEmail);
-        List<GetShoppingCartDTO> shoppingCartDTOs = new ArrayList<>();
-        for (BeanShoppingCart cart : shoppingCarts) {
-            shoppingCartDTOs.add(GetShoppingCartDTO.fromShoppingCart(cart));
-        }
-        return shoppingCartDTOs;
+    public List<BeanShoppingCart> findShoppingCartsByUserEmail(String userEmail) {
+        return shoppingCartRepository.findAllByUser_Email(userEmail);
     }
 
     @Transactional(rollbackFor = {Exception.class})
@@ -42,6 +33,8 @@ public class SopphingCartServices {
         BeanShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElse(null);
         if (shoppingCart != null) {
             shoppingCartRepository.delete(shoppingCart);
+        }else{
+            throw new RuntimeException("El carrito de compras no existe");
         }
     }
 
