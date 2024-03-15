@@ -23,7 +23,7 @@ public class BeanProductGallery {
     @Column(name = "id_image", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idImage;
 
-    @Column(name = "image", length = 100)
+    @Column(name = "image", length = 255)
     private String image;
 
     //relacion muchos a uno con la tabla de products
