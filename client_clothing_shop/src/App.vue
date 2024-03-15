@@ -49,7 +49,7 @@ export default {
         token: this.tempToken,
         email: this.tempEmail,
         role: this.tempRole,
-        hasMultipleRoles: false,
+        hasMultipleRoles: true,
       });
     },
     logout() {

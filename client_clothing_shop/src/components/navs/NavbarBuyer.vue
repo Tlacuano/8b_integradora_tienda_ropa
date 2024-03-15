@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <header>
     <b-navbar class="px-4" type="light" variant="dark" style="background-color: var(--background-navbar) !important;">
       <b-navbar-nav class=" d-md-none">
-        <b-navbar-brand class="selectable">
+        <b-navbar-brand class="selectable" v-b-toggle:sidebar-buyer>
           <font-awesome-icon icon="fa-solid fa-bars"/>
         </b-navbar-brand>
       </b-navbar-nav>
@@ -22,41 +22,55 @@
         <img src="../../assets/image/logo.png" alt="logo k&I" class="d-inline-block align-top logo selectable">
       </b-navbar-brand>
 
-      <b-navbar-nav class="d-none d-md-block pl-md-5">
-        <b-navbar-brand class="selectable pr-3" @click="navigateTo('/wish-list')">
+      <b-navbar-nav class="d-none d-md-block pl-md-5 ">
+        <b-navbar-brand class="selectable pr-3" @click="prepateForNavigate('/wish-list')">
           <font-awesome-icon icon="fa-solid fa-heart"/>
         </b-navbar-brand>
 
-        <b-navbar-brand class="selectable pr-3" @click="navigateTo('/shopping-cart')">
+        <b-navbar-brand class="selectable pr-3" @click="prepateForNavigate('/shopping-cart')">
           <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
         </b-navbar-brand>
 
-        <b-navbar-brand class="selectable pr-3">
+        <b-navbar-brand class="selectable pr-3"
+            v-if="hasMultipleRoles"
+            v-b-modal:switch-user-role-modal
+        >
           <font-awesome-icon icon="fa-solid fa-right-left"/>
         </b-navbar-brand>
 
-        <b-navbar-brand class="selectable">
-        <font-awesome-icon icon="fa-solid fa-user"/>
+        <b-navbar-brand class="p-0">
+          <b-nav-item-dropdown right class="selectable" no-caret >
+            <template v-slot:button-content>
+              <font-awesome-icon icon="fa-solid fa-user"/>
+            </template>
+            <b-dropdown-item v-if="isLoggedIn" @click="prepateForNavigate('/profile')">{{getEmail || "Perfil"}}</b-dropdown-item>
+            <b-dropdown-item v-if="isLoggedIn" @click="prepateForNavigate('/orders')">Pedidos</b-dropdown-item>
+            <b-dropdown-item v-if="isLoggedIn" @click="logout()">Cerrar sesión</b-dropdown-item>
+
+            <b-dropdown-item v-else v-b-modal:login-modal>Iniciar sesión</b-dropdown-item>
+          </b-nav-item-dropdown>
         </b-navbar-brand>
       </b-navbar-nav>
-
-
     </b-navbar>
-    <nav-buyer />
+
+
+    <NavBuyer />
     <LoginModal />
-  </div>
+    <SidebarBuyer/>
+    <SwitchUserRoleModal/>
+  </header>
 </template>
 
 <script>
-import { isLoggedInS} from "@/utils/security/sessionFunctions";
 import { mapGetters } from "vuex";
-
 
 export default {
   name: 'NavbarBuyer',
   components: {
     NavBuyer: () => import("@/components/navs/NavBuyer.vue"),
-    LoginModal: () => import("@/views/auth/LoginModal.vue")
+    LoginModal: () => import("@/views/auth/LoginModal.vue"),
+    SidebarBuyer: () => import("@/components/sidebars/SidebarBuyer.vue"),
+    SwitchUserRoleModal: () => import("@/views/auth/SwitchUserRoleModal.vue"),
   },
   data() {
     return {
@@ -72,19 +86,23 @@ export default {
     selectCategory(category){
       this.selectedCategory = category;
     },
-    navigateTo(route){
+    prepateForNavigate(route){
       if(this.isLoggedIn){
         this.$router.push(route);
       }else{
         this.$root.$emit('bv::show::modal', 'login-modal')
       }
     },
+    logout() {
+      this.$store.dispatch('logout');
+    }
   },
   computed: {
-    ...mapGetters(['isLoggedIn'])
+    ...mapGetters(['isLoggedIn', "hasMultipleRoles", "getEmail"])
   },
 }
 </script>
+
 
 <style scoped>
 .logo {
@@ -93,5 +111,6 @@ export default {
 .categoria{
   width: 140px;
 }
+
 
 </style>

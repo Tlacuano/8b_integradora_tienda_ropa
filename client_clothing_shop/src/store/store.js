@@ -54,7 +54,7 @@ export default new Vuex.Store({
         },
         logout({ commit }) {
             commit('clearAuthData');
-            window.location.reload();
+            window.location.href = '/';
         },
         switchRole({ commit, state }, { newRole, newToken }) {
             commit('switchUserRole', { newRole, newToken });

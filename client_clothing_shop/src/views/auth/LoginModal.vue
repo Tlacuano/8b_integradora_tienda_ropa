@@ -17,11 +17,6 @@ export default {
   },
   methods: {
 
-    onReset(evt) {
-      evt.preventDefault()
-      this.form.email = ''
-      this.form.password = ''
-    }
   },
 }
 </script>
