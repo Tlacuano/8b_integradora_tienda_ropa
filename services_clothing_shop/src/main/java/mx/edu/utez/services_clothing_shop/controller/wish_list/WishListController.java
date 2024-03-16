@@ -22,8 +22,9 @@ public class WishListController {
     }
 
     @PostMapping("/get-wish-list")
-    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> findShoppingCarsByUserEmail(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> findWishListByUserEmail(@RequestBody Map<String, String> requestBody) {
         String userEmail = requestBody.get("userEmail");
+        System.out.println(userEmail);
         if(userEmail == null || userEmail.isEmpty()) {
             return new ResponseEntity<>(new CustomResponse<>(null, "El correo del usuario es requerido", true, 400), HttpStatus.BAD_REQUEST);
         }
@@ -33,24 +34,24 @@ public class WishListController {
             wishListDTOS.add(ResponseWishListDTO.fromWishList(lists));
         }
         if (wishListDTOS.isEmpty()) {
-            return new ResponseEntity<>(new CustomResponse<>(null,"No se encontraron carritos de compras", true, 404), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new CustomResponse<>(null,"No se encontraron favoritos", true, 404), HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity.ok(new CustomResponse<>(wishListDTOS, "ok", false, 200));
         }
     }
-    @PostMapping("/post-post-list")
-    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> createShoppingCart(@Validated @RequestBody BeanWishList wishList) {
+    @PostMapping("/post-wish-list")
+    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> createWishList(@Validated @RequestBody BeanWishList wishList) {
         BeanWishList response = wishListService.saveWishList(wishList);
         if (response == null) {
-            return ResponseEntity.status(new CustomResponse<>(null, "Error al guardar el carrito de compras", true, 500).getStatus()).build();
+            return ResponseEntity.status(new CustomResponse<>(null, "Error al guardar favoritos", true, 500).getStatus()).build();
         } else {
-            ResponseWishListDTO newWisjListDTO = ResponseWishListDTO.fromWishList(response);
-            return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(newWisjListDTO), "ok", false, 200));
+            ResponseWishListDTO newWishListDTO = ResponseWishListDTO.fromWishList(response);
+            return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(newWishListDTO), "ok", false, 200));
         }
     }
 
     @DeleteMapping("/delete-wish-list/{wishListId}")
-    public ResponseEntity<CustomResponse<BeanWishList>> deleteShoppingCart(@PathVariable UUID wishListId) {
+    public ResponseEntity<CustomResponse<BeanWishList>> deleteWishList(@PathVariable UUID wishListId) {
         try{
             if(wishListId != null){
                 wishListService.deleteWishListById(wishListId);
@@ -64,7 +65,7 @@ public class WishListController {
     }
 
     @PutMapping("/put-wish-list")
-    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> updateShoppingCart(@Validated @RequestBody BeanWishList wishList) {
+    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> updateWishList(@Validated @RequestBody BeanWishList wishList) {
         BeanWishList response = wishListService.updateWishListById(wishList);
         if (response==null) {
             return ResponseEntity.status(new CustomResponse<>(null, "Error al actualizar el favorito", true, 500).getStatus()).build();
