@@ -11,8 +11,6 @@ public class ResponseOrderDTO {
     private UUID idOrder;
     private String orderDate;
     private String orderNumber;
-    private ResponseOrderAddressDTO orderAddress;
-    private ResponsePaymentCardDTO paymentCard;
 
     public ResponseOrderDTO() {
     }
@@ -22,8 +20,6 @@ public class ResponseOrderDTO {
         dto.setIdOrder(order.getIdOrder());
         dto.setOrderDate(order.getOrderDate().toString());
         dto.setOrderNumber(order.getOrderNumber());
-        dto.setOrderAddress(new ResponseOrderAddressDTO().toOrderAddressDTO(order.getAddress()));
-        dto.setPaymentCard(new ResponsePaymentCardDTO().toPaymentCardDTO(order.getPaymentCard()));
         return dto;
     }
 }
