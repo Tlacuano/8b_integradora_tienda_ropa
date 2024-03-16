@@ -4,7 +4,6 @@ package mx.edu.utez.services_clothing_shop.service.payment_card;
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.payment_card.IPaymentCard;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,11 @@ import java.util.UUID;
 
 @Service
 public class PaymentCardService {
-    @Autowired
-    private IPaymentCard paymentCardRepository;
+    private final IPaymentCard paymentCardRepository;
+
+    public PaymentCardService(IPaymentCard paymentCardRepository) {
+        this.paymentCardRepository = paymentCardRepository;
+    }
 
     @Transactional(rollbackOn = {Exception.class})
     public Page<BeanPaymentCard> getPaymentCardByUserEmail(String email, Pageable page) {

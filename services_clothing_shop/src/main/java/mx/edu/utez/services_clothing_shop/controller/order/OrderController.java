@@ -8,6 +8,7 @@ import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestOrderByUse
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.ResponsePaymentCardDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
+import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 
 @RestController
@@ -31,14 +31,15 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/orders-by-user-email")
-    public Page<ResponseOrderDTO> getOrdersByUserEmail(@Valid @RequestBody RequestOrderByUserEmailDTO userEmailPageRequestDTO) {
+    @PostMapping("/get-orders-by-user-email")
+    public ResponseEntity<CustomResponse<Page<ResponseOrderDTO>>> getOrdersByUserEmail(@Valid @RequestBody RequestOrderByUserEmailDTO userEmailPageRequestDTO) {
         Page<BeanOrder> orders = orderService.getOrdersByUserEmail(userEmailPageRequestDTO.getEmail(), userEmailPageRequestDTO.getPage());
-        return orders.map(order -> new ResponseOrderDTO().toOrderDTO(order));
+        Page<ResponseOrderDTO> responseOrders = orders.map(order -> new ResponseOrderDTO().toOrderDTO(order));
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(responseOrders, "Orders found", false, HttpStatus.OK.value()));
     }
 
     @PostMapping("/post-order")
-    public ResponseEntity<ResponseOrderDTO> postOrder(@Valid @RequestBody RequestPostOrderDTO order) {
+    public ResponseEntity<CustomResponse<ResponseOrderDTO>> postOrder(@Valid @RequestBody RequestPostOrderDTO order) {
         try {
             order.setOrderNumber(orderNumberGenerator());
             Map<String, Object> response = orderService.postOrder(order);
@@ -49,32 +50,12 @@ public class OrderController {
             }
 
             if (!response.isEmpty() && response.containsKey("id_order")) {
-                // TODO: Better way to assign values to the DTO?
                 ResponseOrderDTO orderDTO = new ResponseOrderDTO();
                 orderDTO.setIdOrder(UUID.fromString((String) response.get("id_order")));
                 orderDTO.setOrderDate(String.valueOf(order.getOrderDate()));
                 orderDTO.setOrderNumber(order.getOrderNumber());
 
-                ResponseOrderAddressDTO orderAddressDTO = new ResponseOrderAddressDTO();
-                orderAddressDTO.setIdAddress(UUID.fromString((String) response.get("id_address")));
-                orderAddressDTO.setAddress((String) response.get("address"));
-                orderAddressDTO.setReferences((String) response.get("references_address"));
-                orderAddressDTO.setPostalCode((String) response.get("postal_code"));
-                orderAddressDTO.setState((String) response.get("state"));
-                orderAddressDTO.setStreet((String) response.get("street"));
-                orderAddressDTO.setNeighborhood((String) response.get("neighborhood"));
-                orderAddressDTO.setStatus((String) response.get("address_status"));
-                orderDTO.setOrderAddress(orderAddressDTO);
-
-                ResponsePaymentCardDTO paymentCardDTO = new ResponsePaymentCardDTO();
-                paymentCardDTO.setIdPaymentCard(UUID.fromString((String) response.get("id_payment_card")));
-                paymentCardDTO.setCardholderName((String) response.get("cardholder_name"));
-                paymentCardDTO.setCardNumber((String) response.get("card_number"));
-                paymentCardDTO.setExpirationDate((String) response.get("expiration_date"));
-                paymentCardDTO.setStatus((String) response.get("card_status"));
-                orderDTO.setPaymentCard(paymentCardDTO);
-
-                return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
+                return ResponseEntity.status(HttpStatus.CREATED).body(new CustomResponse<>(orderDTO, "Order created successfully", false, HttpStatus.CREATED.value()));
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
@@ -86,7 +67,6 @@ public class OrderController {
     public String orderNumberGenerator() {
         String timestampPart = Long.toString(Instant.now().toEpochMilli());
         String randomPart = Long.toString(random.nextLong()).replace("-", "0");
-
         return (timestampPart + randomPart).substring(0, 16);
     }
 }

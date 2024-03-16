@@ -45,16 +45,12 @@ public class ErrorDictionary {
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
 
-        //error messages product
-        errorMessages.put("product.name.notnull", "El nombre del producto es obligatorio.");
-        errorMessages.put("product.name.size", "El nombre del producto debe tener entre 5 y 100 caracteres.");
-        errorMessages.put("product.description.notnull", "La descripción del producto es obligatoria.");
-        errorMessages.put("product.description.size", "La descripción del producto debe tener entre 20 y 100 caracteres.");
-        errorMessages.put("product.price.min", "El precio del producto debe ser mayor a 0.");
-        errorMessages.put("product.amount.min", "La cantidad del producto debe ser mayor a 0.");
-        errorMessages.put("product.subcategory.notnull", "La subcategoría del producto es obligatoria.");
-        errorMessages.put("product.subcategory.nonempty", "La subcategoría del producto no puede estar vacía.");
-        errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
+        //error messages wish list
+        errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
+        errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
+        errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
+        errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
+
     }
 
     public String getErrorMessage(String errorCode) {

@@ -5,4 +5,7 @@ public class RegexPatterns {
     public static final String NAME_REGEX = "^([A-Za-zÁÉÍÓÚÑáéíóúñ]+)(\\s([A-Za-zÁÉÍÓÚÑáéíóúñ]+|[A-Za-zÁÉÍÓÚÑáéíóúñ][a-záéíóúñ]*))*$";
     public static final String PHONE_REGEX = "^\\d{10}$";
 
+    public static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+
 }

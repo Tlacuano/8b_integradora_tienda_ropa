@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.controller.user.dto;
 
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -11,7 +10,7 @@ import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import java.util.UUID;
 
 @Data
-public class ResponseShoppingCartUserDTO {
+public class ResponseWishListUserDTO {
     @NotNull
     private UUID idUser;
     @NotBlank(message = "user.email.notnull")
@@ -26,12 +25,12 @@ public class ResponseShoppingCartUserDTO {
     @Pattern(regexp = RegexPatterns.NAME_REGEX, message = "person.secondLastName.pattern")
     private String secondLastName;
 
-    public ResponseShoppingCartUserDTO(){
+    public ResponseWishListUserDTO(){
 
     }
 
-    public static ResponseShoppingCartUserDTO fromUser(BeanUser user){
-        ResponseShoppingCartUserDTO userDTO = new ResponseShoppingCartUserDTO();
+    public static ResponseWishListUserDTO fromUser(BeanUser user){
+        ResponseWishListUserDTO userDTO = new ResponseWishListUserDTO();
         userDTO.setIdUser(user.getIdUser());
         userDTO.setEmail(user.getEmail());
         userDTO.setName(user.getPerson().getName());

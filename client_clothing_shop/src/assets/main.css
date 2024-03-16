@@ -7,3 +7,29 @@
   font-weight: normal;
 }
 
+
+/* para que el mause cambie a manita cuando pasas el mause encima */
+.selectable{
+  cursor: pointer;
+}
+
+
+/* elevar contenedor cuando pasas el mause por encima */
+.zoom-on-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+.zoom-on-hover:hover {
+  box-shadow: 0 0 11px rgba(29, 29, 29, 0.2);
+  transform: scale(1.01);
+}
+
+/*descatar contenido cuando pasas el mause encima*/
+.highlight-on-hover {
+  transition: all 0.3s ease;
+}
+
+.highlight-on-hover:hover {
+  background-color: #f1f1f1;
+}

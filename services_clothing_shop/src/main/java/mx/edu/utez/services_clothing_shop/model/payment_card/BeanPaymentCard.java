@@ -26,16 +26,16 @@ public class BeanPaymentCard {
     @Column(name = "id_payment_card", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idPaymentCard;
 
-    @Column(name = "cardholder_name", length = 100, nullable = false, updatable = false)
+    @Column(name = "cardholder_name", nullable = false, updatable = false)
     private String cardholderName;
 
-    @Column(name = "card_number", length = 30, nullable = false, updatable = false)
+    @Column(name = "card_number", nullable = false, updatable = false)
     private String cardNumber;
 
-    @Column(name = "expiration_date", length = 5, nullable = false, updatable = false)
+    @Column(name = "expiration_date", nullable = false, updatable = false)
     private String expirationDate;
 
-    @Column(name = "cvv", length = 3)
+    @Column(name = "cvv")
     private String cvv;
 
     //relacion muchos a uno con la tabla de users
