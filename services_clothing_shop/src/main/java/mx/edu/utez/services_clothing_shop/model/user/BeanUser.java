@@ -41,7 +41,7 @@ public class BeanUser {
     private String verificationCode;
 
     //relacion muchos a muchos con la tabla roles
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<BeanUserRoles> roles;
 
     //relacion uno a uno con la tabla people

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +26,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final PersonService personService;
+    private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, PersonService personService) {
+    public UserController(UserService userService, PersonService personService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.personService = personService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -64,8 +67,7 @@ public class UserController {
         BeanUser newAccount = new BeanUser();
         newAccount.setEmail(user.getEmail());
 
-        String encodedPassword = EncryptionFunctions.encryptString(user.getPassword());
-        newAccount.setPassword(encodedPassword);
+        newAccount.setPassword(passwordEncoder.encode(user.getPassword()));
         newAccount.setStatus(true);
 
         newAccount = userService.postAccount(newAccount);
