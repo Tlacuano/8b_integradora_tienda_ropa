@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 public class ResponseWishListDTO {
     @NotNull
-    private UUID idWishList;
+    private UUID idWish;
     @NotBlank(message = "wishList.amount.notnull")
     private int amount;
     @NotBlank(message = "wishList.user.notFound")
@@ -22,7 +22,7 @@ public class ResponseWishListDTO {
 
     public static ResponseWishListDTO fromWishList(BeanWishList wishList) {
         ResponseWishListDTO wishListDTO = new ResponseWishListDTO();
-        wishListDTO.setIdWishList(wishList.getIdWish());
+        wishListDTO.setIdWish(wishList.getIdWish());
         wishListDTO.setAmount(wishList.getAmount());
         wishListDTO.setUser(ResponseWishListUserDTO.fromUser(wishList.getUser()));
         wishListDTO.setProduct(ResponseWishListProductDTO.fromProduct(wishList.getProduct()));
