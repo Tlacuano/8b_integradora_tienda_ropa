@@ -1,5 +1,8 @@
 package mx.edu.utez.services_clothing_shop.controller.category;
 
+import mx.edu.utez.services_clothing_shop.controller.category.dto.RequestCategoryDTO;
+import mx.edu.utez.services_clothing_shop.controller.category.dto.RequestPutCategoryDTO;
+import mx.edu.utez.services_clothing_shop.controller.category.dto.RequestCategoryByIdDTO;
 import mx.edu.utez.services_clothing_shop.model.category.BeanCategory;
 import mx.edu.utez.services_clothing_shop.service.category.CategoryService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -30,8 +33,8 @@ public class CategoryController {
     }
 
     @PostMapping("/get-category")
-    public ResponseEntity<CustomResponse<BeanCategory>> getCategory(@RequestBody BeanCategory category) {
-        BeanCategory retrievedCategory = categoryService.getCategory(category);
+    public ResponseEntity<CustomResponse<BeanCategory>> getCategory(@RequestBody RequestCategoryByIdDTO category) {
+        BeanCategory retrievedCategory = categoryService.getCategory(category.getIdCategory());
         if (retrievedCategory != null) {
             return new ResponseEntity<>(new CustomResponse<>(retrievedCategory, "Categoría encontrada", false, 200), HttpStatus.OK);
         } else {
@@ -40,8 +43,12 @@ public class CategoryController {
     }
 
     @PostMapping("/post-category")
-    public ResponseEntity<CustomResponse<BeanCategory>> postCategory(@RequestBody BeanCategory category) {
-        BeanCategory newCategory = categoryService.postCategory(category);
+    public ResponseEntity<CustomResponse<BeanCategory>> postCategory(@RequestBody RequestCategoryDTO category) {
+        BeanCategory newCategory = new BeanCategory();
+        newCategory.setCategory(category.getCategory());
+        newCategory.setImage(category.getImage());
+        newCategory.setStatus(category.isStatus());
+        newCategory = categoryService.postCategory(newCategory);
         if (newCategory != null) {
             return new ResponseEntity<>(new CustomResponse<>(newCategory, "Categoría guardada", false, 201), HttpStatus.CREATED);
         } else {
@@ -50,8 +57,12 @@ public class CategoryController {
     }
 
     @PutMapping("/put-category")
-    public ResponseEntity<CustomResponse<BeanCategory>> putCategory(@RequestBody BeanCategory category) {
-        BeanCategory updatedCategory = categoryService.putCategory(category);
+    public ResponseEntity<CustomResponse<BeanCategory>> putCategory(@RequestBody RequestPutCategoryDTO category) {
+        BeanCategory updatedCategory = new BeanCategory();
+        updatedCategory.setIdCategory(category.getIdCategory());
+        updatedCategory.setCategory(category.getCategory());
+        updatedCategory.setImage(category.getImage());
+        updatedCategory = categoryService.putCategory(updatedCategory);
         if (updatedCategory != null) {
             return new ResponseEntity<>(new CustomResponse<>(updatedCategory, "Categoría actualizada", false, 201), HttpStatus.CREATED);
         } else {
@@ -60,8 +71,8 @@ public class CategoryController {
     }
 
     @PutMapping("/put-status-category")
-    public ResponseEntity<CustomResponse<Boolean>> putStatusCategory(@RequestBody BeanCategory category) {
-        Boolean updatedStatus = categoryService.putStatusCategory(category);
+    public ResponseEntity<CustomResponse<Boolean>> putStatusCategory(@RequestBody RequestCategoryByIdDTO category) {
+        Boolean updatedStatus = categoryService.putStatusCategory(category.getIdCategory());
         if (updatedStatus) {
             return new ResponseEntity<>(new CustomResponse<>(true, "Estado de la categoría actualizado", false, 201), HttpStatus.CREATED);
         } else {

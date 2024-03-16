@@ -18,7 +18,7 @@ public class ResponseProductDTO {
     private String subcategory;
     private String category;
     private boolean status;
-    private List<String> productGallery;
+    private List<ProductImageDTO> productGallery;
 
     public ResponseProductDTO() {
     }
@@ -33,11 +33,11 @@ public class ResponseProductDTO {
         dto.setSubcategory(product.getSubcategory().getSubcategory());
         dto.setCategory(product.getSubcategory().getCategory().getCategory());
         dto.setStatus(product.isStatus());
-        List<String> imageUrls = new ArrayList<>();
+        List<ProductImageDTO> productImages = new ArrayList<>();
         for (BeanProductGallery gallery : product.getProductGallery()) {
-            imageUrls.add(gallery.getImage());
+            productImages.add(new ProductImageDTO(gallery.getIdImage(), gallery.getImage(), gallery.getStatus().getStatus()));
         }
-        dto.setProductGallery(imageUrls);
+        dto.setProductGallery(productImages);
         return dto;
     }
 }

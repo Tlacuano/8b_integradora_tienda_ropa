@@ -38,8 +38,8 @@ public class SubcategoryService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public Boolean putStatusSubcategory(BeanSubcategory subcategory) {
-        BeanSubcategory subcategory1 = iSubCategory.findByIdSubcategory(subcategory.getIdSubcategory());
+    public Boolean putStatusSubcategory(UUID idSubcategory) {
+        BeanSubcategory subcategory1 = iSubCategory.findByIdSubcategory(idSubcategory);
         if (subcategory1 != null) {
             subcategory1.setStatus(!subcategory1.isStatus());
             iSubCategory.save(subcategory1);

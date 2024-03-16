@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 
 @Service
@@ -23,8 +24,8 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public BeanCategory getCategory(BeanCategory category) {
-        return iCategory.findByIdCategory(category.getIdCategory());
+    public BeanCategory getCategory(UUID idCategory) {
+        return iCategory.findByIdCategory(idCategory);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -38,8 +39,8 @@ public class CategoryService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public Boolean putStatusCategory(BeanCategory category) {
-        BeanCategory category1 = iCategory.findByIdCategory(category.getIdCategory());
+    public Boolean putStatusCategory(UUID idCategory) {
+        BeanCategory category1 = iCategory.findByIdCategory(idCategory);
         if (category1 != null) {
             category1.setStatus(!category1.isStatus());
             iCategory.save(category1);

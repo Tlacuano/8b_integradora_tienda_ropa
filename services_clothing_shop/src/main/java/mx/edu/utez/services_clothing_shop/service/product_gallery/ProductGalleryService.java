@@ -1,6 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.product_gallery;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.IImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -8,6 +8,7 @@ import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGalle
 import mx.edu.utez.services_clothing_shop.model.product_gallery.IProductGallery;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,7 +20,8 @@ public class ProductGalleryService {
         this.IProductGallery = IProductGallery;
         this.IImageProductStatus = IImageProductStatus;
     }
-    @Transactional(rollbackOn = Exception.class)
+
+    @Transactional(rollbackFor = Exception.class)
     public List<BeanProductGallery> postProductGallery(BeanProduct product, List<String> images) {
         List<BeanProductGallery> productGallery;
         BeanImageProductStatus imageProductStatus = IImageProductStatus.findByStatus("Predeterminada");
@@ -36,7 +38,18 @@ public class ProductGalleryService {
         return productGallery;
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
+    public List<BeanProductGallery> putProductGalley(List<BeanProductGallery> productGallery) {
+        List<BeanProductGallery> productGalleryList = new ArrayList<>();
+        for (BeanProductGallery gallery : productGallery) {
+            BeanImageProductStatus imageProductStatus = IImageProductStatus.findByStatus(gallery.getStatus().getStatus());
+            gallery.setStatus(imageProductStatus);
+            productGalleryList.add(IProductGallery.save(gallery));
+        }
+        return productGalleryList;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public void deleteProductGallery(BeanProduct product) {
         IProductGallery.deleteAllByProduct(product);
     }
