@@ -24,10 +24,10 @@ public class BeanSubcategory {
     @Column(name = "id_subcategory", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idSubcategory;
 
-    @Column(name = "subcategory", length = 60)
+    @Column(name = "subcategory", length = 30)
     private String subcategory;
 
-    @Column(name = "image", length = 100)
+    @Column(name = "image")
     private String image;
 
     //relacion muchos a uno con la tabla categories
