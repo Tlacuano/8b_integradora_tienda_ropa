@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -27,5 +26,4 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     String deleteAccount(
             @Param("p_email") String email
     );
-
 }

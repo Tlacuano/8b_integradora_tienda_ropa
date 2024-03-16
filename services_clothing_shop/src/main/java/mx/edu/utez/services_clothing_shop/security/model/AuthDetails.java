@@ -3,10 +3,7 @@ package mx.edu.utez.services_clothing_shop.security.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
-import mx.edu.utez.services_clothing_shop.security.controller.dtos.AuthUserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,21 +18,19 @@ public class AuthDetails implements UserDetails {
     private String email;
     private String password;
     private boolean status;
-    private List<BeanRole> roles;
+    private String role;
 
-    public AuthDetails(AuthUserDTO user) {
+    public AuthDetails(BeanUser user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.status = user.isStatus();
-        this.roles = user.getRoles();
+        this.role = user.getRoles().get(0).getRole().getRoleName();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new java.util.ArrayList<>();
-        for (BeanRole role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
-        }
+        authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
     }
 
@@ -61,6 +56,6 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !status;
+        return status;
     }
 }

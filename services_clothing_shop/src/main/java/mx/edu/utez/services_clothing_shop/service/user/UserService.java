@@ -34,7 +34,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-
     //post
     @Transactional(rollbackOn = {Exception.class})
     public BeanUser postAccount(BeanUser user){
