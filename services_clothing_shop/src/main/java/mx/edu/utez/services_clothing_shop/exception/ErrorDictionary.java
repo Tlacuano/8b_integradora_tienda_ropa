@@ -44,12 +44,13 @@ public class ErrorDictionary {
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
-
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
+        //error image uploading
+        errorMessages.put("image.upload.error", "Error al subir imagen.");
 
     }
 
