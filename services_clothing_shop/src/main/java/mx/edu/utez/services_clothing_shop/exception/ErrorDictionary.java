@@ -82,6 +82,21 @@ public class ErrorDictionary {
         errorMessages.put("product.user.nonempty", "El usuario del producto no puede estar vacío.");
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
 
+        //error messages address
+        errorMessages.put("address.address.notnull", "La dirección es obligatoria.");
+        errorMessages.put("address.address.size", "La dirección debe ser mayor a 10 caracteres y menor o igual a 100 caracteres.");
+        errorMessages.put("address.referencesAddress.size", "La longitud de las referencias de la dirección debe ser mayor a 5 y menor o igual a 255 caracteres");
+        errorMessages.put("address.postalCode.notnull", "El código postal es requerido");
+        errorMessages.put("address.postalCode.size", "La longitud del código postal debe ser de 5 caracteres");
+        errorMessages.put("address.state.notnull", "El estado es requerido");
+        errorMessages.put("address.state.size", "La longitud del estado debe ser mayor a 5 caracteres y menor o igual a 100 caracteres");
+        errorMessages.put("address.street.notnull", "La calle es requerida");
+        errorMessages.put("address.street.size", "La longitud de la calle debe ser mayor a 5 caracteres y menor o igual a 50 caracteres");
+        errorMessages.put("address.neighborhood.notnull", "El vecindario es requerido");
+        errorMessages.put("address.neighborhood.size", "La longitud del vecindario debe ser mayor a 5 caracteres y menor o igual a 50 caracteres");
+        errorMessages.put("address.personId.notnull", "El ID de la persona es requerido");
+        errorMessages.put("address.statusId.notnull", "El ID del estado es requerido");
+
     }
 
     public String getErrorMessage(String errorCode) {

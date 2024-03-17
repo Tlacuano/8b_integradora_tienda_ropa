@@ -11,33 +11,33 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class RequestPostAddressDTO {
-    @NotBlank(message = "La dirección es requerida")
-    @Size(max = 100, message = "La longitud de la dirección debe ser menor o igual a 100 caracteres")
+    @NotBlank(message = "address.address.notnull")
+    @Size(min = 10, max = 100, message = "address.address.size")
     private String address;
 
-    @Size(max = 255, message = "La longitud de las referencias de la dirección debe ser menor o igual a 255 caracteres")
+    @Size(min = 5, max = 255, message = "address.referencesAddress.size")
     private String referencesAddress;
 
-    @NotBlank(message = "El código postal es requerido")
-    @Size(max = 5, message = "La longitud del código postal debe ser de 5 caracteres")
+    @NotBlank(message = "address.postalCode.notnull")
+    @Size(min = 5, max = 5, message = "address.postalCode.size")
     private String postalCode;
 
-    @NotBlank(message = "El estado es requerido")
-    @Size(max = 100, message = "La longitud del estado debe ser menor o igual a 100 caracteres")
+    @NotBlank(message = "address.state.notnull")
+    @Size(max = 100, message = "address.state.size")
     private String state;
 
-    @NotBlank(message = "La calle es requerida")
-    @Size(max = 50, message = "La longitud de la calle debe ser menor o igual a 50 caracteres")
+    @NotBlank(message = "address.street.notnull")
+    @Size(max = 50, message = "address.street.size")
     private String street;
 
-    @NotBlank(message = "El vecindario es requerido")
-    @Size(max = 50, message = "La longitud del vecindario debe ser menor o igual a 50 caracteres")
+    @NotBlank(message = "address.neighborhood.notnull")
+    @Size(max = 50, message = "address.neighborhood.size")
     private String neighborhood;
 
-    @NotNull(message = "El ID de la persona es requerido")
+    @NotNull(message = "address.personId.notnull")
     private UUID personId;
 
-    @NotNull(message = "El ID del estado es requerido")
+    @NotNull(message = "address.statusId.notnull")
     private UUID statusId;
 
 }

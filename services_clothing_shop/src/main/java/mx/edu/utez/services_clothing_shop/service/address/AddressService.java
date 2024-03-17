@@ -41,11 +41,6 @@ public class AddressService {
     public BeanAddress postAddress(BeanAddress address){
         return iAddress.saveAndFlush(address);
     }
-    /*@Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanAddress> postAddress(BeanAddress address){
-        BeanAddress saveAddress = iAddress.saveAndFlush(address);
-        return ResponseEntity.ok(saveAddress);
-    }*/
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<BeanAddress> putAddress(BeanAddress address){
