@@ -84,12 +84,15 @@ public class ErrorDictionary {
         errorMessages.put("product.user.nonempty", "El usuario del producto no puede estar vacío.");
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
 
-
         //error messages data change
         errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
         errorMessages.put("dataChange.email.invalid", "El email no es válido.");
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
         errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
+
+        //error messages request return product
+        errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
+        errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
 
     }
 

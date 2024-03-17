@@ -2,33 +2,40 @@ package mx.edu.utez.services_clothing_shop.service.requests_return_product;
 
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductDTO;
+import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
-import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
+import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class RequestsReturnProductService {
 
     private final IRequestsReturnProduct IRequestsReturnProduct;
     private final IRequestStatus IRequestStatus;
+    private final ErrorDictionary errorDictionary;
 
-    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus) {
+    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, ErrorDictionary errorDictionary) {
         this.IRequestsReturnProduct = IRequestsReturnProduct;
         this.IRequestStatus = IRequestStatus;
+        this.errorDictionary = errorDictionary;
     }
 
     @Transactional
     public RequestsReturnProductDTO putRequestStatus(UUID requestId, String status, String rejectionReason) {
+        if (!isValidRejectionReason(rejectionReason)) {
+            throw new IllegalArgumentException("Motivo de rechazo no válido: " + rejectionReason);
+        }
         Optional<BeanRequestReturnProduct> existingRequestOptional = IRequestsReturnProduct.findById(requestId);
         if (existingRequestOptional.isPresent()) {
             BeanRequestReturnProduct existingRequest = existingRequestOptional.get();
@@ -41,14 +48,31 @@ public class RequestsReturnProductService {
 
             return convertToDTO(updatedRequest);
         } else {
-            throw new RequestsNotFoundException("La solicitud no fue encontrada.");
+            throw new RequestsNotFoundException(errorDictionary.getErrorMessage("requestReturnProduct.id.notnull"));
         }
     }
 
-    public Optional<RequestsReturnProductDTO> getRequestByIdOrderProduct(UUID idOrder) {
-        Optional<BeanRequestReturnProduct> requestOptional = IRequestsReturnProduct.findByOrderHasProduct_IdOrderProduct(idOrder);
-        return requestOptional.map(this::convertToDTO);
+    private boolean isValidRejectionReason(String rejectionReason) {
+        Pattern pattern = Pattern.compile(RegexPatterns.REJECTION_REASON_REGEX);
+        Matcher matcher = pattern.matcher(rejectionReason);
+        return matcher.matches();
     }
+
+    public RequestsReturnProductDTO getRequestsById(UUID idRequestReturnProduct) {
+        Optional<BeanRequestReturnProduct> request = IRequestsReturnProduct.findById(idRequestReturnProduct);
+        if (request.isPresent()) {
+            return convertToDTO(request.get());
+        } else {
+            throw new RequestsNotFoundException(errorDictionary.getErrorMessage("requestReturnProduct.id.notnull"));
+        }
+    }
+
+    public String getRequestStatusById(UUID statusId) {
+        BeanRequestStatus requestStatus = IRequestStatus.findById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con ID: " + statusId));
+        return requestStatus.getStatus();
+    }
+
 
     @Transactional
     public RequestsReturnProductDTO postRequest(UUID orderHasProductId) {
@@ -67,13 +91,11 @@ public class RequestsReturnProductService {
     }
 
 
-
-
-
-    public Page<IRequestsReturnProduct.ReturnStatusProjection> findAllStatuses(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    @Transactional
+    public Page<IRequestsReturnProduct.ReturnStatusProjection> findAllStatuses(Pageable pageable) {
         return IRequestsReturnProduct.findAllStatuses(pageable);
     }
+
 
     private RequestsReturnProductDTO convertToDTO(BeanRequestReturnProduct request) {
         RequestsReturnProductDTO dto = new RequestsReturnProductDTO();
