@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.wish_list;
 
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
+
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.model.wish_list.IWishList;
 import org.springframework.stereotype.Service;
