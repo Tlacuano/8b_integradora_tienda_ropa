@@ -42,9 +42,9 @@ values (uuid_to_bin('9e9df4fd-036d-48b1-85e8-4f8f4389f1d4'), uuid_to_bin('3cc47b
         'Subcategoría C', 'imagen_subcategoria_c.jpg', 1);
 
 insert ignore into roles (id_role, role_name)
-values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'administrador'),
-       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'vendedor'),
-       (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'comprador');
+values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'ROLE_ADMIN'),
+       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SELLER'),
+       (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'ROLE_BUYER');
 
 insert ignore into users (id_user, password, email, verification_code, status)
 values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'contraseña123', 'usuario1@example.com', 'ABCD1234',
