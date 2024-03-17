@@ -17,6 +17,7 @@ public class ErrorDictionary {
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("user.email.exists", "El email no esta disponible.");
 
+
         //error messages person
         errorMessages.put("person.name.notnull", "El nombre es obligatorio.");
         errorMessages.put("person.name.pattern", "El nombre no debe contener números ni caracteres especiales.");
@@ -44,6 +45,7 @@ public class ErrorDictionary {
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
+
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
@@ -97,6 +99,12 @@ public class ErrorDictionary {
         errorMessages.put("address.neighborhood.size", "La longitud del vecindario debe ser mayor a 5 caracteres y menor o igual a 50 caracteres");
         errorMessages.put("address.personId.notnull", "El ID de la persona es requerido");
         errorMessages.put("address.statusId.notnull", "El ID del estado es requerido");
+
+        //error messages data change
+        errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
+        errorMessages.put("dataChange.email.invalid", "El email no es válido.");
+        errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
+        errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
 
     }
 
