@@ -1,14 +1,17 @@
 package mx.edu.utez.services_clothing_shop.service.address;
 
+import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestActionByIdDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +20,12 @@ public class AddressService {
     public AddressService(IAddress iAddress){
         this.iAddress = iAddress;
     }
+
+    @Transactional
+    public boolean existsByIdAddress(UUID idAddress){
+        return iAddress.existsByIdAddress(idAddress);
+    }
+
     @Transactional(readOnly = true)
     public List<ResponseAddressDTO> getAddresses(){
             List<BeanAddress> addresses = iAddress.findAll();
@@ -42,16 +51,12 @@ public class AddressService {
         return iAddress.saveAndFlush(address);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanAddress> putAddress(BeanAddress address){
-        try {
-            if(iAddress.existsByIdAddress(address.getIdAddress())){
-                return ResponseEntity.status(200).body(iAddress.save(address));
-            } else {
-                return ResponseEntity.status(400).build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    @Transactional
+    public BeanAddress putAddress(BeanAddress address){
+        if(iAddress.existsByIdAddress(address.getIdAddress())){
+            return iAddress.save(address);
+        } else {
+            return null;
         }
     }
 

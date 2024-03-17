@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.address;
 
+import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestActionByIdDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPostAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponsePostAddressDTO;
@@ -66,8 +67,8 @@ public class AddressController {
     }
 
     @PutMapping("/put-address")
-    public ResponseEntity<BeanAddress> putAddress(@RequestBody BeanAddress address){
-        return addressService.putAddress(address);
+    public ResponseEntity<Object> putAddress(@Validated @RequestBody BeanAddress payload){
+        return new ResponseEntity<>(new CustomResponse<>(addressService.putAddress(payload), "Address updated successfully", false, 200), HttpStatus.OK);
     }
 
     private ResponsePostAddressDTO mapToResponseDTO(BeanAddress savedAddress) {
