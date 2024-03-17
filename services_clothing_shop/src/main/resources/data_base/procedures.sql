@@ -12,23 +12,22 @@ END $$
 DELIMITER ;
 
 
-
-
+-- procedute to logicall delete a user
 DROP PROCEDURE IF EXISTS `sp_delete_user`;
 DELIMITER $$
 CREATE PROCEDURE `sp_delete_user`(
-    IN p_email VARCHAR(255),
-    OUT result BOOLEAN)
+    IN p_email VARCHAR(255))
 BEGIN
     DECLARE v_user_id BINARY(16);
+    DECLARE result VARCHAR(255);
+
 
     SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
-
 
     UPDATE users
     SET
         password = '',
-        email = CONCAT(p_email, '_deleted'),
+        email = CONCAT(p_email, '_deleted_', UUID()),
         status = 0
     WHERE id_user = v_user_id;
 
@@ -59,15 +58,17 @@ BEGIN
         expiration_date = ''
     WHERE fk_id_user = v_user_id;
 
-
     UPDATE products
     SET
         status = 0
     WHERE fk_id_user = v_user_id;
 
-    SELECT NOT status FROM users WHERE id_user = v_user_id;
+    SET result = 'Usuario eliminado';
+    SELECT result;
+
 END$$
 DELIMITER ;
+
 
 
 -- Procedure to change the status of a payment card
