@@ -1,11 +1,16 @@
 package mx.edu.utez.services_clothing_shop.controller.address;
 
+import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPostAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
+import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponsePostAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
+import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
+import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.service.address.AddressService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,18 +43,45 @@ public class AddressController {
         }
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<Object> get(@RequestBody ResponseAddressDTO address){
-        return new ResponseEntity<>(new CustomResponse<>(true, "ok", false, 201), HttpStatus.OK);
-    }
-
     @PostMapping("/post-address")
-    public ResponseEntity<BeanAddress> postAddress(@RequestBody BeanAddress address){
-        return addressService.postAddress(address);
+    public ResponseEntity<Object> postAddress(@Validated @RequestBody RequestPostAddressDTO payload){
+        BeanAddress newAddress = new BeanAddress();
+        newAddress.setAddress(payload.getAddress());
+        newAddress.setReferencesAddress(payload.getReferencesAddress());
+        newAddress.setPostalCode(payload.getPostalCode());
+        newAddress.setState(payload.getState());
+        newAddress.setStreet(payload.getStreet());
+        newAddress.setNeighborhood(payload.getNeighborhood());
+        BeanPerson person = new BeanPerson();
+        person.setIdPerson(payload.getPersonId());
+        newAddress.setPerson(person);
+        BeanAddressStatus status = new BeanAddressStatus();
+        status.setIdStatus(payload.getStatusId());
+        newAddress.setStatus(status);
+
+        BeanAddress savedAddress = addressService.postAddress(newAddress);
+        ResponsePostAddressDTO responseDTO = mapToResponseDTO(savedAddress);
+
+        return new ResponseEntity<>(new CustomResponse<>(responseDTO, "Address created successfully", false, 200), HttpStatus.OK);
     }
 
     @PutMapping("/put-address")
     public ResponseEntity<BeanAddress> putAddress(@RequestBody BeanAddress address){
         return addressService.putAddress(address);
     }
+
+    private ResponsePostAddressDTO mapToResponseDTO(BeanAddress savedAddress) {
+        ResponsePostAddressDTO responseDTO = new ResponsePostAddressDTO();
+        responseDTO.setIdAddress(savedAddress.getIdAddress());
+        responseDTO.setAddress(savedAddress.getAddress());
+        responseDTO.setReferencesAddress(savedAddress.getReferencesAddress());
+        responseDTO.setPostalCode(savedAddress.getPostalCode());
+        responseDTO.setState(savedAddress.getState());
+        responseDTO.setStreet(savedAddress.getStreet());
+        responseDTO.setNeighborhood(savedAddress.getNeighborhood());
+        responseDTO.setPersonId(savedAddress.getPerson().getIdPerson());
+        responseDTO.setStatusId(savedAddress.getStatus().getIdStatus());
+        return responseDTO;
+    }
+
 }

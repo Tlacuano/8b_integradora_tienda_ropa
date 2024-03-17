@@ -38,20 +38,14 @@ public class AddressService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanAddress> postAddress(BeanAddress address){
-        try {
-            if(address.getPerson() != null){
-                System.out.println("id found: " +address.getIdAddress());
-                System.out.println("name: "+address.getPerson().getName());
-            } else {
-                System.out.println( "no esta");
-            }
-            BeanAddress saveAddress = iAddress.save(address);
-            return ResponseEntity.status(200).body(iAddress.saveAndFlush(saveAddress));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public BeanAddress postAddress(BeanAddress address){
+        return iAddress.saveAndFlush(address);
     }
+    /*@Transactional(rollbackFor = {SQLException.class})
+    public ResponseEntity<BeanAddress> postAddress(BeanAddress address){
+        BeanAddress saveAddress = iAddress.saveAndFlush(address);
+        return ResponseEntity.ok(saveAddress);
+    }*/
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<BeanAddress> putAddress(BeanAddress address){
