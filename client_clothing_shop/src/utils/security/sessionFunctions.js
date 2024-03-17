@@ -1,10 +1,9 @@
-export function isLoggedIn() {
+export function isLoggedInS() {
     return !!localStorage.getItem("token");
 }
 
-export function getRole() {
-    //implementar servicio para obtener el rol del usuario
-    return "rol";
+export function getRoleS() {
+    return localStorage.getItem("role");
 }
 
 export function logout(){
