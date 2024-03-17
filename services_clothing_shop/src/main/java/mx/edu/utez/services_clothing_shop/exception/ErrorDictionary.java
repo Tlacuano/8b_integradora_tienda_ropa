@@ -86,6 +86,7 @@ public class ErrorDictionary {
 
         //error messages address
         errorMessages.put("address.idAddress.notnull", "El id de la dirección es obligatorio.");
+        errorMessages.put("address.idAddress.notfound", "La dirección no fue encontrada.");
         errorMessages.put("address.address.notnull", "La dirección es obligatoria.");
         errorMessages.put("address.address.size", "La dirección debe ser mayor a 10 caracteres y menor o igual a 100 caracteres.");
         errorMessages.put("address.referencesAddress.size", "La longitud de las referencias de la dirección debe ser mayor a 5 y menor o igual a 255 caracteres");

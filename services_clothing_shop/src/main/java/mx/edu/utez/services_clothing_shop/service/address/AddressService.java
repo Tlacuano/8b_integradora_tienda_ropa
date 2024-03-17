@@ -1,16 +1,17 @@
 package mx.edu.utez.services_clothing_shop.service.address;
 
-import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestActionByIdDTO;
+import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPutAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
-import org.springframework.context.annotation.Bean;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -52,12 +53,28 @@ public class AddressService {
     }
 
     @Transactional
-    public BeanAddress putAddress(BeanAddress address){
-        if(iAddress.existsByIdAddress(address.getIdAddress())){
-            return iAddress.save(address);
-        } else {
-            return null;
+    public BeanAddress putAddress(RequestPutAddressDTO payload){
+        //validar que el idAddress este presente en el payload
+        UUID idAddress = payload.getIdAddress();
+        if(idAddress == null){
+            throw new CustomException("address.idAddress.notnull");
         }
+        //validar que el idAddress exista
+        Optional<BeanAddress> optionalBeanAddress = iAddress.findById(idAddress);
+        if(optionalBeanAddress.isEmpty()){
+            throw new CustomException("address.idAddress.notfound");
+        }
+        //traer el objeto de la base de datos
+        BeanAddress existingAddress = optionalBeanAddress.get();
+        //actualizar los campos
+        existingAddress.setAddress(payload.getAddress());
+        existingAddress.setReferencesAddress(payload.getReferencesAddress());
+        existingAddress.setPostalCode(payload.getPostalCode());
+        existingAddress.setState(payload.getState());
+        existingAddress.setStreet(payload.getStreet());
+        existingAddress.setNeighborhood(payload.getNeighborhood());
+        //guardar el objeto y regresar el objeto guardado
+        return iAddress.saveAndFlush(existingAddress);
     }
 
 }
