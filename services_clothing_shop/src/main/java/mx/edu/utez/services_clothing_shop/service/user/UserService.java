@@ -4,6 +4,7 @@ package mx.edu.utez.services_clothing_shop.service.user;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
+import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.person.IPerson;
@@ -22,9 +23,12 @@ public class UserService {
     private final IUser userRepository;
     private final IPerson personRepository;
 
-    public UserService(IUser userRepository, IPerson personRepository) {
+    private final IRole roleRepository;
+
+    public UserService(IUser userRepository, IPerson personRepository, IRole roleRepository) {
         this.userRepository = userRepository;
         this.personRepository = personRepository;
+        this.roleRepository = roleRepository;
     }
 
     //exist
@@ -66,7 +70,8 @@ public class UserService {
         newUser = userRepository.saveAndFlush(newUser);
 
         //assign role
-        userRepository.postRoleUser(user.getRoleToAssign(), newUser.getIdUser().toString());
+        BeanRole role = roleRepository.findByRoleName(user.getRoleToAssign());
+        userRepository.postRoleUser(role.getIdRole().toString(), newUser.getIdUser().toString());
 
         //assign personal information
         BeanPerson personalInformation = new BeanPerson();
