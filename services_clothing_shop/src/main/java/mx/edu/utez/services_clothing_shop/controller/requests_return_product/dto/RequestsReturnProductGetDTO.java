@@ -3,12 +3,7 @@ package mx.edu.utez.services_clothing_shop.controller.requests_return_product.dt
 import lombok.Data;
 
 import java.util.UUID;
-
 @Data
-public class RequestsReturnProductDTO {
+public class RequestsReturnProductGetDTO {
     private UUID idRequestReturnProduct;
-    private String rejectionReason;
-    private UUID orderHasProductId;
-    private UUID statusId;
-    private String status;
 }

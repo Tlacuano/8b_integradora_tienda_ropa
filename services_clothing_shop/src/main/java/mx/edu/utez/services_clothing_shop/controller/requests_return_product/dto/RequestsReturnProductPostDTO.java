@@ -5,10 +5,6 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class RequestsReturnProductDTO {
-    private UUID idRequestReturnProduct;
-    private String rejectionReason;
+public class RequestsReturnProductPostDTO {
     private UUID orderHasProductId;
-    private UUID statusId;
-    private String status;
 }
