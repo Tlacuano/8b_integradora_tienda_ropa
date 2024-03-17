@@ -43,25 +43,14 @@ public class AddressController {
     }
 
     @PostMapping("/post-address")
-    public ResponseEntity<Object> postAddress(@Validated @RequestBody RequestPostAddressDTO payload){
-        BeanAddress newAddress = new BeanAddress();
-        newAddress.setAddress(payload.getAddress());
-        newAddress.setReferencesAddress(payload.getReferencesAddress());
-        newAddress.setPostalCode(payload.getPostalCode());
-        newAddress.setState(payload.getState());
-        newAddress.setStreet(payload.getStreet());
-        newAddress.setNeighborhood(payload.getNeighborhood());
-        BeanPerson person = new BeanPerson();
-        person.setIdPerson(payload.getPersonId());
-        newAddress.setPerson(person);
-        BeanAddressStatus status = new BeanAddressStatus();
-        status.setIdStatus(payload.getStatusId());
-        newAddress.setStatus(status);
-
-        BeanAddress savedAddress = addressService.postAddress(newAddress);
-        ResponsePostAddressDTO responseDTO = mapToResponseDTO(savedAddress);
-
-        return new ResponseEntity<>(new CustomResponse<>(responseDTO, "Address created successfully", false, 200), HttpStatus.OK);
+        public ResponseEntity<Object> postAddress(@Validated @RequestBody RequestPostAddressDTO payload){
+        try {
+            BeanAddress newAddress = addressService.postAddress(payload);
+            ResponsePostAddressDTO responseDTO = addressService.mapToResponseDTO(newAddress);
+            return ResponseEntity.ok(new CustomResponse<>(responseDTO, "Address created successfully", false, HttpStatus.OK.value()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating address: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
+        }
     }
 
     @PutMapping("/put-address")

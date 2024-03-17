@@ -1,9 +1,13 @@
 package mx.edu.utez.services_clothing_shop.service.address;
 
+import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPostAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPutAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
+import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponsePostAddressDTO;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
+import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
+import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -47,9 +51,23 @@ public class AddressService {
             }
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
-    public BeanAddress postAddress(BeanAddress address){
-        return iAddress.saveAndFlush(address);
+    @Transactional
+    public BeanAddress postAddress(RequestPostAddressDTO payload){
+        BeanAddress newAddress = new BeanAddress();
+        newAddress.setAddress(payload.getAddress());
+        newAddress.setReferencesAddress(payload.getReferencesAddress());
+        newAddress.setPostalCode(payload.getPostalCode());
+        newAddress.setState(payload.getState());
+        newAddress.setStreet(payload.getStreet());
+        newAddress.setNeighborhood(payload.getNeighborhood());
+        BeanPerson person = new BeanPerson();
+        person.setIdPerson(payload.getPersonId());
+        newAddress.setPerson(person);
+        BeanAddressStatus status = new BeanAddressStatus();
+        status.setIdStatus(payload.getStatusId());
+        newAddress.setStatus(status);
+
+        return iAddress.saveAndFlush(newAddress);
     }
 
     @Transactional
@@ -75,6 +93,20 @@ public class AddressService {
         existingAddress.setNeighborhood(payload.getNeighborhood());
         //guardar el objeto y regresar el objeto guardado
         return iAddress.saveAndFlush(existingAddress);
+    }
+
+    public ResponsePostAddressDTO mapToResponseDTO(BeanAddress savedAddress) {
+        ResponsePostAddressDTO responseDTO = new ResponsePostAddressDTO();
+        responseDTO.setIdAddress(savedAddress.getIdAddress());
+        responseDTO.setAddress(savedAddress.getAddress());
+        responseDTO.setReferencesAddress(savedAddress.getReferencesAddress());
+        responseDTO.setPostalCode(savedAddress.getPostalCode());
+        responseDTO.setState(savedAddress.getState());
+        responseDTO.setStreet(savedAddress.getStreet());
+        responseDTO.setNeighborhood(savedAddress.getNeighborhood());
+        responseDTO.setPersonId(savedAddress.getPerson().getIdPerson());
+        responseDTO.setStatusId(savedAddress.getStatus().getIdStatus());
+        return responseDTO;
     }
 
 }
