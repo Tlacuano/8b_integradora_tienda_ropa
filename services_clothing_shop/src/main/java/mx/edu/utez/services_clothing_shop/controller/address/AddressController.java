@@ -29,16 +29,14 @@ public class AddressController {
     }
 
     @PostMapping("/get-address")
-    public ResponseEntity<CustomResponse<ResponseAddressDTO>> getAddress(@RequestBody BeanAddress address){
-        ResponseEntity<?> responseEntity = addressService.getAddress(address);
-        CustomResponse<ResponseAddressDTO> customResponse;
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            ResponseAddressDTO responseAddressDTO = (ResponseAddressDTO) responseEntity.getBody();
-            customResponse = new CustomResponse<>(responseAddressDTO, "Success", false, HttpStatus.OK.value());
-            return ResponseEntity.ok(customResponse);
-        } else {
-            customResponse = new CustomResponse<>(null, "Error getting address", true, responseEntity.getStatusCode().value());
-            return ResponseEntity.status(responseEntity.getStatusCode()).body(customResponse);
+    public ResponseEntity<Object> getAddress(@Validated @RequestBody RequestActionByIdDTO payload){
+        try {
+            BeanAddress address = addressService.getAddress(payload.getIdAddress());
+                ResponsePostAddressDTO responseDTO = addressService.mapToResponseDTO(address);
+                return ResponseEntity.ok(new CustomResponse<>(responseDTO, "Address retrieved successfully", false, HttpStatus.OK.value()));
+        } catch (CustomException e) {
+            //retornar el error de address.idAddress.notfound
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
     }
 

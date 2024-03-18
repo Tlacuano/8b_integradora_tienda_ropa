@@ -4,11 +4,13 @@ import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPostAddr
 import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPutAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponsePostAddressDTO;
+import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +24,10 @@ import java.util.stream.Collectors;
 @Service
 public class AddressService {
     private final IAddress iAddress;
-    public AddressService(IAddress iAddress){
+    private ErrorDictionary errorDictionary;
+    public AddressService(IAddress iAddress, ErrorDictionary errorDictionary){
         this.iAddress = iAddress;
+        this.errorDictionary = errorDictionary;
     }
 
     @Transactional
@@ -41,14 +45,13 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getAddress(BeanAddress address){
-            if(iAddress.existsByIdAddress(address.getIdAddress())){
-                BeanAddress foundAddress = iAddress.findByIdAddress(address.getIdAddress());
-                ResponseAddressDTO responseDTO = ResponseAddressDTO.toAddressDTO(foundAddress);
-                return ResponseEntity.ok(responseDTO);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+    public BeanAddress getAddress(UUID idAddress){
+        Optional<BeanAddress> optionalBeanAddress = iAddress.findById(idAddress);
+        //si el id presente no esta en la bd mandar error dictionary address.idAddress.notfound
+        if(optionalBeanAddress.isEmpty()){
+            throw new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound"));
+        }
+        return optionalBeanAddress.get();
     }
 
     @Transactional
@@ -72,15 +75,10 @@ public class AddressService {
 
     @Transactional
     public BeanAddress putAddress(RequestPutAddressDTO payload){
-        //validar que el idAddress este presente en el payload
-        UUID idAddress = payload.getIdAddress();
-        if(idAddress == null){
-            throw new CustomException("address.idAddress.notnull");
-        }
         //validar que el idAddress exista
-        Optional<BeanAddress> optionalBeanAddress = iAddress.findById(idAddress);
+        Optional<BeanAddress> optionalBeanAddress = iAddress.findById(payload.getIdAddress());
         if(optionalBeanAddress.isEmpty()){
-            throw new CustomException("address.idAddress.notfound");
+            throw new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound"));
         }
         //traer el objeto de la base de datos
         BeanAddress existingAddress = optionalBeanAddress.get();
