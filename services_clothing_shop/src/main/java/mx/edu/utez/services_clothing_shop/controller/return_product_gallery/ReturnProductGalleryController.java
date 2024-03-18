@@ -1,7 +1,10 @@
 package mx.edu.utez.services_clothing_shop.controller.return_product_gallery;
 
+import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.ResponseAllReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.service.return_product_gallery.ReturnProductGalleryService;
+import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +21,14 @@ public class ReturnProductGalleryController {
     }
 
     @GetMapping("/get-return-product-galleries")
-    public ResponseEntity<List<BeanReturnProductGallery>> getReturnProductGalleries(){
-        return returnProductGalleryService.getReturnProductGalleries();
+    public ResponseEntity<Object> getReturnProductGalleries(){
+        try {
+            List<ResponseAllReturnProductGalleryDTO> responseDTOs = returnProductGalleryService.getReturnProductGalleries();
+            return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Return product galleries retrieved successfully", false, 200));
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, 400));
+        }
+
     }
 
     @PostMapping("/get-return-product-gallery")

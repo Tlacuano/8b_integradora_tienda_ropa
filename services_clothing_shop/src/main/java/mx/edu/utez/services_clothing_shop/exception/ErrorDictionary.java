@@ -102,6 +102,9 @@ public class ErrorDictionary {
         errorMessages.put("address.personId.notnull", "El ID de la persona es requerido");
         errorMessages.put("address.statusId.notnull", "El ID del estado es requerido");
 
+        //error messages return product gallery
+        errorMessages.put("returnProductGallery.notfound", "No hay imágenes de devolución registradas.");
+
         //error messages data change
         errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
         errorMessages.put("dataChange.email.invalid", "El email no es válido.");
