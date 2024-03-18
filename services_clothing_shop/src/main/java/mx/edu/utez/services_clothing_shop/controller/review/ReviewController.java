@@ -1,9 +1,14 @@
 package mx.edu.utez.services_clothing_shop.controller.review;
 
+import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestActionByIdOrderHasProductDTO;
+import mx.edu.utez.services_clothing_shop.controller.review.dto.ResponseAllReviewDTO;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.service.review.ReviewService;
+import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +23,14 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/get-reviews")
-    public ResponseEntity<List<BeanReview>> getReviews() {
-        return  reviewService.getReviews();
+    @PostMapping("/get-reviews-by-order-product-id")
+    public ResponseEntity<Object> getReviewsByIdOrderProduct(@Validated @RequestBody RequestActionByIdOrderHasProductDTO payload) {
+        try {
+            List<ResponseAllReviewDTO> responseDTOs = reviewService.getReviewsByOrderProductId(payload.getIdOrderHasProduct());
+            return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Reviews retrieved successfully", false, HttpStatus.OK.value()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
+        }
     }
 
     @PostMapping("/get-review")

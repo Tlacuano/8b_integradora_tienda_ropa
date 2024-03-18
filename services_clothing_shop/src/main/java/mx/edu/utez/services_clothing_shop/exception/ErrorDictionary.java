@@ -110,6 +110,10 @@ public class ErrorDictionary {
         errorMessages.put("returnProductGallery.requestReturnProductId.notnull", "El id de la solicitud de devolución es obligatorio.");
         errorMessages.put("returnProductGallery.idRequestReturnProduct.notfound", "El id de la solicitud de devolución no fue encontrada.");
 
+        //error messages review
+        errorMessages.put("review.idOrderHasProduct.notnull", "El id de la orden del producto es obligatorio.");
+        errorMessages.put("review.idOrderHasProduct.notfound", "La orden del producto no fue encontrada.");
+
         //error messages data change
         errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
         errorMessages.put("dataChange.email.invalid", "El email no es válido.");
