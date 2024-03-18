@@ -29,9 +29,9 @@ public class ReturnProductGalleryController {
     public ResponseEntity<Object> getReturnProductGalleries(){
         try {
             List<ResponseAllReturnProductGalleryDTO> responseDTOs = returnProductGalleryService.getReturnProductGalleries();
-            return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Return product galleries retrieved successfully", false, 200));
+            return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Return product galleries retrieved successfully", false, HttpStatus.OK.value()));
         } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, 400));
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
 
     }
@@ -40,9 +40,9 @@ public class ReturnProductGalleryController {
     public ResponseEntity<Object> getReturnProductGallery(@Validated @RequestBody RequestActionByIdDTO payload){
         try {
             BeanReturnProductGallery returnProductGallery = returnProductGalleryService.getReturnProductGallery(payload.getIdImage());
-            return ResponseEntity.ok(new CustomResponse<>(returnProductGallery, "Return product gallery retrieved successfully", false, 200));
+            return ResponseEntity.ok(new CustomResponse<>(returnProductGallery, "Return product gallery retrieved successfully", false, HttpStatus.OK.value()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, 400));
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
     }
 
@@ -50,9 +50,9 @@ public class ReturnProductGalleryController {
     public ResponseEntity<Object> postReturnProductGallery(@Validated @RequestBody RequestPostReturnProductGalleryDTO payload) {
         try {
             BeanReturnProductGallery newReturnProductGallery = returnProductGalleryService.postReturnProductGallery(payload);
-            return ResponseEntity.ok(new CustomResponse<>(newReturnProductGallery, "Return product gallery created successfully", false, 200));
+            return ResponseEntity.ok(new CustomResponse<>(newReturnProductGallery, "Return product gallery created successfully", false, HttpStatus.OK.value()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating return product gallery: " + e.getMessage(), true, 400));
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating return product gallery: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
 
     }

@@ -9,11 +9,9 @@ import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequests
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.IReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
