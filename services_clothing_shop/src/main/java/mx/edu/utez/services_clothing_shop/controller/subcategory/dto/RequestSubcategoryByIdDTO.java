@@ -6,14 +6,14 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class RequestSubcategoryById {
+public class RequestSubcategoryByIdDTO {
     @NotNull(message = "subcategory.id.notnull")
     private UUID idSubcategory;
 
-    public RequestSubcategoryById() {
+    public RequestSubcategoryByIdDTO() {
     }
 
-    public RequestSubcategoryById(UUID idSubcategory) {
+    public RequestSubcategoryByIdDTO(UUID idSubcategory) {
         this.idSubcategory = idSubcategory;
     }
 }
