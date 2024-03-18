@@ -30,22 +30,28 @@ public class CategoryService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public BeanCategory postCategory(BeanCategory category) {
-        return iCategory.save(category);
+        if (iCategory.findByCategory(category.getCategory())) {
+            throw new IllegalArgumentException("La categoría ya existe");
+        }
+        return iCategory.saveAndFlush(category);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public BeanCategory putCategory(BeanCategory category) {
-        return iCategory.save(category);
+        if (!iCategory.existsByIdCategory(category.getIdCategory())) {
+            throw new IllegalArgumentException("La categoría no existe");
+        }
+        return iCategory.saveAndFlush(category);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public Boolean putStatusCategory(UUID idCategory) {
-        BeanCategory category1 = iCategory.findByIdCategory(idCategory);
-        if (category1 != null) {
-            category1.setStatus(!category1.isStatus());
-            iCategory.save(category1);
-            return true;
+        if (!iCategory.existsByIdCategory(idCategory)) {
+            throw new IllegalArgumentException("La categoría no existe");
         }
-        return false;
+        BeanCategory category = iCategory.findByIdCategory(idCategory);
+        category.setStatus(!category.isStatus());
+        iCategory.saveAndFlush(category);
+        return true;
     }
 }

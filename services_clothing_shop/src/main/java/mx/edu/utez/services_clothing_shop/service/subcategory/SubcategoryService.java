@@ -29,22 +29,28 @@ public class SubcategoryService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public BeanSubcategory postSubcategory(BeanSubcategory subcategory) {
-        return iSubCategory.save(subcategory);
+        if (iSubCategory.findBySubcategory(subcategory.getSubcategory())) {
+            throw new IllegalArgumentException("La subcategoría ya existe");
+        }
+        return iSubCategory.saveAndFlush(subcategory);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public BeanSubcategory putSubcategory(BeanSubcategory subcategory) {
-        return iSubCategory.save(subcategory);
+        if (!iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
+            throw new IllegalArgumentException("La subcategoría no existe");
+        }
+        return iSubCategory.saveAndFlush(subcategory);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public Boolean putStatusSubcategory(UUID idSubcategory) {
-        BeanSubcategory subcategory1 = iSubCategory.findByIdSubcategory(idSubcategory);
-        if (subcategory1 != null) {
-            subcategory1.setStatus(!subcategory1.isStatus());
-            iSubCategory.save(subcategory1);
-            return true;
+        if (!iSubCategory.existsByIdSubcategory(idSubcategory)) {
+            throw new IllegalArgumentException("La subcategoría no existe");
         }
-        return false;
+        BeanSubcategory subcategory = iSubCategory.findByIdSubcategory(idSubcategory);
+        subcategory.setStatus(!subcategory.isStatus());
+        iSubCategory.saveAndFlush(subcategory);
+        return true;
     }
 }
