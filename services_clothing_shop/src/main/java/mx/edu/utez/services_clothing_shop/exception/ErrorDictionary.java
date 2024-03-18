@@ -108,6 +108,10 @@ public class ErrorDictionary {
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
         errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
 
+        //error messages request return product
+        errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
+        errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
+
     }
 
     public String getErrorMessage(String errorCode) {
