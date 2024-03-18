@@ -1,7 +1,8 @@
 package mx.edu.utez.services_clothing_shop.controller.subcategory;
 
+import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.subcategory.dto.RequestPutSubcategoryDTO;
-import mx.edu.utez.services_clothing_shop.controller.subcategory.dto.RequestSubcategoryById;
+import mx.edu.utez.services_clothing_shop.controller.subcategory.dto.RequestSubcategoryByIdDTO;
 import mx.edu.utez.services_clothing_shop.controller.subcategory.dto.RequestSubcategoryDTO;
 import mx.edu.utez.services_clothing_shop.controller.subcategory.dto.ResponseSubcategoryDTO;
 import mx.edu.utez.services_clothing_shop.model.category.BeanCategory;
@@ -26,69 +27,67 @@ public class SubcategoryController {
 
     @GetMapping("/get-subcategories")
     public ResponseEntity<CustomResponse<Page<ResponseSubcategoryDTO>>> getSubcategories(Pageable page) {
-        Page<BeanSubcategory> subcategories = subcategoryService.getSubcategories(page);
-        if (subcategories != null) {
+        try {
+            Page<BeanSubcategory> subcategories = subcategoryService.getSubcategories(page);
             Page<ResponseSubcategoryDTO> responseDTOList = subcategories.map(ResponseSubcategoryDTO::toSubcategoryDTO);
             return new ResponseEntity<>(new CustomResponse<>(responseDTOList, "Subcategorias encontradas", false, 200), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Subcategorias no encontradas", true, 404), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener las subcategorias: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/get-subcategory")
-    public ResponseEntity<CustomResponse<ResponseSubcategoryDTO>> getSubcategory(@RequestBody RequestSubcategoryById subcategory) {
-        BeanSubcategory retrievedSubcategory = subcategoryService.getSubcategory(subcategory.getIdSubcategory());
-        if (retrievedSubcategory != null) {
+    public ResponseEntity<CustomResponse<ResponseSubcategoryDTO>> getSubcategory(@Valid @RequestBody RequestSubcategoryByIdDTO subcategory) {
+        try {
+            BeanSubcategory retrievedSubcategory = subcategoryService.getSubcategory(subcategory.getIdSubcategory());
             ResponseSubcategoryDTO responseDTO = ResponseSubcategoryDTO.toSubcategoryDTO(retrievedSubcategory);
             return new ResponseEntity<>(new CustomResponse<>(responseDTO, "Subcategoria encontrada", false, 200), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Subcategoria no encontrada", true, 404), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener la subcategoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/post-subcategory")
-    public ResponseEntity<CustomResponse<BeanSubcategory>> postSubcategory(@RequestBody RequestSubcategoryDTO subcategory) {
-        BeanSubcategory newSubcategory = new BeanSubcategory();
-        newSubcategory.setSubcategory(subcategory.getSubcategory());
-        newSubcategory.setImage(subcategory.getImage());
-        BeanCategory category = new BeanCategory();
-        category.setIdCategory(subcategory.getIdCategory());
-        newSubcategory.setCategory(category);
-        newSubcategory.setStatus(subcategory.isStatus());
-        newSubcategory = subcategoryService.postSubcategory(newSubcategory);
-        if (newSubcategory != null) {
+    public ResponseEntity<CustomResponse<BeanSubcategory>> postSubcategory(@Valid @RequestBody RequestSubcategoryDTO subcategory) {
+        try {
+            BeanSubcategory newSubcategory = new BeanSubcategory();
+            newSubcategory.setSubcategory(subcategory.getSubcategory());
+            newSubcategory.setImage(subcategory.getImage());
+            BeanCategory category = new BeanCategory();
+            category.setIdCategory(subcategory.getIdCategory());
+            newSubcategory.setCategory(category);
+            newSubcategory.setStatus(subcategory.isStatus());
+            newSubcategory = subcategoryService.postSubcategory(newSubcategory);
             return new ResponseEntity<>(new CustomResponse<>(newSubcategory, "Subcategoria guardada", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Subcategoria no guardada", true, 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al guardar la subcategoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/put-subcategory")
-    public ResponseEntity<CustomResponse<BeanSubcategory>> putSubcategory(@RequestBody RequestPutSubcategoryDTO subcategory) {
-        BeanSubcategory updatedSubcategory = new BeanSubcategory();
-        updatedSubcategory.setIdSubcategory(subcategory.getIdSubcategory());
-        updatedSubcategory.setSubcategory(subcategory.getSubcategory());
-        updatedSubcategory.setImage(subcategory.getImage());
-        BeanCategory category = new BeanCategory();
-        category.setIdCategory(subcategory.getIdCategory());
-        updatedSubcategory.setCategory(category);
-        updatedSubcategory = subcategoryService.putSubcategory(updatedSubcategory);
-        if (updatedSubcategory != null) {
+    public ResponseEntity<CustomResponse<BeanSubcategory>> putSubcategory(@Valid @RequestBody RequestPutSubcategoryDTO subcategory) {
+        try {
+            BeanSubcategory updatedSubcategory = new BeanSubcategory();
+            updatedSubcategory.setIdSubcategory(subcategory.getIdSubcategory());
+            updatedSubcategory.setSubcategory(subcategory.getSubcategory());
+            updatedSubcategory.setImage(subcategory.getImage());
+            BeanCategory category = new BeanCategory();
+            category.setIdCategory(subcategory.getIdCategory());
+            updatedSubcategory.setCategory(category);
+            updatedSubcategory = subcategoryService.putSubcategory(updatedSubcategory);
             return new ResponseEntity<>(new CustomResponse<>(updatedSubcategory, "Subcategoria actualizada", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Subcategoria no actualizada", true, 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al actualizar la subcategoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/put-status-subcategory")
-    public ResponseEntity<CustomResponse<Boolean>> putStatusSubcategory(@RequestBody RequestSubcategoryById subcategory) {
-        Boolean updatedStatus = subcategoryService.putStatusSubcategory(subcategory.getIdSubcategory());
-        if (updatedStatus != null) {
-            return new ResponseEntity<>(new CustomResponse<>(updatedStatus, "Estatus de subcategoria actualizado", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Estatus de subcategoria no actualizado", true, 400), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<CustomResponse<Boolean>> putStatusSubcategory(@Valid @RequestBody RequestSubcategoryByIdDTO subcategory) {
+        try {
+            subcategoryService.putStatusSubcategory(subcategory.getIdSubcategory());
+            return new ResponseEntity<>(new CustomResponse<>(true, "Estatus de subcategoria actualizado", false, 201), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al actualizar el estatus de la subcategoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }

@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.category;
 
+import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.category.dto.RequestCategoryDTO;
 import mx.edu.utez.services_clothing_shop.controller.category.dto.RequestPutCategoryDTO;
 import mx.edu.utez.services_clothing_shop.controller.category.dto.RequestCategoryByIdDTO;
@@ -23,60 +24,60 @@ public class CategoryController {
     }
 
     @PostMapping("/get-categories")
-    public ResponseEntity<CustomResponse<Page<BeanCategory>>> getCategories(Pageable page) {
-        Page<BeanCategory> categories = categoryService.getCategories(page);
-        if (categories != null) {
+    public ResponseEntity<Object> getCategories(Pageable page) {
+        try {
+            Page<BeanCategory> categories = categoryService.getCategories(page);
             return new ResponseEntity<>(new CustomResponse<>(categories, "Categorías encontradas", false, 200), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Categorías no encontradas", true, 404), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener las categorías: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/get-category")
-    public ResponseEntity<CustomResponse<BeanCategory>> getCategory(@RequestBody RequestCategoryByIdDTO category) {
-        BeanCategory retrievedCategory = categoryService.getCategory(category.getIdCategory());
-        if (retrievedCategory != null) {
+    public ResponseEntity<Object> getCategory(@Valid @RequestBody RequestCategoryByIdDTO category) {
+        try {
+            BeanCategory retrievedCategory = categoryService.getCategory(category.getIdCategory());
             return new ResponseEntity<>(new CustomResponse<>(retrievedCategory, "Categoría encontrada", false, 200), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Categoría no encontrada", true, 404), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener la categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/post-category")
-    public ResponseEntity<CustomResponse<BeanCategory>> postCategory(@RequestBody RequestCategoryDTO category) {
-        BeanCategory newCategory = new BeanCategory();
-        newCategory.setCategory(category.getCategory());
-        newCategory.setImage(category.getImage());
-        newCategory.setStatus(category.isStatus());
-        newCategory = categoryService.postCategory(newCategory);
-        if (newCategory != null) {
+    public ResponseEntity<Object> postCategory(@Valid @RequestBody RequestCategoryDTO category) {
+        try {
+            BeanCategory newCategory = new BeanCategory();
+            newCategory.setCategory(category.getCategory());
+            newCategory.setImage(category.getImage());
+            newCategory.setStatus(category.isStatus());
+            newCategory = categoryService.postCategory(newCategory);
             return new ResponseEntity<>(new CustomResponse<>(newCategory, "Categoría guardada", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Categoría no guardada", true, 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al guardar la categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/put-category")
-    public ResponseEntity<CustomResponse<BeanCategory>> putCategory(@RequestBody RequestPutCategoryDTO category) {
-        BeanCategory updatedCategory = new BeanCategory();
-        updatedCategory.setIdCategory(category.getIdCategory());
-        updatedCategory.setCategory(category.getCategory());
-        updatedCategory.setImage(category.getImage());
-        updatedCategory = categoryService.putCategory(updatedCategory);
-        if (updatedCategory != null) {
+    public ResponseEntity<Object> putCategory(@Valid @RequestBody RequestPutCategoryDTO category) {
+        try {
+            BeanCategory updatedCategory = new BeanCategory();
+            updatedCategory.setIdCategory(category.getIdCategory());
+            updatedCategory.setCategory(category.getCategory());
+            updatedCategory.setImage(category.getImage());
+            updatedCategory = categoryService.putCategory(updatedCategory);
             return new ResponseEntity<>(new CustomResponse<>(updatedCategory, "Categoría actualizada", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Categoría no actualizada", true, 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al actualizar la categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/put-status-category")
-    public ResponseEntity<CustomResponse<Boolean>> putStatusCategory(@RequestBody RequestCategoryByIdDTO category) {
-        Boolean updatedStatus = categoryService.putStatusCategory(category.getIdCategory());
-        if (updatedStatus) {
+    public ResponseEntity<Object> putStatusCategory(@Valid @RequestBody RequestCategoryByIdDTO category) {
+        try {
+            categoryService.putStatusCategory(category.getIdCategory());
             return new ResponseEntity<>(new CustomResponse<>(true, "Estado de la categoría actualizado", false, 201), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(new CustomResponse<>(false, "Estado de la categoría no actualizado", true, 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(false, "Error al actualizar el estado de la categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

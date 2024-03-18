@@ -9,4 +9,7 @@ import java.util.UUID;
 @Repository
 public interface ICategory extends JpaRepository<BeanCategory, UUID> {
     BeanCategory findByIdCategory(UUID category);
+    boolean findByCategory(String category);
+    boolean existsByIdCategory(UUID idCategory);
+
 }

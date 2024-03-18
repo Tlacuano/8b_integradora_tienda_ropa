@@ -10,6 +10,9 @@ import java.util.UUID;
 @Repository
 public interface IProduct extends JpaRepository<BeanProduct, UUID> {
     Page<BeanProduct> findAllByUser_Email(String email, Pageable page);
-
     BeanProduct findByIdProduct(UUID idProduct);
+    boolean existsByIdProduct(UUID idProduct);
+    boolean deleteByIdProduct(UUID idProduct);
+    boolean existsByProductName(String productName);
+
 }
