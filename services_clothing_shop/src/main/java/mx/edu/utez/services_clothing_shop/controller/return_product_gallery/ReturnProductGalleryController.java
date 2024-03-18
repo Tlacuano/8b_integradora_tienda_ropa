@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.return_product_gallery;
 
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestActionByIdDTO;
+import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestPostReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.ResponseAllReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.service.return_product_gallery.ReturnProductGalleryService;
@@ -44,8 +45,14 @@ public class ReturnProductGalleryController {
     }
 
     @PostMapping("/post-return-product-gallery")
-    public ResponseEntity<BeanReturnProductGallery> postReturnProductGallery(@RequestBody BeanReturnProductGallery returnProductGallery) {
-        return returnProductGalleryService.postReturnProductGallery(returnProductGallery);
+    public ResponseEntity<Object> postReturnProductGallery(@Validated @RequestBody RequestPostReturnProductGalleryDTO payload) {
+        try {
+            BeanReturnProductGallery newReturnProductGallery = returnProductGalleryService.postReturnProductGallery(payload);
+            return ResponseEntity.ok(new CustomResponse<>(newReturnProductGallery, "Return product gallery created successfully", false, 200));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating return product gallery: " + e.getMessage(), true, 400));
+        }
+
     }
 
     @PutMapping("/put-return-product-gallery")

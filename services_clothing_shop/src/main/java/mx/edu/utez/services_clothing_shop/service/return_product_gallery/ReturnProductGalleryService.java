@@ -1,9 +1,13 @@
 package mx.edu.utez.services_clothing_shop.service.return_product_gallery;
 
+import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestPostReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.ResponseAllReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
+import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.IReturnProductGallery;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class ReturnProductGalleryService {
     private final IReturnProductGallery iReturnProductGallery;
+    private final IRequestsReturnProduct iRequestsReturnProduct;
     private final ErrorDictionary errorDictionary;
-    public ReturnProductGalleryService(IReturnProductGallery iReturnProductGallery, ErrorDictionary errorDictionary){
+    public ReturnProductGalleryService(IReturnProductGallery iReturnProductGallery, IRequestsReturnProduct iRequestsReturnProduct, ErrorDictionary errorDictionary){
         this.iReturnProductGallery = iReturnProductGallery;
         this.errorDictionary = errorDictionary;
+        this.iRequestsReturnProduct = iRequestsReturnProduct;
     }
 
     @Transactional(readOnly = true)
@@ -44,16 +50,21 @@ public class ReturnProductGalleryService {
         return optionalBeanReturnProductGallery.get();
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
-    public  ResponseEntity<BeanReturnProductGallery> postReturnProductGallery(BeanReturnProductGallery returnProductGallery) {
-        try {
-            return ResponseEntity.status(200).body(iReturnProductGallery.save(returnProductGallery));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @Transactional
+    public BeanReturnProductGallery postReturnProductGallery(RequestPostReturnProductGalleryDTO payload){
+        UUID requestReturnProductId = payload.getRequestReturnProductId();
+        BeanRequestReturnProduct requestReturnProduct = iRequestsReturnProduct.findById(requestReturnProductId)
+                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idRequestReturnProduct.notfound")));
+        BeanReturnProductGallery newReturnProduct = new BeanReturnProductGallery();
+        newReturnProduct.setImage(payload.getImage());
+
+        BeanRequestReturnProduct newRequestReturnProduct = new BeanRequestReturnProduct();
+        newRequestReturnProduct.setIdRequestReturnProduct(payload.getRequestReturnProductId());
+        newReturnProduct.setReturnProduct(requestReturnProduct);
+        return iReturnProductGallery.saveAndFlush(newReturnProduct);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional
     public ResponseEntity<BeanReturnProductGallery> putReturnProductGallery(BeanReturnProductGallery returnProductGallery) {
         try {
             if(iReturnProductGallery.existsByIdImage(returnProductGallery.getIdImage())){

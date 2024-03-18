@@ -106,6 +106,9 @@ public class ErrorDictionary {
         errorMessages.put("returnProductGallery.notfound", "No hay imágenes de devolución registradas.");
         errorMessages.put("returnProductGallery.idImage.notnull", "El id de la imagen de devolución es obligatorio.");
         errorMessages.put("returnProductGallery.idReturnProductGallery.notfound", "La imagen de devolución no fue encontrada.");
+        errorMessages.put("returnProductGallery.image.notnull", "La imagen es obligatoria.");
+        errorMessages.put("returnProductGallery.requestReturnProductId.notnull", "El id de la solicitud de devolución es obligatorio.");
+        errorMessages.put("returnProductGallery.idRequestReturnProduct.notfound", "El id de la solicitud de devolución no fue encontrada.");
 
         //error messages data change
         errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
