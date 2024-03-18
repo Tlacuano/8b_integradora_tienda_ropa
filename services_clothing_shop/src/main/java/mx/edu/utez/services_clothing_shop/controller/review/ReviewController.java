@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.review;
 
 import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestActionByIdOrderHasProductDTO;
+import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPostReviewDTO;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.ResponseAllReviewDTO;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.service.review.ReviewService;
@@ -39,8 +40,14 @@ public class ReviewController {
     }
 
     @PostMapping("/post-review")
-    public ResponseEntity<BeanReview> postReview(@RequestBody BeanReview review){
-        return reviewService.postReview(review);
+    public ResponseEntity<Object> postReview(@Validated @RequestBody RequestPostReviewDTO payload) {
+        try {
+            BeanReview newReview = reviewService.postReview(payload);
+            return ResponseEntity.ok(new CustomResponse<>(newReview, "Review created successfully", false, HttpStatus.OK.value()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
+        }
+
     }
 
     @PutMapping("/put-review")

@@ -111,8 +111,12 @@ public class ErrorDictionary {
         errorMessages.put("returnProductGallery.idRequestReturnProduct.notfound", "El id de la solicitud de devolución no fue encontrada.");
 
         //error messages review
-        errorMessages.put("review.idOrderHasProduct.notnull", "El id de la orden del producto es obligatorio.");
+        errorMessages.put("review.orderHasProductId.notnull", "El id de la orden del producto es obligatorio.");
         errorMessages.put("review.idOrderHasProduct.notfound", "La orden del producto no fue encontrada.");
+        errorMessages.put("review.comment.notnull", "El comentario es obligatorio.");
+        errorMessages.put("review.comment.size", "El comentario debe tener entre 5 y 255 caracteres.");
+        errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
+        errorMessages.put("review.assessment.max", "La calificación debe ser menor a 6.");
 
         //error messages data change
         errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");

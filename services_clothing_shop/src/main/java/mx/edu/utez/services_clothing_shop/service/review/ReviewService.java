@@ -1,7 +1,9 @@
 package mx.edu.utez.services_clothing_shop.service.review;
 
+import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPostReviewDTO;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.ResponseAllReviewDTO;
 import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.model.review.IReview;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
@@ -50,7 +52,7 @@ public class ReviewService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanReview> postReview(BeanReview review){
+    public ResponseEntity<BeanReview> putReview(BeanReview review){
         try {
             return ResponseEntity.status(200).body(iReview.save(review));
         } catch (Exception e) {
@@ -58,19 +60,16 @@ public class ReviewService {
         }
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanReview> putReview(BeanReview review){
-        try {
-            if(iReview.existsById(review.getIdReview())){
-                return ResponseEntity.status(200).body(iReview.save(review));
-            } else {
-                return ResponseEntity.status(400).build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-
+    @Transactional
+    public BeanReview postReview(RequestPostReviewDTO payload){
+        BeanReview newReview = new BeanReview();
+        newReview.setComment(payload.getComment());
+        newReview.setReviewDate(LocalDate.now());
+        newReview.setAssessment(payload.getAssessment());
+        BeanOrderHasProducts orderHasProducts = new BeanOrderHasProducts();
+        orderHasProducts.setIdOrderProduct(payload.getOrderHasProductId());
+        newReview.setOrderHasProduct(orderHasProducts);
+        return iReview.saveAndFlush(newReview);
     }
 
     public ResponseAllReviewDTO mapToResponseAllDTO(Object[] row){
