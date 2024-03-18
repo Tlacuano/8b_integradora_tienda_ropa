@@ -1,25 +1,27 @@
 <template>
   <div id="app">
-    <NavbarBuyer v-if="(getRole === 'comprador' && isLoggedIn) || !isLoggedIn"/>
-    <NavbarAdmin v-if="getRole === 'administrador' && isLoggedIn"/>
-    <NavbarSeller v-if="getRole === 'vendedor' && isLoggedIn" />
+    <b-overlay :show="showOverlay" class="app-container">
+      <NavbarBuyer v-if="(getRole === 'comprador' && isLoggedIn) || !isLoggedIn"/>
+      <NavbarAdmin v-if="getRole === 'administrador' && isLoggedIn"/>
+      <NavbarSeller v-if="getRole === 'vendedor' && isLoggedIn" />
 
-    <b-container fluid>
-      <router-view />
-      <!-- Formulario Temporal para Login y Logout -->
-      {{isLoggedIn}}
-      {{getRole}}
-      {{getToken}}
-      <div v-if="!isLoggedIn">
-        <input v-model="tempToken" placeholder="Token">
-        <input v-model="tempRole" placeholder="Role (administrador, vendedor, comprador)">
-        <input v-model="tempEmail" placeholder="Email">
-        <button @click="login">Login</button>
-      </div>
-      <div v-else>
-        <button @click="logout">Logout</button>
-      </div>
-    </b-container>
+      <b-container fluid>
+        <router-view />
+        <!-- Formulario Temporal para Login y Logout -->
+        {{isLoggedIn}}
+        {{getRole}}
+        {{getToken}}
+        <div v-if="!isLoggedIn">
+          <input v-model="tempToken" placeholder="Token">
+          <input v-model="tempRole" placeholder="Role (administrador, vendedor, comprador)">
+          <input v-model="tempEmail" placeholder="Email">
+          <button @click="login">Login</button>
+        </div>
+        <div v-else>
+          <button @click="logout">Logout</button>
+        </div>
+      </b-container>
+    </b-overlay>
   </div>
 </template>
 
@@ -41,7 +43,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isLoggedIn', 'getRole', "getToken"])
+    ...mapGetters(['isLoggedIn', 'getRole', "getToken","showOverlay"])
   },
   methods: {
     login() {
@@ -60,4 +62,9 @@ export default {
 </script>
 
 <style >
+  .app-container{
+    overflow-y: auto;
+    position: absolute;
+    height: 100%;
+  }
 </style>

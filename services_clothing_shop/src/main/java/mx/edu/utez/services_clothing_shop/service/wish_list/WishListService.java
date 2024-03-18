@@ -1,9 +1,9 @@
 package mx.edu.utez.services_clothing_shop.service.wish_list;
 
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
+
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.model.wish_list.IWishList;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +14,11 @@ import java.util.UUID;
 @Service
 public class WishListService {
     private final IWishList wishListRepository;
+    private final EmailService emailService;
 
-    public WishListService(IWishList wishListRepository) {
+    public WishListService(IWishList wishListRepository, EmailService emailService) {
         this.wishListRepository = wishListRepository;
+        this.emailService = emailService;
     }
 
 

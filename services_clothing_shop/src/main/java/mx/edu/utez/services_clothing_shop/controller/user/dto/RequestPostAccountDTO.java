@@ -22,8 +22,8 @@ public class RequestPostAccountDTO {
     @NotBlank(message = "user.password.notnull")
     private String password;
 
-    @NotNull
-    private UUID role;
+    private String roleToAssign;
+
 
     @NotBlank(message = "person.name.notnull")
     @Pattern(regexp = RegexPatterns.NAME_REGEX, message = "person.name.pattern")

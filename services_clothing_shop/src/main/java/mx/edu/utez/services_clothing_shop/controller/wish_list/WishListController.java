@@ -24,7 +24,6 @@ public class WishListController {
     @PostMapping("/get-wish-list")
     public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> findWishListByUserEmail(@RequestBody Map<String, String> requestBody) {
         String userEmail = requestBody.get("userEmail");
-        System.out.println(userEmail);
         if(userEmail == null || userEmail.isEmpty()) {
             return new ResponseEntity<>(new CustomResponse<>(null, "El correo del usuario es requerido", true, 400), HttpStatus.BAD_REQUEST);
         }

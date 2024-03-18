@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface IRole extends JpaRepository<BeanRole, UUID> {
+    BeanRole findByRoleName(String roleName);
 }
