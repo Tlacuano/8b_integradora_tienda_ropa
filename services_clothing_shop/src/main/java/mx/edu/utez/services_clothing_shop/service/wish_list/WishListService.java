@@ -24,7 +24,6 @@ public class WishListService {
 
     @Transactional(rollbackFor = {Exception.class})
     public List<BeanWishList> findWishListByUserEmail(String userEmail) {
-        emailService.enviarCorreoRestablecimiento(userEmail, "ready");
         return wishListRepository.findAllByUser_email(userEmail);
     }
 
