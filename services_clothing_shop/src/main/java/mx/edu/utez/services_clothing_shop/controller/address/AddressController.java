@@ -2,8 +2,6 @@ package mx.edu.utez.services_clothing_shop.controller.address;
 
 import mx.edu.utez.services_clothing_shop.controller.address.dto.*;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
-import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
-import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.service.address.AddressService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
@@ -24,8 +22,13 @@ public class AddressController {
     }
 
     @GetMapping("/get-addresses")
-    public ResponseEntity<CustomResponse<List<ResponseAddressDTO>>> getAddresses(){
-        return new ResponseEntity<>(new CustomResponse<>(addressService.getAddresses(),"All addresses retrieved successfully", false, 200), HttpStatus.OK);
+    public ResponseEntity<Object> getAddresses(){
+        try {
+            List<ResponseAllAddressDTO> responseDTOs = addressService.getAddresses();
+            return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Addresses retrieved successfully", false, HttpStatus.OK.value()));
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
+        }
     }
 
     @PostMapping("/get-address")
@@ -59,20 +62,6 @@ public class AddressController {
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
-    }
-
-    private ResponsePostAddressDTO mapToResponseDTO(BeanAddress savedAddress) {
-        ResponsePostAddressDTO responseDTO = new ResponsePostAddressDTO();
-        responseDTO.setIdAddress(savedAddress.getIdAddress());
-        responseDTO.setAddress(savedAddress.getAddress());
-        responseDTO.setReferencesAddress(savedAddress.getReferencesAddress());
-        responseDTO.setPostalCode(savedAddress.getPostalCode());
-        responseDTO.setState(savedAddress.getState());
-        responseDTO.setStreet(savedAddress.getStreet());
-        responseDTO.setNeighborhood(savedAddress.getNeighborhood());
-        responseDTO.setPersonId(savedAddress.getPerson().getIdPerson());
-        responseDTO.setStatusId(savedAddress.getStatus().getIdStatus());
-        return responseDTO;
     }
 
 }

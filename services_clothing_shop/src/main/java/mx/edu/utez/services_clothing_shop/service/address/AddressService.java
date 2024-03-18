@@ -1,21 +1,15 @@
 package mx.edu.utez.services_clothing_shop.service.address;
 
-import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPostAddressDTO;
-import mx.edu.utez.services_clothing_shop.controller.address.dto.RequestPutAddressDTO;
-import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponseAddressDTO;
-import mx.edu.utez.services_clothing_shop.controller.address.dto.ResponsePostAddressDTO;
+import mx.edu.utez.services_clothing_shop.controller.address.dto.*;
 import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,18 +24,15 @@ public class AddressService {
         this.errorDictionary = errorDictionary;
     }
 
-    @Transactional
-    public boolean existsByIdAddress(UUID idAddress){
-        return iAddress.existsByIdAddress(idAddress);
-    }
-
     @Transactional(readOnly = true)
-    public List<ResponseAddressDTO> getAddresses(){
-            List<BeanAddress> addresses = iAddress.findAll();
-            List<ResponseAddressDTO> responseDTOs = addresses.stream()
-                    .map(ResponseAddressDTO::toAddressDTO)
-                    .collect(Collectors.toList());
-            return responseDTOs;
+    public List<ResponseAllAddressDTO> getAddresses() {
+        List<Object[]> addressesData = iAddress.findEssentialAddressInfo();
+        if (addressesData.isEmpty()) {
+            throw new CustomException(errorDictionary.getErrorMessage("address.notfound"));
+        }
+        return addressesData.stream()
+                .map(this::mapToResponseAllDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -104,6 +95,18 @@ public class AddressService {
         responseDTO.setNeighborhood(savedAddress.getNeighborhood());
         responseDTO.setPersonId(savedAddress.getPerson().getIdPerson());
         responseDTO.setStatusId(savedAddress.getStatus().getIdStatus());
+        return responseDTO;
+    }
+
+    public ResponseAllAddressDTO mapToResponseAllDTO(Object[] row) {
+        ResponseAllAddressDTO responseDTO = new ResponseAllAddressDTO();
+        responseDTO.setAddress((String) row[0]);
+        responseDTO.setReferencesAddress((String) row[1]);
+        responseDTO.setPostalCode((String) row[2]);
+        responseDTO.setState((String) row[3]);
+        responseDTO.setStreet((String) row[4]);
+        responseDTO.setNeighborhood((String) row[5]);
+        responseDTO.setStatusID((UUID) row[6]);
         return responseDTO;
     }
 
