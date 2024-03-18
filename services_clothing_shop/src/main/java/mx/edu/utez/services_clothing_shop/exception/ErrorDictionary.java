@@ -45,6 +45,7 @@ public class ErrorDictionary {
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
+
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
@@ -82,6 +83,16 @@ public class ErrorDictionary {
         errorMessages.put("product.user.notnull", "El usuario del producto es obligatorio.");
         errorMessages.put("product.user.nonempty", "El usuario del producto no puede estar vacío.");
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
+
+        //error messages data change
+        errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
+        errorMessages.put("dataChange.email.invalid", "El email no es válido.");
+        errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
+        errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
+
+        //error messages request return product
+        errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
+        errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
 
     }
 
