@@ -27,17 +27,15 @@ public class ShoppingCartController {
         String userEmail = requestBody.get("userEmail");
         if(userEmail == null || userEmail.isEmpty()) {
             return new ResponseEntity<>(new CustomResponse<>(null, "El correo del usuario es requerido", true, 400), HttpStatus.BAD_REQUEST);
+        }else{
+            List<GetShoppingCartDTO> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
+            if (shoppingCarts.isEmpty()) {
+                return new ResponseEntity<>(new CustomResponse<>(null,"No se encontraron carritos de compras", true, 404), HttpStatus.NOT_FOUND);
+            } else {
+                return ResponseEntity.ok(new CustomResponse<>(shoppingCarts, "ok", false, 200));
+            }
         }
-        List<BeanShoppingCart> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
-        List<GetShoppingCartDTO> shoppingCartDTOs = new ArrayList<>();
-        for (BeanShoppingCart cart : shoppingCarts) {
-            shoppingCartDTOs.add(GetShoppingCartDTO.fromShoppingCart(cart));
-        }
-        if (shoppingCartDTOs.isEmpty()) {
-            return new ResponseEntity<>(new CustomResponse<>(null,"No se encontraron carritos de compras", true, 404), HttpStatus.NOT_FOUND);
-        } else {
-            return ResponseEntity.ok(new CustomResponse<>(shoppingCartDTOs, "ok", false, 200));
-        }
+
     }
     @PostMapping("/post-shopping-cart")
     public ResponseEntity<CustomResponse<List<GetShoppingCartDTO>>> createShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {

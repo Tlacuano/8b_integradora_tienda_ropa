@@ -17,15 +17,13 @@ public class GetShoppingCartDTO {
     private int amount;
     @NotBlank(message = "shoppingCart.product.notnull")
     private ResponseShoppingCartProductDTO product;
-    @NotBlank(message = "shoppingCart.user.notnull")
-    private ResponseShoppingCartUserDTO user;
+
 
     public static GetShoppingCartDTO fromShoppingCart(BeanShoppingCart shoppingCart) {
         GetShoppingCartDTO shoppingCartDTO = new GetShoppingCartDTO();
         shoppingCartDTO.setIdShoppingCart(shoppingCart.getIdShoppingCart());
         shoppingCartDTO.setAmount(shoppingCart.getAmount());
         shoppingCartDTO.setProduct(ResponseShoppingCartProductDTO.fromProduct(shoppingCart.getProduct()));
-        shoppingCartDTO.setUser(ResponseShoppingCartUserDTO.fromUser(shoppingCart.getUser()));
         return shoppingCartDTO;
     }
 }
