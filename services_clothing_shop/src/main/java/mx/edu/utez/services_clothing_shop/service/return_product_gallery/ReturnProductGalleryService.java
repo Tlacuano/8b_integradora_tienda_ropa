@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.return_product_gallery;
 
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestPostReturnProductGalleryDTO;
+import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestPutImageReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.ResponseAllReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
@@ -55,9 +56,9 @@ public class ReturnProductGalleryService {
         UUID requestReturnProductId = payload.getRequestReturnProductId();
         BeanRequestReturnProduct requestReturnProduct = iRequestsReturnProduct.findById(requestReturnProductId)
                 .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idRequestReturnProduct.notfound")));
+
         BeanReturnProductGallery newReturnProduct = new BeanReturnProductGallery();
         newReturnProduct.setImage(payload.getImage());
-
         BeanRequestReturnProduct newRequestReturnProduct = new BeanRequestReturnProduct();
         newRequestReturnProduct.setIdRequestReturnProduct(payload.getRequestReturnProductId());
         newReturnProduct.setReturnProduct(requestReturnProduct);
@@ -65,16 +66,14 @@ public class ReturnProductGalleryService {
     }
 
     @Transactional
-    public ResponseEntity<BeanReturnProductGallery> putReturnProductGallery(BeanReturnProductGallery returnProductGallery) {
-        try {
-            if(iReturnProductGallery.existsByIdImage(returnProductGallery.getIdImage())){
-                return ResponseEntity.status(200).body(iReturnProductGallery.save(returnProductGallery));
-            } else {
-                return ResponseEntity.status(400).build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    public BeanReturnProductGallery putReturnProductGallery(RequestPutImageReturnProductGalleryDTO payload) {
+        Optional<BeanReturnProductGallery> optionalBeanReturnProductGallery = iReturnProductGallery.findById(payload.getIdImage());
+        if(optionalBeanReturnProductGallery.isEmpty()){
+            throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idImage.notfound"));
         }
+        BeanReturnProductGallery existingReturnProductGallery = optionalBeanReturnProductGallery.get();
+        existingReturnProductGallery.setImage(payload.getImage());
+        return iReturnProductGallery.saveAndFlush(existingReturnProductGallery);
     }
 
     public ResponseAllReturnProductGalleryDTO mapToResponseAllDTO(Object[] row){
