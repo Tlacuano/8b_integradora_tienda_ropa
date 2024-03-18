@@ -7,5 +7,6 @@ public class RegexPatterns {
 
     public static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
+    public static final String REJECTION_REASON_REGEX = "^[a-zA-Z0-9\\s]*$";
 
 }

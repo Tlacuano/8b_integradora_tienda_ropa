@@ -16,40 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/venta-ropa/api/person")
 @CrossOrigin(origins = {"*"})
 public class PersonController {
-    private final UserService userService;
     private final PersonService personService;
 
-    public PersonController(UserService userService, PersonService personService) {
-        this.userService = userService;
+    public PersonController(PersonService personService) {
         this.personService = personService;
     }
 
 
     @PostMapping("/post-personal-information")
     public ResponseEntity<Object> postPersonalInformation(@Validated @RequestBody RequestPutPersonalInformationDTO payload){
-        BeanUser user = userService.getByEmail(payload.getEmail());
-
-        if(user == null){
-            throw new RuntimeException("user.email.exists");
-        }
-
-        BeanPerson newPersonalInformation = new BeanPerson();
-        newPersonalInformation.setIdPerson(user.getIdUser());
-        newPersonalInformation.setName(payload.getName());
-        newPersonalInformation.setLastName(payload.getLastName());
-        newPersonalInformation.setSecondLastName(payload.getSecondLastName());
-        newPersonalInformation.setPhoneNumber(payload.getPhoneNumber());
-        newPersonalInformation.setPicture(payload.getPicture());
-        newPersonalInformation.setGender(payload.getGender());
-        if(!ValidatesFunctions.isAdult(payload.getBirthday())){
-            throw new RuntimeException("person.birthday.age");
-        }
-        newPersonalInformation.setBirthday(payload.getBirthday());
-        newPersonalInformation.setUser(user);
-
         return new ResponseEntity<>(
-                new CustomResponse<>(personService.postPersonalInformation(newPersonalInformation), "Información personal guardada", false, 200),
-                HttpStatus.OK
-        );
+                new CustomResponse<>(personService.postPersonalInformation(payload), "Información personal registrada correctamente", false, 201),
+                HttpStatus.OK);
     }
 }

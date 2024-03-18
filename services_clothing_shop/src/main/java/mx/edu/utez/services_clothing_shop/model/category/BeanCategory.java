@@ -23,10 +23,10 @@ public class BeanCategory {
     @Column(name = "id_category", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idCategory;
 
-    @Column(name = "category", length = 60)
+    @Column(name = "category", length = 30)
     private String category;
 
-    @Column(name = "image", length = 100)
+    @Column(name = "image")
     private String image;
 
     //relacion muchos a uno con la tabla status

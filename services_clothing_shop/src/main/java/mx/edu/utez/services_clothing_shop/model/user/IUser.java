@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +25,6 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     );
 
     @Query(value = "CALL sp_delete_user(:p_email)", nativeQuery = true)
-    String deleteAccount(
-            @Param("p_email") String email
-    );
+    String deleteAccount(@Param("p_email") String email);
 
 }
