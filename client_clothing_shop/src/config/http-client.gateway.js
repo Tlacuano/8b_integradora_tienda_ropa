@@ -1,7 +1,14 @@
 import { encrypt, decrypt } from "../utils/security/aes";
-import instance from "./axios";
 import Vue from 'vue';
-import { BToast } from 'bootstrap-vue';
+import axios from "axios";
+
+const SERVER_URL = import.meta.env.VITE_API_URL;
+
+const instance = axios.create({
+    baseURL: SERVER_URL,
+    timeout: 10000,
+});
+
 
 
 const baseURL = import.meta.env.VITE_API_URL;
@@ -9,7 +16,6 @@ const baseURL = import.meta.env.VITE_API_URL;
 instance.interceptors.request.use(
     (config) => {
         if(config.url.startsWith(baseURL)) {
-
             const auth_token = localStorage.getItem("token");
             if (auth_token) {
                 config.headers["Authorization"] = `Bearer ${auth_token}`;
@@ -88,12 +94,12 @@ instance.interceptors.response.use(
 
 export default {
     async doPost(url, data) {
-        return await instance.post(url, data);
+        return await instance.post(SERVER_URL+url, data);
     },
     async doGet(url) {
-        return await instance.get(url);
+        return await instance.get(SERVER_URL+url);
     },
     async doPut(url) {
-        return await instance.put(url);
+        return await instance.put(SERVER_URL+url);
     },
 }

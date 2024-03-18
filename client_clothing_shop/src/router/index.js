@@ -8,6 +8,12 @@ const router = new VueRouter({
   mode: 'history',
   base: import.meta.env.BASE_URL,
   routes: [
+    {
+      path:"/user-management",
+      name:"ADMINUserManagement",
+        component: () => import("../views/user/UserManagement.vue"),
+
+    }
     
   ]
 });

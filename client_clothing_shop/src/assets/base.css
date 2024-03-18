@@ -1,6 +1,8 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --background-navbar: #D9D9D9;
+  --black-base: #212529;
+
 }
 
 

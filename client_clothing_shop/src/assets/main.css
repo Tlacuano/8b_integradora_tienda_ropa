@@ -3,6 +3,7 @@
 #app {
   height: 100vh;
   margin: 0 auto;
+  overflow: hidden;
 
   font-weight: normal;
 }
@@ -32,4 +33,35 @@
 
 .highlight-on-hover:hover {
   background-color: #f1f1f1;
+}
+
+
+/*para que el icono de la lupa este en el input*/
+.position-relative {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #495057;
+}
+
+/*cambios a bootstrap*/
+a.nav-link {
+  color: var(--black-base) !important;
+}
+
+
+.page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: var(--black-base) !important;
+  border-color: #000000 !important;
+}
+
+.page-link {
+  color: #fff;
 }
