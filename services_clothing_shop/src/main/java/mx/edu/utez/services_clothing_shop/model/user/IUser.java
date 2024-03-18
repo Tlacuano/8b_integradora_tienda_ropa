@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface IUser extends JpaRepository<BeanUser, UUID> {
     boolean existsByEmail(String email);
-    Page<BeanUser> findAllBy (Pageable pageable);
+    Page<BeanUser> findAllByOrderByStatusDesc (Pageable pageable);
 
     BeanUser findByEmail(String email);
 

@@ -40,7 +40,7 @@ public class UserService {
     //get
     @Transactional
     public Page<ResponsePageUsersDTO> getPageUsers(Pageable pageable){
-        Page<BeanUser> users = userRepository.findAllBy(pageable);
+        Page<BeanUser> users = userRepository.findAllByOrderByStatusDesc(pageable);
         return users.map(ResponsePageUsersDTO::fromUser);
     }
 

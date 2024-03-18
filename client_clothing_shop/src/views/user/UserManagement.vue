@@ -11,7 +11,7 @@
         <b-form-group>
           <div class="position-relative">
             <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
-            <font-awesome-icon icon="magnifying-glass" class="search-icon"></font-awesome-icon>
+            <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
       </b-col>
@@ -22,6 +22,64 @@
 
     <b-row class="mt-3">
       <b-col class="container-users">
+        <b-row>
+          <b-col lg="4" v-for="person in people"  :key="person.id">
+            <b-card
+              no-body
+              class="highlight-on-hover mb-2"
+              >
+              <b-row class="m-2" no-gutters>
+                <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
+                  <b-img
+                      v-if="person.picture"
+                    :src="person.picture"
+                    alt="Image"
+                    fluid
+                    thumbnail
+                  ></b-img>
+                  <b-avatar
+                    v-else
+                    size="2.5rem"
+                    variant="secondary"
+                    class="text-uppercase"
+                  >{{person.fullName.charAt(0)}}</b-avatar>
+
+                </b-col>
+
+                <b-col cols="8" class="ml-2 ">
+                  <b-row>
+                    <b-col>
+                      <div class="text-truncate font-weight-bold small">{{person.email}}</div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <div class="text-ellipsis text-secondary small">{{person.fullName}}</div>
+                    </b-col>
+                  </b-row>
+
+                  <b-row>
+                    <b-col>
+                      <div class="text-ellipsis text-black-50 small">{{person.roles}}</div>
+                    </b-col>
+                  </b-row>
+                </b-col>
+
+                <b-col  class="text-right">
+                  <b-dropdown
+                    variant="link-dark"
+                    toggle-class="text-decoration-none"
+                    no-caret
+                    >
+                    <template v-slot:button-content>
+                      <font-awesome-icon icon="ellipsis-v"/>
+                    </template>
+                  </b-dropdown>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
 
       </b-col>
     </b-row>
@@ -29,7 +87,10 @@
     <b-row>
       <b-col>
         <b-pagination
-
+          v-model="objetPagination.page"
+          :total-rows="objetPagination.elements"
+          :per-page="objetPagination.size"
+          aria-controls="my-table"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -53,10 +114,17 @@ export default {
   },
   methods:{
     async getPageUsers(){
+      this.showOverlay()
       const response = await PeopleService.getPageUsersService(this.objetPagination);
+      this.showOverlay()
+
       console.log(response)
+      this.objetPagination.elements = response.data.totalElements;
       this.people = response.data.content;
-      console.log(this.people)
+    },
+
+    showOverlay(){
+      this.$store.dispatch('changeStatusOverlay');
     }
   },
   mounted() {
