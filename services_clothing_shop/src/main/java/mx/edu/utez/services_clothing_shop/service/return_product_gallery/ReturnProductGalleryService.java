@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,16 +36,12 @@ public class ReturnProductGalleryService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<BeanReturnProductGallery> getReturnProductGallery(BeanReturnProductGallery returnProductGallery) {
-        try {
-            if(iReturnProductGallery.existsByIdImage(returnProductGallery.getIdImage())) {
-                return ResponseEntity.ok(iReturnProductGallery.findByIdImage(returnProductGallery.getIdImage()));
-            } else {
-                return ResponseEntity.status(400).build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    public BeanReturnProductGallery getReturnProductGallery(UUID idReturnProductGallery) {
+        Optional<BeanReturnProductGallery> optionalBeanReturnProductGallery = iReturnProductGallery.findById(idReturnProductGallery);
+        if(optionalBeanReturnProductGallery.isEmpty()){
+            throw new RuntimeException(errorDictionary.getErrorMessage("returnProductGallery.idReturnProductGallery.notfound"));
         }
+        return optionalBeanReturnProductGallery.get();
     }
 
     @Transactional(rollbackFor = {SQLException.class})
