@@ -8,7 +8,9 @@ export default new Vuex.Store({
         token: '',
         email: '',
         role: '',
-        hasMultipleRoles: false
+        hasMultipleRoles: false,
+
+        showOverlay:false
     },
     mutations:{
         setAuthData(state,{token, email, role, hasMultipleRoles}){
@@ -26,6 +28,9 @@ export default new Vuex.Store({
         switchUserRole(state, { newRole, newToken }){
             state.role = newRole;
             state.token = newToken;
+        },
+        setStatusOverlay(state, {newStateOverlay}){
+            state.showOverlay = newStateOverlay;
         }
     },
     actions:{
@@ -59,14 +64,19 @@ export default new Vuex.Store({
         switchRole({ commit, state }, { newRole, newToken }) {
             commit('switchUserRole', { newRole, newToken });
             window.location.reload();
+        },
+        changeStatusOverlay({state,commit}){
+            commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
         }
+
     },
     getters:{
         isLoggedIn: state => state.token.length > 0,
         getToken: state => state.token,
         getEmail: state => state.email,
         getRole: state => state.role,
-        hasMultipleRoles: state => state.hasMultipleRoles
+        hasMultipleRoles: state => state.hasMultipleRoles,
+        showOverlay: state => state.showOverlay
     }
 
 
