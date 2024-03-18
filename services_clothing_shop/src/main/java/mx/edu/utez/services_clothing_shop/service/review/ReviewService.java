@@ -8,7 +8,6 @@ import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasP
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.model.review.IReview;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,19 +36,6 @@ public class ReviewService {
                 .stream()
                 .map(this::mapToResponseAllDTO)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseEntity<BeanReview> getReview(BeanReview review){
-        try {
-            if(iReview.existsByIdReview(review.getIdReview())){
-                return ResponseEntity.ok(iReview.findByIdReview(review.getIdReview()));
-            }else {
-                 return ResponseEntity.status(400).build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @Transactional

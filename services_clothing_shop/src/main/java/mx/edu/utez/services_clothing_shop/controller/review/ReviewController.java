@@ -35,11 +35,6 @@ public class ReviewController {
         }
     }
 
-    @PostMapping("/get-review")
-    public ResponseEntity<BeanReview> getReview(@RequestBody BeanReview review) {
-        return reviewService.getReview(review);
-    }
-
     @PostMapping("/post-review")
     public ResponseEntity<Object> postReview(@Validated @RequestBody RequestPostReviewDTO payload) {
         try {
@@ -48,7 +43,6 @@ public class ReviewController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
-
     }
 
     @PutMapping("/put-review")
@@ -59,7 +53,6 @@ public class ReviewController {
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error updating review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
         }
-
     }
 
 }
