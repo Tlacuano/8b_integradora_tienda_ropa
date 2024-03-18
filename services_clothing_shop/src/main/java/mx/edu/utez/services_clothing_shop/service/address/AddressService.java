@@ -5,6 +5,7 @@ import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
+import mx.edu.utez.services_clothing_shop.model.address_status.IAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class AddressService {
     private final IAddress iAddress;
+    private final IAddressStatus iAddressStatus;
     private ErrorDictionary errorDictionary;
-    public AddressService(IAddress iAddress, ErrorDictionary errorDictionary){
+    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus, ErrorDictionary errorDictionary){
         this.iAddress = iAddress;
+        this.iAddressStatus = iAddressStatus;
         this.errorDictionary = errorDictionary;
     }
 
@@ -82,6 +85,20 @@ public class AddressService {
         existingAddress.setNeighborhood(payload.getNeighborhood());
         //guardar el objeto y regresar el objeto guardado
         return iAddress.saveAndFlush(existingAddress);
+    }
+
+    public ResponseAllAddressDTO updateAddressStatus(RequestPutStatusAddressDTO payload) {
+        UUID idAddress = payload.getIdAddress();
+        UUID idStatus = payload.getStatusId();
+        BeanAddress address = iAddress.findById(idAddress)
+                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("address.notfound")));
+
+        BeanAddressStatus status = iAddressStatus.findById(idStatus)
+                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("status.notfound")));
+
+        address.setStatus(status);
+        iAddress.save(address);
+        return mapToResponseAllDTO(new Object[]{address.getAddress(), address.getReferencesAddress(), address.getPostalCode(), address.getState(), address.getStreet(), address.getNeighborhood(), address.getStatus().getIdStatus()});
     }
 
     public ResponsePostAddressDTO mapToResponseDTO(BeanAddress savedAddress) {
