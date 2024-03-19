@@ -74,6 +74,15 @@ public class ReturnProductGalleryService {
         return iReturnProductGallery.saveAndFlush(existingReturnProductGallery);
     }
 
+    @Transactional
+    public void deleteReturnProductGallery(UUID idImage) {
+        if(iReturnProductGallery.existsById(idImage)){
+            iReturnProductGallery.deleteById(idImage);
+        } else {
+            throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idImage.notfound"));
+        }
+    }
+
     public ResponseAllReturnProductGalleryDTO mapToResponseAllDTO(Object[] row){
         ResponseAllReturnProductGalleryDTO responseDTO = new ResponseAllReturnProductGalleryDTO();
         responseDTO.setImage((String) row[0]);

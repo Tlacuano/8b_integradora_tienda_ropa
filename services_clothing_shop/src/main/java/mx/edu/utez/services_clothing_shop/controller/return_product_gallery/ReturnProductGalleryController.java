@@ -67,4 +67,14 @@ public class ReturnProductGalleryController {
         }
     }
 
+    @DeleteMapping("/delete-return-product-gallery")
+    public ResponseEntity<Object> deleteReturnProductGallery(@Validated @RequestBody RequestActionByIdDTO payload){
+        try {
+            returnProductGalleryService.deleteReturnProductGallery(payload.getIdImage());
+            return ResponseEntity.ok(new CustomResponse<>(null, "Return product gallery deleted successfully", false, HttpStatus.OK.value()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error deleting return product gallery: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
 }
