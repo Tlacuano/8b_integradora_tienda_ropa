@@ -3,10 +3,12 @@ package mx.edu.utez.services_clothing_shop.service.wish_list;
 
 
 
+import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
 
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product.IProduct;
+import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.model.wish_list.IWishList;
 import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
@@ -35,7 +37,7 @@ public class WishListService {
 
 
     @Transactional
-    public List<ResponseWishListDTO> findWishListByUserEmail(String userEmail) {
+    public List<ResponseInformationWishListDTO> findWishListByUserEmail(String userEmail) {
         if (userEmail == null || userEmail.isEmpty()) {
             throw new CustomException("user.email.notnull");
         } else if (!userEmail.matches(EMAIL_REGEX)) {
@@ -43,9 +45,9 @@ public class WishListService {
         } else {
             List<BeanWishList> wishList = wishListRepository.findAllByUser_email(userEmail);
             if (wishList != null) {
-                List<ResponseWishListDTO> wishListDTOS = new ArrayList<>();
+                List<ResponseInformationWishListDTO> wishListDTOS = new ArrayList<>();
                 for (BeanWishList wish : wishList) {
-                    wishListDTOS.add(ResponseWishListDTO.fromWishList(wish));
+                    wishListDTOS.add(ResponseInformationWishListDTO.fromWish(wish));
                 }
                 return wishListDTOS;
             } else {
@@ -68,7 +70,6 @@ public class WishListService {
             throw new CustomException("wishList.user.notnull");
         } else {
             BeanProduct product = productRepository.findByIdProduct(wishList.getProduct().getIdProduct());
-            System.out.println(product);
             if(product == null){
                 throw new CustomException("wishList.product.notExists");
             }
@@ -93,7 +94,7 @@ public class WishListService {
         } else {
             BeanWishList wishList = wishListRepository.findById(wishListId).orElse(null);
             if (wishList != null) {
-                wishListRepository.delete(wishList);
+                wishListRepository.deleteById(wishListId);
                 if (wishListRepository.findById(wishListId).isPresent()) {
                     throw new CustomException("wishList.delete.error");
                 }

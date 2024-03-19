@@ -62,6 +62,7 @@ public class ErrorDictionary {
         errorMessages.put("wishList.delete.error", "Error al eliminar la lista de deseos.");
         errorMessages.put("wishList.update.amount.error", "Error al actualizar la misma cantidad.");
 
+
         //error messages shopping cart
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");

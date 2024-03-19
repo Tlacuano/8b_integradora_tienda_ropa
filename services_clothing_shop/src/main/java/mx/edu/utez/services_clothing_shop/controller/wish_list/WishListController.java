@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.controller.wish_list;
 
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponsePutWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
@@ -26,8 +27,8 @@ public class WishListController {
     }
 
     @PostMapping("/get-wish-list")
-    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> findWishListByUserEmail(@Validated @RequestBody Map<String, String> requestBody) {
-        List<ResponseWishListDTO> wishList = wishListService.findWishListByUserEmail(requestBody.get("userEmail"));
+    public ResponseEntity<CustomResponse<List<ResponseInformationWishListDTO>>> findWishListByUserEmail(@Validated @RequestBody Map<String, String> requestBody) {
+        List<ResponseInformationWishListDTO> wishList = wishListService.findWishListByUserEmail(requestBody.get("userEmail"));
         return ResponseEntity.ok(new CustomResponse<>(wishList, "ok", false, 200));
     }
 
