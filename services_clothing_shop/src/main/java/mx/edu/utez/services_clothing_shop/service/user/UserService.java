@@ -14,6 +14,7 @@ import mx.edu.utez.services_clothing_shop.model.user.IUser;
 import mx.edu.utez.services_clothing_shop.utils.validations.ValidatesFunctions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,13 @@ public class UserService {
 
     private final IRole roleRepository;
 
-    public UserService(IUser userRepository, IPerson personRepository, IRole roleRepository) {
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(IUser userRepository, IPerson personRepository, IRole roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //exist
@@ -63,7 +67,7 @@ public class UserService {
 
         BeanUser newUser = new BeanUser();
         newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setStatus(true);
 
         newUser = userRepository.saveAndFlush(newUser);

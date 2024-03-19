@@ -18,19 +18,21 @@ public class AuthDetails implements UserDetails {
     private String email;
     private String password;
     private boolean status;
-    private String role;
+    private List<String> role;
 
     public AuthDetails(BeanUser user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.status = user.isStatus();
-        this.role = user.getRoles().get(0).getRole().getRoleName();
+        this.role = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new java.util.ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role));
+        for (String role : role) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
         return authorities;
     }
 

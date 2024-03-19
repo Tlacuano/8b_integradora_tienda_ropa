@@ -5,6 +5,7 @@ import mx.edu.utez.services_clothing_shop.security.model.AuthDetails;
 import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ public class AuthDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) {
         BeanUser user = userService.getByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("El usuario con el correo %s no existe", username));
+        }
         return new AuthDetails(user);
     }
 }

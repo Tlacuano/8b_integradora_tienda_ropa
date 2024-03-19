@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.security.model.AuthDetails;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,23 +53,41 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         AuthDetails user = (AuthDetails) authResult.getPrincipal();
         String email = user.getEmail();
+        boolean hasMultipleRoles = user.getAuthorities().size() > 1;
+        String role = "";
+        for (GrantedAuthority authority : user.getAuthorities()) {
+            role = authority.getAuthority();
+            if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                role = "ADMIN";
+            } else {
+                role = "BUYER";
+
+            }
+            break;
+        }
+        System.out.println("role: " + role);
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
         Claims claims = Jwts.claims()
                 .add("authorities", new ObjectMapper().writeValueAsString(roles))
                 .build();
+
         String token = Jwts.builder()
                 .subject(email)
                 .claims(claims)
-                .expiration(new Date(System.currentTimeMillis() + 3600000))
+                .expiration(new Date(System.currentTimeMillis() + 18000000))
                 .issuedAt(new Date())
                 .signWith(SECRET_KEY).compact();
+
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
-        Map<String, String> body = new HashMap<>();
+
+        Map<String, Object> body = new HashMap<>();
         body.put("token", token);
         body.put("email", email);
+        body.put("hasMultipleRoles", hasMultipleRoles);
+        body.put("role", role);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setContentType(CONTENT_TYPE);
-        response.setStatus(200);
+        response.setStatus(HttpStatus.OK.value());
     }
 
     @Override
@@ -77,7 +96,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("message", "Error de autenticación: correo o contraseña incorrectos");
         body.put("error", failed.getMessage());
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-        response.setStatus(401);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(CONTENT_TYPE);
     }
 }
