@@ -55,4 +55,14 @@ public class ReviewController {
         }
     }
 
+    @DeleteMapping("/delete-review")
+    public ResponseEntity<Object> deleteReview(@Validated @RequestBody RequestActionByIdOrderHasProductDTO payload){
+        try {
+            reviewService.deleteReview(payload.getIdOrderHasProduct());
+            return ResponseEntity.ok(new CustomResponse<>(null, "Review deleted successfully", false, HttpStatus.OK.value()));
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error deleting review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
 }

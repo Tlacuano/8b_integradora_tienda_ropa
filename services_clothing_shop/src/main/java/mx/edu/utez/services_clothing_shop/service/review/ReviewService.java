@@ -71,4 +71,12 @@ public class ReviewService {
         return responseDTO;
     }
 
+    public void deleteReview(UUID idOrderHasProduct){
+        if(iReview.existsByIdReview(idOrderHasProduct)){
+            iReview.deleteById(idOrderHasProduct);
+        } else {
+            throw new CustomException(errorDictionary.getErrorMessage("review.idOrderHasProduct.notfound"));
+        }
+    }
+
 }
