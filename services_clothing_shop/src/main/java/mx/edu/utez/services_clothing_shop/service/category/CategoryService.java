@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 
@@ -18,17 +17,17 @@ public class CategoryService {
         this.iCategory = iCategory;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<BeanCategory> getCategories(Pageable page) {
         return iCategory.findAll(page);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public BeanCategory getCategory(UUID idCategory) {
         return iCategory.findByIdCategory(idCategory);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional
     public BeanCategory postCategory(BeanCategory category) {
         if (iCategory.findByCategory(category.getCategory())) {
             throw new IllegalArgumentException("La categoría ya existe");
@@ -36,7 +35,7 @@ public class CategoryService {
         return iCategory.saveAndFlush(category);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional
     public BeanCategory putCategory(BeanCategory category) {
         if (!iCategory.existsByIdCategory(category.getIdCategory())) {
             throw new IllegalArgumentException("La categoría no existe");
@@ -44,14 +43,13 @@ public class CategoryService {
         return iCategory.saveAndFlush(category);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
-    public Boolean putStatusCategory(UUID idCategory) {
+    @Transactional
+    public void putStatusCategory(UUID idCategory) {
         if (!iCategory.existsByIdCategory(idCategory)) {
             throw new IllegalArgumentException("La categoría no existe");
         }
         BeanCategory category = iCategory.findByIdCategory(idCategory);
         category.setStatus(!category.isStatus());
         iCategory.saveAndFlush(category);
-        return true;
     }
 }
