@@ -1,29 +1,36 @@
 package mx.edu.utez.services_clothing_shop.service.seller_information;
 
+import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.ResponseAllSellerInformationDTO;
+import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.seller_information.ISellerInformation;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SellerInformationService {
     private final ISellerInformation iSellerInformation;
-    public SellerInformationService(ISellerInformation iSellerInformation){
+    private ErrorDictionary errorDictionary;
+    public SellerInformationService(ISellerInformation iSellerInformation, ErrorDictionary errorDictionary) {
         this.iSellerInformation = iSellerInformation;
+        this.errorDictionary = errorDictionary;
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<BeanSellerInformation>> getSellersInformation(){
-        try {
-            List<BeanSellerInformation> sellersInformation = iSellerInformation.findAll();
-            return ResponseEntity.ok(sellersInformation);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    public List<ResponseAllSellerInformationDTO> getSellersInformation(){
+        List<Object[]> sellersInformationData = iSellerInformation.findEssentialSellerInformationInfo();
+        if(sellersInformationData.isEmpty()){
+            throw new CustomException(errorDictionary.getErrorMessage("sellerInformation.notfound"));
         }
+        return sellersInformationData.stream()
+                .map(this::mapToResponseAllSellerInformationDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +66,14 @@ public class SellerInformationService {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    public ResponseAllSellerInformationDTO mapToResponseAllSellerInformationDTO(Object[] row){
+        ResponseAllSellerInformationDTO responseDTO = new ResponseAllSellerInformationDTO();
+        responseDTO.setFullName((String) row[0]);
+        responseDTO.setCurp((String) row[1]);
+        responseDTO.setPrivacy((boolean) row[2]);
+        return responseDTO;
     }
 
 }
