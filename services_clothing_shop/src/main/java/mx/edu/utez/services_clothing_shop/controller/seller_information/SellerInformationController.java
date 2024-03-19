@@ -45,4 +45,9 @@ public class SellerInformationController {
         return sellerInformationService.putSellerInformation(sellerInformation);
     }
 
+    @DeleteMapping("delete-seller-information")
+    public ResponseEntity<BeanSellerInformation> deleteSellerInformation(@RequestBody BeanSellerInformation sellerInformation){
+        return sellerInformationService.deleteSellerInformation(sellerInformation);
+    }
+
 }

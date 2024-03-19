@@ -68,6 +68,20 @@ public class SellerInformationService {
         }
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public ResponseEntity<BeanSellerInformation> deleteSellerInformation(BeanSellerInformation sellerInformation){
+        try {
+            if(iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())){
+                iSellerInformation.deleteById(sellerInformation.getIdSellerInformation());
+                return ResponseEntity.status(200).build();
+            } else {
+                return ResponseEntity.status(400).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     public ResponseAllSellerInformationDTO mapToResponseAllSellerInformationDTO(Object[] row){
         ResponseAllSellerInformationDTO responseDTO = new ResponseAllSellerInformationDTO();
         responseDTO.setFullName((String) row[0]);
