@@ -51,6 +51,17 @@ public class ErrorDictionary {
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
+
+        //error messages shopping cart
+        errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
+        errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
+        errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
+        errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
+        errorMessages.put("shoppingCart.delete.error","Error al eliminar el carrito de compras.");
+        errorMessages.put("shoppingCart.update.error","Error al actualizar el carrito de compras.");
+        errorMessages.put("shoppingCart.update.amount.error","Error al actualizar misma cantidad.");
+        errorMessages.put("shoppingCart.id.notnull", "El id del carrito de compras es obligatorio.");
+        errorMessages.put("shoppingCart.id.notfound", "El carrito de compras no fue encontrado.");
         //error image uploading
         errorMessages.put("image.upload.error", "Error al subir imagen.");
 
