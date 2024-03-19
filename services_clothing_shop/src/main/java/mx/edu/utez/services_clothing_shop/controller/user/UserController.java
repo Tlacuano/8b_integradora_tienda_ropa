@@ -72,8 +72,8 @@ public class UserController {
         );
     }
 
-    @PostMapping("/change-status")
-    public ResponseEntity<Object> changeStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
+    @PostMapping("/put-status")
+    public ResponseEntity<Object> putStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(userService.changeStatusAccount(payload), "Estado de cuenta cambiado correctamente", false, 200),
                 HttpStatus.OK

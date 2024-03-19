@@ -9,8 +9,6 @@ const instance = axios.create({
     timeout: 10000,
 });
 
-
-
 const baseURL = import.meta.env.VITE_API_URL;
 
 instance.interceptors.request.use(
@@ -77,15 +75,9 @@ instance.interceptors.response.use(
                 timer: 3000,
             });
         }else{
-            if(error.config.url.startsWith(baseURL)){
-                Vue.prototype.$bvToast.toast(error.response.message, {
-                    title: 'Advertencia',
-                    variant: 'warning',
-                    solid: true,
-                    position: 'top-right',
-                });
-            }
+            return Promise.reject(error);
         }
+
     }
 );
 

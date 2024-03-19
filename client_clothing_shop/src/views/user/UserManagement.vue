@@ -1,6 +1,6 @@
 <template>
-  <b-container fluid>
-    <b-row class="mt-3">
+  <section class="interface">
+    <b-row>
       <b-col class="text-center">
         <h1>Cuentas registradas</h1>
       </b-col>
@@ -20,8 +20,8 @@
       </b-col>
     </b-row>
 
-    <b-row class="mt-3">
-      <b-col class="container-users">
+    <b-row class="mt-3 container-users">
+      <b-col>
         <b-row>
           <b-col lg="4" v-for="person in people"  :key="person.id">
             <b-card
@@ -74,6 +74,14 @@
                     <template v-slot:button-content>
                       <font-awesome-icon icon="ellipsis-v"/>
                     </template>
+                    <b-dropdown-item @click="changeStatusUser(person.email)">
+                      <div v-if="!person.status">
+                        Habilitar
+                      </div>
+                      <div v-else>
+                        Deshabilitar
+                      </div>
+                    </b-dropdown-item>
                   </b-dropdown>
                 </b-col>
               </b-row>
@@ -94,11 +102,12 @@
         ></b-pagination>
       </b-col>
     </b-row>
-  </b-container>
+  </section>
 </template>
 
 <script>
 import PeopleService from "@/services/user/UserService";
+import {showInfoAlert} from "@/components/alerts/Alerts";
 
 export default {
   name: "UserManagement",
@@ -118,9 +127,23 @@ export default {
       const response = await PeopleService.getPageUsersService(this.objetPagination);
       this.showOverlay()
 
-      console.log(response)
       this.objetPagination.elements = response.data.totalElements;
       this.people = response.data.content;
+    },
+
+    async changeStatusUser(dato){
+      const payoad = {
+        email:dato
+      }
+
+      showInfoAlert(
+        "¿Estás seguro?",
+        "¿Deseas cambiar el estado de la cuenta?",
+        "Sí, cambiar",
+        async () => {
+          await PeopleService.putStatusUserService(payoad);
+        }
+      )
     },
 
     showOverlay(){
@@ -135,7 +158,7 @@ export default {
 
 <style scoped>
 .container-users{
-  min-height: 100px !important;
+  height: 65vh !important;
   overflow-x: hidden ;
 }
 </style>
