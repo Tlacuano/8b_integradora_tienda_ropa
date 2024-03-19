@@ -1,7 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.shopping_cart;
 
 
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.GetShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
@@ -24,53 +24,77 @@ public class ShoppingCartServices {
         this.shoppingCartRepository = shoppingCartRepository;
     }
 
-    @Transactional(rollbackFor = {Exception.class})
-    public List<GetShoppingCartDTO> findShoppingCartsByUserEmail(String userEmail) {
+    @Transactional
+    public List<ResponseShoppingCartDTO> findShoppingCartsByUserEmail(String userEmail) {
         System.out.println("userEmail: " + userEmail);
-        if(userEmail == null || userEmail.isEmpty()) {
+        if (userEmail == null || userEmail.isEmpty()) {
             throw new CustomException("user.email.notnull");
-        }else if(!userEmail.matches(EMAIL_REGEX)){
+        } else if (!userEmail.matches(EMAIL_REGEX)) {
             throw new CustomException("user.email.invalid");
-        }else{
+        } else {
             List<BeanShoppingCart> shoppingCart = shoppingCartRepository.findAllByUser_Email(userEmail);
             if (shoppingCart != null) {
-                List<GetShoppingCartDTO> shoppingCartDTOs = new ArrayList<>();
+                List<ResponseShoppingCartDTO> shoppingCartDTOs = new ArrayList<>();
                 for (BeanShoppingCart cart : shoppingCart) {
-                    shoppingCartDTOs.add(GetShoppingCartDTO.fromShoppingCart(cart));
+                    shoppingCartDTOs.add(ResponseShoppingCartDTO.fromShoppingCart(cart));
                 }
                 return shoppingCartDTOs;
-            }else{
+            } else {
                 throw new CustomException("shoppingCart.notfound");
             }
         }
     }
 
-    @Transactional(rollbackFor = {Exception.class})
-    public BeanShoppingCart saveShoppingCar(BeanShoppingCart shoppingCart) {
-        return shoppingCartRepository.save(shoppingCart);
+    @Transactional
+    public ResponseShoppingCartDTO saveShoppingCar(BeanShoppingCart shoppingCart) {
+        if (shoppingCart == null) {
+            throw new CustomException("shoppingCart.notnull");
+        } else if (shoppingCart.getAmount() == 0) {
+            throw new CustomException("shoppingCart.amount.notnull");
+        } else if (shoppingCart.getProduct() == null) {
+            throw new CustomException("shoppingCart.product.notnull");
+        } else {
+            BeanShoppingCart response = shoppingCartRepository.save(shoppingCart);
+            return ResponseShoppingCartDTO.fromShoppingCart(response);
+        }
     }
 
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public void deleteShoppingCartById(UUID shoppingCartId) {
-        BeanShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElse(null);
-        if (shoppingCart != null) {
-            shoppingCartRepository.delete(shoppingCart);
-        }else{
-            throw new RuntimeException("El carrito de compras no existe");
+        if (shoppingCartId == null) {
+            throw new CustomException("shoppingCart.id.notnull");
+        } else {
+            BeanShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElse(null);
+            if (shoppingCart != null) {
+                shoppingCartRepository.delete(shoppingCart);
+                if (shoppingCartRepository.findById(shoppingCartId).isPresent()) {
+                    throw new CustomException("shoppingCart.delete.error");
+                }
+            } else {
+                throw new CustomException("shoppingCart.id.notfound");
+            }
         }
     }
 
 
     @Transactional(rollbackFor = {Exception.class})
     public BeanShoppingCart updateShoppingCartById(@RequestBody BeanShoppingCart shoppingCart) {
-        BeanShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
-        if (existingShoppingCart != null) {
-            existingShoppingCart.setAmount(shoppingCart.getAmount());
-            return shoppingCartRepository.save(existingShoppingCart);
-        } else {
-            return null;
+        if (shoppingCart == null) {
+            throw new CustomException("shoppingCart.notnull");
+        } else{
+            BeanShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
+            if (existingShoppingCart != null) {
+                if(shoppingCart.getAmount() == 0){
+                    throw new CustomException("shoppingCart.amount.notnull");
+                }else if (shoppingCart.getAmount() == existingShoppingCart.getAmount()){
+                    throw new CustomException("shoppingCart.update.amount.error");
+                }else{
+                    existingShoppingCart.setAmount(shoppingCart.getAmount());
+                    return shoppingCartRepository.save(existingShoppingCart);
+                }
+            } else {
+                throw new CustomException("shoppingCart.id.notfound");
+            }
         }
     }
-
-
 }
