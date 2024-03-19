@@ -8,13 +8,11 @@ import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGalle
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.product.ProductService;
-import mx.edu.utez.services_clothing_shop.service.product_gallery.ProductGalleryService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,65 +24,90 @@ import java.util.UUID;
 @CrossOrigin(origins = "*")
 public class ProductController {
     private final ProductService productService;
-    private final ProductGalleryService productGalleryService;
 
-    public ProductController(ProductService productService, ProductGalleryService productGalleryService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.productGalleryService = productGalleryService;
     }
 
     @PostMapping("/get-products")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProducts(Pageable page) {
-        Page<BeanProduct> beanProductPage = productService.getProducts(page);
-        return getCustomResponseResponseEntity(beanProductPage);
+        try {
+            Page<BeanProduct> beanProductPage = productService.getProducts(page);
+            return getCustomResponseResponseEntity(beanProductPage);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/get-products-by-user")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
-        Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
-        return getCustomResponseResponseEntity(beanProductPage);
+        try {
+            Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
+            return getCustomResponseResponseEntity(beanProductPage);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/get-product")
+    public ResponseEntity<CustomResponse<ResponseProductDTO>> getProduct(@Valid @RequestBody RequestProductByIdDTO product) {
+        try {
+            BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct());
+            return retrievedProduct != null ?
+                    ResponseEntity.ok(new CustomResponse<>(ResponseProductDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) :
+                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/post-product")
+    public ResponseEntity<CustomResponse<BeanProduct>> postProduct(@Valid @RequestBody RequestProductDTO product) {
+        BeanProduct newProduct = new BeanProduct();
+        try {
+            parseToBeanProduct(newProduct, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
+            BeanUser user = new BeanUser();
+            user.setIdUser(product.getUser());
+            newProduct.setUser(user);
+            newProduct.setStatus(product.isStatus());
+            List<String> images = new ArrayList<>(product.getProductGallery());
+            newProduct = productService.postProduct(newProduct, images);
+            return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
+        } catch (Exception e) {
+            productService.deleteProductGallery(newProduct);
+            productService.deleteProduct(newProduct.getIdProduct());
+            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al registrar el producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/put-product")
+    public ResponseEntity<CustomResponse<BeanProduct>> putProduct(@Valid @RequestBody RequestPutProductDTO product) {
+        try {
+            BeanProduct productUpdated = new BeanProduct();
+            productUpdated.setIdProduct(product.getIdProduct());
+            parseToBeanProduct(productUpdated, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
+            List<BeanProductGallery> productGallery = getBeanProductGalleries(product);
+            productUpdated = productService.putProduct(productUpdated, productGallery);
+            return new ResponseEntity<>(new CustomResponse<>(productUpdated, "Producto actualizado correctamente", false, 200), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al actualizar el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/put-status-product")
+    public ResponseEntity<CustomResponse<Boolean>> putStatusProduct(@Valid @RequestBody RequestProductByIdDTO product) {
+        try {
+            productService.putStatusProduct(product.getIdProduct());
+            return new ResponseEntity<>(new CustomResponse<>(true, "Estatus del producto actualizado correctamente", false, 200), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(false, "Se produjo un error al actualizar el estatus del producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getCustomResponseResponseEntity(Page<BeanProduct> beanProductPage) {
         return beanProductPage != null ?
                 ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) :
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));
-    }
-
-    @PostMapping("/get-product")
-    public ResponseEntity<CustomResponse<ResponseProductDTO>> getProduct(@RequestBody RequestProductByIdDTO product) {
-        BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct());
-        return retrievedProduct != null ?
-                ResponseEntity.ok(new CustomResponse<>(ResponseProductDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
-    }
-
-    @PostMapping("/post-product")
-    public ResponseEntity<CustomResponse<BeanProduct>> postProduct(@Valid @RequestBody RequestProductDTO product) {
-        BeanProduct newProduct = new BeanProduct();
-        parseToBeanProduct(newProduct, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
-        BeanUser user = new BeanUser();
-        user.setIdUser(product.getUser());
-        newProduct.setUser(user);
-        newProduct.setStatus(product.isStatus());
-        try {
-            newProduct = productService.postProduct(newProduct);
-            if (newProduct != null) {
-                List<String> images = new ArrayList<>(product.getProductGallery());
-                List<BeanProductGallery> productGallery = productGalleryService.postProductGallery(newProduct, images);
-                newProduct.setProductGallery(productGallery);
-                return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(new CustomResponse<>(null, "Producto no registrado", true, 400), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            if (newProduct != null) {
-                productGalleryService.deleteProductGallery(newProduct);
-                productService.deleteProduct(newProduct.getIdProduct());
-            }
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al registrar el producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     private void parseToBeanProduct(BeanProduct newProduct, String productName, String description, double price, int amount, UUID subcategory2) {
@@ -95,27 +118,6 @@ public class ProductController {
         BeanSubcategory subcategory = new BeanSubcategory();
         subcategory.setIdSubcategory(subcategory2);
         newProduct.setSubcategory(subcategory);
-    }
-
-    @PutMapping("/put-product")
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<CustomResponse<BeanProduct>> putProduct(@RequestBody RequestPutProductDTO product) {
-        BeanProduct productUpdated = new BeanProduct();
-        productUpdated.setIdProduct(product.getIdProduct());
-        parseToBeanProduct(productUpdated, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
-        try {
-            productUpdated = productService.putProduct(productUpdated);
-            if (productUpdated != null) {
-                List<BeanProductGallery> productGallery = getBeanProductGalleries(product);
-                productGallery = productGalleryService.putProductGalley(productGallery);
-                productUpdated.setProductGallery(productGallery);
-                return new ResponseEntity<>(new CustomResponse<>(productUpdated, "Producto actualizado correctamente", false, 200), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new CustomResponse<>(null, "Producto no actualizado", true, 400), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al actualizar el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     private static List<BeanProductGallery> getBeanProductGalleries(RequestPutProductDTO product) {
@@ -130,19 +132,5 @@ public class ProductController {
             productGallery.add(productGalleryBean);
         }
         return productGallery;
-    }
-
-    @PutMapping("/put-status-product")
-    public ResponseEntity<CustomResponse<Boolean>> putStatusProduct(@RequestBody RequestProductByIdDTO product) {
-        try {
-            Boolean statusUpdated = productService.putStatusProduct(product.getIdProduct());
-            if (statusUpdated) {
-                return new ResponseEntity<>(new CustomResponse<>(true, "Estatus del producto actualizado correctamente", false, 200), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new CustomResponse<>(false, "Estatus del producto no actualizado", true, 400), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(false, "Se produjo un error al actualizar el estatus del producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

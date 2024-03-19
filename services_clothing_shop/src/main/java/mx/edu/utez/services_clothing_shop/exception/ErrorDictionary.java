@@ -51,6 +51,17 @@ public class ErrorDictionary {
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
+
+        //error messages shopping cart
+        errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
+        errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
+        errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
+        errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
+        errorMessages.put("shoppingCart.delete.error","Error al eliminar el carrito de compras.");
+        errorMessages.put("shoppingCart.update.error","Error al actualizar el carrito de compras.");
+        errorMessages.put("shoppingCart.update.amount.error","Error al actualizar misma cantidad.");
+        errorMessages.put("shoppingCart.id.notnull", "El id del carrito de compras es obligatorio.");
+        errorMessages.put("shoppingCart.id.notfound", "El carrito de compras no fue encontrado.");
         //error image uploading
         errorMessages.put("image.upload.error", "Error al subir imagen.");
 
@@ -83,6 +94,43 @@ public class ErrorDictionary {
         errorMessages.put("product.user.notnull", "El usuario del producto es obligatorio.");
         errorMessages.put("product.user.nonempty", "El usuario del producto no puede estar vacío.");
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
+
+        //error messages address
+        errorMessages.put("address.notfound", "No hay direcciones registradas.");
+        errorMessages.put("address.idAddress.notnull", "El id de la dirección es obligatorio.");
+        errorMessages.put("address.idAddress.notfound", "La dirección no fue encontrada.");
+        errorMessages.put("address.address.notnull", "La dirección es obligatoria.");
+        errorMessages.put("address.address.size", "La dirección debe ser mayor a 10 caracteres y menor o igual a 100 caracteres.");
+        errorMessages.put("address.referencesAddress.size", "La longitud de las referencias de la dirección debe ser mayor a 5 y menor o igual a 255 caracteres");
+        errorMessages.put("address.postalCode.notnull", "El código postal es requerido");
+        errorMessages.put("address.postalCode.size", "La longitud del código postal debe ser de 5 caracteres");
+        errorMessages.put("address.state.notnull", "El estado es requerido");
+        errorMessages.put("address.state.size", "La longitud del estado debe ser mayor a 5 caracteres y menor o igual a 100 caracteres");
+        errorMessages.put("address.street.notnull", "La calle es requerida");
+        errorMessages.put("address.street.size", "La longitud de la calle debe ser mayor a 5 caracteres y menor o igual a 50 caracteres");
+        errorMessages.put("address.neighborhood.notnull", "El vecindario es requerido");
+        errorMessages.put("address.neighborhood.size", "La longitud del vecindario debe ser mayor a 5 caracteres y menor o igual a 50 caracteres");
+        errorMessages.put("address.personId.notnull", "El ID de la persona es requerido");
+        errorMessages.put("address.statusId.notnull", "El ID del estado es requerido");
+
+        //error messages return product gallery
+        errorMessages.put("returnProductGallery.notfound", "No hay imágenes de devolución registradas.");
+        errorMessages.put("returnProductGallery.idImage.notnull", "El id de la imagen de devolución es obligatorio.");
+        errorMessages.put("returnProductGallery.idReturnProductGallery.notfound", "La imagen de devolución no fue encontrada.");
+        errorMessages.put("returnProductGallery.image.notnull", "La imagen es obligatoria.");
+        errorMessages.put("returnProductGallery.requestReturnProductId.notnull", "El id de la solicitud de devolución es obligatorio.");
+        errorMessages.put("returnProductGallery.idRequestReturnProduct.notfound", "El id de la solicitud de devolución no fue encontrada.");
+
+        //error messages review
+        errorMessages.put("review.orderHasProductId.notnull", "El id de la orden del producto es obligatorio.");
+        errorMessages.put("review.idReview.notnull", "El id de la reseña es obligatorio.");
+        errorMessages.put("review.idReview.notfound", "La reseña no fue encontrada.");
+        errorMessages.put("review.idOrderHasProduct.notfound", "La orden del producto no fue encontrada.");
+        errorMessages.put("review.comment.notnull", "El comentario es obligatorio.");
+        errorMessages.put("review.comment.size", "El comentario debe tener entre 5 y 255 caracteres.");
+        errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
+        errorMessages.put("review.assessment.max", "La calificación debe ser menor a 6.");
+        errorMessages.put("review.reviewDate.notnull", "La fecha de la reseña es obligatoria.");
 
         //error messages data change
         errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
