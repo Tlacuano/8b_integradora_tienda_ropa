@@ -12,7 +12,6 @@ const router = new VueRouter({
       path:"/user-management",
       name:"ADMINUserManagement",
         component: () => import("../views/user/UserManagement.vue"),
-
     }
     
   ]
