@@ -26,22 +26,22 @@ public class ProductService {
         this.iImageProductStatus = iImageProductStatus;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<BeanProduct> getProducts(Pageable page) {
         return iProduct.findAll(page);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<BeanProduct> getProductsByUserEmail(String email, Pageable page) {
         return iProduct.findAllByUser_Email(email, page);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public BeanProduct getProduct(UUID idProduct) {
         return iProduct.findByIdProduct(idProduct);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public BeanProduct postProduct(BeanProduct product, List<String> images) {
         validateProductDoesNotExist(product);
         BeanProduct productSaved = iProduct.saveAndFlush(product);
@@ -49,7 +49,7 @@ public class ProductService {
         return productSaved;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public BeanProduct putProduct(BeanProduct product, List<BeanProductGallery> productGallery) {
         validateProductExists(product.getIdProduct());
         BeanProduct updatedProduct = iProduct.saveAndFlush(product);
@@ -57,15 +57,14 @@ public class ProductService {
         return updatedProduct;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean putStatusProduct(UUID idProduct) {
+    @Transactional
+    public void putStatusProduct(UUID idProduct) {
         BeanProduct product = getProduct(idProduct);
         if (product == null) {
             throw new RuntimeException("El producto no existe");
         }
         product.setStatus(!product.isStatus());
         iProduct.saveAndFlush(product);
-        return true;
     }
 
     @Transactional(rollbackFor = Exception.class)

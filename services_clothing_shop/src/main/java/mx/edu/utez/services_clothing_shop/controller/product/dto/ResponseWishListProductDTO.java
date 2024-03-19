@@ -10,6 +10,8 @@ public class ResponseWishListProductDTO {
     private UUID idProduct;
     private String productName;
     private double price;
+    private int amount;
+
 
     public ResponseWishListProductDTO(){
 
@@ -19,7 +21,7 @@ public class ResponseWishListProductDTO {
         productDTO.setIdProduct(product.getIdProduct());
         productDTO.setProductName(product.getProductName());
         productDTO.setPrice(product.getPrice());
-
+        productDTO.setAmount(product.getAmount());
         return productDTO;
     }
 }
