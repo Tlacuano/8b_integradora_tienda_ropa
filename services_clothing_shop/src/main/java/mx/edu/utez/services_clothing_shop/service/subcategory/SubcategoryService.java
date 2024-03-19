@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 @Service
@@ -17,17 +16,17 @@ public class SubcategoryService {
         this.iSubCategory = iSubCategory;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<BeanSubcategory> getSubcategories(Pageable page) {
         return iSubCategory.findAll(page);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public BeanSubcategory getSubcategory(UUID idSubcategory) {
         return iSubCategory.findByIdSubcategory(idSubcategory);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional
     public BeanSubcategory postSubcategory(BeanSubcategory subcategory) {
         if (iSubCategory.findBySubcategory(subcategory.getSubcategory())) {
             throw new IllegalArgumentException("La subcategoría ya existe");
@@ -35,7 +34,7 @@ public class SubcategoryService {
         return iSubCategory.saveAndFlush(subcategory);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional
     public BeanSubcategory putSubcategory(BeanSubcategory subcategory) {
         if (!iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
             throw new IllegalArgumentException("La subcategoría no existe");
@@ -43,14 +42,13 @@ public class SubcategoryService {
         return iSubCategory.saveAndFlush(subcategory);
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
-    public Boolean putStatusSubcategory(UUID idSubcategory) {
+    @Transactional
+    public void putStatusSubcategory(UUID idSubcategory) {
         if (!iSubCategory.existsByIdSubcategory(idSubcategory)) {
             throw new IllegalArgumentException("La subcategoría no existe");
         }
         BeanSubcategory subcategory = iSubCategory.findByIdSubcategory(idSubcategory);
         subcategory.setStatus(!subcategory.isStatus());
         iSubCategory.saveAndFlush(subcategory);
-        return true;
     }
 }
