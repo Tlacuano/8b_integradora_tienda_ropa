@@ -34,7 +34,7 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
 }
 
 export function showWarningAlert  (title, text, confirmButtonText, onConfirm) {
-  return showAlert(title, text, 'success', confirmButtonText, onConfirm);
+  return showAlert(title, text, 'warning', confirmButtonText, onConfirm);
 }
 
 export function showInfoAlert  (title, text, confirmButtonText, onConfirm) {

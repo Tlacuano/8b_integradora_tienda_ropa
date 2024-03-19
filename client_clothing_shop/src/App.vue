@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <b-overlay :show="showOverlay" class="app-container">
-      <NavbarBuyer v-if="(getRole === 'comprador' && isLoggedIn) || !isLoggedIn"/>
-      <NavbarAdmin v-if="getRole === 'administrador' && isLoggedIn"/>
-      <NavbarSeller v-if="getRole === 'vendedor' && isLoggedIn" />
+      <NavbarBuyer v-if="(getRole === 'ROLE_SELLER' && isLoggedIn) || !isLoggedIn"/>
+      <NavbarAdmin v-if="getRole === 'ROLE_ADMIN' && isLoggedIn"/>
+      <NavbarSeller v-if="getRole === 'ROLE_BUYER' && isLoggedIn" />
 
       <b-container fluid class="interface-container mt-3">
         <router-view />
