@@ -48,9 +48,19 @@ public class ErrorDictionary {
 
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
-        errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria.");
+        errorMessages.put("wishList.product.notExists", "El producto no fue encontrado.");
+        errorMessages.put("wishList.product.exists", "El producto ya está en la lista de deseos.");
+        errorMessages.put("wishList.id.automatic", "El id de la lista de deseos es automático no manual.");
+        errorMessages.put("wishList.id.notnull", "El id de la lista de deseos es obligatorio.");
+        errorMessages.put("wishList.id.notfound", "La lista de deseos no fue encontrada.");
+        errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria y no negativa.");
+        errorMessages.put("wishList.amount.error", "La cantidad es mayor a la disponible.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
+        errorMessages.put("wishList.user.notnull", "El usuario es obligatorio.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
+        errorMessages.put("wishList.product.notnull", "El producto es obligatorio.");
+        errorMessages.put("wishList.delete.error", "Error al eliminar la lista de deseos.");
+        errorMessages.put("wishList.update.amount.error", "Error al actualizar la misma cantidad.");
 
         //error messages shopping cart
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
