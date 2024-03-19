@@ -3,7 +3,7 @@ import axios from "../../config/http-client.gateway"
 const getPageUsersService = async (pagination) => {
     try {
         const { page, size } = pagination;
-        const response = await axios.doGet(`/user/get-page?size=${size}&page=${page - 1}`);
+        const response = await axios.doGet(`/venta-ropa/api/users/get-page?size=${size}&page=${page - 1}`);
         return response.data
     }catch (e){
         console.log(e)
@@ -13,7 +13,7 @@ const getPageUsersService = async (pagination) => {
 const putStatusUserService = async (payload) => {
     try{
         console.log(payload)
-        const response = await axios.doPost("/user/put-status", payload);
+        const response = await axios.doPost("/venta-ropa/api/users/put-status", payload);
 
         return response.data
     }catch (e) {

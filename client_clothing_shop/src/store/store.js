@@ -57,9 +57,11 @@ export default new Vuex.Store({
         login({ commit }, payload) {
             commit('setAuthData', payload);
         },
-        logout({ commit }) {
+        logout({commit, state}) {
+            commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
             commit('clearAuthData');
             window.location.href = '/';
+            commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
         },
         switchRole({ commit, state }, { newRole, newToken }) {
             commit('switchUserRole', { newRole, newToken });

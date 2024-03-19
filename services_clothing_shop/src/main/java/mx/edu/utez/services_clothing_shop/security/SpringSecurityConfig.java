@@ -45,6 +45,13 @@ public class SpringSecurityConfig {
         return httpSecurity.authorizeHttpRequests(auth ->
                         auth
                                 //Modulo usuarios
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-account").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-users").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-by-email").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN")
+
 
                                 //Modulo personas
 
@@ -77,7 +84,7 @@ public class SpringSecurityConfig {
                                 //Modulo cloudinary
 
                                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/user/post-account").permitAll()
+
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/categories/get-categories").permitAll()
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/subcategories/get-subcategories").permitAll()
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/products/get-products").permitAll()
@@ -133,7 +140,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/sellers-information/put-seller-information").permitAll()
 
                                 //Apartir de aqui es necesaria la autenticacion del rol administrador
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-users").hasRole("ADMIN")
+
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-become-seller/get-requests-become-seller").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-become-seller/put-status-request-become-seller/**").permitAll()
 

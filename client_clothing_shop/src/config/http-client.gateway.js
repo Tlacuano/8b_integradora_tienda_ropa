@@ -1,6 +1,7 @@
 import { encrypt, decrypt } from "../utils/security/aes";
 import Vue from 'vue';
 import axios from "axios";
+import store from '../store/store'
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -14,8 +15,8 @@ const baseURL = import.meta.env.VITE_API_URL;
 instance.interceptors.request.use(
     (config) => {
         if(config.url.startsWith(baseURL)) {
-            const auth_token = localStorage.getItem("token");
-            if (auth_token) {
+            const auth_token = store.getters.getToken
+            if (auth_token.length > 0) {
                 config.headers["Authorization"] = `Bearer ${auth_token}`;
             }
             /*

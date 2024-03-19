@@ -1,25 +1,12 @@
 <template>
   <div id="app">
     <b-overlay :show="showOverlay" class="app-container">
-      <NavbarBuyer v-if="(getRole === 'ROLE_SELLER' && isLoggedIn) || !isLoggedIn"/>
-      <NavbarAdmin v-if="getRole === 'ROLE_ADMIN' && isLoggedIn"/>
-      <NavbarSeller v-if="getRole === 'ROLE_BUYER' && isLoggedIn" />
+      <NavbarBuyer v-if="(getRole === 'BUYER' && isLoggedIn) || !isLoggedIn"/>
+      <NavbarAdmin v-if="getRole === 'ADMIN' && isLoggedIn"/>
+      <NavbarSeller v-if="getRole === 'SELLER' && isLoggedIn" />
 
       <b-container fluid class="interface-container mt-3">
         <router-view />
-        <!-- Formulario Temporal para Login y Logout -->
-        {{isLoggedIn}}
-        {{getRole}}
-        {{getToken}}
-        <div v-if="!isLoggedIn">
-          <input v-model="tempToken" placeholder="Token">
-          <input v-model="tempRole" placeholder="Role (administrador, vendedor, comprador)">
-          <input v-model="tempEmail" placeholder="Email">
-          <button @click="login">Login</button>
-        </div>
-        <div v-else>
-          <button @click="logout">Logout</button>
-        </div>
       </b-container>
     </b-overlay>
   </div>
@@ -44,19 +31,6 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn', 'getRole', "getToken","showOverlay"])
-  },
-  methods: {
-    login() {
-      this.$store.dispatch('login', {
-        token: this.tempToken,
-        email: this.tempEmail,
-        role: this.tempRole,
-        hasMultipleRoles: true,
-      });
-    },
-    logout() {
-      this.$store.dispatch('logout');
-    }
   }
 }
 </script>

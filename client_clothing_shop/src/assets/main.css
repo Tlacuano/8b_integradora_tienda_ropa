@@ -40,6 +40,13 @@
   background-color: #f1f1f1;
 }
 
+/*para los botones*/
+.main-button {
+  width: 100%;
+  background-color: var(--black-base) !important;
+  padding-bottom: 10px !important;
+  padding-top: 10px !important;
+}
 
 /*para que el icono de la lupa este en el input*/
 .position-relative {
@@ -56,6 +63,10 @@
 
 /*cambios a bootstrap*/
 a.nav-link {
+  color: var(--black-base) !important;
+}
+
+a{
   color: var(--black-base) !important;
 }
 
