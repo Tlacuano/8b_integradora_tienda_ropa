@@ -5,7 +5,7 @@
       <NavbarAdmin v-if="getRole === 'administrador' && isLoggedIn"/>
       <NavbarSeller v-if="getRole === 'vendedor' && isLoggedIn" />
 
-      <b-container fluid>
+      <b-container fluid class="interface-container mt-3">
         <router-view />
         <!-- Formulario Temporal para Login y Logout -->
         {{isLoggedIn}}
@@ -66,5 +66,11 @@ export default {
     overflow-y: auto;
     position: absolute;
     height: 100%;
+  }
+
+  .interface-container{
+    min-height: 84%;
+    max-height: 90%;
+    overflow-y: auto;
   }
 </style>

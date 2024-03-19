@@ -14,6 +14,11 @@
   cursor: pointer;
 }
 
+/*interfaz ocupa el 100% del contenido*/
+.interface{
+  height: 100%;
+}
+
 
 /* elevar contenedor cuando pasas el mause por encima */
 .zoom-on-hover {
