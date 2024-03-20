@@ -5,7 +5,7 @@
       <NavbarAdmin v-if="getRole === 'ADMIN' && isLoggedIn"/>
       <NavbarSeller v-if="getRole === 'SELLER' && isLoggedIn" />
 
-      <b-container fluid class="interface-container mt-3">
+      <b-container fluid class="interface-container pt-2">
         <router-view />
       </b-container>
     </b-overlay>
@@ -37,13 +37,13 @@ export default {
 
 <style >
   .app-container{
-    overflow-y: auto;
+    overflow-y: hidden;
     position: absolute;
     height: 100%;
   }
 
   .interface-container{
-    min-height: 84%;
+    min-height: 81.5%;
     max-height: 90%;
     overflow-y: auto;
   }
