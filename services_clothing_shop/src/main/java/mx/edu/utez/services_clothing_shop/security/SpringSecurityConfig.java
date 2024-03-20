@@ -71,6 +71,10 @@ public class SpringSecurityConfig {
                                 //Modulo requests-sell-product
 
                                 //Modulo address
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/addresses/get-addresses").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/get-address").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/post-address").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/addresses/put-address").hasAnyRole("BUYER", "SELLER")
 
                                 //Modulo return-product-gallery
 
