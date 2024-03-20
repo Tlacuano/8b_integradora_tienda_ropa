@@ -80,7 +80,7 @@ public class SpringSecurityConfig {
                                 //Modulo return-product-gallery
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/return-product-galleries/get-return-product-galleries").hasAnyRole("ADMIN", "BUYER")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/return-product-galleries/get-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/return-product-galleries/post-return-product-gallery").hasAnyRole("BUYER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/return-product-galleries/post-return-product-gallery").hasRole("BUYER")
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/return-product-galleries/put-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
                                 .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/return-product-galleries/delete-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
 
