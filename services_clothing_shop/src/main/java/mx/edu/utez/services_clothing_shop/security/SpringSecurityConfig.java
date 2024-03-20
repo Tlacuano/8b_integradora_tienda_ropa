@@ -85,6 +85,10 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/return-product-galleries/delete-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
 
                                 //Modulo reviews
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-reviews-by-order-product-id").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/post-review").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/reviews/put-review").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/reviews/delete-review").hasRole("BUYER")
 
                                 //Modulo seller-information
 
