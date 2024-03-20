@@ -56,7 +56,10 @@ public class SpringSecurityConfig {
                                 //Modulo personas
 
                                 //Modulo shopping-cart
-
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/shopping-carts/put-shopping-cart").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/post-shopping-cart").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/delete-shopping-cart").permitAll()
                                 //Modulo whislists
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/wishes-list/get-wish-list").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/wishes-list/post-wish-list").permitAll()
@@ -99,10 +102,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/reviews/put-review").permitAll()
 
 
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/shopping-carts/put-shopping-cart").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/post-shopping-cart").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/shopping-carts/delete-shopping-cart").permitAll()
+
 
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/addresses/get-address").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/post-address").permitAll()
