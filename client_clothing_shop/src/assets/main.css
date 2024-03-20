@@ -3,8 +3,7 @@
 #app {
   height: 100vh;
   margin: 0 auto;
-  overflow: hidden;
-
+  overflow-y: hidden;
   font-weight: normal;
 }
 

@@ -82,6 +82,9 @@
                         Deshabilitar
                       </div>
                     </b-dropdown-item>
+                    <b-dropdown-item>
+                      Ver más detalles
+                    </b-dropdown-item>
                   </b-dropdown>
                 </b-col>
               </b-row>
@@ -145,6 +148,7 @@ export default {
         }
       )
     },
+
 
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
