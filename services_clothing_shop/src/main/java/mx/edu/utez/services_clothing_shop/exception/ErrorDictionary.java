@@ -64,9 +64,14 @@ public class ErrorDictionary {
 
 
         //error messages shopping cart
+        errorMessages.put("shoppingCart.id.automatic", "El id del carrito de compras es automático no manual.");
+        errorMessages.put("shoppingCart.user.notnull", "El usuario es obligatorio.");
+        errorMessages.put("shoppingCart.product.exists", "El producto ya está en el carrito de compras.");
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
+        errorMessages.put("shoppingCart.amount.error", "La cantidad es mayor a la disponible.");
         errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
+        errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
         errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
         errorMessages.put("shoppingCart.delete.error","Error al eliminar el carrito de compras.");
         errorMessages.put("shoppingCart.update.error","Error al actualizar el carrito de compras.");
@@ -148,13 +153,30 @@ public class ErrorDictionary {
         errorMessages.put("dataChange.email.invalid", "El email no es válido.");
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
         errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
+        errorMessages.put("dataChange.request.notFound", "La solicitud no fue encontrada.");
+        errorMessages.put("dataChange.JSON.invalid", "El JSON no es válido.");
 
         //error messages request return product
         errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
         errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
+        errorMessages.put("requestsReturnProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
+        errorMessages.put("requestsReturnProduct.status.invalid", "El status no es válido.");
+        errorMessages.put("requestsReturnProduct.status.notFound", "El status no fue encontrado.");
 
         //error de configuracion
         errorMessages.put("controller.advice.encrypter", "Algo salió mal al encriptar la información.");
+
+
+        //error messages request become seller
+        errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
+        errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
+        errorMessages.put("requestBecomeSeller.status.notnull", "El status es obligatorio.");
+        errorMessages.put("requestBecomeSeller.status.invalid", "El status no es válido.");
+        errorMessages.put("requestBecomeSeller.request.notFound", "La solicitud no fue encontrada.");
+
+        //error messages request sell product
+        errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
+        errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
 
     }
 
