@@ -2,7 +2,6 @@ package mx.edu.utez.services_clothing_shop.service.email_service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,7 +20,7 @@ public class EmailService {
         this.emailSender = emailSender;
     }
 
-    public void enviarCorreoRestablecimiento(String destinatario,String asunto, String mensaje) {
+    public void enviarCorreoRestablecimiento(String destinatario, String asunto, String title, String mensaje, String codigo) {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
@@ -33,11 +32,29 @@ public class EmailService {
             } else {
                 helper.setTo(destinatario);
                 helper.setSubject(asunto);
-                helper.setText(mensaje);
+                String html =
+                        "<!DOCTYPE html>" +
+                                "<html lang=\"en\">" +
+                                "<head>" +
+                                "<meta charset=\"UTF-8\">" +
+                                "<meta name=viewport content=width=device=width, initial-scale=1.0 >" +
+                                "</head>" +
+                                "<body>" +
+                                "<div style=\"text-align: left;\">" +
+                                "<h1 style=\"color: #000000;\">" + title + "</h1>" +
+                                "<p style=\"color: #000000;\">" + mensaje + "</p>" +
+                                "<p style=\"color: #666;\">->:<strong>"+codigo+"</strong></p>" +
+                                "</div>" +
+                                "<div>" +
+                                "<p>Correo generado automaticamente, por favor no contestar</p>"+
+                                "</div>"+
+                                "</html>";
+                helper.setText(html, true);
                 emailSender.send(message);
             }
         } catch (MessagingException e) {
             Logger.getLogger(EmailService.class.getName()).severe("Error al enviar correo: " + e.getMessage());
         }
-    }
+    };
+
 }
