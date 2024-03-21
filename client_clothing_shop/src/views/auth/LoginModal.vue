@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="login-modal" hide-footer hide-header centered>
+  <b-modal id="login-modal" hide-footer hide-header centered @hidden="resetModal" >
     <b-container>
       <b-row>
         <b-col class="text-right">
@@ -33,8 +33,10 @@
                 type="password"
                 v-model="form.password"
                 required
+                name="password"
                 v-validate="'required'"
             ></b-form-input>
+            <span v-show="errors.has('password')" class="text-danger">{{ errors.first('password') }}</span>
           </b-form-group>
         </b-col>
       </b-row>
@@ -87,6 +89,7 @@ export default {
 
           this.showOverlay();
           const response = await AuthService.loginService(payload);
+
           if (response.status === 200) {
             this.$bvModal.hide('login-modal');
             this.$store.dispatch('login', {
@@ -100,6 +103,13 @@ export default {
         }
       });
     },
+
+    resetModal(){
+      this.form.email = '';
+      this.form.password = '';
+    },
+
+
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
     }

@@ -48,7 +48,7 @@ instance.interceptors.response.use(
                 return response;
             }
         }else{
-            return Promise.reject(response);
+            return Promise.reject(response.data);
         }
     },
     (error) => {
@@ -76,7 +76,7 @@ instance.interceptors.response.use(
                 timer: 3000,
             });
         }else{
-            return Promise.reject(error);
+            return Promise.reject(error.response);
         }
 
     }
