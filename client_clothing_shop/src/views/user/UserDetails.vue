@@ -22,7 +22,8 @@
                 size="200px"
                 variant="secondary"
                 class="text-uppercase"
-            >{{user.email.charAt(0)}}</b-avatar>
+                :text="user.email.charAt(0) + user.email.charAt(4)"
+            />
           </b-col>
         </b-row>
 
@@ -31,7 +32,7 @@
             <b-card>
               <b-row>
                 <b-col class="text-center">
-                  <h3>Datos de usuario</h3>
+                  <h4>Datos de usuario</h4>
                 </b-col>
               </b-row>
               <b-row class="mt-2">
@@ -82,75 +83,94 @@
 
 
       <b-col >
-        <b-card>
-          <b-row>
-            <b-col>
-              <b-row>
-                <b-col class="text-center">
-                  <h3>Datos personales</h3>
-                </b-col>
-              </b-row>
-
-              <b-row class="mt-2">
-                <b-col>
-                  <b-form-group label="Nombre completo">
-                    <b-form-input
-                        v-model="user.name"
-
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-
-                <b-col>
-                  <b-form-group label="Primer apellido">
-                    <b-form-input
-                        v-model="user.lastName"
-
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-
-                <b-col>
-                  <b-form-group label="Segundo apellido">
-                    <b-form-input
-                        v-model="user.secondLastName"
-
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-
+        <b-row>
+          <b-col>
+            <b-card>
               <b-row>
                 <b-col>
-                  <b-form-group label="Género">
-                    <b-form-select
+                  <b-row>
+                    <b-col class="text-center">
+                      <h4>Datos personales</h4>
+                    </b-col>
+                  </b-row>
 
-                    ></b-form-select>
-                  </b-form-group>
-                </b-col>
+                  <b-row class="mt-2">
+                    <b-col>
+                      <b-form-group label="Nombre completo">
+                        <b-form-input
+                            v-model="user.name"
 
-                <b-col>
-                  <b-form-group label="Fecha de nacimiento">
-                    <b-form-input
-                        v-model="user.birthDate"
-                        type="date"
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
 
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
+                    <b-col>
+                      <b-form-group label="Primer apellido">
+                        <b-form-input
+                            v-model="user.lastName"
 
-                <b-col>
-                  <b-form-group label="Teléfono">
-                    <b-form-input
-                        v-model="user.phoneNumber"
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
 
-                    ></b-form-input>
-                  </b-form-group>
+                    <b-col>
+                      <b-form-group label="Segundo apellido">
+                        <b-form-input
+                            v-model="user.secondLastName"
+
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+
+                  <b-row>
+                    <b-col>
+                      <b-form-group label="Género">
+                        <b-form-select
+
+                        ></b-form-select>
+                      </b-form-group>
+                    </b-col>
+
+                    <b-col>
+                      <b-form-group label="Fecha de nacimiento">
+                        <b-form-input
+                            v-model="user.birthDate"
+                            type="date"
+
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+
+                    <b-col>
+                      <b-form-group label="Teléfono">
+                        <b-form-input
+                            v-model="user.phoneNumber"
+
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
                 </b-col>
               </b-row>
-            </b-col>
-          </b-row>
-        </b-card>
+            </b-card>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-2">
+          <b-col>
+            <b-card>
+              <b-row>
+                <b-col class="text-center ">
+                  <h4>Datos fiscales</h4>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+
+
+
 
 
 
@@ -175,7 +195,24 @@ export default {
   },
   data() {
     return {
-      user: {}
+      user: {
+        email:'',
+        person: {
+          name: '',
+          lastName: '',
+          secondLastName: '',
+          gender: '',
+          birthday: '',
+          phoneNumber: ''
+        },
+        sellerInformation:{
+          imageIdentification: '',
+          curp: '',
+          secondaryPhoneNumber: '',
+          privacyPolicyAgreement: false,
+          taxIdentificationNumber: '',
+        }
+      }
     };
   },
   methods: {
