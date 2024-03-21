@@ -3,12 +3,14 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerDTO;
+import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,19 +25,18 @@ public class RequestsBecomeSellerService {
     private final IRequestsBecomeSeller IRequestsBecomeSeller;
     private final IRequestStatus IRequestStatus;
 
-
     public RequestsBecomeSellerService(IRequestsBecomeSeller IRequestsBecomeSeller, IRequestStatus IRequestStatus) {
         this.IRequestsBecomeSeller = IRequestsBecomeSeller;
         this.IRequestStatus = IRequestStatus;
     }
 
     @Transactional
-    public RequestsBecomeSellerDTO putRequestStatus(UUID requestId, String status, String rejectionReason) {
+    public RequestsBecomeSellerDTO putRequestBecomeSeller(UUID requestId, String status, String rejectionReason) {
         Optional<BeanRequestsBecomeSeller> existingRequestOptional = IRequestsBecomeSeller.findById(requestId);
         if (existingRequestOptional.isPresent()) {
             BeanRequestsBecomeSeller existingRequest = existingRequestOptional.get();
             BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
-                    .orElseThrow(() -> new IllegalArgumentException("Estado no válido: " + status));
+                    .orElseThrow(() -> new CustomException("requestBecomeSeller.status.notnull"));
 
             existingRequest.setStatus(requestStatus);
             existingRequest.setRejectionReason(rejectionReason);
@@ -43,29 +44,29 @@ public class RequestsBecomeSellerService {
 
             return convertToDTO(updatedRequest);
         } else {
-            throw new RequestsNotFoundException("La solicitud no fue encontrada.");
+            throw new CustomException("requestBecomeSeller.status.invalid");
         }
     }
 
-    public Optional<RequestsBecomeSellerDTO> getRequestByEmail(String email) {
+    public Optional<RequestsBecomeSellerDTO> getRequestBecomeSellerByEmail(String email) {
         Optional<BeanRequestsBecomeSeller> requestOptional = IRequestsBecomeSeller.findByUserEmail(email);
         return requestOptional.map(this::convertToDTO);
     }
 
     @Transactional
-    public RequestsBecomeSellerDTO postRequest(String email) {
+    public RequestsBecomeSellerDTO postRequestBecomeSeller(String email) {
         Optional<BeanRequestsBecomeSeller> existingRequestOptional = IRequestsBecomeSeller.findByUserEmail(email);
         if (existingRequestOptional.isPresent()) {
             BeanRequestsBecomeSeller existingRequest = existingRequestOptional.get();
             BeanUser user = existingRequest.getUser();
             if (user == null) {
-                throw new UserNotFoundException("El usuario no fue encontrado.");
+                throw new CustomException("requestBecomeSeller.email.invalid");
             }
             BeanRequestsBecomeSeller request = new BeanRequestsBecomeSeller();
             request.setUser(user);
 
             Optional<BeanRequestStatus> pendingStatusOptional = IRequestStatus.findByStatus("Pendiente");
-            BeanRequestStatus pendingStatus = pendingStatusOptional.orElseThrow(() -> new IllegalStateException("El estado 'Pendiente' no se encontró en la base de datos"));
+            BeanRequestStatus pendingStatus = pendingStatusOptional.orElseThrow(() -> new IllegalStateException("requestBecomeSeller.status.invalid"));
 
             request.setStatus(pendingStatus);
 
@@ -73,13 +74,12 @@ public class RequestsBecomeSellerService {
 
             return convertToDTO(savedRequest);
         } else {
-            throw new RequestsNotFoundException("La solicitud no fue encontrada.");
+            throw new CustomException("requestBecomeSeller.request.notFound");
         }
     }
 
 
-    public Page<IRequestsBecomeSeller.StatusProjection> findAllStatuses(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<IRequestsBecomeSeller.StatusProjection> getPageRequestBecomeSeller(Pageable pageable) {
         return IRequestsBecomeSeller.findAllStatuses(pageable);
     }
 
@@ -90,17 +90,5 @@ public class RequestsBecomeSellerService {
         dto.setUserId(request.getUser().getIdUser());
         dto.setStatusId(request.getStatus().getIdStatus());
         return dto;
-    }
-
-    public class RequestsNotFoundException extends RuntimeException {
-        public RequestsNotFoundException(String message) {
-            super(message);
-        }
-    }
-
-    public class UserNotFoundException extends RuntimeException {
-        public UserNotFoundException(String message) {
-            super(message);
-        }
     }
 }
