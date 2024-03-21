@@ -64,9 +64,14 @@ public class ErrorDictionary {
 
 
         //error messages shopping cart
+        errorMessages.put("shoppingCart.id.automatic", "El id del carrito de compras es automático no manual.");
+        errorMessages.put("shoppingCart.user.notnull", "El usuario es obligatorio.");
+        errorMessages.put("shoppingCart.product.exists", "El producto ya está en el carrito de compras.");
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
+        errorMessages.put("shoppingCart.amount.error", "La cantidad es mayor a la disponible.");
         errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
+        errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
         errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
         errorMessages.put("shoppingCart.delete.error","Error al eliminar el carrito de compras.");
         errorMessages.put("shoppingCart.update.error","Error al actualizar el carrito de compras.");
