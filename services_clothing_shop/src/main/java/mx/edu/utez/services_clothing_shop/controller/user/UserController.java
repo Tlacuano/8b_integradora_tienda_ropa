@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/venta-ropa/api/user")
+@RequestMapping("/venta-ropa/api/users")
 @CrossOrigin(origins = {"*"})
 public class UserController {
     private final UserService userService;
@@ -72,8 +72,8 @@ public class UserController {
         );
     }
 
-    @PostMapping("/change-status")
-    public ResponseEntity<Object> changeStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
+    @PostMapping("/put-status")
+    public ResponseEntity<Object> putStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(userService.changeStatusAccount(payload), "Estado de cuenta cambiado correctamente", false, 200),
                 HttpStatus.OK

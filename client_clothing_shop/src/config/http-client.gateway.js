@@ -1,17 +1,22 @@
 import { encrypt, decrypt } from "../utils/security/aes";
-import instance from "./axios";
 import Vue from 'vue';
-import { BToast } from 'bootstrap-vue';
+import axios from "axios";
+import store from '../store/store'
 
+const SERVER_URL = import.meta.env.VITE_API_URL;
+
+const instance = axios.create({
+    baseURL: SERVER_URL,
+    timeout: 10000,
+});
 
 const baseURL = import.meta.env.VITE_API_URL;
 
 instance.interceptors.request.use(
     (config) => {
         if(config.url.startsWith(baseURL)) {
-
-            const auth_token = localStorage.getItem("token");
-            if (auth_token) {
+            const auth_token = store.getters.getToken
+            if (auth_token.length > 0) {
                 config.headers["Authorization"] = `Bearer ${auth_token}`;
             }
             /*
@@ -43,7 +48,7 @@ instance.interceptors.response.use(
                 return response;
             }
         }else{
-            return Promise.reject(response);
+            return Promise.reject(response.data);
         }
     },
     (error) => {
@@ -71,15 +76,9 @@ instance.interceptors.response.use(
                 timer: 3000,
             });
         }else{
-            if(error.config.url.startsWith(baseURL)){
-                Vue.prototype.$bvToast.toast(error.response.message, {
-                    title: 'Advertencia',
-                    variant: 'warning',
-                    solid: true,
-                    position: 'top-right',
-                });
-            }
+            return Promise.reject(error.response);
         }
+
     }
 );
 
@@ -88,12 +87,12 @@ instance.interceptors.response.use(
 
 export default {
     async doPost(url, data) {
-        return await instance.post(url, data);
+        return await instance.post(SERVER_URL+url, data);
     },
     async doGet(url) {
-        return await instance.get(url);
+        return await instance.get(SERVER_URL+url);
     },
     async doPut(url) {
-        return await instance.put(url);
+        return await instance.put(SERVER_URL+url);
     },
 }

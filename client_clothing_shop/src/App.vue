@@ -1,25 +1,14 @@
 <template>
   <div id="app">
-    <NavbarBuyer v-if="(getRole === 'comprador' && isLoggedIn) || !isLoggedIn"/>
-    <NavbarAdmin v-if="getRole === 'administrador' && isLoggedIn"/>
-    <NavbarSeller v-if="getRole === 'vendedor' && isLoggedIn" />
+    <b-overlay :show="showOverlay" class="app-container">
+      <NavbarBuyer v-if="(getRole === 'BUYER' && isLoggedIn) || !isLoggedIn"/>
+      <NavbarAdmin v-if="getRole === 'ADMIN' && isLoggedIn"/>
+      <NavbarSeller v-if="getRole === 'SELLER' && isLoggedIn" />
 
-    <b-container fluid>
-      <router-view />
-      <!-- Formulario Temporal para Login y Logout -->
-      {{isLoggedIn}}
-      {{getRole}}
-      {{getToken}}
-      <div v-if="!isLoggedIn">
-        <input v-model="tempToken" placeholder="Token">
-        <input v-model="tempRole" placeholder="Role (administrador, vendedor, comprador)">
-        <input v-model="tempEmail" placeholder="Email">
-        <button @click="login">Login</button>
-      </div>
-      <div v-else>
-        <button @click="logout">Logout</button>
-      </div>
-    </b-container>
+      <b-container fluid class="interface-container pt-2">
+        <router-view />
+      </b-container>
+    </b-overlay>
   </div>
 </template>
 
@@ -41,23 +30,21 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isLoggedIn', 'getRole', "getToken"])
-  },
-  methods: {
-    login() {
-      this.$store.dispatch('login', {
-        token: this.tempToken,
-        email: this.tempEmail,
-        role: this.tempRole,
-        hasMultipleRoles: true,
-      });
-    },
-    logout() {
-      this.$store.dispatch('logout');
-    }
+    ...mapGetters(['isLoggedIn', 'getRole', "getToken","showOverlay"])
   }
 }
 </script>
 
 <style >
+  .app-container{
+    overflow-y: hidden;
+    position: absolute;
+    height: 100%;
+  }
+
+  .interface-container{
+    min-height: 81.5%;
+    max-height: 90%;
+    overflow-y: auto;
+  }
 </style>

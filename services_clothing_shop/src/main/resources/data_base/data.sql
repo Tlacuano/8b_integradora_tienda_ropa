@@ -50,7 +50,7 @@ insert ignore into users (id_user, password, email, verification_code, status)
 values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'contraseña123', 'usuario1@example.com', 'ABCD1234',
         1),
        (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'password456', 'usuario2@example.com', 'WXYZ5678',
-        0),
+        1),
        (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'pass789', 'usuario3@example.com', '1234EFGH', 1);
 
 insert ignore into user_roles (id_user_role, fk_id_role, fk_id_user)
@@ -62,11 +62,11 @@ values (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e397837582d'), uuid_to_bin('0f8fad
         uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'));
 
 insert ignore into people(fk_id_user, name, last_name, second_last_name, picture, birthday, phone_number, gender)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', 'picture-profile',
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', '',
         '2000-09-12', '7772314221', 'otros'),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', 'picture-profile',
+       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', '',
         '2001-12-18', '7778933214', 'femenino'),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', 'picture-profile',
+       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', '',
         '1998-10-01', '7778291039', 'masculino');
 
 insert ignore into address(id_address, address, references_address, postal_code, state, street, neighborhood,

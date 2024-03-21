@@ -1,8 +1,9 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --background-navbar: #D9D9D9;
-}
+  --black-base: #212529;
 
+}
 
 *,
 *::before,
@@ -23,4 +24,22 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+
+.interface-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.interface-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.interface-container::-webkit-scrollbar-thumb {
+  background: #bab9b9;
+  border-radius: 4px;
+}
+
+.interface-container::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
 }

@@ -247,7 +247,7 @@ BEGIN
 END $$
 DELIMITER ;
 
-<<<<<<< Updated upstream
+
 -- Procedure to insert a new product gallery
 DROP PROCEDURE IF EXISTS `sp_post_product_gallery`;
 DELIMITER $$
@@ -307,6 +307,10 @@ BEGIN
             SELECT 'Image was not inserted' AS message;
             -- Rollback the transaction if the image was not inserted
             ROLLBACK;
+        END IF;
+    END IF;
+END $$
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `insert_request_data_change`;
 DELIMITER $$
