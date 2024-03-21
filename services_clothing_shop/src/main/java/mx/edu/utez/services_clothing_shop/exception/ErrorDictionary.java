@@ -148,11 +148,26 @@ public class ErrorDictionary {
         errorMessages.put("dataChange.email.invalid", "El email no es válido.");
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
         errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
+        errorMessages.put("dataChange.request.notFound", "La solicitud no fue encontrada.");
+        errorMessages.put("dataChange.JSON.invalid", "El JSON no es válido.");
 
         //error messages request return product
         errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
         errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
+        errorMessages.put("requestsReturnProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
+        errorMessages.put("requestsReturnProduct.status.invalid", "El status no es válido.");
+        errorMessages.put("requestsReturnProduct.status.notFound", "El status no fue encontrado.");
 
+        //error messages request become seller
+        errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
+        errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
+        errorMessages.put("requestBecomeSeller.status.notnull", "El status es obligatorio.");
+        errorMessages.put("requestBecomeSeller.status.invalid", "El status no es válido.");
+        errorMessages.put("requestBecomeSeller.request.notFound", "La solicitud no fue encontrada.");
+
+        //error messages request sell product
+        errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
+        errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
     }
 
     public String getErrorMessage(String errorCode) {
