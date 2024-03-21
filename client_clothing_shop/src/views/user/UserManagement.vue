@@ -82,7 +82,7 @@
                         Deshabilitar
                       </div>
                     </b-dropdown-item>
-                    <b-dropdown-item>
+                    <b-dropdown-item @click="seeUserDetails(person.email)">
                       Ver más detalles
                     </b-dropdown-item>
                   </b-dropdown>
@@ -109,8 +109,9 @@
 </template>
 
 <script>
-import PeopleService from "@/services/user/UserService";
-import {showInfoAlert} from "@/components/alerts/Alerts";
+import PeopleService from "@/services/user/userService";
+import {showInfoAlert} from "@/components/alerts/alerts";
+import {codeCrypto} from "@/utils/security/cryptoJs";
 
 export default {
   name: "UserManagement",
@@ -138,7 +139,6 @@ export default {
       const payoad = {
         email:dato
       }
-
       showInfoAlert(
         "¿Estás seguro?",
         "¿Deseas cambiar el estado de la cuenta?",
@@ -149,6 +149,11 @@ export default {
       )
     },
 
+
+    seeUserDetails(email){
+      const codeParam = codeCrypto(email);
+      this.$router.push(`/user-details/${codeParam}`);
+    },
 
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');

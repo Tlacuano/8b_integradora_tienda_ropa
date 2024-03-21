@@ -21,8 +21,18 @@ const putStatusUserService = async (payload) => {
     }
 }
 
+const getUserDetailsByEmailAdminService = async (email) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/users/get-user-detaiil-by-email-admin`, email);
+        return response.data
+    }catch (e){
+        console.log(e)
+    }
+}
+
 
 export default {
     getPageUsersService,
-    putStatusUserService
+    putStatusUserService,
+    getUserDetailsByEmailAdminService
 };
