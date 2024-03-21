@@ -23,12 +23,10 @@ instance.interceptors.request.use(
             if(config.headers["Content-Type"] === "application/x-www-form-urlencoded"){
                 const data = config.data;
                 if (data) {
-                    console.log(data)
                     config.data = encrypt(data);
                 }
             }
 
-            console.log(config)
             return config;
         }
     }

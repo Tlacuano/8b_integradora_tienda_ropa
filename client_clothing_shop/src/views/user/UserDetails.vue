@@ -98,7 +98,7 @@
                     <b-col>
                       <b-form-group label="Nombre completo">
                         <b-form-input
-                            v-model="user.name"
+                            v-model="user.person.name"
 
                         ></b-form-input>
                       </b-form-group>
@@ -107,7 +107,7 @@
                     <b-col>
                       <b-form-group label="Primer apellido">
                         <b-form-input
-                            v-model="user.lastName"
+                            v-model="user.person.lastName"
 
                         ></b-form-input>
                       </b-form-group>
@@ -116,7 +116,7 @@
                     <b-col>
                       <b-form-group label="Segundo apellido">
                         <b-form-input
-                            v-model="user.secondLastName"
+                            v-model="user.person.secondLastName"
 
                         ></b-form-input>
                       </b-form-group>
@@ -126,16 +126,18 @@
                   <b-row>
                     <b-col>
                       <b-form-group label="Género">
-                        <b-form-select
-
-                        ></b-form-select>
+                        <b-form-select v-model="user.person.gender">
+                          <b-form-select-option value="masculino">Hombre</b-form-select-option>
+                          <b-form-select-option value="femenino">Mujer</b-form-select-option>
+                          <b-form-select-option value="otros">Otro</b-form-select-option>
+                        </b-form-select>
                       </b-form-group>
                     </b-col>
 
                     <b-col>
                       <b-form-group label="Fecha de nacimiento">
                         <b-form-input
-                            v-model="user.birthDate"
+                            v-model="user.person.birthday"
                             type="date"
 
                         ></b-form-input>
@@ -145,8 +147,7 @@
                     <b-col>
                       <b-form-group label="Teléfono">
                         <b-form-input
-                            v-model="user.phoneNumber"
-
+                            v-model="user.person.phoneNumber"
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
@@ -157,12 +158,66 @@
           </b-col>
         </b-row>
 
-        <b-row class="mt-2">
+        <b-row class="mt-2" v-if="user.sellerInformation.taxIdentificationNumber">
           <b-col>
             <b-card>
               <b-row>
                 <b-col class="text-center ">
                   <h4>Datos fiscales</h4>
+                </b-col>
+              </b-row>
+
+              <b-row class="mt-2">
+                <b-col>
+                  <b-form-group label="Número de identificación fiscal">
+                    <b-form-input
+                        v-model="user.sellerInformation.taxIdentificationNumber"
+                    ></b-form-input>
+                  </b-form-group>
+                </b-col>
+
+                <b-col>
+                  <b-form-group label="CURP">
+                    <b-form-input
+                        v-model="user.sellerInformation.curp"
+                    ></b-form-input>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+
+              <b-row>
+                <b-col>
+                  <b-row>
+                    <b-col>
+                      <b-form-group label="Teléfono secundario">
+                        <b-form-input
+                            v-model="user.sellerInformation.secondaryPhoneNumber"
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <b-form-group label="Acuerdo de política de privacidad">
+                        <b-form-checkbox
+                            v-model="user.sellerInformation.privacyPolicyAgreement"
+                        ></b-form-checkbox>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                </b-col>
+                <b-col>
+                  <b-row>
+                    <b-col>
+                      <b-img
+                          v-if="user.sellerInformation.imageIdentification"
+                          :src="user.sellerInformation.imageIdentification"
+                          alt="Image"
+                          fluid
+                          thumbnail
+                      />
+                    </b-col>
+                  </b-row>
                 </b-col>
               </b-row>
             </b-card>
@@ -196,21 +251,21 @@ export default {
   data() {
     return {
       user: {
-        email:'',
+        email:null,
         person: {
-          name: '',
-          lastName: '',
-          secondLastName: '',
-          gender: '',
-          birthday: '',
-          phoneNumber: ''
+          name: null,
+          lastName: null,
+          secondLastName: null,
+          gender: null,
+          birthday: null,
+          phoneNumber: null
         },
         sellerInformation:{
-          imageIdentification: '',
-          curp: '',
-          secondaryPhoneNumber: '',
-          privacyPolicyAgreement: false,
-          taxIdentificationNumber: '',
+          imageIdentification: null,
+          curp: null,
+          secondaryPhoneNumber: null,
+          privacyPolicyAgreement: null,
+          taxIdentificationNumber: null,
         }
       }
     };
@@ -223,7 +278,21 @@ export default {
         email: decodeCrypto(this.email)
       };
       const response = await PeopleService.getUserDetailsByEmailAdminService(payload);
-      this.user = response.data;
+      this.user.email = response.data.email;
+
+      this.user.person.name = response.data.name;
+      this.user.person.lastName = response.data.lastName;
+      this.user.person.secondLastName = response.data.secondLastName;
+      this.user.person.gender = response.data.gender;
+      this.user.person.birthday =  new Date(response.data.birthday).toISOString().split('T')[0];
+      this.user.person.phoneNumber = response.data.phoneNumber;
+
+      this.user.sellerInformation.imageIdentification = response.data.imageIdentification;
+      this.user.sellerInformation.curp = response.data.curp;
+      this.user.sellerInformation.secondaryPhoneNumber = response.data.secondaryPhoneNumber;
+      this.user.sellerInformation.privacyPolicyAgreement = response.data.privacyPolicyAgreement;
+      this.user.sellerInformation.taxIdentificationNumber = response.data.taxIdentificationNumber;
+
 
       this.showOverlay()
       console.log(response.data);
