@@ -74,12 +74,30 @@ public class SpringSecurityConfig {
                                 //Modulo requests-sell-product
 
                                 //Modulo address
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/addresses/get-addresses").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/get-address").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/post-address").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/addresses/put-address").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/addresses/delete-address").hasAnyRole("BUYER", "SELLER")
 
                                 //Modulo return-product-gallery
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/return-product-galleries/get-return-product-galleries").hasAnyRole("ADMIN", "BUYER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/return-product-galleries/get-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/return-product-galleries/post-return-product-gallery").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/return-product-galleries/put-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
+                                .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/return-product-galleries/delete-return-product-gallery").hasAnyRole("ADMIN", "BUYER")
 
                                 //Modulo reviews
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-reviews-by-order-product-id").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/post-review").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/reviews/put-review").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/reviews/delete-review").hasRole("BUYER")
 
                                 //Modulo seller-information
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/sellers-information/get-sellers-information").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/get-seller-information").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/post-seller-information").hasRole("SELLER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/sellers-information/put-seller-information").hasRole("SELLER")
 
                                 //Modulo categories
 
