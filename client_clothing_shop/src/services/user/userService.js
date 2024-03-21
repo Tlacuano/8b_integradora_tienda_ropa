@@ -12,9 +12,7 @@ const getPageUsersService = async (pagination) => {
 
 const putStatusUserService = async (payload) => {
     try{
-        console.log(payload)
         const response = await axios.doPost("/venta-ropa/api/users/put-status", payload);
-
         return response.data
     }catch (e) {
         console.log(e)

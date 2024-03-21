@@ -153,6 +153,9 @@ public class ErrorDictionary {
         errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
         errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
 
+        //error de configuracion
+        errorMessages.put("controller.advice.encrypter", "Algo salió mal al encriptar la información.");
+
     }
 
     public String getErrorMessage(String errorCode) {
