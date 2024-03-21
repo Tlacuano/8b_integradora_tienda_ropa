@@ -66,7 +66,7 @@ public class ShoppingCartServices {
         }else {
             BeanProduct product = productRepository.findByIdProduct(shoppingCart.getProduct().getIdProduct());
             if (product == null) {
-                throw new CustomException("product.id.notfound");
+                throw new CustomException("shoppingCart.product.notFound");
             }
             int amount = product.getAmount();
             if(shoppingCart.getAmount() > amount){

@@ -71,6 +71,7 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
         errorMessages.put("shoppingCart.amount.error", "La cantidad es mayor a la disponible.");
         errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
+        errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
         errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
         errorMessages.put("shoppingCart.delete.error","Error al eliminar el carrito de compras.");
         errorMessages.put("shoppingCart.update.error","Error al actualizar el carrito de compras.");
