@@ -35,7 +35,6 @@ instance.interceptors.response.use(
     (response) => {
         if(response.status >= 200 && response.status < 300) {
             if(response.config.url.startsWith(baseURL)) {
-                console.log(response)
                 const data = response.data;
     
                 if (data) {
