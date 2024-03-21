@@ -178,6 +178,9 @@ public class ErrorDictionary {
         errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
 
+        //twilio
+        errorMessages.put("twilio.service.error", "Error al enviar el codigo.");
+
     }
 
     public String getErrorMessage(String errorCode) {
