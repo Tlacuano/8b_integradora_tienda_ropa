@@ -5,6 +5,7 @@ import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsB
 import mx.edu.utez.services_clothing_shop.service.requests_become_seller.RequestsBecomeSellerService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,9 @@ public class RequestsBecomeSellerController {
     }
 
     @PostMapping("/get-by-email")
-    public ResponseEntity<CustomResponse<RequestsBecomeSellerDTO>> getRequestByEmail(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<CustomResponse<RequestsBecomeSellerDTO>> getRequestBecomeSellerByEmail(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
-        RequestsBecomeSellerDTO requestData = requestsBecomeSellerService.getRequestByEmail(email).orElse(null);
+        RequestsBecomeSellerDTO requestData = requestsBecomeSellerService.getRequestBecomeSellerByEmail(email).orElse(null);
 
         if (requestData != null) {
             return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
@@ -36,24 +37,24 @@ public class RequestsBecomeSellerController {
         }
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<CustomResponse<RequestsBecomeSellerDTO>> postRequest(@RequestBody Map<String, String> payload) {
+    @PostMapping("/post-request-become-seller")
+    public ResponseEntity<CustomResponse<RequestsBecomeSellerDTO>> postRequestBecomeSeller(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
-        RequestsBecomeSellerDTO requestData = requestsBecomeSellerService.postRequest(email);
+        RequestsBecomeSellerDTO requestData = requestsBecomeSellerService.postRequestBecomeSeller(email);
         return ResponseEntity.ok(new CustomResponse<>(requestData, "Request created", false, 200));
     }
 
-    @PutMapping("/put")
-    public ResponseEntity<CustomResponse<RequestsBecomeSellerDTO>> putRequestStatus(@RequestBody Map<String, String> payload) {
+    @PutMapping("/put-request-become-seller")
+    public ResponseEntity<CustomResponse<RequestsBecomeSellerDTO>> putRequestBecomeSeller(@RequestBody Map<String, String> payload) {
         UUID requestId = UUID.fromString(payload.get("requestId"));
         String status = payload.get("status");
         String rejectionReason = payload.get("rejectionReason");
-        RequestsBecomeSellerDTO updatedRequest = requestsBecomeSellerService.putRequestStatus(requestId, status, rejectionReason);
+        RequestsBecomeSellerDTO updatedRequest = requestsBecomeSellerService.putRequestBecomeSeller(requestId, status, rejectionReason);
         return ResponseEntity.ok(new CustomResponse<>(updatedRequest, "Request status updated", false, 200));
     }
 
-    @GetMapping("/get-all")
-    public Page<IRequestsBecomeSeller.StatusProjection> getAllRequests(@RequestParam int page, @RequestParam int size) {
-        return requestsBecomeSellerService.findAllStatuses(page, size);
+    @GetMapping("/get-page")
+    public Page<IRequestsBecomeSeller.StatusProjection> getPageRequestBecomeSeller(Pageable pageable) {
+        return requestsBecomeSellerService.getPageRequestBecomeSeller(pageable);
     }
 }
