@@ -163,6 +163,10 @@ public class ErrorDictionary {
         errorMessages.put("requestsReturnProduct.status.invalid", "El status no es válido.");
         errorMessages.put("requestsReturnProduct.status.notFound", "El status no fue encontrado.");
 
+        //error de configuracion
+        errorMessages.put("controller.advice.encrypter", "Algo salió mal al encriptar la información.");
+
+
         //error messages request become seller
         errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
         errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
@@ -173,6 +177,7 @@ public class ErrorDictionary {
         //error messages request sell product
         errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
+
     }
 
     public String getErrorMessage(String errorCode) {

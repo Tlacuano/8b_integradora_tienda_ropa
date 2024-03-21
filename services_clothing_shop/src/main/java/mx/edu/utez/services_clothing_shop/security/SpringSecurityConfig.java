@@ -1,5 +1,7 @@
 package mx.edu.utez.services_clothing_shop.security;
 
+
+import mx.edu.utez.services_clothing_shop.security.filter.DecryptingFilter;
 import mx.edu.utez.services_clothing_shop.security.filter.JwtAuthenticationFilter;
 import mx.edu.utez.services_clothing_shop.security.filter.JwtValidationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -25,9 +27,11 @@ import java.util.List;
 @Configuration
 public class SpringSecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final DecryptingFilter decryptingFilter;
 
-    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, DecryptingFilter decryptingFilter) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.decryptingFilter = decryptingFilter;
     }
 
     @Bean
@@ -49,7 +53,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-users").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-by-email").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users//get-user-detaiil-by-email-admin").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN")
 
 
@@ -186,6 +190,7 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .addFilterBefore(decryptingFilter, JwtAuthenticationFilter.class)
 
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
     }

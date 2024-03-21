@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import AuthService from "@/services/auth/AuthService";
+import AuthService from "@/services/auth/authService";
 export default {
   name: 'LoginModal',
   data() {

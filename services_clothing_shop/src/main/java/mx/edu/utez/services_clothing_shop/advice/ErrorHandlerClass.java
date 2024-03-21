@@ -1,5 +1,6 @@
-package mx.edu.utez.services_clothing_shop.exception;
+package mx.edu.utez.services_clothing_shop.advice;
 
+import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.HttpHeaders;
