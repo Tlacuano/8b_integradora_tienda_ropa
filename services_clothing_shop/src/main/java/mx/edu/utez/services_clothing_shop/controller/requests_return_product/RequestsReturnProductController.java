@@ -27,10 +27,10 @@ public class RequestsReturnProductController {
         this.requestsReturnProductService = requestsReturnProductService;
     }
 
-    @PostMapping("/get-by-order")
-    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> getRequestByOrder(@RequestBody RequestsReturnProductGetDTO requestDTO) {
-        UUID idOrder = requestDTO.getIdRequestReturnProduct();
-        RequestsReturnProductDTO requestData = requestsReturnProductService.getRequestsById(idOrder);
+    @PostMapping("/get-by-id-request-return-product")
+    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> getRequestReturnProductById(@RequestBody RequestsReturnProductGetDTO requestDTO) {
+        UUID idRequest = requestDTO.getIdRequestReturnProduct();
+        RequestsReturnProductDTO requestData = requestsReturnProductService.getRequestReturnProductById(idRequest);
 
         if (requestData != null) {
             String status = requestsReturnProductService.getRequestStatusById(requestData.getStatusId());
@@ -43,23 +43,22 @@ public class RequestsReturnProductController {
         }
     }
 
-
-
-    @PostMapping("/post")
-    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequest(@RequestBody RequestsReturnProductPostDTO requestDTO) {
-        RequestsReturnProductDTO requestData = requestsReturnProductService.postRequest(requestDTO.getOrderHasProductId());
+    @PostMapping("/post-request-return-product")
+    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequestReturnProduct(@RequestBody RequestsReturnProductPostDTO requestDTO) {
+        RequestsReturnProductDTO requestData = requestsReturnProductService.postRequestReturnProduct(requestDTO.getOrderHasProductId());
         return ResponseEntity.ok(new CustomResponse<>(requestData, "Request created", false, 200));
     }
 
-    @PutMapping("/put")
-    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> putRequestStatus(@RequestBody RequestsReturnProductPutDTO requestDTO) {
-        RequestsReturnProductDTO updatedRequest = requestsReturnProductService.putRequestStatus(requestDTO.getRequestId(), requestDTO.getStatus(), requestDTO.getRejectionReason());
+    @PutMapping("/put-request-return-product-status")
+    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> putRequestReturnProduct(@RequestBody RequestsReturnProductPutDTO requestDTO) {
+        RequestsReturnProductDTO updatedRequest = requestsReturnProductService.putRequestReturnProduct(requestDTO.getRequestId(), requestDTO.getStatus(), requestDTO.getRejectionReason());
         return ResponseEntity.ok(new CustomResponse<>(updatedRequest, "Request status updated", false, 200));
     }
 
-    @GetMapping("/get-all")
-    public Page<IRequestsReturnProduct.ReturnStatusProjection> getAllRequests(Pageable pageable) {
-        return requestsReturnProductService.findAllStatuses(pageable);
+    @GetMapping("/get-page")
+    public Page<IRequestsReturnProduct.ReturnStatusProjection> getPageRequests(Pageable pageable) {
+        return requestsReturnProductService.getPageRequests(pageable);
+
     }
 
 }
