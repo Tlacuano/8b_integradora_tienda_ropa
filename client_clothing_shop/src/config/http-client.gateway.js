@@ -23,9 +23,12 @@ instance.interceptors.request.use(
             if(config.headers["Content-Type"] === "application/x-www-form-urlencoded"){
                 const data = config.data;
                 if (data) {
+                    console.log(data)
                     config.data = encrypt(data);
                 }
             }
+
+            console.log(config)
             return config;
         }
     }
@@ -34,13 +37,14 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if(response.status >= 200 && response.status < 300) {
+
+
             if(response.config.url.startsWith(baseURL)) {
                 const data = response.data;
     
                 if (data) {
                     response.data = decrypt(data);
                 }
-
                 return response;
             }
         }else{

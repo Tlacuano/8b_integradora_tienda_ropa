@@ -8,6 +8,9 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 
 @Component
 @Order(1)
@@ -18,62 +21,93 @@ public class DecryptingFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // Obtener el cuerpo de la petición
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = httpRequest.getReader();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        if (httpRequest.getAttribute("bodyDecrypted") != null) {
+            chain.doFilter(request, response);
+            return;
         }
 
-        // Decodificar el cuerpo de la petición
-        String body = stringBuilder.toString();
-        String decodedBody = EncryptionFunctions.decryptString(body);
-        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(decodedBody.getBytes());
-        chain.doFilter(new HttpServletRequestWrapper(httpRequest) {
-            @Override
-            public ServletInputStream getInputStream() throws IOException {
-                return new ServletInputStream() {
-                    public int read() throws IOException {
-                        return byteArrayInputStream.read();
-                    }
+        // Obtener el tipo de contenido de la petición
+        String contentType = httpRequest.getHeader("Content-Type");
 
-                    @Override
-                    public boolean isFinished() {
-                        return byteArrayInputStream.available() == 0;
-                    }
-
-                    @Override
-                    public boolean isReady() {
-                        return true;
-                    }
-
-                    @Override
-                    public void setReadListener(ReadListener readListener) {
-                        // No implementado
-                    }
-                };
+        //validar el tipo de contenido
+        if ("application/x-www-form-urlencoded".equals(contentType)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            try (BufferedReader bufferedReader = httpRequest.getReader()) {
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
             }
 
-            @Override
-            public int getContentLength() {
-                return decodedBody.getBytes().length;
-            }
+            String body = stringBuilder.toString();
+            String decodedBody = EncryptionFunctions.decryptString(body);
 
-        }, response);
+            final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(decodedBody.getBytes());
+
+            HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper(httpRequest) {
+                @Override
+                public ServletInputStream getInputStream() throws IOException {
+                    return new ServletInputStream() {
+                        public int read() {
+                            return byteArrayInputStream.read();
+                        }
+
+                        @Override
+                        public boolean isFinished() {
+                            return byteArrayInputStream.available() == 0;
+                        }
+
+                        @Override
+                        public boolean isReady() {
+                            return true;
+                        }
+
+                        @Override
+                        public void setReadListener(ReadListener readListener) {
+                            throw new RuntimeException("Not implemented");
+                        }
+                    };
+                }
+
+                @Override
+                public int getContentLength() {
+                    return decodedBody.getBytes().length;
+                }
+
+                @Override
+                public BufferedReader getReader() throws IOException {
+                    return new BufferedReader(new InputStreamReader(getInputStream()));
+                }
+
+                @Override
+                public String getContentType() {
+                    return "application/json";
+                }
+
+                @Override
+                public String getHeader(String name) {
+                    if ("content-type".equalsIgnoreCase(name)) {
+                        return "application/json";
+                    }
+                    return super.getHeader(name);
+                }
+
+                @Override
+                public Enumeration<String> getHeaders(String name) {
+                    if ("content-type".equalsIgnoreCase(name)) {
+                        return Collections.enumeration(Arrays.asList("application/json"));
+                    }
+                    return super.getHeaders(name);
+                }
+            };
+
+            wrappedRequest.setAttribute("bodyDecrypted", true);
+            chain.doFilter(wrappedRequest, response);
+            return;
+        }
+
+        chain.doFilter(request, response);
+
     }
 
     @Override
