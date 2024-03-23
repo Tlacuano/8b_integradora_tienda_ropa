@@ -26,11 +26,11 @@ public class ReviewService {
         this.errorDictionary = errorDictionary;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ResponseAllReviewDTO> getReviewsByOrderProductId(UUID idOrderProduct){
         List<Object[]> reviewsData = iReview.findEssentialReviewInfo(idOrderProduct);
         if (reviewsData.isEmpty()) {
-            throw new CustomException(errorDictionary.getErrorMessage("review.idOrderHasProduct.notfound"));
+            throw new CustomException("review.idOrderHasProduct.notfound");
         }
         return reviewsData
                 .stream()
