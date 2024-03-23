@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
 
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPostShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
@@ -31,8 +32,8 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/post-shopping-cart")
-    public ResponseEntity<CustomResponse<List<ResponseShoppingCartDTO>>> createShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
-        ResponseShoppingCartDTO response = shoppingCartServices.saveShoppingCar(shoppingCart);
+    public ResponseEntity<CustomResponse<List<RequestPostShoppingCartDTO>>> createShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
+        RequestPostShoppingCartDTO response = shoppingCartServices.saveShoppingCar(shoppingCart);
         return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200));
     }
 
@@ -44,9 +45,8 @@ public class ShoppingCartController {
 
     @PutMapping("/put-shopping-cart")
     public ResponseEntity<CustomResponse<List<ResponsePutShoppingCartDTO>>> updateShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
-        BeanShoppingCart response = shoppingCartServices.updateShoppingCartById(shoppingCart);
-        ResponsePutShoppingCartDTO updatedShoppingCartDTO = ResponsePutShoppingCartDTO.fromPutShoppingCart(response);
-        return new ResponseEntity<>(new CustomResponse<>(Collections.singletonList(updatedShoppingCartDTO), "ok", false, 200), HttpStatus.OK);
+        ResponsePutShoppingCartDTO response = shoppingCartServices.updateShoppingCartById(shoppingCart);
+        return new ResponseEntity<>(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200), HttpStatus.OK);
 
     }
 }

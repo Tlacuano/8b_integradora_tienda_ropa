@@ -1,6 +1,6 @@
 import Vue from 'vue'
+import store from "@/store/store";
 import VueRouter from 'vue-router'
-import { getRoleS, isLoggedInS} from "@/utils/security/sessionFunctions";
 
 Vue.use(VueRouter)
 
@@ -11,8 +11,16 @@ const router = new VueRouter({
     {
       path:"/user-management",
       name:"ADMINUserManagement",
-        component: () => import("../views/user/UserManagement.vue"),
-    }
+      component: () => import("../views/user/UserManagement.vue"),
+      meta: { requiresAuth: true, roles: ["ADMIN"] },
+    },
+    {
+      path: "/user-details/:email",
+      name: "UserDetails",
+      component: () => import("../views/user/UserDetails.vue"),
+      meta: { requiresAuth: true, roles: ["ADMIN"] },
+      props: true,
+    },
     
   ]
 });
@@ -20,8 +28,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const { requiresAuth, roles } = to.meta;
-  const isAuthenticated = isLoggedInS();
-  const role = getRoleS();
+  const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
+  const role = store.getters.getRole || localStorage.getItem("role");
 
   if (!requiresAuth){
     next();

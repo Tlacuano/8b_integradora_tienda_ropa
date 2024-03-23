@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.service.user;
 
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponseGetUserDetailsByEmailAdminDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
 import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
@@ -56,6 +57,16 @@ public class UserService {
             throw new CustomException("user.email.exists");
         }
         return user;
+    }
+
+    @Transactional
+    public ResponseGetUserDetailsByEmailAdminDTO getUserDetailsByEmailAdmin(String email){
+        BeanUser user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+
+        return ResponseGetUserDetailsByEmailAdminDTO.fromUser(user);
     }
 
     //post

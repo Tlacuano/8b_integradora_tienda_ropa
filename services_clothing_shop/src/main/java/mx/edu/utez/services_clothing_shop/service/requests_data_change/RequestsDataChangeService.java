@@ -6,10 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto.NewInformation;
 import mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto.RequestDataChangeIdDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.IRequestsDataChange;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,32 +22,28 @@ import java.util.UUID;
 @Service
 public class RequestsDataChangeService {
     private final IRequestsDataChange IRequestsDataChange;
-    private final ErrorDictionary errorDictionary;
 
-    public RequestsDataChangeService(IRequestsDataChange IRequestsDataChange, ErrorDictionary errorDictionary) {
+    public RequestsDataChangeService(IRequestsDataChange IRequestsDataChange) {
         this.IRequestsDataChange = IRequestsDataChange;
-        this.errorDictionary = errorDictionary;
     }
 
     @Transactional
-    public void updateRequestDataChange(UUID requestId, String status, String rejectionReason) {
+    public void putRequestDataChange(UUID requestId, String status, String rejectionReason) {
         if (!rejectionReason.isEmpty() && !rejectionReason.matches(RegexPatterns.REJECTION_REASON_REGEX)) {
-            String errorMessage = errorDictionary.getErrorMessage("dataChange.rejectionReason.invalid");
-            throw new InvalidRequestException(errorMessage);
+            throw new CustomException("dataChange.rejectionReason.invalid");
         }
 
         IRequestsDataChange.updateRequestDataChange(requestId, status, rejectionReason);
     }
 
     @Transactional
-    public void postRequest(String email, NewInformation newInformation) {
+    public void postRequestDataChange(String email, NewInformation newInformation) {
         ObjectMapper objectMapper = new ObjectMapper();
         String newUserInfoJSON;
         try {
             newUserInfoJSON = objectMapper.writeValueAsString(newInformation);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al convertir NewInformation a JSON", e);
+            throw new CustomException("dataChange.JSON.invalid");
         }
 
         IRequestsDataChange.insertRequestDataChange(email, newUserInfoJSON);
@@ -65,8 +64,13 @@ public class RequestsDataChangeService {
                     requestDataChange.getStatus().getStatus()
             );
         } else {
-            throw new NotFoundException("Request not found");
+            throw new CustomException("dataChange.requestId.notFound");
         }
+    }
+
+    @Transactional
+    public Page<IRequestsDataChange.RequestDataChangeStatusProjection> getPageRequestDataChange(Pageable pageable) {
+        return IRequestsDataChange.findAllStatuses(pageable);
     }
 
     private Map<String, Object> convertJsonToMap(String json) {
@@ -74,20 +78,7 @@ public class RequestsDataChangeService {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al convertir JSON a Map", e);
-        }
-    }
-
-    public static class InvalidRequestException extends RuntimeException {
-        public InvalidRequestException(String message) {
-            super(message);
-        }
-    }
-
-    public static class NotFoundException extends RuntimeException {
-        public NotFoundException(String message) {
-            super(message);
+            throw new CustomException("dataChange.JSON.invalid");
         }
     }
 }

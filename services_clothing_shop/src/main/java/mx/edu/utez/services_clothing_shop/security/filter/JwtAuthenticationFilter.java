@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.security.model.AuthDetails;
+import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -85,17 +87,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("email", email);
         body.put("hasMultipleRoles", hasMultipleRoles);
         body.put("role", role);
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+
+        String json = JsonMapper.builder().build().writeValueAsString(body);
+        String encryptedJson = EncryptionFunctions.encryptString(json);
+
+
+        response.getWriter().write(new ObjectMapper().writeValueAsString(encryptedJson));
         response.setContentType(CONTENT_TYPE);
         response.setStatus(HttpStatus.OK.value());
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        Map<String, String> body = new HashMap<>();
+        Map<String, Object> body = new HashMap<>();
         body.put("message", "Error de autenticación: correo o contraseña incorrectos");
         body.put("error", failed.getMessage());
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        body.put("status", HttpStatus.UNAUTHORIZED.value());
+
+        String json = JsonMapper.builder().build().writeValueAsString(body);
+        String encryptedJson = EncryptionFunctions.encryptString(json);
+
+        response.getWriter().write(new ObjectMapper().writeValueAsString(encryptedJson));
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(CONTENT_TYPE);
     }

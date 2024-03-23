@@ -18,9 +18,12 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
               store.dispatch('changeStatusOverlay');
 
               Vue.swal({
-                  title: 'Exito!',
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  title: 'Realizado exitosamente!',
                   icon: 'success',
-                  timer: 2000,
+                  timer: 3000,
               }).then(()=>{
                   window.location.reload()
               });
@@ -33,8 +36,20 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
   });
 }
 
-export function showWarningAlert  (title, text, confirmButtonText, onConfirm) {
-  return showAlert(title, text, 'warning', confirmButtonText, onConfirm);
+function showToast(Title, Text, Icon) {
+  return Vue.swal({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      title: Title,
+      text: Text,
+      icon: Icon,
+      timer: 3000,
+  });
+}
+
+export function showWarningToast  (title, text) {
+    return showToast(title, text, 'warning');
 }
 
 export function showInfoAlert  (title, text, confirmButtonText, onConfirm) {

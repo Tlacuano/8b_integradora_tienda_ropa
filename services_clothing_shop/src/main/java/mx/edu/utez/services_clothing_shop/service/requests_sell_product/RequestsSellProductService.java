@@ -7,6 +7,7 @@ import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequest
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,25 +24,22 @@ public class RequestsSellProductService {
 
     private final IRequestsSellProduct IRequestsSellProduct;
     private final IRequestStatus IRequestStatus;
-    private final ErrorDictionary errorDictionary;
 
-
-    public RequestsSellProductService(IRequestsSellProduct IRequestsSellProduct, IRequestStatus IRequestStatus, ErrorDictionary errorDictionary) {
+    public RequestsSellProductService(IRequestsSellProduct IRequestsSellProduct, IRequestStatus IRequestStatus) {
         this.IRequestsSellProduct = IRequestsSellProduct;
         this.IRequestStatus = IRequestStatus;
-        this.errorDictionary = errorDictionary;
     }
 
     @Transactional
-    public RequestsSellProductDTO putRequestsSellProduct(UUID requestId, String status, String rejectionReason) {
+    public RequestsSellProductDTO putRequestSellProduct(UUID requestId, String status, String rejectionReason) {
         if (!isValidRejectionReason(rejectionReason)) {
-            throw new IllegalArgumentException("Motivo de rechazo no válido: " + rejectionReason);
+            throw new CustomException("requestSellProduct.rejectionReason.invalid");
         }
         Optional<BeanRequestSellProduct> existingRequestOptional = IRequestsSellProduct.findById(requestId);
         if (existingRequestOptional.isPresent()) {
             BeanRequestSellProduct existingRequest = existingRequestOptional.get();
             BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
-                    .orElseThrow(() -> new IllegalArgumentException("Estado no válido: " + status));
+                    .orElseThrow(() -> new CustomException("requestSellProduct.status.invalid"));
 
             existingRequest.setStatus(requestStatus);
             existingRequest.setRejectionReason(rejectionReason);
@@ -49,7 +47,7 @@ public class RequestsSellProductService {
 
             return convertToDTO(updatedRequest);
         } else {
-            throw new RequestsNotFoundException(errorDictionary.getErrorMessage("requestSellProduct.id.notnull"));
+            throw new CustomException("requestSellProduct.id.notnull");
         }
     }
 
@@ -64,13 +62,13 @@ public class RequestsSellProductService {
         if(request.isPresent()){
             return convertToDTO(request.get());
         }else{
-            throw new RequestsNotFoundException(errorDictionary.getErrorMessage("requestSellProduct.id.notnull"));
+            throw new CustomException("requestSellProduct.id.notnull");
         }
     }
 
-    public String getRequestStatusById(UUID statusID){
+    public String getRequestSellProductById(UUID statusID){
         BeanRequestStatus requestStatus = IRequestStatus.findById(statusID)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con ID: " + statusID));
+                .orElseThrow(() -> new CustomException("requestSellProduct.status.invalid"));
         return requestStatus.getStatus();
     }
 
@@ -79,7 +77,7 @@ public class RequestsSellProductService {
         BeanProduct product = new BeanProduct();
         product.setIdProduct(productId);
         BeanRequestStatus requestStatus = IRequestStatus.findByStatus("Pendiente")
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: Pendiente"));
+                .orElseThrow(() -> new CustomException("requestSellProduct.status.invalid"));
         BeanRequestSellProduct requestSellProduct = new BeanRequestSellProduct();
         requestSellProduct.setProduct(product);
         requestSellProduct.setStatus(requestStatus);
@@ -89,7 +87,7 @@ public class RequestsSellProductService {
     }
 
     @Transactional
-    public Page<IRequestsSellProduct.RequestSellStatusProjection> findAllStatuses(Pageable pageable){
+    public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProduct(Pageable pageable){
         return IRequestsSellProduct.findAllStatuses(pageable);
     }
 
@@ -102,10 +100,5 @@ public class RequestsSellProductService {
         requestSellProductDTO.setStatus(requestSellProduct.getStatus().getStatus());
         return requestSellProductDTO;
     }
-
-    public static class RequestsNotFoundException extends RuntimeException {
-        public RequestsNotFoundException(String message) {
-            super(message);
-        }
-    }
 }
+

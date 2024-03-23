@@ -19,15 +19,16 @@ instance.interceptors.request.use(
             if (auth_token.length > 0) {
                 config.headers["Authorization"] = `Bearer ${auth_token}`;
             }
-            /*
-            const data = config.data;
-            config.headers = {
-                "Content-Type": "application/x-www-form-urlencoded",
-            };
-            if (data) {
-                config.data = encrypt(data);
-            }*/
 
+            if(config.headers["Content-Type"] === "application/x-www-form-urlencoded"){
+                const data = config.data;
+                if (data) {
+                    console.log(data)
+                    config.data = encrypt(data);
+                }
+            }
+
+            console.log(config)
             return config;
         }
     }
@@ -36,19 +37,18 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if(response.status >= 200 && response.status < 300) {
-            if(response.config.url.startsWith(baseURL)) {
 
-                /*
+
+            if(response.config.url.startsWith(baseURL)) {
                 const data = response.data;
     
                 if (data) {
                     response.data = decrypt(data);
                 }
-                */
                 return response;
             }
         }else{
-            return Promise.reject(response);
+            return Promise.reject(response.data);
         }
     },
     (error) => {
@@ -76,7 +76,7 @@ instance.interceptors.response.use(
                 timer: 3000,
             });
         }else{
-            return Promise.reject(error);
+            return Promise.reject(error.response);
         }
 
     }
@@ -87,12 +87,13 @@ instance.interceptors.response.use(
 
 export default {
     async doPost(url, data) {
-        return await instance.post(SERVER_URL+url, data);
+        return await instance.post(SERVER_URL+url, data,{
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+        });
     },
     async doGet(url) {
         return await instance.get(SERVER_URL+url);
-    },
-    async doPut(url) {
-        return await instance.put(SERVER_URL+url);
     },
 }

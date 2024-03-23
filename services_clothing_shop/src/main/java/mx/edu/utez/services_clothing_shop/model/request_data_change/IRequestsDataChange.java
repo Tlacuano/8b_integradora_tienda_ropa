@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,16 +27,13 @@ public interface IRequestsDataChange extends JpaRepository<BeanRequestDataChange
     @Query("SELECT r.user FROM BeanRequestDataChange r WHERE r.user.email = :email")
     Optional<BeanUser> findUserByEmail(@Param("email") String email);
 
-    interface DataChangeStatusProjection {
+
+    interface RequestDataChangeStatusProjection {
         BeanRequestStatus getStatus();
     }
 
-    @Query("SELECT r.status.status FROM BeanRequestDataChange r")
-     Page<String> findAllStatusNames(Pageable pageable);
-
-
-    @Query("SELECT r.status.status FROM BeanRequestDataChange r WHERE r.user.email = :email")
-    Optional<String> findStatusByEmail(@Param("email") String email);
+    @Query("SELECT r.status FROM BeanRequestDataChange r")
+     Page<RequestDataChangeStatusProjection> findAllStatuses(Pageable pageable);
 
 }
 

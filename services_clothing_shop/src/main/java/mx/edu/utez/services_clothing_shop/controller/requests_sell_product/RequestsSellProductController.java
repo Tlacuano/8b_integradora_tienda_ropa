@@ -27,13 +27,13 @@ public class RequestsSellProductController {
         this.requestsSellProductService = requestsSellProductService;
     }
 
-    @PostMapping("/get-by-id")
-    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> getRequestByProduct(@RequestBody RequestsSellProductGetDTO requestDTO) {
+    @PostMapping("/get-by-id-request-sell-product")
+    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> getRequestSellProductById(@RequestBody RequestsSellProductGetDTO requestDTO) {
         UUID idRequest = requestDTO.getIdRequestSellProduct();
         RequestsSellProductDTO requestData = requestsSellProductService.getRequestById(idRequest);
 
         if (requestData != null) {
-            String status = requestsSellProductService.getRequestStatusById(requestData.getIdStatus());
+            String status = requestsSellProductService.getRequestSellProductById(requestData.getIdStatus());
             requestData.setStatus(status);
 
             return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
@@ -43,21 +43,21 @@ public class RequestsSellProductController {
         }
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> postRequest(@RequestBody RequestsSellProductPostDTO requestDTO) {
+    @PostMapping("/post-request-sell-product")
+    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> postRequestSellProduct(@RequestBody RequestsSellProductPostDTO requestDTO) {
         RequestsSellProductDTO requestData = requestsSellProductService.postRequestSellProduct(requestDTO.getIdProduct());
         return ResponseEntity.ok(new CustomResponse<>(requestData, "Request created", false, 200));
     }
 
-    @PutMapping("/put")
-    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> putRequestStatus(@RequestBody RequestsSellProductPutDTO requestDTO) {
-        RequestsSellProductDTO updatedRequest = requestsSellProductService.putRequestsSellProduct(requestDTO.getIdRequestSellProduct(), requestDTO.getStatus(), requestDTO.getRejectionReason());
+    @PutMapping("/put-request-sell-product")
+    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> putRequestSellProduct(@RequestBody RequestsSellProductPutDTO requestDTO) {
+        RequestsSellProductDTO updatedRequest = requestsSellProductService.putRequestSellProduct(requestDTO.getIdRequestSellProduct(), requestDTO.getStatus(), requestDTO.getRejectionReason());
         return ResponseEntity.ok(new CustomResponse<>(updatedRequest, "Request status updated", false, 200));
     }
 
-    @GetMapping("/get-all")
-    public Page<IRequestsSellProduct.RequestSellStatusProjection> getAllRequestsSellProduct(Pageable pageable) {
-        return requestsSellProductService.findAllStatuses(pageable);
+    @GetMapping("/get-page")
+    public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProduct(Pageable pageable) {
+        return requestsSellProductService.getPageRequestSellProduct(pageable);
     }
 
 }

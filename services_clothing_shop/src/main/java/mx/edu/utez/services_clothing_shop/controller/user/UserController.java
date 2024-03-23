@@ -45,6 +45,16 @@ public class UserController {
         );
     }
 
+    @PostMapping("/get-user-detaiil-by-email-admin")
+    public ResponseEntity<Object> getUserDetailByEmailAdmin(@Validated @RequestBody RequestActionByEmailDTO payload){
+        System.out.println(userService.getUserDetailsByEmailAdmin(payload.getEmail()));
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.getUserDetailsByEmailAdmin(payload.getEmail()), "Usuario encontrado", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+
     @PostMapping("/post-account")
     public ResponseEntity<Object> postAccount(@Validated @RequestBody RequestPostAccountDTO user){
         user.setRoleToAssign("ROLE_BUYER");
