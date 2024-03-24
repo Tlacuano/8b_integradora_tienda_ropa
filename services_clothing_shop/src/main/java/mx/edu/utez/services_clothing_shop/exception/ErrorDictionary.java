@@ -142,6 +142,7 @@ public class ErrorDictionary {
         errorMessages.put("review.idReview.notnull", "El id de la reseña es obligatorio.");
         errorMessages.put("review.idReview.notfound", "La reseña no fue encontrada.");
         errorMessages.put("review.idOrderHasProduct.notfound", "La orden del producto no fue encontrada.");
+        errorMessages.put("review.orderHasProduct.exists", "Ya existe una reseña para este producto.");
         errorMessages.put("review.comment.notnull", "El comentario es obligatorio.");
         errorMessages.put("review.comment.size", "El comentario debe tener entre 5 y 255 caracteres.");
         errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");

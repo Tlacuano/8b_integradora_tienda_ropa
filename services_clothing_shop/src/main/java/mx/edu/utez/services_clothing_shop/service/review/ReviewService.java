@@ -53,6 +53,10 @@ public class ReviewService {
 
     @Transactional
     public BeanReview postReview(RequestPostReviewDTO payload){
+        UUID orderHasProductId = payload.getOrderHasProductId();
+        if (iReview.existsByOrderHasProduct_IdOrderProduct(orderHasProductId)) {
+            throw new CustomException("review.orderHasProduct.exists");
+        }
         BeanReview newReview = new BeanReview();
         newReview.setComment(payload.getComment());
         newReview.setReviewDate(LocalDate.now());

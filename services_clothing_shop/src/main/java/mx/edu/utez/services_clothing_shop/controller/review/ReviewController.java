@@ -36,12 +36,11 @@ public class ReviewController {
 
     @PostMapping("/post-review")
     public ResponseEntity<Object> postReview(@Validated @RequestBody RequestPostReviewDTO payload) {
-        try {
             BeanReview newReview = reviewService.postReview(payload);
-            return ResponseEntity.ok(new CustomResponse<>(newReview, "Review created successfully", false, HttpStatus.OK.value()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error creating review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+            return new ResponseEntity<>(
+                    new CustomResponse<>(newReview, "Review created successfully", false, 201),
+                    HttpStatus.CREATED
+            );
     }
 
     @PutMapping("/put-review")
