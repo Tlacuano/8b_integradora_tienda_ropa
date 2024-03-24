@@ -7,6 +7,7 @@ import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.address_status.IAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
+import mx.edu.utez.services_clothing_shop.model.person.IPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 public class AddressService {
     private final IAddress iAddress;
     private final IAddressStatus iAddressStatus;
+    private final IPerson iPerson;
     private ErrorDictionary errorDictionary;
-    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus, ErrorDictionary errorDictionary){
+    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus, IPerson iPerson, ErrorDictionary errorDictionary){
         this.iAddress = iAddress;
         this.iAddressStatus = iAddressStatus;
+        this.iPerson = iPerson;
         this.errorDictionary = errorDictionary;
     }
 
@@ -56,11 +59,9 @@ public class AddressService {
         newAddress.setState(payload.getState());
         newAddress.setStreet(payload.getStreet());
         newAddress.setNeighborhood(payload.getNeighborhood());
-        BeanPerson person = new BeanPerson();
-        person.setIdPerson(payload.getPersonId());
+        BeanPerson person = iPerson.findById(payload.getPersonId()).orElse(null);
         newAddress.setPerson(person);
-        BeanAddressStatus status = new BeanAddressStatus();
-        status.setIdStatus(payload.getStatusId());
+        BeanAddressStatus status = iAddressStatus.findById(payload.getStatusId()).orElse(null);
         newAddress.setStatus(status);
 
         return iAddress.saveAndFlush(newAddress);
@@ -120,7 +121,12 @@ public class AddressService {
         responseDTO.setStreet(savedAddress.getStreet());
         responseDTO.setNeighborhood(savedAddress.getNeighborhood());
         responseDTO.setPersonId(savedAddress.getPerson().getIdPerson());
-        responseDTO.setStatusId(savedAddress.getStatus().getIdStatus());
+
+        BeanAddressStatus status = savedAddress.getStatus();
+        ResponseStatusDTO responseStatusDTO = new ResponseStatusDTO();
+        responseStatusDTO.setStatusID(status.getIdStatus());
+        responseStatusDTO.setStatus(status.getStatus());
+        responseDTO.setStatus(responseStatusDTO);
         return responseDTO;
     }
 
