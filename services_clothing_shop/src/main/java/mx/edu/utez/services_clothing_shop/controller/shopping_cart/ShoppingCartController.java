@@ -1,60 +1,55 @@
 package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
 
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPostShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
-import mx.edu.utez.services_clothing_shop.service.sopphing_cart.SopphingCartServices;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import mx.edu.utez.services_clothing_shop.service.shopping_cart.ShoppingCartServices;
+import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
-@RequestMapping("/api/shopping-cart")
+@RequestMapping("venta-ropa/api/shopping-carts")
 public class ShoppingCartController {
-    @Autowired
-    private SopphingCartServices shoppingCartServices;
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<BeanShoppingCart>> getAllShoppingCarts() {
-        List<BeanShoppingCart> shoppingCarts = shoppingCartServices.getAllShoppingCarts();
-        if (shoppingCarts.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(shoppingCarts);
-        }
+    private final ShoppingCartServices shoppingCartServices;
+
+    public ShoppingCartController(ShoppingCartServices shoppingCartServices) {
+        this.shoppingCartServices = shoppingCartServices;
     }
+
 
     @PostMapping("/get-shopping-cart")
-    public ResponseEntity<List<BeanShoppingCart>> findShoppingCarsByUserEmail(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<CustomResponse<List<ResponseShoppingCartDTO>>> findShoppingCarsByUserEmail(@Validated @RequestBody Map<String, String> requestBody) {
         String userEmail = requestBody.get("userEmail");
-        if(userEmail == null || userEmail.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        List<BeanShoppingCart> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
-        if (shoppingCarts.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(shoppingCarts);
-        }
+        List<ResponseShoppingCartDTO> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
+        return ResponseEntity.ok(new CustomResponse<>(shoppingCarts, "ok", false, 200));
     }
-    @PostMapping("/save-new-shopping-cart")
-    public ResponseEntity<BeanShoppingCart> createShoppingCar(@RequestBody BeanShoppingCart shoppingCart) {
-        BeanShoppingCart savedShoppingCart = shoppingCartServices.saveShoppingCar(shoppingCart);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedShoppingCart);
+
+    @PostMapping("/post-shopping-cart")
+    public ResponseEntity<CustomResponse<List<RequestPostShoppingCartDTO>>> createShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
+        RequestPostShoppingCartDTO response = shoppingCartServices.saveShoppingCar(shoppingCart);
+        return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200));
     }
-    @DeleteMapping("/delete-shopping-cart/{shoppingCartId}")
-    public ResponseEntity<Void> deleteShoppingCartById(@PathVariable UUID shoppingCartId) {
-        try {
-            shoppingCartServices.deleteShoppingCartById(shoppingCartId);
-            return ResponseEntity.noContent().build();
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
+    @PostMapping("/delete-shopping-cart")
+    public ResponseEntity<CustomResponse<BeanShoppingCart>> deleteShoppingCart(@Validated @RequestBody UUID shoppingCartId) {
+        shoppingCartServices.deleteShoppingCartById(shoppingCartId);
+        return new ResponseEntity<>(new CustomResponse<>(null, "Carrito de compras eliminado", false, 200), HttpStatus.OK);
+    }
+
+    @PutMapping("/put-shopping-cart")
+    public ResponseEntity<CustomResponse<List<ResponsePutShoppingCartDTO>>> updateShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
+        ResponsePutShoppingCartDTO response = shoppingCartServices.updateShoppingCartById(shoppingCart);
+        return new ResponseEntity<>(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200), HttpStatus.OK);
+
     }
 }
+
+
+

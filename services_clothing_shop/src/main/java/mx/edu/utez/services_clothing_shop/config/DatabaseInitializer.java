@@ -9,6 +9,7 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 @Configuration
@@ -30,7 +31,7 @@ public class DatabaseInitializer {
 
             try(Connection connection = dataSource.getConnection()){
                 ScriptUtils.executeSqlScript(connection, resource);
-            }catch (Exception e){
+            }catch (SQLException e){
                 Logger.getLogger(DatabaseInitializer.class.getName())
                         .severe("Error al inicializar la base de datos: " + e.getMessage());
             }

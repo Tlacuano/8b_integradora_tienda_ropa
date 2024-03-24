@@ -10,4 +10,5 @@ public class RequestsReturnProductDTO {
     private String rejectionReason;
     private UUID orderHasProductId;
     private UUID statusId;
+    private String status;
 }

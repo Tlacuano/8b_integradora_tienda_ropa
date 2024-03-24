@@ -15,6 +15,7 @@ insert ignore into order_status (id_status, status)
 values (uuid_to_bin('9b8c35d0-7870-41c6-8719-745eaaae1a13'), 'Preparacion'),
        (uuid_to_bin('a5c21dd3-dd66-11ee-8508-64006a586a6a'), 'Entregado'),
        (uuid_to_bin('a5c223d6-dd66-11ee-8508-64006a586a6a'), 'Rembolsado'),
+       (uuid_to_bin('a5c223d6-dd66-12ee-8508-64006a586a6a'), 'Enviado'),
        (uuid_to_bin('a5c225a4-dd66-11ee-8508-64006a586a6a'), 'Cancelado');
 
 insert ignore into card_status (id_status, status)
@@ -41,15 +42,16 @@ values (uuid_to_bin('9e9df4fd-036d-48b1-85e8-4f8f4389f1d4'), uuid_to_bin('3cc47b
         'Subcategoría C', 'imagen_subcategoria_c.jpg', 1);
 
 insert ignore into roles (id_role, role_name)
-values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'administrador'),
-       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'vendedor'),
-       (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'comprador');
+values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'ROLE_ADMIN'),
+       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SELLER'),
+       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SUPERADMIN'),
+       (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'ROLE_BUYER');
 
 insert ignore into users (id_user, password, email, verification_code, status)
 values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'contraseña123', 'usuario1@example.com', 'ABCD1234',
         1),
        (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'password456', 'usuario2@example.com', 'WXYZ5678',
-        0),
+        1),
        (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'pass789', 'usuario3@example.com', '1234EFGH', 1);
 
 insert ignore into user_roles (id_user_role, fk_id_role, fk_id_user)
@@ -61,11 +63,11 @@ values (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e397837582d'), uuid_to_bin('0f8fad
         uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'));
 
 insert ignore into people(fk_id_user, name, last_name, second_last_name, picture, birthday, phone_number, gender)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', 'picture-profile',
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', '',
         '2000-09-12', '7772314221', 'otros'),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', 'picture-profile',
+       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', '',
         '2001-12-18', '7778933214', 'femenino'),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', 'picture-profile',
+       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', '',
         '1998-10-01', '7778291039', 'masculino');
 
 insert ignore into address(id_address, address, references_address, postal_code, state, street, neighborhood,

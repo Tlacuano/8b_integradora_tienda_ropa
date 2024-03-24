@@ -263,10 +263,10 @@ BEGIN
 
     -- Declare handler for SQL exceptions
     DECLARE exit handler for sqlexception
-        BEGIN
-            ROLLBACK;
-            RESIGNAL;
-        END;
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
 
     -- Start the transaction
     START TRANSACTION;
@@ -276,7 +276,7 @@ BEGIN
     INTO v_total_products
     FROM products
     WHERE id_product = UUID_TO_BIN(p_product_id)
-        FOR UPDATE;
+    FOR UPDATE;
 
     IF v_total_products = 0 THEN
         SELECT 'Product does not exist' AS message;

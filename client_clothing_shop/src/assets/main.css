@@ -3,7 +3,80 @@
 #app {
   height: 100vh;
   margin: 0 auto;
-
+  overflow-y: hidden;
   font-weight: normal;
 }
 
+
+/* para que el mause cambie a manita cuando pasas el mause encima */
+.selectable{
+  cursor: pointer;
+}
+
+/*interfaz ocupa el 100% del contenido*/
+.interface{
+  height: 100%;
+}
+
+
+/* elevar contenedor cuando pasas el mause por encima */
+.zoom-on-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+.zoom-on-hover:hover {
+  box-shadow: 0 0 11px rgba(29, 29, 29, 0.2);
+  transform: scale(1.01);
+}
+
+/*descatar contenido cuando pasas el mause encima*/
+.highlight-on-hover {
+  transition: all 0.3s ease;
+}
+
+.highlight-on-hover:hover {
+  background-color: #f1f1f1;
+}
+
+/*para los botones*/
+.main-button {
+  width: 100%;
+  background-color: var(--black-base) !important;
+  padding-bottom: 10px !important;
+  padding-top: 10px !important;
+}
+
+/*para que el icono de la lupa este en el input*/
+.position-relative {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #495057;
+}
+
+/*cambios a bootstrap*/
+a.nav-link {
+  color: var(--black-base) !important;
+}
+
+a{
+  color: var(--black-base) !important;
+}
+
+
+.page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: var(--black-base) !important;
+  border-color: #000000 !important;
+}
+
+.page-link {
+  color: #fff;
+}

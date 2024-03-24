@@ -1,24 +1,22 @@
 package mx.edu.utez.services_clothing_shop.service.role;
 
-import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.role.IRole;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
-@Transactional
 @Service
+@Transactional
 public class RoleService {
+    private final IRole iRole;
 
-    private final IRole roleRepository;
-
-    public RoleService(IRole roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleService(IRole iRole) {
+        this.iRole = iRole;
     }
 
-    @Transactional(rollbackOn = {Exception.class})
-    public BeanRole getRoleById(UUID id) {
-        return roleRepository.findById(id).get();
+    @Transactional
+    public BeanRole getRoleByName(String roleName){
+        return iRole.findByRoleName(roleName);
     }
+
 }
