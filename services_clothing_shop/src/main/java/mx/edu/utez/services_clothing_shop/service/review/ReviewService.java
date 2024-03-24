@@ -42,7 +42,7 @@ public class ReviewService {
     public BeanReview putReview(RequestPutReviewDTO payload){
         Optional<BeanReview> optionalBeanReview = iReview.findById(payload.getIdReview());
         if(optionalBeanReview.isEmpty()){
-            throw new CustomException(errorDictionary.getErrorMessage("review.idReview.notfound"));
+            throw new CustomException("review.idReview.notfound");
         }
 
         BeanReview existingReview = optionalBeanReview.get();
