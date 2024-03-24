@@ -32,14 +32,11 @@ public class AddressController {
 
     @PostMapping("/get-address")
     public ResponseEntity<Object> getAddress(@Validated @RequestBody RequestActionByIdDTO payload){
-        try {
             BeanAddress address = addressService.getAddress(payload.getIdAddress());
-                ResponsePostAddressDTO responseDTO = addressService.mapToResponseDTO(address);
-                return ResponseEntity.ok(new CustomResponse<>(responseDTO, "Address retrieved successfully", false, HttpStatus.OK.value()));
-        } catch (CustomException e) {
-            //retornar el error de address.idAddress.notfound
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+            return new ResponseEntity<>(
+                new CustomResponse<>(address, "Address retrieved successfully", false, 200),
+                HttpStatus.OK
+            );
     }
 
     @PostMapping("/post-address")

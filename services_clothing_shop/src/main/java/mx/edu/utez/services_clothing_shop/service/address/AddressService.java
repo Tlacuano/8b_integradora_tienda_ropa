@@ -27,7 +27,7 @@ public class AddressService {
         this.errorDictionary = errorDictionary;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ResponseAllAddressDTO> getAddresses() {
         List<Object[]> addressesData = iAddress.findEssentialAddressInfo();
         if (addressesData.isEmpty()) {
@@ -38,12 +38,11 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public BeanAddress getAddress(UUID idAddress){
         Optional<BeanAddress> optionalBeanAddress = iAddress.findById(idAddress);
-        //si el id presente no esta en la bd mandar error dictionary address.idAddress.notfound
         if(optionalBeanAddress.isEmpty()){
-            throw new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound"));
+            throw new CustomException("address.idAddress.notfound");
         }
         return optionalBeanAddress.get();
     }
