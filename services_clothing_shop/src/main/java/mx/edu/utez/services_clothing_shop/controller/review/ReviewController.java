@@ -1,9 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.review;
 
-import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestActionByIdOrderHasProductDTO;
-import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPostReviewDTO;
-import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPutReviewDTO;
-import mx.edu.utez.services_clothing_shop.controller.review.dto.ResponseAllReviewDTO;
+import mx.edu.utez.services_clothing_shop.controller.review.dto.*;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.service.review.ReviewService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -53,13 +50,12 @@ public class ReviewController {
     }
 
     @DeleteMapping("/delete-review")
-    public ResponseEntity<Object> deleteReview(@Validated @RequestBody RequestActionByIdOrderHasProductDTO payload){
-        try {
-            reviewService.deleteReview(payload.getIdOrderHasProduct());
-            return ResponseEntity.ok(new CustomResponse<>(null, "Review deleted successfully", false, HttpStatus.OK.value()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error deleting review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+    public ResponseEntity<Object> deleteReview(@Validated @RequestBody RequestDeleteReview payload){
+            reviewService.deleteReview(payload.getIdReview());
+            return new ResponseEntity<>(
+                    new CustomResponse<>(null, "Review deleted successfully", false, 204),
+                    HttpStatus.NO_CONTENT
+            );
     }
 
 }
