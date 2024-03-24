@@ -45,12 +45,11 @@ public class ReviewController {
 
     @PutMapping("/put-review")
     public ResponseEntity<Object> putReview(@Validated @RequestBody RequestPutReviewDTO payload){
-        try {
             BeanReview updatedReview = reviewService.putReview(payload);
-            return ResponseEntity.ok(new CustomResponse<>(updatedReview, "Review updated successfully", false, HttpStatus.OK.value()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, "Error updating review: " + e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+            return new ResponseEntity<>(
+                    new CustomResponse<>(updatedReview, "Review updated successfully", false, 200),
+                    HttpStatus.OK
+            );
     }
 
     @DeleteMapping("/delete-review")

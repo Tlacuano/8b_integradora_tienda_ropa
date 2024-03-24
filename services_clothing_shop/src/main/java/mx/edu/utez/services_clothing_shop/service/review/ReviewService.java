@@ -44,10 +44,17 @@ public class ReviewService {
         if(optionalBeanReview.isEmpty()){
             throw new CustomException(errorDictionary.getErrorMessage("review.idReview.notfound"));
         }
+
         BeanReview existingReview = optionalBeanReview.get();
-        existingReview.setComment(payload.getComment());
+        if(payload.getComment() != null){
+            existingReview.setComment(payload.getComment());
+        }
+
+        Integer assessmentValue = payload.getAssessment();
+        if(assessmentValue != null){
+            existingReview.setAssessment(assessmentValue);
+        }
         existingReview.setReviewDate(LocalDate.now());
-        existingReview.setAssessment(payload.getAssessment());
         return iReview.saveAndFlush(existingReview);
     }
 
