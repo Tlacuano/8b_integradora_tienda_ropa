@@ -358,8 +358,53 @@ BEGIN
             WHERE id_request_data_change = p_request_id;
         ELSE
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no existe';
-
         END IF;
     END IF;
+    SELECT TRUE as messagge;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `insert_request_become_seller`;
+DELIMITER $$
+CREATE PROCEDURE insert_request_become_seller(IN p_email VARCHAR(100), IN p_user_seller_information JSON)
+BEGIN
+    DECLARE v_user_id BINARY(16);
+    DECLARE v_pending_status_id BINARY(16);
+
+    SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
+
+    SELECT id_status INTO v_pending_status_id FROM request_status WHERE status = 'Pendiente';
+
+    INSERT INTO requests_become_seller (id_request_become_seller, fk_id_user, user_seller_information, fk_id_status)
+    VALUES (UUID_TO_BIN(UUID()) , v_user_id, p_user_seller_information, v_pending_status_id);
+    SELECT TRUE as message;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `update_request_become_seller`;
+DELIMITER $$
+CREATE PROCEDURE update_request_become_seller(
+    IN p_request_id BINARY(16),
+    IN p_status VARCHAR(255),
+    IN p_rejection_reason VARCHAR(255)
+)
+BEGIN
+    DECLARE v_status_id BINARY(16);
+
+    SELECT id_status INTO v_status_id FROM request_status WHERE status = p_status;
+
+    IF v_status_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Estado no válido';
+    ELSE
+        IF EXISTS (SELECT 1 FROM requests_become_seller WHERE id_request_become_seller = p_request_id) THEN
+            UPDATE requests_become_seller
+            SET fk_id_status = v_status_id,
+                rejection_reason = p_rejection_reason
+            WHERE id_request_become_seller = p_request_id;
+        ELSE
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no existe';
+        END IF;
+    END IF;
+    SELECT TRUE as message;
 END $$
 DELIMITER ;
