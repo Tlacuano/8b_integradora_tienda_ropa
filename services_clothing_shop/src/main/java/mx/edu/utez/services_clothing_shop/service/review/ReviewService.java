@@ -20,10 +20,8 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewService {
     private final IReview iReview;
-    private ErrorDictionary errorDictionary;
-    public ReviewService(IReview iReview, ErrorDictionary errorDictionary) {
+    public ReviewService(IReview iReview) {
         this.iReview = iReview;
-        this.errorDictionary = errorDictionary;
     }
 
     @Transactional
