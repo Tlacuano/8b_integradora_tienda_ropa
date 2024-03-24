@@ -112,6 +112,7 @@ public class ErrorDictionary {
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
 
         //error messages address
+        errorMessages.put("addresses.notfound", "No hay direcciones registradas.");
         errorMessages.put("address.notfound", "No hay direcciones registradas.");
         errorMessages.put("address.idAddress.notnull", "El id de la dirección es obligatorio.");
         errorMessages.put("address.idAddress.notfound", "La dirección no fue encontrada.");

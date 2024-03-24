@@ -23,12 +23,11 @@ public class AddressController {
 
     @GetMapping("/get-addresses")
     public ResponseEntity<Object> getAddresses(){
-        try {
             List<ResponseAllAddressDTO> responseDTOs = addressService.getAddresses();
-            return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Addresses retrieved successfully", false, HttpStatus.OK.value()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+            return new ResponseEntity<>(
+                    new CustomResponse<>(responseDTOs, "Addresses retrieved successfully", false, 200),
+                    HttpStatus.OK
+            );
     }
 
     @PostMapping("/get-address")

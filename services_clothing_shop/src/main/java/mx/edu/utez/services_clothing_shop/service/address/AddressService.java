@@ -31,7 +31,7 @@ public class AddressService {
     public List<ResponseAllAddressDTO> getAddresses() {
         List<Object[]> addressesData = iAddress.findEssentialAddressInfo();
         if (addressesData.isEmpty()) {
-            throw new CustomException(errorDictionary.getErrorMessage("address.notfound"));
+            throw new CustomException("addresses.notfound");
         }
         return addressesData.stream()
                 .map(this::mapToResponseAllDTO)
@@ -133,7 +133,12 @@ public class AddressService {
         responseDTO.setState((String) row[3]);
         responseDTO.setStreet((String) row[4]);
         responseDTO.setNeighborhood((String) row[5]);
-        responseDTO.setStatusID((UUID) row[6]);
+        UUID statusId = (UUID) row[6];
+        BeanAddressStatus status = iAddressStatus.findById(statusId).get();
+        ResponseStatusDTO statusDTO = new ResponseStatusDTO();
+        statusDTO.setStatusID(status.getIdStatus());
+        statusDTO.setStatus(status.getStatus());
+        responseDTO.setStatus(statusDTO);
         return responseDTO;
     }
 
