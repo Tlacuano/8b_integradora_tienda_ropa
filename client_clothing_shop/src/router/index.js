@@ -21,14 +21,19 @@ const router = new VueRouter({
       meta: { requiresAuth: true, roles: ["ADMIN"] },
       props: true,
     },
-    
+    {
+        path: "/subcategory-management",
+        name: "ADMINSubcategoryManagement",
+        component: () => import("../views/subcategory/SubcategoryManagement.vue"),
+        meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+    }
   ]
 });
 
 
 router.beforeEach((to, from, next) => {
   const { requiresAuth, roles } = to.meta;
-  const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
+  const isAuthenticated = !!(store.getters.isLoggedIn || localStorage.getItem("token"));
   const role = store.getters.getRole || localStorage.getItem("role");
 
   if (!requiresAuth){
