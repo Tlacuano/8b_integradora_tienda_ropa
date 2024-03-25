@@ -3,7 +3,7 @@ package mx.edu.utez.services_clothing_shop.service.return_product_gallery;
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestPostReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.RequestPutImageReturnProductGalleryDTO;
 import mx.edu.utez.services_clothing_shop.controller.return_product_gallery.dto.ResponseAllReturnProductGalleryDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;

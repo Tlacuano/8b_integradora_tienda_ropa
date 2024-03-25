@@ -48,6 +48,7 @@ public class EncryptionFunctions {
             Logger.getLogger(EncryptionFunctions.class.getName())
                     .severe("Error al encriptar la cadena: " + e.getMessage());
         }
+
         return dataEncrypt;
     }
 

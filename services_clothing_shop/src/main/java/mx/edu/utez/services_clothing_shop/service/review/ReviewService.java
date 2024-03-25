@@ -3,7 +3,7 @@ package mx.edu.utez.services_clothing_shop.service.review;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPostReviewDTO;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPutReviewDTO;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.ResponseAllReviewDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.model.review.IReview;

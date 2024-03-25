@@ -26,6 +26,7 @@ instance.interceptors.request.use(
                     config.data = encrypt(data);
                 }
             }
+
             return config;
         }
     }
@@ -34,13 +35,14 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         if(response.status >= 200 && response.status < 300) {
+
+
             if(response.config.url.startsWith(baseURL)) {
                 const data = response.data;
     
                 if (data) {
                     response.data = decrypt(data);
                 }
-
                 return response;
             }
         }else{

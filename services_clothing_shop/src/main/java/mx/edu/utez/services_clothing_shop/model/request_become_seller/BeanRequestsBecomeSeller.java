@@ -22,6 +22,9 @@ public class BeanRequestsBecomeSeller {
     @Column(name = "id_request_become_seller", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idRequestBecomeSeller;
 
+    @Column(name = "user_seller_information", columnDefinition = "JSON")
+    private String userSellerInformation;
+
     @Column(name = "rejection_reason", length = 255)
     private String rejectionReason;
 

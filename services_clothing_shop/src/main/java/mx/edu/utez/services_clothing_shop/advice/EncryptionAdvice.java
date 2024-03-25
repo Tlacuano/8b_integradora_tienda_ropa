@@ -1,10 +1,13 @@
 package mx.edu.utez.services_clothing_shop.advice;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -30,14 +33,19 @@ public class EncryptionAdvice implements ResponseBodyAdvice<Object>{
             ServerHttpRequest request,
             ServerHttpResponse response) {
 
+
         if (body instanceof String) {
             return EncryptionFunctions.encryptString((String) body);
         } else {
             try {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
 
-                String json = JsonMapper.builder().build().writeValueAsString(body);
+                String json = mapper.writeValueAsString(body);
 
                 String encryptedJson = EncryptionFunctions.encryptString(json);
+
+
                 return encryptedJson;
             } catch (Exception e) {
 

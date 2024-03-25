@@ -3,16 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store/store'
 import './assets/main.css'
-import { BootstrapVue, IconsPlugin, ToastPlugin } from 'bootstrap-vue'
+import {BootstrapVue, IconsPlugin, ToastPlugin} from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueSweetalert2 from "vue-sweetalert2";
 import 'sweetalert2/dist/sweetalert2.min.css';
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import VeeValidate  from 'vee-validate'
-import { Validator } from 'vee-validate';
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {fas} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import VeeValidate, {Validator} from 'vee-validate'
 import es from 'vee-validate/dist/locale/es';
 
 // BootstrapVue
@@ -33,10 +32,36 @@ const dictionary = {
     messages: {
       required: () => 'Este campo es obligatorio',
       email: () => 'El correo electrónico no es válido',
+      password_strength: () => 'La contraseña no es válida',
+      confirmed_password: () => 'Las contraseñas no coinciden',
+
+
 
     }
   }
 };
+
+// for password strength
+Validator.extend('password_strength', {
+  validate: value => {
+    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+    return strongRegex.test(value);
+  }
+});
+
+// for confirmed password
+const paramNames = ['targetValue'];
+
+Validator.extend('confirmed_password', {
+  validate: (value, { targetValue }) => {
+    return value === targetValue;
+  }
+}, {
+  paramNames,
+  hasTarget: true
+});
+
+
 
 Validator.localize('es', es);
 Validator.localize({ es: { messages: { ...es.messages, ...dictionary.es.messages } } });
