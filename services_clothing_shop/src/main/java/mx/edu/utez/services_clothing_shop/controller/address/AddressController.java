@@ -59,13 +59,12 @@ public class AddressController {
     }
 
     @PutMapping("/put-status-address")
-        public ResponseEntity<Object> putStatusAddress(@Validated @RequestBody RequestPutStatusAddressDTO payload){
-        try {
-            ResponseAllAddressDTO responseDTO = addressService.updateAddressStatus(payload);
-            return ResponseEntity.ok(new CustomResponse<>(responseDTO, "Address status updated successfully", false, HttpStatus.OK.value()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+    public ResponseEntity<Object> putStatusAddress(@Validated @RequestBody RequestPutStatusAddressDTO payload){
+        ResponseAllAddressDTO responseDTO = addressService.updateAddressStatus(payload);
+        return new ResponseEntity<>(
+                new CustomResponse<>(responseDTO, "Address status updated successfully", false, 200),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/delete-address")

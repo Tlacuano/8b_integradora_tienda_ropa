@@ -104,10 +104,10 @@ public class AddressService {
         UUID idAddress = payload.getIdAddress();
         UUID idStatus = payload.getStatusId();
         BeanAddress address = iAddress.findById(idAddress)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("address.notfound")));
+                .orElseThrow(() -> new CustomException("address.notfound"));
 
         BeanAddressStatus status = iAddressStatus.findById(idStatus)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("status.notfound")));
+                .orElseThrow(() -> new CustomException("status.notfound"));
 
         address.setStatus(status);
         iAddress.save(address);
