@@ -72,17 +72,29 @@ public class AddressService {
         //validar que el idAddress exista
         Optional<BeanAddress> optionalBeanAddress = iAddress.findById(payload.getIdAddress());
         if(optionalBeanAddress.isEmpty()){
-            throw new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound"));
+            throw new CustomException("address.idAddress.notfound");
         }
         //traer el objeto de la base de datos
         BeanAddress existingAddress = optionalBeanAddress.get();
-        //actualizar los campos
-        existingAddress.setAddress(payload.getAddress());
-        existingAddress.setReferencesAddress(payload.getReferencesAddress());
-        existingAddress.setPostalCode(payload.getPostalCode());
-        existingAddress.setState(payload.getState());
-        existingAddress.setStreet(payload.getStreet());
-        existingAddress.setNeighborhood(payload.getNeighborhood());
+        //actualizar los campos solo si se proporcionan en el payload
+        if (payload.getAddress() != null) {
+            existingAddress.setAddress(payload.getAddress());
+        }
+        if (payload.getReferencesAddress() != null) {
+            existingAddress.setReferencesAddress(payload.getReferencesAddress());
+        }
+        if (payload.getPostalCode() != null) {
+            existingAddress.setPostalCode(payload.getPostalCode());
+        }
+        if (payload.getState() != null) {
+            existingAddress.setState(payload.getState());
+        }
+        if (payload.getStreet() != null) {
+            existingAddress.setStreet(payload.getStreet());
+        }
+        if (payload.getNeighborhood() != null) {
+            existingAddress.setNeighborhood(payload.getNeighborhood());
+        }
         //guardar el objeto y regresar el objeto guardado
         return iAddress.saveAndFlush(existingAddress);
     }
