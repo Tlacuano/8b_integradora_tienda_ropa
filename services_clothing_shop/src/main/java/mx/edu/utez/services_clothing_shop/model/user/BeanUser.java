@@ -13,6 +13,7 @@ import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Entity
+@EntityListeners(AuditEntityListener.class)
 @Table(name = "users")
 public class BeanUser {
     @Id

@@ -14,20 +14,9 @@ public class ResponsePostAddressDTO {
     private String street;
     private String neighborhood;
     private UUID personId;
-    private UUID statusId;
+    private ResponseStatusDTO status;
 
     public ResponsePostAddressDTO() {
     }
 
-    public ResponsePostAddressDTO(UUID idAddress,String address, String referencesAddress, String postalCode, String state, String street, String neighborhood, UUID personId, UUID statusId) {
-        this.idAddress = idAddress;
-        this.address = address;
-        this.referencesAddress = referencesAddress;
-        this.postalCode = postalCode;
-        this.state = state;
-        this.street = street;
-        this.neighborhood = neighborhood;
-        this.personId = personId;
-        this.statusId = statusId;
-    }
 }

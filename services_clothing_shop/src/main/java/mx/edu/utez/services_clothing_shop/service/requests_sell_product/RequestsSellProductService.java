@@ -1,8 +1,9 @@
 package mx.edu.utez.services_clothing_shop.service.requests_sell_product;
 
+import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestDetailsDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
+import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -57,12 +59,31 @@ public class RequestsSellProductService {
         return matcher.matches();
     }
 
-    public RequestsSellProductDTO getRequestById(UUID idRequestSellProduct){
-        Optional<BeanRequestSellProduct> request = IRequestsSellProduct.findById(idRequestSellProduct);
-        if(request.isPresent()){
-            return convertToDTO(request.get());
-        }else{
-            throw new CustomException("requestSellProduct.id.notnull");
+    public RequestDetailsDTO getRequestById(UUID idRequestSellProduct){
+        Optional<BeanRequestSellProduct> requestOptional = IRequestsSellProduct.findById(idRequestSellProduct);
+
+        if(requestOptional.isPresent()){
+            BeanRequestSellProduct request = requestOptional.get();
+            RequestDetailsDTO requestDetailsDTO = new RequestDetailsDTO();
+            requestDetailsDTO.setIdRequestSellProduct(request.getIdRequestSellProduct());
+            requestDetailsDTO.setUserEmail(request.getProduct().getUser().getEmail());
+            requestDetailsDTO.setPrice(request.getProduct().getPrice());
+            requestDetailsDTO.setDescription(request.getProduct().getDescription());
+            requestDetailsDTO.setProductName(request.getProduct().getProductName());
+            requestDetailsDTO.setImage(getPrimaryImage(request.getProduct().getProductGallery()));
+            requestDetailsDTO.setProductId(request.getProduct().getIdProduct());
+
+            return requestDetailsDTO;
+        } else {
+            throw new CustomException("Request not found");
+        }
+    }
+
+    private String getPrimaryImage(List<BeanProductGallery> productGallery) {
+        if (productGallery != null && !productGallery.isEmpty()) {
+            return productGallery.get(0).getImage();
+        } else {
+            return null;
         }
     }
 

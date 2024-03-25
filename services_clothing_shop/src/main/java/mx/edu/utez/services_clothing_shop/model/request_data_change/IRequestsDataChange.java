@@ -27,6 +27,9 @@ public interface IRequestsDataChange extends JpaRepository<BeanRequestDataChange
     @Query("SELECT r.user FROM BeanRequestDataChange r WHERE r.user.email = :email")
     Optional<BeanUser> findUserByEmail(@Param("email") String email);
 
+    @Query("SELECT s FROM BeanRequestStatus s WHERE s.status = :status")
+    Optional<BeanRequestStatus> findStatusByStatusName(@Param("status") String status);
+
 
     interface RequestDataChangeStatusProjection {
         BeanRequestStatus getStatus();
@@ -34,6 +37,19 @@ public interface IRequestsDataChange extends JpaRepository<BeanRequestDataChange
 
     @Query("SELECT r.status FROM BeanRequestDataChange r")
      Page<RequestDataChangeStatusProjection> findAllStatuses(Pageable pageable);
+
+    @Query("SELECT r.idRequestDataChange as requestId, r.status as status, p.name as personName, p.lastName as personLastName FROM BeanRequestDataChange r LEFT JOIN r.user u LEFT JOIN u.person p")
+    Page<RequestDataChangeStatusPersonProjection> findAllStatusesWithPersonNameAndLastName(Pageable pageable);
+
+    @Query("SELECT r.user.person.idPerson FROM BeanRequestDataChange r WHERE r.idRequestDataChange = :requestId")
+    UUID findPersonIdByRequestId(@Param("requestId") UUID requestId);
+
+    interface RequestDataChangeStatusPersonProjection {
+        UUID getRequestId();
+        BeanRequestStatus getStatus();
+        String getPersonName();
+        String getPersonLastName();
+    }
 
 }
 

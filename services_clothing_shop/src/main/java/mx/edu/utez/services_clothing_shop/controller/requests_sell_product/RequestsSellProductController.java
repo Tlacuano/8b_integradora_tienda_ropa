@@ -1,10 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_sell_product;
 
 
-import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductDTO;
-import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductGetDTO;
-import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductPostDTO;
-import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductPutDTO;
+import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.*;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.service.requests_sell_product.RequestsSellProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -28,14 +25,11 @@ public class RequestsSellProductController {
     }
 
     @PostMapping("/get-by-id-request-sell-product")
-    public ResponseEntity<CustomResponse<RequestsSellProductDTO>> getRequestSellProductById(@RequestBody RequestsSellProductGetDTO requestDTO) {
+    public ResponseEntity<CustomResponse<RequestDetailsDTO>> getRequestSellProductById(@RequestBody RequestsSellProductGetDTO requestDTO) {
         UUID idRequest = requestDTO.getIdRequestSellProduct();
-        RequestsSellProductDTO requestData = requestsSellProductService.getRequestById(idRequest);
+        RequestDetailsDTO requestData = requestsSellProductService.getRequestById(idRequest);
 
         if (requestData != null) {
-            String status = requestsSellProductService.getRequestSellProductById(requestData.getIdStatus());
-            requestData.setStatus(status);
-
             return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

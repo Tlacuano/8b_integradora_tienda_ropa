@@ -26,6 +26,7 @@ instance.interceptors.request.use(
                     config.data = encrypt(data);
                 }
             }
+
             return config;
         }
     }
@@ -93,20 +94,4 @@ export default {
     async doGet(url) {
         return await instance.get(SERVER_URL+url);
     },
-
-    async doPut(url, data) {
-        return await instance.put(SERVER_URL+url, data, {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
-        });
-    },
-
-    async doPostImage(url, data){
-        return await instance.post(SERVER_URL+url, data, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }
-        });
-    }
 }
