@@ -9,8 +9,8 @@ import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanReques
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 
-import mx.edu.utez.services_clothing_shop.utils.RegexPatterns;
-import mx.edu.utez.services_clothing_shop.utils.exeption.CustomException;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
+import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
