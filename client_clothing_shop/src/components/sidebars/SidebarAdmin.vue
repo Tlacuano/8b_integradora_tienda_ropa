@@ -23,6 +23,7 @@ export default {
     return {
       items:[
         {id: 1, title: 'Cuentas registradas', icon: 'fa-solid fa-user', to: 'ADMINUserManagement'},
+        {id: 2, title: 'Solicitudes de venta', icon: 'fa-solid fa-shopping-cart', to: 'ProductSaleRequest'},
       ]
 
     };
