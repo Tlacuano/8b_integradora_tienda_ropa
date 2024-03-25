@@ -118,7 +118,7 @@ public class AddressService {
     public ResponseAllAddressDTO deleteAddress(RequestActionByIdDTO payload){
         UUID idAddress = payload.getIdAddress();
         BeanAddress address = iAddress.findById(idAddress)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound")));
+                .orElseThrow(() -> new CustomException("address.idAddress.notfound"));
         iAddress.deleteById(idAddress);
         return mapToResponseAllDTO(new Object[]{address.getAddress(), address.getReferencesAddress(), address.getPostalCode(), address.getState(), address.getStreet(), address.getNeighborhood(), address.getStatus().getIdStatus()});
     }

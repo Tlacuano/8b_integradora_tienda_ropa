@@ -69,12 +69,11 @@ public class AddressController {
 
     @DeleteMapping("/delete-address")
     public ResponseEntity<Object> deleteAddress(@Validated @RequestBody RequestActionByIdDTO payload){
-        try {
-            ResponseAllAddressDTO responseDTO = addressService.deleteAddress(payload);
-            return ResponseEntity.ok(new CustomResponse<>(responseDTO, "Address deleted successfully", false, HttpStatus.OK.value()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(null, e.getMessage(), true, HttpStatus.BAD_REQUEST.value()));
-        }
+        ResponseAllAddressDTO responseDTO = addressService.deleteAddress(payload);
+        return new ResponseEntity<>(
+                new CustomResponse<>(responseDTO, "Address deleted successfully", false, 204),
+                HttpStatus.NO_CONTENT
+        );
     }
 
 }
