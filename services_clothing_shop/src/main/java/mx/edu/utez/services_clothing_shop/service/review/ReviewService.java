@@ -20,17 +20,15 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewService {
     private final IReview iReview;
-    private ErrorDictionary errorDictionary;
-    public ReviewService(IReview iReview, ErrorDictionary errorDictionary) {
+    public ReviewService(IReview iReview) {
         this.iReview = iReview;
-        this.errorDictionary = errorDictionary;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ResponseAllReviewDTO> getReviewsByOrderProductId(UUID idOrderProduct){
         List<Object[]> reviewsData = iReview.findEssentialReviewInfo(idOrderProduct);
         if (reviewsData.isEmpty()) {
-            throw new CustomException(errorDictionary.getErrorMessage("review.idOrderHasProduct.notfound"));
+            throw new CustomException("review.idOrderHasProduct.notfound");
         }
         return reviewsData
                 .stream()
@@ -42,17 +40,28 @@ public class ReviewService {
     public BeanReview putReview(RequestPutReviewDTO payload){
         Optional<BeanReview> optionalBeanReview = iReview.findById(payload.getIdReview());
         if(optionalBeanReview.isEmpty()){
-            throw new CustomException(errorDictionary.getErrorMessage("review.idReview.notfound"));
+            throw new CustomException("review.idReview.notfound");
         }
+
         BeanReview existingReview = optionalBeanReview.get();
-        existingReview.setComment(payload.getComment());
+        if(payload.getComment() != null){
+            existingReview.setComment(payload.getComment());
+        }
+
+        Integer assessmentValue = payload.getAssessment();
+        if(assessmentValue != null){
+            existingReview.setAssessment(assessmentValue);
+        }
         existingReview.setReviewDate(LocalDate.now());
-        existingReview.setAssessment(payload.getAssessment());
         return iReview.saveAndFlush(existingReview);
     }
 
     @Transactional
     public BeanReview postReview(RequestPostReviewDTO payload){
+        UUID orderHasProductId = payload.getOrderHasProductId();
+        if (iReview.existsByOrderHasProduct_IdOrderProduct(orderHasProductId)) {
+            throw new CustomException("review.orderHasProduct.exists");
+        }
         BeanReview newReview = new BeanReview();
         newReview.setComment(payload.getComment());
         newReview.setReviewDate(LocalDate.now());
@@ -71,12 +80,11 @@ public class ReviewService {
         return responseDTO;
     }
 
-    public void deleteReview(UUID idOrderHasProduct){
-        if(iReview.existsByIdReview(idOrderHasProduct)){
-            iReview.deleteById(idOrderHasProduct);
-        } else {
-            throw new CustomException(errorDictionary.getErrorMessage("review.idOrderHasProduct.notfound"));
+    public void deleteReview(UUID idReview){
+        if(!iReview.existsByIdReview(idReview)){
+            throw new CustomException("review.idReview.notfound");
         }
+        iReview.deleteById(idReview);
     }
 
 }

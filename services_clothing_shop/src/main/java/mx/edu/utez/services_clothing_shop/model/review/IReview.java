@@ -14,6 +14,7 @@ public interface IReview extends JpaRepository<BeanReview, UUID> {
     List<Object[]> findEssentialReviewInfo(@Param("idOrderProduct") UUID idOrderProduct);
 
     boolean existsByIdReview(UUID idReview);
+    boolean existsByOrderHasProduct_IdOrderProduct(UUID idOrderProduct);
     BeanReview findByIdReview(UUID idReview);
 
 }
