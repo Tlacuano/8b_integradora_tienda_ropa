@@ -1,23 +1,41 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto;
 
 public class NewInformation {
-    private String nombre;
-    private String apellido;
-    private String direccion;
+    private String name;
+    private String lastName;
+    private String secondLastName;
+    private String picture;
+    private String birthday;
+    private String phoneNumber;
+    private String gender;
 
-
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getSecondLastName() {
+        return secondLastName;
     }
 
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getGender() {
+        return gender;
+    }
 
 }
