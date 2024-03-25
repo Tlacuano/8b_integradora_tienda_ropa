@@ -3,7 +3,6 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
@@ -12,7 +11,6 @@ import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

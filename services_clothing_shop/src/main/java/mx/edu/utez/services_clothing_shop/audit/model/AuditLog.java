@@ -1,6 +1,7 @@
-package mx.edu.utez.services_clothing_shop.utils;
+package mx.edu.utez.services_clothing_shop.audit.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -10,7 +11,8 @@ import java.util.UUID;
 
 @Table(name = "control_table")
 @Entity
-public class LogService {
+@Data
+public class AuditLog {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -23,16 +25,16 @@ public class LogService {
     @Column(name = "table_name", length = 100)
     private String tableName;
 
-    @Column(name = "old_value")
-    private String oldValue;
-
-    @Column(name = "new_value")
+    @Column(name = "new_value", columnDefinition = "JSON")
     private String newValue;
 
     @Column(name = "user_name", length = 100)
-    private String user_Name;
+    private String userName;
+
+    @Column(name = "ip_address", length = 100)
+    private String ipAddress;
 
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

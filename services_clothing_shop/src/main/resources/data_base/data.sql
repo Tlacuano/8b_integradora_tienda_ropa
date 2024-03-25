@@ -48,10 +48,10 @@ values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'ROLE_ADMIN'),
        (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'ROLE_BUYER');
 
 insert ignore into users (id_user, password, email, verification_code, status)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'usuario1@example.com', 'ABCD1234',1),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'usuario2@example.com', 'WXYZ5678',1),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'usuario3@example.com', '1234EFGH', 1),
-       (uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'usuario4@example.com', 'EFGH5678', 1);
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'admin@example.com', 'ABCD1234',1),
+       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'superadmin@example.com', 'WXYZ5678',1),
+       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'seller@example.com', '1234EFGH', 1),
+       (uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'buyer@example.com', 'EFGH5678', 1);
 
 
 insert ignore into user_roles (id_user_role, fk_id_role, fk_id_user)
@@ -74,7 +74,7 @@ values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluch
        (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', 'https://picsum.photos/710/710?random',
         '1998-10-01', '7778291039', 'masculino'),
        (uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'), 'Tlacuano', 'Enriquez', 'de la Cruz', 'https://picsum.photos/710/710?random',
-        '1990-01-01', '5551234567', 'no especificado');
+        '1990-01-01', '5551234567', 'otros');
 
 insert ignore into address(id_address, address, references_address, postal_code, state, street, neighborhood,
                            fk_id_user, fk_id_status)

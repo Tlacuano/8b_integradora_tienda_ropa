@@ -1,7 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.address;
 
 import mx.edu.utez.services_clothing_shop.controller.address.dto.*;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;

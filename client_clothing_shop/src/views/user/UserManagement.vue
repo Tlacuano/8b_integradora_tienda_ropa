@@ -30,13 +30,13 @@
               >
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
-                  <b-img
-                      v-if="person.picture"
-                    :src="person.picture"
-                    alt="Image"
-                    fluid
-                    thumbnail
-                  ></b-img>
+                  <b-avatar
+                      v-if="person.status"
+                      size="2.5rem"
+                      variant="success"
+                      class="text-uppercase"
+                      :src="person.picture"
+                  />
                   <b-avatar
                     v-else
                     size="2.5rem"

@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.exception;
+package mx.edu.utez.services_clothing_shop.utils.exception;
 
 import org.springframework.stereotype.Component;
 
