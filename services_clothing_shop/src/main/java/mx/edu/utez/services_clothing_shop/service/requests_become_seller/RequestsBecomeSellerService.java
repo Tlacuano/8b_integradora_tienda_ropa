@@ -3,7 +3,6 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestsBecomeSellerResponseDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.UserSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
