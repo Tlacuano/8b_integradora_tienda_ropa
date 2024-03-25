@@ -2,7 +2,7 @@
   <div id="app">
     <b-overlay :show="showOverlay" class="app-container">
       <NavbarBuyer v-if="(getRole === 'BUYER' && isLoggedIn) || !isLoggedIn"/>
-      <NavbarAdmin v-if="getRole === 'ADMIN' && isLoggedIn"/>
+      <NavbarAdmin v-if="(getRole === 'ADMIN' || getRole === 'SUPERADMIN') && isLoggedIn"/>
       <NavbarSeller v-if="getRole === 'SELLER' && isLoggedIn" />
 
       <b-container fluid class="interface-container pt-2">

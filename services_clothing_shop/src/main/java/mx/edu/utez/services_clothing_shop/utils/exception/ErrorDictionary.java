@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.exception;
+package mx.edu.utez.services_clothing_shop.utils.exception;
 
 import org.springframework.stereotype.Component;
 
@@ -181,6 +181,9 @@ public class ErrorDictionary {
         //error messages request sell product
         errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
+
+        //twilio
+        errorMessages.put("twilio.service.error", "Error al enviar el codigo.");
 
     }
 

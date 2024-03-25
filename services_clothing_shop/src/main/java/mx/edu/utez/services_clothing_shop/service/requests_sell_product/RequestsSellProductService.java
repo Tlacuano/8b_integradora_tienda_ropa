@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.requests_sell_product;
 
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
