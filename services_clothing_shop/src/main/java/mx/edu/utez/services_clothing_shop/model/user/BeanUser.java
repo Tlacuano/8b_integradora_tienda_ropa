@@ -42,13 +42,18 @@ public class BeanUser {
     @Column(name = "verification_code", length = 255)
     private String verificationCode;
 
+    @Column(name = "email_verified", columnDefinition = "TINYINT(0)")
+    private boolean emailVerified;
+
+    @Column(name = "privacy_policy", columnDefinition = "TINYINT(0)")
+    private boolean privacyPolicy;
+
     //relacion muchos a muchos con la tabla roles
     @OneToMany(mappedBy = "user")
     private List<BeanUserRoles> roles;
 
     //relacion uno a uno con la tabla people
     @OneToOne(mappedBy = "user")
-    @PrimaryKeyJoinColumn
     private BeanPerson person;
 
     //relacion muchos a uno con la tabla status

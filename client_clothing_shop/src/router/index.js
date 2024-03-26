@@ -21,6 +21,12 @@ const router = new VueRouter({
       meta: { requiresAuth: true, roles: ["ADMIN"] },
       props: true,
     },
+    {
+      path: "/privacy-policy",
+      name: "PrivacyPolicy",
+      component: () => import("../views/privacy-policy/PrivacyPolicy.vue"),
+      meta: { requiresAuth: false },
+    }
     
   ]
 });
