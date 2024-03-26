@@ -1,17 +1,21 @@
 package mx.edu.utez.services_clothing_shop.controller.user.dto;
 
 import lombok.Data;
+import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class ResponseGetUserDetailsByEmailAdminDTO {
 
     private String email;
+    private boolean status;
 
 
+    private UUID idPerson;
     private String name;
     private String lastName;
     private String secondLastName;
@@ -22,7 +26,6 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
 
     private String taxIdentificationNumber;
     private String secondaryPhoneNumber;
-    private boolean privacyPolicyAgreement;
     private String imageIdentification;
     private String curp;
 
@@ -32,7 +35,9 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
         ResponseGetUserDetailsByEmailAdminDTO UserDetails = new ResponseGetUserDetailsByEmailAdminDTO();
 
         UserDetails.setEmail(user.getEmail());
+        UserDetails.setStatus(user.isStatus());
 
+        UserDetails.setIdPerson(user.getPerson().getIdPerson());
         UserDetails.setName(user.getPerson().getName());
         UserDetails.setLastName(user.getPerson().getLastName());
         UserDetails.setSecondLastName(user.getPerson().getSecondLastName());
@@ -41,9 +46,13 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
         UserDetails.setPhoneNumber(user.getPerson().getPhoneNumber());
         UserDetails.setGender(String.valueOf(user.getPerson().getGender()));
 
+
+        if(user.getPerson().getSellerInformation() == null){
+            return UserDetails;
+        }
+
         UserDetails.setTaxIdentificationNumber(user.getPerson().getSellerInformation().getTaxIdentificationNumber());
         UserDetails.setSecondaryPhoneNumber(user.getPerson().getSellerInformation().getSecondaryPhoneNumber());
-        UserDetails.setPrivacyPolicyAgreement(user.getPerson().getSellerInformation().isPrivacyPolicyAgreement());
         UserDetails.setImageIdentification(user.getPerson().getSellerInformation().getImageIdentification());
         UserDetails.setCurp(user.getPerson().getSellerInformation().getCurp());
 

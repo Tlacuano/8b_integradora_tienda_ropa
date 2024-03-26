@@ -61,7 +61,7 @@ values (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e397837582d'), uuid_to_bin('0f8fad
         uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6')),
        (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375811'), uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9b'),
         uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f')),
-       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375811'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
+       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375812'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
         uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f')),
          (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375711'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
         uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'));
@@ -98,9 +98,8 @@ values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be4'), uuid_to_bin('e53cf2
        (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be5'), uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'),
         uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'No cumple con los requisitos');
 
-insert ignore into sellers_information (fk_id_user, tax_identification_number, privacy_policy_agreement,
-                                        image_identification, curp, secondary_phone_number)
-values (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), '123456789', 1, 'https://picsum.photos/1080/710?random%27', 'CURP123456789', '7774666887');
+insert ignore into sellers_information (fk_id_user, tax_identification_number, privacy_policy_agreement, image_identification, curp, secondary_phone_number)
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec3'), '123456789', 1, 'https://picsum.photos/1080/710?random%27', 'CURP123456789', '7774666887');
 
 insert ignore into payment_cards(id_payment_card, cardholder_name, card_number, expiration_date, cvv, fk_id_user,
                                  fk_id_status)

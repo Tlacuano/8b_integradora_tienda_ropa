@@ -28,6 +28,7 @@ const getUserDetailsByEmailAdminService = async (email) => {
         return response.data
     }catch (e){
         showWarningToast('', error)
+        return e.data
     }
 }
 
