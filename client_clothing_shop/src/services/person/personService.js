@@ -22,6 +22,8 @@ const verifyCodeService = async (payload) => {
 }
 
 
+
+
 export default {
     postPersonalInformationService,
     verifyCodeService
