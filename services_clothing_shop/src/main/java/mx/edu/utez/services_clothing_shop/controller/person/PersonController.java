@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.person;
 
 import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPersonalInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.person.PersonService;
@@ -29,4 +30,13 @@ public class PersonController {
                 new CustomResponse<>(personService.postPersonalInformation(payload), "Información personal registrada correctamente", false, 201),
                 HttpStatus.OK);
     }
+
+    @PostMapping("/verify-phone")
+    public ResponseEntity<Object> verifyPhone(@Validated @RequestBody RequestCodeDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.verifyPhone(payload), "Teléfono verificado correctamente", false, 200),
+                HttpStatus.OK);
+    }
+
+
 }

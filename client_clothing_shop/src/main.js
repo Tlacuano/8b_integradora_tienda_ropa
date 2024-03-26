@@ -34,6 +34,10 @@ const dictionary = {
       email: () => 'El correo electrónico no es válido',
       password_strength: () => 'La contraseña no es válida',
       confirmed_password: () => 'Las contraseñas no coinciden',
+      alpha_spaces: () => 'Este campo solo puede contener letras y espacios',
+      phone_number: () => 'El número de teléfono no es válido',
+      over_18: () => 'Debes ser mayor de 18 años',
+      privacy_policy: () => 'Debes aceptar la política de privacidad'
 
 
 
@@ -59,6 +63,35 @@ Validator.extend('confirmed_password', {
 }, {
   paramNames,
   hasTarget: true
+});
+
+Validator.extend('phone_number', {
+  validate: value => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(value);
+  }
+});
+
+Validator.extend('over_18', {
+  validate: value => {
+    const today = new Date();
+    const birthDate = new Date(value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age >= 18;
+  }
+});
+
+//validate privacy policy
+Validator.extend('privacy_policy', {
+  validate: value => {
+    return value;
+  }
 });
 
 

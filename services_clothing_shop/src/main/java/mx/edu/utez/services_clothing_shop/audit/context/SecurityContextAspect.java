@@ -21,12 +21,13 @@ public class SecurityContextAspect {
 
     @Around("serviceLayer()")
     public Object captureUserAndIp(ProceedingJoinPoint joinPoint) throws Throwable {
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes != null ? attributes.getRequest() : null;
 
-
-        String user =  SecurityContextHolder.getContext().getAuthentication() == null ? "anonymous" : SecurityContextHolder.getContext().getAuthentication().getName();
-        String ip = request.getRemoteAddr();
-
+        String user = SecurityContextHolder.getContext().getAuthentication() != null
+                ? SecurityContextHolder.getContext().getAuthentication().getName()
+                : "anonymous";
+        String ip = request != null ? request.getRemoteAddr() : "unknown";
 
         AuditContext.setUserName(user);
         AuditContext.setIpAddress(ip);

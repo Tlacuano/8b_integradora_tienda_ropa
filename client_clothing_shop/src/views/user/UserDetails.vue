@@ -10,10 +10,11 @@
       <b-col lg="4">
         <b-row>
           <b-col class="text-center">
-            <b-img
-                v-if="user.picture"
-                :src="user.picture"
+            <b-avatar
+                v-if="user.person.picture!==null"
+                :src="user.person.picture"
                 alt="Image"
+                size="200px"
                 fluid
                 thumbnail
             />
@@ -22,7 +23,6 @@
                 size="200px"
                 variant="secondary"
                 class="text-uppercase"
-                :text="user.email.charAt(0) + user.email.charAt(4)"
             />
           </b-col>
         </b-row>
@@ -40,43 +40,38 @@
                   <b-form-group label="Correo electrónico">
                     <b-form-input
                         v-model="user.email"
-
+                        disabled
                     ></b-form-input>
                   </b-form-group>
                 </b-col>
               </b-row>
-
-              <b-row >
-                <b-col >
-                  <b-form-group label="Contraseña">
-                    <b-form-input
-                        v-model="user.password"
-
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-
               <b-row>
                 <b-col>
-                  <b-form-group label="Confirmar Contraseña">
-                    <b-form-input
-                        v-model="user.fullName"
-
-                    ></b-form-input>
+                  <b-form-group label="Roles"  >
+                    <b-input
+                        v-for="role in user.roles"
+                        :value="role"
+                        class="mt-2"
+                        disabled
+                    >
+                    </b-input>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group label="Estado">
+                    <b-input
+                        :value="user.status ? 'Activo': 'Deshabilitado'"
+                        disabled
+                    >
+                    </b-input>
                   </b-form-group>
                 </b-col>
               </b-row>
 
-              <b-row>
-                <b-col>
-                  <b-button class="main-button">
-                    Guardar
-                  </b-button>
-                </b-col>
-              </b-row>
+
             </b-card>
-
           </b-col>
         </b-row>
       </b-col>
@@ -95,38 +90,38 @@
                   </b-row>
 
                   <b-row class="mt-2">
-                    <b-col>
+                    <b-col md="4">
                       <b-form-group label="Nombre completo">
                         <b-form-input
                             v-model="user.person.name"
-
+                            disabled
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
 
-                    <b-col>
+                    <b-col md="4">
                       <b-form-group label="Primer apellido">
                         <b-form-input
                             v-model="user.person.lastName"
-
+                            disabled
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
 
-                    <b-col>
+                    <b-col md="4">
                       <b-form-group label="Segundo apellido">
                         <b-form-input
                             v-model="user.person.secondLastName"
-
+                            disabled
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
                   </b-row>
 
                   <b-row>
-                    <b-col>
+                    <b-col md="4">
                       <b-form-group label="Género">
-                        <b-form-select v-model="user.person.gender">
+                        <b-form-select v-model="user.person.gender" disabled>
                           <b-form-select-option value="masculino">Hombre</b-form-select-option>
                           <b-form-select-option value="femenino">Mujer</b-form-select-option>
                           <b-form-select-option value="otros">Otro</b-form-select-option>
@@ -134,20 +129,21 @@
                       </b-form-group>
                     </b-col>
 
-                    <b-col>
+                    <b-col md="4">
                       <b-form-group label="Fecha de nacimiento">
                         <b-form-input
                             v-model="user.person.birthday"
                             type="date"
-
+                            disabled
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
 
-                    <b-col>
+                    <b-col md="4">
                       <b-form-group label="Teléfono">
                         <b-form-input
                             v-model="user.person.phoneNumber"
+                            disabled
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
@@ -158,7 +154,7 @@
           </b-col>
         </b-row>
 
-        <b-row class="mt-2" v-if="user.sellerInformation.taxIdentificationNumber">
+        <b-row class="mt-2" v-if="user.sellerInformation.taxIdentificationNumber !== null">
           <b-col>
             <b-card>
               <b-row>
@@ -166,47 +162,41 @@
                   <h4>Datos fiscales</h4>
                 </b-col>
               </b-row>
-
-              <b-row class="mt-2">
-                <b-col>
-                  <b-form-group label="Número de identificación fiscal">
-                    <b-form-input
-                        v-model="user.sellerInformation.taxIdentificationNumber"
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-
-                <b-col>
-                  <b-form-group label="CURP">
-                    <b-form-input
-                        v-model="user.sellerInformation.curp"
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-
               <b-row>
-                <b-col>
-                  <b-row>
+                <b-col md="6">
+                  <b-row class="mt-2">
                     <b-col>
-                      <b-form-group label="Teléfono secundario">
+                      <b-form-group label="Número de identificación fiscal">
                         <b-form-input
-                            v-model="user.sellerInformation.secondaryPhoneNumber"
+                            v-model="user.sellerInformation.taxIdentificationNumber"
+                            disabled
                         ></b-form-input>
                       </b-form-group>
                     </b-col>
                   </b-row>
                   <b-row>
                     <b-col>
-                      <b-form-group label="Acuerdo de política de privacidad">
-                        <b-form-checkbox
-                            v-model="user.sellerInformation.privacyPolicyAgreement"
-                        ></b-form-checkbox>
+                      <b-form-group label="CURP">
+                        <b-form-input
+                            v-model="user.sellerInformation.curp"
+                            disabled
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+
+                  <b-row>
+                    <b-col>
+                      <b-form-group label="Teléfono secundario">
+                        <b-form-input
+                            v-model="user.sellerInformation.secondaryPhoneNumber"
+                            disabled
+                        ></b-form-input>
                       </b-form-group>
                     </b-col>
                   </b-row>
                 </b-col>
-                <b-col>
+                <b-col md="6" class="text-center">
                   <b-row>
                     <b-col>
                       <b-img
@@ -214,7 +204,8 @@
                           :src="user.sellerInformation.imageIdentification"
                           alt="Image"
                           fluid
-                          thumbnail
+
+                          style="height: 250px"
                       />
                     </b-col>
                   </b-row>
@@ -252,13 +243,16 @@ export default {
     return {
       user: {
         email:null,
+        roles: [],
+        status: null,
         person: {
           name: null,
           lastName: null,
           secondLastName: null,
           gender: null,
           birthday: null,
-          phoneNumber: null
+          phoneNumber: null,
+          picture: null
         },
         sellerInformation:{
           imageIdentification: null,
@@ -278,7 +272,10 @@ export default {
         email: decodeCrypto(this.email)
       };
       const response = await PeopleService.getUserDetailsByEmailAdminService(payload);
+
       this.user.email = response.data.email;
+      this.user.roles = response.data.roles;
+      this.user.status = response.data.status;
 
       this.user.person.name = response.data.name;
       this.user.person.lastName = response.data.lastName;
@@ -286,6 +283,7 @@ export default {
       this.user.person.gender = response.data.gender;
       this.user.person.birthday =  new Date(response.data.birthday).toISOString().split('T')[0];
       this.user.person.phoneNumber = response.data.phoneNumber;
+      this.user.person.picture = response.data.picture;
 
       this.user.sellerInformation.imageIdentification = response.data.imageIdentification;
       this.user.sellerInformation.curp = response.data.curp;
