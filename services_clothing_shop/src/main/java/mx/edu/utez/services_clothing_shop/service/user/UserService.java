@@ -138,4 +138,14 @@ public class UserService {
 
         return result;
     }
+
+    @Transactional
+    public ResponseGetProfileDTO getProfile(String email) {
+        BeanUser user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new CustomException("user.email.not.found");
+        }
+
+        return ResponseGetProfileDTO.fromUser(user);
+    }
 }

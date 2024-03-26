@@ -59,6 +59,15 @@ const verifyCodeService = async (payload) => {
     }
 }
 
+const getProfileService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/get-profile", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
+
 
 export default {
     getPageUsersService,
@@ -66,5 +75,6 @@ export default {
     getUserDetailsByEmailAdminService,
     existUserByEmailService,
     postUserService,
-    verifyCodeService
+    verifyCodeService,
+    getProfileService
 };
