@@ -9,4 +9,5 @@ public class RequestsSellProductPutDTO {
     private UUID idRequestSellProduct;
     private String status;
     private String rejectionReason;
+    private UUID idProduct;
 }

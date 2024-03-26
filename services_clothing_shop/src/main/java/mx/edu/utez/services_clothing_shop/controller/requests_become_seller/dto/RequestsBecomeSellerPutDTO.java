@@ -10,4 +10,5 @@ public class RequestsBecomeSellerPutDTO {
     private UUID idRequestBecomeSeller;
     private String rejectionReason;
     private String status;
+    private UserSellerInformation userSellerInformation;
 }

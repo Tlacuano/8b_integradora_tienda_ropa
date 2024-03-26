@@ -113,6 +113,7 @@ public class ErrorDictionary {
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
 
         //error messages address
+        errorMessages.put("addresses.notfound", "No hay direcciones registradas.");
         errorMessages.put("address.notfound", "No hay direcciones registradas.");
         errorMessages.put("address.idAddress.notnull", "El id de la dirección es obligatorio.");
         errorMessages.put("address.idAddress.notfound", "La dirección no fue encontrada.");
@@ -143,6 +144,7 @@ public class ErrorDictionary {
         errorMessages.put("review.idReview.notnull", "El id de la reseña es obligatorio.");
         errorMessages.put("review.idReview.notfound", "La reseña no fue encontrada.");
         errorMessages.put("review.idOrderHasProduct.notfound", "La orden del producto no fue encontrada.");
+        errorMessages.put("review.orderHasProduct.exists", "Ya existe una reseña para este producto.");
         errorMessages.put("review.comment.notnull", "El comentario es obligatorio.");
         errorMessages.put("review.comment.size", "El comentario debe tener entre 5 y 255 caracteres.");
         errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
