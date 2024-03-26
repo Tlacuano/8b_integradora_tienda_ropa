@@ -14,24 +14,15 @@ public class RequestDataChangeIdDTO {
     private String rejectionReason;
     private String userEmail;
     private String status;
-
-
+    private UUID personId;
+    private String personName;
+    private String personLastName;
 
     public UUID getRequestId() {
         return requestId;
     }
 
-    public void setRequestId(UUID requestId) {
-        this.requestId = requestId;
-    }
 
-    public Map<String, Object> getNewUserInformation() {
-        return newUserInformation;
-    }
-
-    public void setNewUserInformation(Map<String, Object> newUserInformation) {
-        this.newUserInformation = newUserInformation;
-    }
 
     public String getRejectionReason() {
         return rejectionReason;
@@ -55,6 +46,30 @@ public class RequestDataChangeIdDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public UUID getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(UUID personId) {
+        this.personId = personId;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public String getPersonLastName() {
+        return personLastName;
+    }
+
+    public void setPersonLastName(String personLastName) {
+        this.personLastName = personLastName;
     }
 
 

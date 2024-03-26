@@ -39,21 +39,18 @@ public class RequestsDataChangeController {
 
     @PutMapping("/put-request-data-change")
     public ResponseEntity<CustomResponse<String>> putRequestDataChange(@RequestBody RequestDataChangePutDTO requestData) {
-        UUID requestId = requestData.getIdRequestDataChange();
-        String status = requestData.getStatus();
-        String rejectionReason = requestData.getRejectionReason();
-
         try {
-            requestsDataChangeService.putRequestDataChange(requestId, status, rejectionReason);
+            requestsDataChangeService.putRequestDataChange(requestData);
             return ResponseEntity.ok(new CustomResponse<>("Request updated successfully", "Request updated", false, 200));
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(new CustomResponse<>(e.getMessage(), "Bad request", true, 400));
         }
     }
 
+
     @GetMapping("/get-page")
-    public Page<IRequestsDataChange.RequestDataChangeStatusProjection> getPageRequestDataChange(Pageable pageable) {
-        return requestsDataChangeService.getPageRequestDataChange(pageable);
+    public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChange(Pageable pageable) {
+        return requestsDataChangeService.getPageRequestDataChangeWithPersonName(pageable);
     }
 
     @PostMapping("/get-by-id-request-data-change")

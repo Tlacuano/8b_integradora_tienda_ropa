@@ -11,7 +11,7 @@ public class ResponseAllAddressDTO {
     private String state;
     private String street;
     private String neighborhood;
-    private UUID statusID;
+    private ResponseStatusDTO status;
 
     public ResponseAllAddressDTO() {
     }

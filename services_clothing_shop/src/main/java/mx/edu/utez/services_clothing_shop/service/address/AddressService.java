@@ -7,6 +7,7 @@ import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.address_status.IAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
+import mx.edu.utez.services_clothing_shop.model.person.IPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,30 +21,31 @@ import java.util.stream.Collectors;
 public class AddressService {
     private final IAddress iAddress;
     private final IAddressStatus iAddressStatus;
+    private final IPerson iPerson;
     private ErrorDictionary errorDictionary;
-    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus, ErrorDictionary errorDictionary){
+    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus, IPerson iPerson, ErrorDictionary errorDictionary){
         this.iAddress = iAddress;
         this.iAddressStatus = iAddressStatus;
+        this.iPerson = iPerson;
         this.errorDictionary = errorDictionary;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ResponseAllAddressDTO> getAddresses() {
         List<Object[]> addressesData = iAddress.findEssentialAddressInfo();
         if (addressesData.isEmpty()) {
-            throw new CustomException(errorDictionary.getErrorMessage("address.notfound"));
+            throw new CustomException("addresses.notfound");
         }
         return addressesData.stream()
                 .map(this::mapToResponseAllDTO)
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public BeanAddress getAddress(UUID idAddress){
         Optional<BeanAddress> optionalBeanAddress = iAddress.findById(idAddress);
-        //si el id presente no esta en la bd mandar error dictionary address.idAddress.notfound
         if(optionalBeanAddress.isEmpty()){
-            throw new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound"));
+            throw new CustomException("address.idAddress.notfound");
         }
         return optionalBeanAddress.get();
     }
@@ -57,11 +59,9 @@ public class AddressService {
         newAddress.setState(payload.getState());
         newAddress.setStreet(payload.getStreet());
         newAddress.setNeighborhood(payload.getNeighborhood());
-        BeanPerson person = new BeanPerson();
-        person.setIdPerson(payload.getPersonId());
+        BeanPerson person = iPerson.findById(payload.getPersonId()).orElse(null);
         newAddress.setPerson(person);
-        BeanAddressStatus status = new BeanAddressStatus();
-        status.setIdStatus(payload.getStatusId());
+        BeanAddressStatus status = iAddressStatus.findById(payload.getStatusId()).orElse(null);
         newAddress.setStatus(status);
 
         return iAddress.saveAndFlush(newAddress);
@@ -72,17 +72,29 @@ public class AddressService {
         //validar que el idAddress exista
         Optional<BeanAddress> optionalBeanAddress = iAddress.findById(payload.getIdAddress());
         if(optionalBeanAddress.isEmpty()){
-            throw new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound"));
+            throw new CustomException("address.idAddress.notfound");
         }
         //traer el objeto de la base de datos
         BeanAddress existingAddress = optionalBeanAddress.get();
-        //actualizar los campos
-        existingAddress.setAddress(payload.getAddress());
-        existingAddress.setReferencesAddress(payload.getReferencesAddress());
-        existingAddress.setPostalCode(payload.getPostalCode());
-        existingAddress.setState(payload.getState());
-        existingAddress.setStreet(payload.getStreet());
-        existingAddress.setNeighborhood(payload.getNeighborhood());
+        //actualizar los campos solo si se proporcionan en el payload
+        if (payload.getAddress() != null) {
+            existingAddress.setAddress(payload.getAddress());
+        }
+        if (payload.getReferencesAddress() != null) {
+            existingAddress.setReferencesAddress(payload.getReferencesAddress());
+        }
+        if (payload.getPostalCode() != null) {
+            existingAddress.setPostalCode(payload.getPostalCode());
+        }
+        if (payload.getState() != null) {
+            existingAddress.setState(payload.getState());
+        }
+        if (payload.getStreet() != null) {
+            existingAddress.setStreet(payload.getStreet());
+        }
+        if (payload.getNeighborhood() != null) {
+            existingAddress.setNeighborhood(payload.getNeighborhood());
+        }
         //guardar el objeto y regresar el objeto guardado
         return iAddress.saveAndFlush(existingAddress);
     }
@@ -92,10 +104,10 @@ public class AddressService {
         UUID idAddress = payload.getIdAddress();
         UUID idStatus = payload.getStatusId();
         BeanAddress address = iAddress.findById(idAddress)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("address.notfound")));
+                .orElseThrow(() -> new CustomException("address.notfound"));
 
         BeanAddressStatus status = iAddressStatus.findById(idStatus)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("status.notfound")));
+                .orElseThrow(() -> new CustomException("status.notfound"));
 
         address.setStatus(status);
         iAddress.save(address);
@@ -106,7 +118,7 @@ public class AddressService {
     public ResponseAllAddressDTO deleteAddress(RequestActionByIdDTO payload){
         UUID idAddress = payload.getIdAddress();
         BeanAddress address = iAddress.findById(idAddress)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("address.idAddress.notfound")));
+                .orElseThrow(() -> new CustomException("address.idAddress.notfound"));
         iAddress.deleteById(idAddress);
         return mapToResponseAllDTO(new Object[]{address.getAddress(), address.getReferencesAddress(), address.getPostalCode(), address.getState(), address.getStreet(), address.getNeighborhood(), address.getStatus().getIdStatus()});
     }
@@ -121,7 +133,12 @@ public class AddressService {
         responseDTO.setStreet(savedAddress.getStreet());
         responseDTO.setNeighborhood(savedAddress.getNeighborhood());
         responseDTO.setPersonId(savedAddress.getPerson().getIdPerson());
-        responseDTO.setStatusId(savedAddress.getStatus().getIdStatus());
+
+        BeanAddressStatus status = savedAddress.getStatus();
+        ResponseStatusDTO responseStatusDTO = new ResponseStatusDTO();
+        responseStatusDTO.setStatusID(status.getIdStatus());
+        responseStatusDTO.setStatus(status.getStatus());
+        responseDTO.setStatus(responseStatusDTO);
         return responseDTO;
     }
 
@@ -133,7 +150,12 @@ public class AddressService {
         responseDTO.setState((String) row[3]);
         responseDTO.setStreet((String) row[4]);
         responseDTO.setNeighborhood((String) row[5]);
-        responseDTO.setStatusID((UUID) row[6]);
+        UUID statusId = (UUID) row[6];
+        BeanAddressStatus status = iAddressStatus.findById(statusId).get();
+        ResponseStatusDTO statusDTO = new ResponseStatusDTO();
+        statusDTO.setStatusID(status.getIdStatus());
+        statusDTO.setStatus(status.getStatus());
+        responseDTO.setStatus(statusDTO);
         return responseDTO;
     }
 
