@@ -16,8 +16,8 @@
       </b-col>
     </b-row>
     <b-row class="mt-3 container-products">
-      <b-col lg="4" v-for="product in products" :key="product.id">
-        <b-card no-body class="highlight-on-hover mb-2" @click="productDetail">
+      <b-col lg="4" v-for="product in products" :key="product.id" @click="openModal(product)">
+        <b-card no-body class="highlight-on-hover mb-2">
           <b-row class="m-2" no-gutters>
             <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
               <b-avatar
@@ -25,25 +25,25 @@
                   size="2.5rem"
                   variant="success"
                   class="text-uppercase"
-                  :src="product.picture"
+                  :src="product.image"
               />
               <b-avatar
                   v-else
                   size="2.5rem"
                   variant="secondary"
                   class="text-uppercase"
-              >{{ product.name.charAt(0) }}
+              >{{ product.productName.charAt(0) }}
               </b-avatar>
             </b-col>
             <b-col cols="8" class="ml-2">
               <b-row>
                 <b-col>
-                  <div class="text-truncate font-weight-bold small">{{ product.name }}</div>
+                  <div class="text-truncate font-weight-bold small">{{ product.productName }}</div>
                 </b-col>
               </b-row>
               <b-row>
                 <b-col>
-                  <div class="status text-truncate font-weight-bold small">{{ product.status }}</div>
+                  <div class="status text-truncate font-weight-bold small">{{ product.status.status }}</div>
                 </b-col>
               </b-row>
             </b-col>
@@ -61,13 +61,15 @@
         ></b-pagination>
       </b-col>
     </b-row>
-    <ProductSalesRequestsDetails/>
+    <ProductSalesRequestsDetails :product-id="selectProductId"/>
   </section>
 </template>
 <script>
 import ProductSalesRequestsService from '@/services/admin/adminService';
 export default {
-
+  components: {
+    ProductSalesRequestsDetails: () => import('@/components/modals/ProductSalesRequestsDetails.vue')
+  },
   data() {
     return {
       productDetail: false,
@@ -76,97 +78,22 @@ export default {
         size: 24,
         elements: 0,
       },
-      products:[
-        {
-          id: 1,
-          name: 'Producto 1',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 2,
-          name: 'Producto 2',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 3,
-          name: 'Producto 3',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 4,
-          name: 'Producto 4',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 5,
-          name: 'Producto 5',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 6,
-          name: 'Producto 6',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 7,
-          name: 'Producto 7',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 8,
-          name: 'Producto 8',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 9,
-          name: 'Producto 9',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 10,
-          name: 'Producto 10',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 11,
-          name: 'Producto 11',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 12,
-          name: 'Producto 12',
-          status: 'En espera',
-          picture: 'https://picsum.photos/200/300'
-        },
-        {
-          id: 13,
-          name: 'Producto 13',
-          status: 'En espera',
-          picture: 'https://picsum.photos'
-        }
-      ]
+      products:[],
+      selectProductId:null
     };
   },
   methods: {
     async getPageProductSalesRequests() {
       const response = await ProductSalesRequestsService.getPageProductSalesRequests(this.objectPagination)
       this.objectPagination.elements = response.totalElements
-      //this.products = response.content;
+      this.products = response.content;
     },
-    productDetail() {
-      this.$refs['productDetail'].show();
-    }
+    openModal(productId) {
+      this.selectProductId = productId.idRequestSellProduct;
+      this.$nextTick(() => {
+        this.$bvModal.show("productDetail");
+      });
+    },
   },
   mounted() {
     this.getPageProductSalesRequests();
