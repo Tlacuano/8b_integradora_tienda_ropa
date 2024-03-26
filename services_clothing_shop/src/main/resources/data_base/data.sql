@@ -43,31 +43,38 @@ values (uuid_to_bin('9e9df4fd-036d-48b1-85e8-4f8f4389f1d4'), uuid_to_bin('3cc47b
 
 insert ignore into roles (id_role, role_name)
 values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'ROLE_ADMIN'),
-       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SELLER'),
+       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9b'), 'ROLE_SELLER'),
+       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SUPERADMIN'),
        (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'ROLE_BUYER');
 
-insert ignore into users (id_user, password, email, verification_code, status)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'contraseña123', 'usuario1@example.com', 'ABCD1234',
-        1),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'password456', 'usuario2@example.com', 'WXYZ5678',
-        1),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'pass789', 'usuario3@example.com', '1234EFGH', 1);
+insert ignore into users (id_user, password, email, verification_code, status, email_verified, privacy_policy)
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'admin@example.com', 'ABCD1234',1, 1, 1),
+       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'superadmin@example.com', 'WXYZ5678',1, 1, 1),
+       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'seller@example.com', '1234EFGH', 1, 1, 1),
+       (uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'), '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S', 'buyer@example.com', 'EFGH5678', 1, 1, 1);
+
 
 insert ignore into user_roles (id_user_role, fk_id_role, fk_id_user)
 values (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e397837582d'), uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'),
         uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4')),
        (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375822'), uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'),
         uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6')),
-       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375811'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
-        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'));
+       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375811'), uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9b'),
+        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f')),
+       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375812'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
+        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f')),
+         (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375711'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
+        uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'));
 
-insert ignore into people(fk_id_user, name, last_name, second_last_name, picture, birthday, phone_number, gender)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', '',
-        '2000-09-12', '7772314221', 'otros'),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', '',
-        '2001-12-18', '7778933214', 'femenino'),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', '',
-        '1998-10-01', '7778291039', 'masculino');
+insert ignore into people(id_person, fk_id_user, name, last_name, second_last_name, picture, birthday, phone_number, gender,verification_phone )
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec1'), uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', 'https://picsum.photos/710/710?random',
+        '2000-09-12', '7772314221', 'otros', 1 ),
+       (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec2'),uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', 'https://picsum.photos/710/710?random',
+        '2001-12-18', '7778933214', 'femenino', 1),
+       (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec3'),uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', 'https://picsum.photos/710/710?random',
+        '1998-10-01', '7778291039', 'masculino', 1),
+       (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'),uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'), 'Tlacuano', 'Enriquez', 'de la Cruz', 'https://picsum.photos/710/710?random',
+        '1990-01-01', '5551234567', 'otros', 1);
 
 insert ignore into address(id_address, address, references_address, postal_code, state, street, neighborhood,
                            fk_id_user, fk_id_status)
@@ -79,21 +86,20 @@ values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be2'), 'Avenida Juárez 12
         uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), uuid_to_bin('6c013eed-dd65-11ee-8508-64006a586a6a')),
        (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be4'), 'Avenida Juárez 125',
         'Entre la calle 5 de mayo y la calle 16 de septiembre', '76000', 'Querétaro', 'Juárez', 'Centro',
-        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), uuid_to_bin('3b43b9d0-9f46-49fe-ae14-e69b8d1ca821'));
+        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), uuid_to_bin('3b43b9d0-9f46-49fe-ae14-e69b8d1ca821')),
+       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be4'), 'Avenida Juárez 125',
+        'Entre la calle 5 de mayo y la calle 16 de septiembre', '76000', 'Querétaro', 'Juárez', 'Centro',
+        uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'), uuid_to_bin('3b43b9d0-9f46-49fe-ae14-e69b8d1ca821'));
+
 
 insert ignore into requests_become_seller (id_request_become_seller, fk_id_user, fk_id_status, rejection_reason)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be5'), uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'),
-        uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'No cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be6'), uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'),
-        uuid_to_bin('7c5409f1-64c5-431d-8b4c-e0d60058d100'), 'Cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be7'), uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'),
-        uuid_to_bin('0d64c931-8f3c-4b0c-a16b-dad013cdaeb4'), 'No cumple con los requisitos');
+values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be4'), uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'),
+        uuid_to_bin('7c5409f1-64c5-431d-8b4c-e0d60058d100'), ''),
+       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be5'), uuid_to_bin('a0d12c0d-31b9-4d3e-a67b-9d9d9d9d9d9d'),
+        uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'No cumple con los requisitos');
 
-insert ignore into sellers_information (fk_id_user, tax_identification_number, privacy_policy_agreement,
-                                        image_identification, curp)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), '123456789', 1, 'imagen_identificacion', 'CURP123456789'),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), '987654321', 1, 'imagen_identificacion', 'CURP987654321'),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), '123987456', 0, 'imagen_identificacion', 'CURP123987456');
+insert ignore into sellers_information (fk_id_user, tax_identification_number, privacy_policy_agreement, image_identification, curp, secondary_phone_number)
+values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec3'), '123456789', 1, 'https://picsum.photos/1080/710?random%27', 'CURP123456789', '7774666887');
 
 insert ignore into payment_cards(id_payment_card, cardholder_name, card_number, expiration_date, cvv, fk_id_user,
                                  fk_id_status)

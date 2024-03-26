@@ -1,7 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.seller_information;
 
 import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.ResponseAllSellerInformationDTO;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.seller_information.ISellerInformation;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;

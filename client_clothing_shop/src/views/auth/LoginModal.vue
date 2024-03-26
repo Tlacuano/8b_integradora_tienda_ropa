@@ -57,7 +57,7 @@
       <b-row class="mt-3">
         <b-col>
           <div class="mb-3 text-center">
-            <b-link href="#" >¿No tienes cuenta?<span class="font-weight-bold"> Resgistrate</span></b-link>
+            <b-link @click="changeToPostUser" >¿No tienes cuenta?<span class="font-weight-bold"> Resgistrate</span></b-link>
           </div>
         </b-col>
       </b-row>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import AuthService from "@/services/auth/AuthService";
+import AuthService from "@/services/auth/authService";
 export default {
   name: 'LoginModal',
   data() {
@@ -107,6 +107,10 @@ export default {
     resetModal(){
       this.form.email = '';
       this.form.password = '';
+    },
+    changeToPostUser(){
+      this.$bvModal.hide('login-modal');
+      this.$bvModal.show('post-user-modal');
     },
 
 

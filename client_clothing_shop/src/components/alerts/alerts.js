@@ -48,6 +48,10 @@ function showToast(Title, Text, Icon) {
   });
 }
 
+export function showSuccessToast(title, text) {
+    return showToast(title, text, 'success');
+}
+
 export function showWarningToast  (title, text) {
     return showToast(title, text, 'warning');
 }

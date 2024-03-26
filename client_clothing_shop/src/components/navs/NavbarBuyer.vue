@@ -48,7 +48,8 @@
             <b-dropdown-item v-if="isLoggedIn" @click="prepareToNavigate('/orders')">Pedidos</b-dropdown-item>
             <b-dropdown-item v-if="isLoggedIn" @click="logout()">Cerrar sesión</b-dropdown-item>
 
-            <b-dropdown-item v-else v-b-modal:login-modal>Iniciar sesión</b-dropdown-item>
+            <b-dropdown-item v-if="!isLoggedIn" v-b-modal:login-modal>Iniciar sesión</b-dropdown-item>
+            <b-dropdown-item v-if="!isLoggedIn" v-b-modal:post-user-modal>Registrate</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-brand>
       </b-navbar-nav>
@@ -59,6 +60,7 @@
     <LoginModal/>
     <SidebarBuyer/>
     <SwitchUserRoleModal/>
+    <PostUser/>
   </header>
 </template>
 
@@ -72,6 +74,7 @@ export default {
     LoginModal: () => import("@/views/auth/LoginModal.vue"),
     SidebarBuyer: () => import("@/components/sidebars/SidebarBuyer.vue"),
     SwitchUserRoleModal: () => import("@/views/auth/SwitchUserRoleModal.vue"),
+    PostUser: () => import("@/views/auth/PostUser.vue"),
   },
   data() {
     return {
@@ -88,10 +91,12 @@ export default {
       this.selectedCategory = category;
       this.$router.push({name: 'UserProductsCategory', params: {category: category.name}});
     },
-    prepareToNavigate(route) {
-      if (this.isLoggedIn) {
-        this.$router.push(route);
-      } else {
+    prepateForNavigate(route){
+      if(this.isLoggedIn){
+        if(this.$route.path !== route){
+          this.$router.push(route);
+        }
+      }else{
         this.$root.$emit('bv::show::modal', 'login-modal')
       }
     },

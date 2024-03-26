@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.exception;
+package mx.edu.utez.services_clothing_shop.utils.exception;
 
 import org.springframework.stereotype.Component;
 
@@ -28,6 +28,7 @@ public class ErrorDictionary {
         errorMessages.put("person.birthday.notnull", "La fecha de nacimiento es obligatoria.");
         errorMessages.put("person.birthday.age", "El usuario debe ser mayor de edad.");
         errorMessages.put("person.gender.notnull", "El género es obligatorio.");
+        errorMessages.put("person.privacyPolicy.accepted", "Debes aceptar la política de privacidad.");
 
         //error messages payment card
         errorMessages.put("payment.cardholderName.notnull", "El nombre del titular de la tarjeta es obligatorio.");
@@ -111,6 +112,7 @@ public class ErrorDictionary {
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
 
         //error messages address
+        errorMessages.put("addresses.notfound", "No hay direcciones registradas.");
         errorMessages.put("address.notfound", "No hay direcciones registradas.");
         errorMessages.put("address.idAddress.notnull", "El id de la dirección es obligatorio.");
         errorMessages.put("address.idAddress.notfound", "La dirección no fue encontrada.");
@@ -141,6 +143,7 @@ public class ErrorDictionary {
         errorMessages.put("review.idReview.notnull", "El id de la reseña es obligatorio.");
         errorMessages.put("review.idReview.notfound", "La reseña no fue encontrada.");
         errorMessages.put("review.idOrderHasProduct.notfound", "La orden del producto no fue encontrada.");
+        errorMessages.put("review.orderHasProduct.exists", "Ya existe una reseña para este producto.");
         errorMessages.put("review.comment.notnull", "El comentario es obligatorio.");
         errorMessages.put("review.comment.size", "El comentario debe tener entre 5 y 255 caracteres.");
         errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
@@ -162,6 +165,10 @@ public class ErrorDictionary {
         errorMessages.put("requestsReturnProduct.status.invalid", "El status no es válido.");
         errorMessages.put("requestsReturnProduct.status.notFound", "El status no fue encontrado.");
 
+        //error de configuracion
+        errorMessages.put("controller.advice.encrypter", "Algo salió mal al encriptar la información.");
+
+
         //error messages request become seller
         errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
         errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
@@ -169,9 +176,17 @@ public class ErrorDictionary {
         errorMessages.put("requestBecomeSeller.status.invalid", "El status no es válido.");
         errorMessages.put("requestBecomeSeller.request.notFound", "La solicitud no fue encontrada.");
 
+        errorMessages.put("requestBecomeSeller.userSellerInformation.empty", "La información del usuario vendedor es obligatoria.");
+        errorMessages.put("requestBecomeSeller.JSON.invalid", "El JSON no es válido.");
+
+
         //error messages request sell product
         errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
+
+        //twilio
+        errorMessages.put("twilio.service.error", "Error al enviar el codigo.");
+
     }
 
     public String getErrorMessage(String errorCode) {

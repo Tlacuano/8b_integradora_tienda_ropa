@@ -17,5 +17,5 @@ public class RequestPutReviewDTO {
 
     @Min(value = 1, message = "review.assessment.min")
     @Max(value = 5, message = "review.assessment.max")
-    private int assessment;
+    private Integer assessment;
 }

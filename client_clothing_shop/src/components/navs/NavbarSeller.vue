@@ -50,7 +50,9 @@ export default {
     },
     prepateForNavigate(route){
       if(this.isLoggedIn){
-        this.$router.push(route);
+        if(this.$route.path !== route){
+          this.$router.push(route);
+        }
       }else{
         this.$root.$emit('bv::show::modal', 'login-modal')
       }

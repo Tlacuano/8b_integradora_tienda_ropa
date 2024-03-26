@@ -14,7 +14,15 @@ import java.util.UUID;
 @Repository
 public interface IUser extends JpaRepository<BeanUser, UUID> {
     boolean existsByEmail(String email);
+
+    @Query("SELECT u FROM BeanUser u WHERE u.idUser NOT IN (" +
+            "SELECT ur.user.idUser FROM BeanUserRoles ur WHERE ur.role.roleName IN ('ROLE_ADMIN', 'ROLE_SUPERADMIN')) " +
+            "ORDER BY u.status DESC")
     Page<BeanUser> findAllByOrderByStatusDesc (Pageable pageable);
+
+    @Query("SELECT u FROM BeanUser u JOIN u.roles ur WHERE ur.role.roleName = 'ROLE_ADMIN'" +
+            "ORDER BY u.status DESC")
+    Page<BeanUser> findAllAdminsByOrderByStatusDesc (Pageable pageable);
 
     BeanUser findByEmail(String email);
 
