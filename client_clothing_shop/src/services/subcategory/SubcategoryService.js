@@ -20,9 +20,18 @@ const postSubcategoryService = async (payload) => {
     }
 }
 
+const putSubcategoryService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/subcategories/put-subcategory", payload);
+        return response.data;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 const putStatusSubcategoryService = async (subcategory) => {
     try {
-        const response = await axios.doPut("/venta-ropa/api/subcategories/put-status-subcategory", {
+        const response = await axios.doPost("/venta-ropa/api/subcategories/put-status-subcategory", {
             idSubcategory: subcategory
         });
         return response.data;
@@ -34,5 +43,6 @@ const putStatusSubcategoryService = async (subcategory) => {
 export default {
     getPageSubcategoriesService,
     postSubcategoryService,
+    putSubcategoryService,
     putStatusSubcategoryService
 }

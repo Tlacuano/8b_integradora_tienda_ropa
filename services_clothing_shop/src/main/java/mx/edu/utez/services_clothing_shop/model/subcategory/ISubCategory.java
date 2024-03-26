@@ -8,6 +8,4 @@ import java.util.UUID;
 @Repository
 public interface ISubCategory extends JpaRepository<BeanSubcategory, UUID> {
     BeanSubcategory findByIdSubcategory(UUID idSubcategory);
-    BeanSubcategory findBySubcategory(String subcategory);
-    boolean existsByIdSubcategory(UUID idSubcategory);
 }

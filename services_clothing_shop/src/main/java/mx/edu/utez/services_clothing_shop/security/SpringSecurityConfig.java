@@ -132,8 +132,8 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/subcategories/get-subcategories").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/post-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/subcategories/put-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/subcategories/put-status-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-status-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
 
                                 //Modulo products
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products").permitAll()

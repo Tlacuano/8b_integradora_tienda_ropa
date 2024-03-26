@@ -8,7 +8,7 @@
       </b-row>
       <b-row class="mt-3">
         <b-col>
-          <b-form @submit="addSubcategory">
+          <b-form>
             <b-form-group
                 label="Nombre de la subcategoría"
                 label-for="subcategory"
@@ -16,7 +16,7 @@
               <b-form-input
                   id="subcategory"
                   v-model="form.subcategory"
-                  v-validate="'required|alpha_spaces|min:5|max:30'"
+                  v-validate="'required|alpha_spaces|min:5|max:15'"
                   name="subcategory"
               />
               <span v-show="errors.has('subcategory')" class="text-danger">{{ errors.first('subcategory') }}</span>
@@ -34,7 +34,7 @@
                   placeholder="Seleccione una imagen"
                   @input="handleFileUpload"
                   name="image"
-                  v-validate="'required|image|mimes:jpeg,jpg,png|max:2048'"
+                  v-validate="'required|image|mimes:jpeg,jpg,png|image_size'"
               />
               <span v-show="errors.has('image')" class="text-danger">{{ errors.first('image') }}</span>
             </b-form-group>
@@ -52,6 +52,7 @@
                   name="category"
                   v-validate="'required'"
               />
+              <span v-show="errors.has('category')" class="text-danger">{{ errors.first('category') }}</span>
             </b-form-group>
           </b-form>
         </b-col>
@@ -66,7 +67,7 @@
       </b-row>
       <b-row class="justify-content-center">
         <b-button variant="dark" @click="addSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem">Registrar</b-button>
-        <b-button variant="dark" @click="$bvModal.hide('addSubcategoryModal')" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
+        <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
       </b-row>
     </b-modal>
   </section>
@@ -95,39 +96,40 @@ export default Vue.extend({
   },
   methods: {
     async addSubcategory() {
-      this.$validator.validate().then(async valid => {
-        if (valid) {
+      await this.$validator.validateAll().then(async (result) => {
+        if (result) {
           await showInfoAlert(
-              "¿Estas seguro de registrar la subcategoría?",
+              "¿Estás seguro de registrar la subcategoría?",
               "Se registrará la subcategoría",
               "Registrar",
               async () => {
                 const payload = this.form.image;
-                console.log(payload);
                 const imageUrl = await CloudinaryService.uploadImage(payload);
+
                 if (imageUrl.status === 200) {
                   const payload = {
                     subcategory: this.form.subcategory,
                     image: imageUrl.data.data,
                     idCategory: this.form.category,
                     status: this.form.status
-                  }
-                  try {
-                    await SubcategoriesService.postSubcategoryService(payload);
+                  };
+
+                  const response = await SubcategoriesService.postSubcategoryService(payload);
+
+                  if (response && response.status === 201) {
+                    this.clean();
                     this.$emit("subcategory-added");
                     this.$bvModal.hide("addSubcategoryModal");
-                    await showInfoAlert("sa", "sa", "sa")
-                  } catch (e) {
+                  } else {
                     showWarningToast("Error al registrar la subcategoría", "No se pudo registrar la subcategoría");
                   }
                 } else {
                   showWarningToast("Error al registrar la subcategoría", "No se pudo registrar la subcategoría");
                 }
               }
-          )
+          );
         }
-
-      })
+      });
     },
 
     async getCategories() {
@@ -141,6 +143,21 @@ export default Vue.extend({
 
     handleFileUpload() {
       this.imgPreview = URL.createObjectURL(this.form.image);
+    },
+
+    closeModal() {
+      this.clean();
+      this.$bvModal.hide("addSubcategoryModal");
+    },
+
+    clean() {
+      this.form = {
+        subcategory: null,
+        image: null,
+        category: null,
+        status: true
+      };
+      this.imgPreview = null;
     }
   },
   mounted() {

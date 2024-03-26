@@ -34,17 +34,22 @@ const dictionary = {
       email: () => 'El correo electrónico no es válido',
       password_strength: () => 'La contraseña no es válida',
       confirmed_password: () => 'Las contraseñas no coinciden',
-
-
-
+      image_size: () => 'La imagen no debe pesar más de 2MB'
     }
   }
 };
 
+//for image size
+Validator.extend('image_size', {
+  validate: value => {
+    return value.size < 2000000;
+  }
+});
+
 // for password strength
 Validator.extend('password_strength', {
   validate: value => {
-    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+    const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
     return strongRegex.test(value);
   }
 });

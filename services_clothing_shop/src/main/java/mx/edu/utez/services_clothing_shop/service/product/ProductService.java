@@ -43,7 +43,6 @@ public class ProductService {
 
     @Transactional
     public BeanProduct postProduct(BeanProduct product, List<String> images) {
-        validateProductDoesNotExist(product);
         BeanProduct productSaved = iProduct.saveAndFlush(product);
         saveProductGallery(productSaved, images);
         return productSaved;
@@ -51,7 +50,6 @@ public class ProductService {
 
     @Transactional
     public BeanProduct putProduct(BeanProduct product, List<BeanProductGallery> productGallery) {
-        validateProductExists(product.getIdProduct());
         BeanProduct updatedProduct = iProduct.saveAndFlush(product);
         updateProductGallery(productGallery);
         return updatedProduct;
@@ -60,9 +58,6 @@ public class ProductService {
     @Transactional
     public void putStatusProduct(UUID idProduct) {
         BeanProduct product = getProduct(idProduct);
-        if (product == null) {
-            throw new RuntimeException("El producto no existe");
-        }
         product.setStatus(!product.isStatus());
         iProduct.saveAndFlush(product);
     }
@@ -75,18 +70,6 @@ public class ProductService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteProductGallery(BeanProduct product) {
         iProductGallery.deleteAllByProduct(product);
-    }
-
-    private void validateProductDoesNotExist(BeanProduct product) {
-        if (iProduct.existsByProductName(product.getProductName())) {
-            throw new RuntimeException("El producto ya existe");
-        }
-    }
-
-    private void validateProductExists(UUID idProduct) {
-        if (!iProduct.existsById(idProduct)) {
-            throw new RuntimeException("El producto no existe");
-        }
     }
 
     private void saveProductGallery(BeanProduct product, List<String> images) {

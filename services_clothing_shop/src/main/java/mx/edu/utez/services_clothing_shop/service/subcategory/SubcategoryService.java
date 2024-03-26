@@ -28,27 +28,16 @@ public class SubcategoryService {
 
     @Transactional
     public BeanSubcategory postSubcategory(BeanSubcategory subcategory) {
-        BeanSubcategory existSubcategory = iSubCategory.findBySubcategory(subcategory.getSubcategory());
-        if (existSubcategory != null) {
-            throw new IllegalArgumentException("La subcategoría ya existe");
-        }
-        System.out.println("hasta aqui llega");
         return iSubCategory.saveAndFlush(subcategory);
     }
 
     @Transactional
     public BeanSubcategory putSubcategory(BeanSubcategory subcategory) {
-        if (iSubCategory.existsByIdSubcategory(subcategory.getIdSubcategory())) {
-            throw new IllegalArgumentException("La subcategoría no existe");
-        }
         return iSubCategory.saveAndFlush(subcategory);
     }
 
     @Transactional
     public void putStatusSubcategory(UUID idSubcategory) {
-        if (iSubCategory.existsByIdSubcategory(idSubcategory)) {
-            throw new IllegalArgumentException("La subcategoría no existe");
-        }
         BeanSubcategory subcategory = iSubCategory.findByIdSubcategory(idSubcategory);
         subcategory.setStatus(!subcategory.isStatus());
         iSubCategory.saveAndFlush(subcategory);

@@ -74,12 +74,14 @@ public class SubcategoryController {
         }
     }
 
-    @PutMapping("/put-subcategory")
+    @PostMapping("/put-subcategory")
     public ResponseEntity<Object> putSubcategory(@Valid @RequestBody RequestPutSubcategoryDTO subcategory, BindingResult result) {
         try {
             if (result.hasFieldErrors()) {
                 return validation(result);
             }
+            System.out.println("si llega");
+            System.out.println(subcategory);
             BeanSubcategory updatedSubcategory = new BeanSubcategory();
             updatedSubcategory.setIdSubcategory(subcategory.getIdSubcategory());
             updatedSubcategory.setSubcategory(subcategory.getSubcategory());
@@ -94,7 +96,7 @@ public class SubcategoryController {
         }
     }
 
-    @PutMapping("/put-status-subcategory")
+    @PostMapping("/put-status-subcategory")
     public ResponseEntity<Object> putStatusSubcategory(@Valid @RequestBody RequestSubcategoryByIdDTO subcategory, BindingResult result) {
         try {
             if (result.hasFieldErrors()) {

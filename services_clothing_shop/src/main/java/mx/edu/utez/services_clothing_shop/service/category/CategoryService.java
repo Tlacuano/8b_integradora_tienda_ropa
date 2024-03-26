@@ -29,25 +29,16 @@ public class CategoryService {
 
     @Transactional
     public BeanCategory postCategory(BeanCategory category) {
-        if (iCategory.findByCategory(category.getCategory())) {
-            throw new IllegalArgumentException("La categoría ya existe");
-        }
         return iCategory.saveAndFlush(category);
     }
 
     @Transactional
     public BeanCategory putCategory(BeanCategory category) {
-        if (!iCategory.existsByIdCategory(category.getIdCategory())) {
-            throw new IllegalArgumentException("La categoría no existe");
-        }
         return iCategory.saveAndFlush(category);
     }
 
     @Transactional
     public void putStatusCategory(UUID idCategory) {
-        if (!iCategory.existsByIdCategory(idCategory)) {
-            throw new IllegalArgumentException("La categoría no existe");
-        }
         BeanCategory category = iCategory.findByIdCategory(idCategory);
         category.setStatus(!category.isStatus());
         iCategory.saveAndFlush(category);

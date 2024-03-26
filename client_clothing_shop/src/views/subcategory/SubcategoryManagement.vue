@@ -42,7 +42,7 @@
                   <template v-slot:button-content>
                         <font-awesome-icon icon="ellipsis-v" />
                   </template>
-                  <b-dropdown-item>Editar</b-dropdown-item>
+                  <b-dropdown-item @click="openEditSubcategoryModal(subcategory)">Editar</b-dropdown-item>
                   <b-dropdown-item @click="changeStatusSubcategory(subcategory)">
                     <div v-if="!subcategory.status">
                       Habilitar
@@ -73,6 +73,7 @@
       </b-col>
     </b-row>
     <AddSubcategoryModal @subcategory-added="refreshSubcategories"/>
+    <EditSubcategoryModal @subcategory-edited="refreshSubcategories" subcategory="selectedSubcategory"/>
   </section>
 </template>
 
@@ -84,7 +85,8 @@ import {showInfoAlert} from "@/components/alerts/Alerts";
 export default Vue.extend({
   name: "SubcategoryManagement",
   components: {
-    AddSubcategoryModal: () => import("@/views/subcategory/AddSubcategoryModal.vue")
+    AddSubcategoryModal: () => import("@/views/subcategory/AddSubcategoryModal.vue"),
+    EditSubcategoryModal: () => import("@/views/subcategory/EditSubcategoryModal.vue")
   },
   data() {
     return {
@@ -93,7 +95,8 @@ export default Vue.extend({
         size: 24,
         elements: 0
       },
-      subcategories: []
+      subcategories: [],
+      selectedSubcategory: null,
     }
   },
   methods: {
@@ -119,6 +122,14 @@ export default Vue.extend({
     openAddSubcategoryModal() {
       this.$nextTick(() => {
         this.$bvModal.show("addSubcategoryModal");
+      })
+    },
+
+    openEditSubcategoryModal(subcategory) {
+      this.selectedSubcategory = subcategory;
+
+      this.$nextTick(() => {
+        this.$bvModal.show("editSubcategoryModal");
       })
     },
 
