@@ -119,9 +119,11 @@ public class SpringSecurityConfig {
                                 //Modulo categories
 
                                 //Modulo subcategories
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-by-category").permitAll()
 
                                 //Modulo products
-
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-category").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-subcategory").permitAll()
                                 //Modulo cloudinary
 
                                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
@@ -135,8 +137,6 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/post-review").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-review/**").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/reviews/put-review").permitAll()
-
-
 
 
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/addresses/get-address").permitAll()

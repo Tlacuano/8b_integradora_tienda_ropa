@@ -39,6 +39,34 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/get-by-category")
+    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload) {
+        try {
+            List<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory());
+            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
+            for (BeanProduct product : beanProductList) {
+                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
+            }
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/get-by-subcategory")
+    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload) {
+        try {
+            List<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getSubcategory());
+            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
+            for (BeanProduct product : beanProductList) {
+                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
+            }
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/get-products-by-user")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
         try {
@@ -53,9 +81,7 @@ public class ProductController {
     public ResponseEntity<CustomResponse<ResponseProductDTO>> getProduct(@Valid @RequestBody RequestProductByIdDTO product) {
         try {
             BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct());
-            return retrievedProduct != null ?
-                    ResponseEntity.ok(new CustomResponse<>(ResponseProductDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) :
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
+            return retrievedProduct != null ? ResponseEntity.ok(new CustomResponse<>(ResponseProductDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -105,9 +131,7 @@ public class ProductController {
     }
 
     private ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getCustomResponseResponseEntity(Page<BeanProduct> beanProductPage) {
-        return beanProductPage != null ?
-                ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));
+        return beanProductPage != null ? ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));
     }
 
     private void parseToBeanProduct(BeanProduct newProduct, String productName, String description, double price, int amount, UUID subcategory2) {
