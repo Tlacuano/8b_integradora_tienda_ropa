@@ -50,15 +50,19 @@ public class SpringSecurityConfig {
                         auth
                                 //Modulo usuarios
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-account").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/exist-by-email").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/verify-email").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-users").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users//get-user-detaiil-by-email-admin").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-user-detail-by-email-admin").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-profile").hasAnyRole("ADMIN", "BUYER", "SELLER")
 
 
                                 //Modulo personas
-
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/post-personal-information").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/verify-phone").permitAll()
                                 //Modulo shopping-cart
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/shopping-carts/put-shopping-cart").permitAll()
@@ -78,7 +82,7 @@ public class SpringSecurityConfig {
 
                                 //Modulo requests-become-seller
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-become-seller/get-page").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-email").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-id-request-become-seller").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/post-request-become-seller").hasRole("BUYER")
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-become-seller/put-request-become-seller").hasRole("ADMIN")
 

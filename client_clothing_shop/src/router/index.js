@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
+
     mode: 'history',
     base: import.meta.env.BASE_URL,
     routes: [
@@ -20,6 +21,18 @@ const router = new VueRouter({
             component: () => import("../views/user/UserDetails.vue"),
             meta: {requiresAuth: true, roles: ["ADMIN"]},
             props: true,
+        },
+        {
+          path: "/privacy-policy",
+          name: "PrivacyPolicy",
+          component: () => import("../views/privacy-policy/PrivacyPolicy.vue"),
+          meta: { requiresAuth: false },
+        },
+        {
+          path: "/profile",
+          name: "Profile",
+          component: () => import("../views/user/Profile.vue"),
+            meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
         },
         {
             path: "/product-sale-request",
