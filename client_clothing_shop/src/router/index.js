@@ -56,6 +56,12 @@ const router = new VueRouter({
             meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
         },
         {
+            path: "/product-sale-request",
+            name: "ProductSaleRequest",
+            component: () => import("../views/admin/ProductSalesRequests.vue"),
+            meta: {requiresAuth: true, roles: ["ADMIN"]},
+        },
+        {
           path: "/subcategory-management",
           name: "ADMINSubcategoryManagement",
           component: () => import("../views/subcategory/SubcategoryManagement.vue"),
@@ -72,9 +78,9 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
-  const { requiresAuth, roles } = to.meta;
-  const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
-  const role = store.getters.getRole || localStorage.getItem("role");
+    const {requiresAuth, roles} = to.meta;
+    const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
+    const role = store.getters.getRole || localStorage.getItem("role");
 
     if (!requiresAuth) {
         next();

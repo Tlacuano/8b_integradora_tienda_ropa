@@ -1,5 +1,4 @@
 import axios from "@/config/http-client.gateway";
-import { decryptData } from "@/utils/security/aes";
 
 const getPageRequestsService = async (pagination) => {
     try {
