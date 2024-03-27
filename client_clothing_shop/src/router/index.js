@@ -39,6 +39,18 @@ const router = new VueRouter({
             name: "ProductSaleRequest",
             component: () => import("../views/admin/ProductSalesRequests.vue"),
             meta: {requiresAuth: true, roles: ["ADMIN"]},
+        },
+        {
+          path: "/subcategory-management",
+          name: "ADMINSubcategoryManagement",
+          component: () => import("../views/subcategory/SubcategoryManagement.vue"),
+          meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] }
+        },
+        {
+          path: "/request-become-seller-management",
+          name: "ADMINRequestBecomeSellerManagement",
+          component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
+          meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
         }
     ]
 });
