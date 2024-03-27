@@ -82,7 +82,7 @@ public class SpringSecurityConfig {
 
                                 //Modulo requests-become-seller
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-become-seller/get-page").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-email").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-id-request-become-seller").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/post-request-become-seller").hasRole("BUYER")
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-become-seller/put-request-become-seller").hasRole("ADMIN")
 
