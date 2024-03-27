@@ -94,4 +94,7 @@ export default {
     async doGet(url) {
         return await instance.get(SERVER_URL+url);
     },
+    async doPut(url, data) {
+        return await instance.put(SERVER_URL+url, data);
+    },
 }
