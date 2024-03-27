@@ -37,13 +37,18 @@ const dictionary = {
       alpha_spaces: () => 'Este campo solo puede contener letras y espacios',
       phone_number: () => 'El número de teléfono no es válido',
       over_18: () => 'Debes ser mayor de 18 años',
-      privacy_policy: () => 'Debes aceptar la política de privacidad'
-
-
-
+      privacy_policy: () => 'Debes aceptar la política de privacidad',
+      image_size: () => 'La imagen no debe pesar más de 2MB'
     }
   }
 };
+
+//for image size
+Validator.extend('image_size', {
+  validate: value => {
+    return value.size < 2000000;
+  }
+});
 
 // for password strength
 Validator.extend('password_strength', {
