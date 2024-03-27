@@ -29,8 +29,8 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/get-products")
-    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProducts(Pageable page) {
+    @GetMapping("/get-products")
+    public ResponseEntity<Object> getProducts(Pageable page) {
         try {
             Page<BeanProduct> beanProductPage = productService.getProducts(page);
             return getCustomResponseResponseEntity(beanProductPage);
@@ -39,8 +39,36 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/get-by-category")
+    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload) {
+        try {
+            List<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory());
+            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
+            for (BeanProduct product : beanProductList) {
+                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
+            }
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/get-by-subcategory")
+    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload) {
+        try {
+            List<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getSubcategory());
+            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
+            for (BeanProduct product : beanProductList) {
+                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
+            }
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/get-products-by-user")
-    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
+    public ResponseEntity<Object> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
         try {
             Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
             return getCustomResponseResponseEntity(beanProductPage);
@@ -50,19 +78,17 @@ public class ProductController {
     }
 
     @PostMapping("/get-product")
-    public ResponseEntity<CustomResponse<ResponseProductDTO>> getProduct(@Valid @RequestBody RequestProductByIdDTO product) {
+    public ResponseEntity<Object> getProduct(@Valid @RequestBody RequestProductByIdDTO product) {
         try {
             BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct());
-            return retrievedProduct != null ?
-                    ResponseEntity.ok(new CustomResponse<>(ResponseProductDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) :
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
+            return retrievedProduct != null ? ResponseEntity.ok(new CustomResponse<>(ResponseProductDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/post-product")
-    public ResponseEntity<CustomResponse<BeanProduct>> postProduct(@Valid @RequestBody RequestProductDTO product) {
+    public ResponseEntity<Object> postProduct(@Valid @RequestBody RequestProductDTO product) {
         BeanProduct newProduct = new BeanProduct();
         try {
             parseToBeanProduct(newProduct, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
@@ -81,7 +107,7 @@ public class ProductController {
     }
 
     @PutMapping("/put-product")
-    public ResponseEntity<CustomResponse<BeanProduct>> putProduct(@Valid @RequestBody RequestPutProductDTO product) {
+    public ResponseEntity<Object> putProduct(@Valid @RequestBody RequestPutProductDTO product) {
         try {
             BeanProduct productUpdated = new BeanProduct();
             productUpdated.setIdProduct(product.getIdProduct());
@@ -95,7 +121,7 @@ public class ProductController {
     }
 
     @PutMapping("/put-status-product")
-    public ResponseEntity<CustomResponse<Boolean>> putStatusProduct(@Valid @RequestBody RequestProductByIdDTO product) {
+    public ResponseEntity<Object> putStatusProduct(@Valid @RequestBody RequestProductByIdDTO product) {
         try {
             productService.putStatusProduct(product.getIdProduct());
             return new ResponseEntity<>(new CustomResponse<>(true, "Estatus del producto actualizado correctamente", false, 200), HttpStatus.OK);
@@ -104,7 +130,7 @@ public class ProductController {
         }
     }
 
-    private ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getCustomResponseResponseEntity(Page<BeanProduct> beanProductPage) {
+    private ResponseEntity<Object> getCustomResponseResponseEntity(Page<BeanProduct> beanProductPage) {
         return beanProductPage != null ?
                 ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) :
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));

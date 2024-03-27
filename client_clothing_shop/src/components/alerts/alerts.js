@@ -13,9 +13,9 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
   }).then(async (result) => {
       if (result.isConfirmed) {
           try {
-              store.dispatch('changeStatusOverlay');
-              const response = await onConfirm();
-              store.dispatch('changeStatusOverlay');
+              await store.dispatch('changeStatusOverlay');
+              await onConfirm();
+              await store.dispatch('changeStatusOverlay');
 
               Vue.swal({
                   toast: true,
@@ -30,7 +30,7 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
 
           } catch (error) {
               console.error(error);
-              store.dispatch('changeStatusOverlay');
+              await store.dispatch('changeStatusOverlay');
           }
       }
   });

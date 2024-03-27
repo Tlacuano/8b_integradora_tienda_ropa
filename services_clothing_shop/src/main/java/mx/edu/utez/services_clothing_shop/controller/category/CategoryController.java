@@ -23,7 +23,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/get-categories")
+    @GetMapping("/get-categories")
     public ResponseEntity<Object> getCategories(Pageable page) {
         try {
             Page<BeanCategory> categories = categoryService.getCategories(page);
