@@ -64,10 +64,10 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/post-personal-information").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/verify-phone").permitAll()
                                 //Modulo shopping-cart
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/shopping-carts/put-shopping-cart").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/post-shopping-cart").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/delete-shopping-cart").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/shopping-carts/put-shopping-cart").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/post-shopping-cart").hasRole("BUYER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/delete-shopping-cart").hasRole("BUYER")
 
                                 //Modulo whislists
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/wishes-list/get-wish-list").hasRole("BUYER")
