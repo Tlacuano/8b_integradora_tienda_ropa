@@ -16,8 +16,8 @@
       </b-col>
     </b-row>
     <b-row class="mt-3 container-products">
-      <b-col lg="4" v-for="product in products" :key="product.id" @click="openModal(product)">
-        <b-card no-body class="highlight-on-hover mb-2">
+      <b-col lg="4" v-for="product in products" :key="product.id" >
+        <b-card no-body class="highlight-on-hover mb-2" @click="openModal(product)">
           <b-row class="m-2" no-gutters>
             <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
               <b-avatar
@@ -43,7 +43,8 @@
               </b-row>
               <b-row>
                 <b-col>
-                  <div class="status text-truncate font-weight-bold small">{{ product.status.status }}</div>
+                  <!-- Aplica una clase condicional según el estado -->
+                  <div :class="getStatusColorClass(product.status.status) + ' status text-truncate font-weight-bold small'">{{ product.status.status }}</div>
                 </b-col>
               </b-row>
             </b-col>
@@ -61,11 +62,12 @@
         ></b-pagination>
       </b-col>
     </b-row>
-    <ProductSalesRequestsDetails :product-id="selectProductId"/>
+    <ProductSalesRequestsDetails @request-success="handleRequestSuccess" @request-error="handleRequestError" :product-id="selectProductId"/>
   </section>
 </template>
 <script>
 import ProductSalesRequestsService from '@/services/admin/adminService';
+import swal from "sweetalert2";
 export default {
   components: {
     ProductSalesRequestsDetails: () => import('@/components/modals/ProductSalesRequestsDetails.vue')
@@ -94,6 +96,37 @@ export default {
         this.$bvModal.show("productDetail");
       });
     },
+
+    handleRequestSuccess(response) {
+      swal.fire({
+        title: 'Petición exitosa',
+        text: 'La petición se completó con éxito',
+        icon: 'success',
+        button: 'Aceptar'
+      });
+      this.getPageProductSalesRequests();
+      // Realiza otras acciones necesarias con la respuesta recibida
+    },
+    handleRequestError(error) {
+      swal.fire({
+        title: 'Error en la petición',
+        text: 'Hubo un error al procesar la petición: ' + error.message, // Puedes personalizar el mensaje de error según el tipo de error
+        icon: 'error',
+        button: 'Aceptar'
+      });
+    },
+    getStatusColorClass(status) {
+      // Retorna una clase CSS basada en el estado
+      if (status === 'Aprobado') {
+        return 'text-success'; // Clase para texto verde si el estado es "activo"
+      } else if (status === 'Rechazado') {
+        return 'text-danger'; // Clase para texto rojo si el estado es "inactivo"
+      } else if(status === 'Pendiente'){
+        return 'text-warning'; // Si no se encuentra un estado específico, no se aplica ninguna clase adicional
+      }else{
+        return ''; // Clase para texto amarillo si el estado es "pendiente"
+      }
+    }
   },
   mounted() {
     this.getPageProductSalesRequests();
