@@ -14,6 +14,7 @@ public class RequestBecomeSellerGetByIdResponseDTO {
     private String personLastName;
     private UUID statusId;
     private String status;
+    private String userEmail;
     private UserSellerInformation userSellerInformation;
 
     public UserSellerInformation getUserSellerInformation() {
