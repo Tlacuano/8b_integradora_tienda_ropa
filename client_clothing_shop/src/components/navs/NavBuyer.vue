@@ -33,7 +33,7 @@ export default {
         category: this.selectedCategory
       };
       this.showOverlay();
-      const response = await SubcategoryService.getSubcategories(payload);
+      const response = await SubcategoryService.getSubcategoriesByCategory(payload);
       if (response.status === 200) {
         this.subcategories = response.data;
       }
