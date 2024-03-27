@@ -32,6 +32,16 @@ public class ProductService {
     }
 
     @Transactional
+    public List<BeanProduct> getProductsByCategory(String category) {
+        return iProduct.findAllByCategory(category);
+    }
+
+    @Transactional
+    public List<BeanProduct> getProductsBySubcategory(String subcategory) {
+        return iProduct.findAllBySubcategory(subcategory);
+    }
+
+    @Transactional
     public Page<BeanProduct> getProductsByUserEmail(String email, Pageable page) {
         return iProduct.findAllByUser_Email(email, page);
     }

@@ -1,5 +1,14 @@
 import axios from "../../config/http-client.gateway"
 
+const getCategories = async () => {
+    try {
+        const response = await axios.doGet("/venta-ropa/api/categories/get-categories")
+        return response.data;
+    } catch (e) {
+        console.error(e)
+    }
+}
+        
 const getPageCategoriesService = async (pagination) => {
     try {
         const response = await axios.doGet(`/venta-ropa/api/categories/get-categories`, {
@@ -12,6 +21,7 @@ const getPageCategoriesService = async (pagination) => {
 }
 
 export default {
+    getCategories,
     getPageCategoriesService
 }
 
