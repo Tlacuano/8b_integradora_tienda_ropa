@@ -1,5 +1,5 @@
 <template>
-  <section class="interface">
+  <section >
     <b-row>
       <b-col class="text-center">
         <h1>Cuentas registradas</h1>

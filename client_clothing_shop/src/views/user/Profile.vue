@@ -3,21 +3,30 @@
     <b-row class="main">
       <b-col md="5" class="text-center my-auto">
         <b-row>
-          <b-col>
-            <b-avatar
-                v-if="user.picture!==null"
-                :src="user.picture"
-                alt="Image"
-                size="300px"
-                fluid
-                thumbnail
-            />
-            <b-avatar
-                v-else
-                size="260px"
-                variant="secondary"
-                class="text-uppercase"
-            />
+          <b-col
+          >
+            <div
+                @mousemove="showEditPicture = true"
+                @mouseleave="showEditPicture = false"
+            >
+              <b-avatar
+                  :src="user.picture || null"
+                  alt="Image"
+                  size="300px"
+                  fluid
+                  variant="dark"
+                  thumbnail
+                  class="custom-avatar-badge"
+                  badge-variant="secondary"
+                  @mouseenter="showEditPicture = true"
+                  @mouseleave="showEditPicture = false"
+
+              >
+                <template #badge v-if="showEditPicture"  >
+                  <font-awesome-icon icon="fa-solid fa-pen" class="selectable"/>
+                </template>
+              </b-avatar>
+            </div>
           </b-col>
         </b-row>
         <b-row class="mt-4 mb-3">
@@ -216,6 +225,7 @@ export default {
   name: 'UserDetails',
   data() {
     return {
+      showEditPicture: false,
       user: {}
     }
   },
@@ -247,7 +257,6 @@ export default {
 
 <style scoped>
 .main{
-  height: 100%;
+  min-height: 86vh;
 }
-
 </style>

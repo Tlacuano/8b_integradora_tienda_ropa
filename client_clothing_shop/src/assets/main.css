@@ -17,7 +17,7 @@
 
 /*interfaz ocupa el 100% del contenido*/
 .interface{
-  height: 100%;
+  min-height: 86vh;
 }
 
 
@@ -104,4 +104,18 @@ input.form-control:disabled {
 
 .page-link {
   color: #fff;
+}
+
+
+
+.b-avatar .b-avatar-badge {
+  position: absolute;
+  min-height: 1.5em;
+  min-width: 1.5em;
+  padding: 0.25em;
+  line-height: 1;
+  border-radius: 10em;
+  font-weight: 700;
+  z-index: 1;
+  font-size: calc(40px) !important;
 }

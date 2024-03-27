@@ -43,7 +43,7 @@ export default {
   }
 
   .interface-container{
-    height: 86vh !important;
+    min-height: 86vh !important;
     overflow-y: auto;
   }
 </style>
