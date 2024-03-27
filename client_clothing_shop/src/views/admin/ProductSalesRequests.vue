@@ -116,15 +116,14 @@ export default {
       });
     },
     getStatusColorClass(status) {
-      // Retorna una clase CSS basada en el estado
       if (status === 'Aprobado') {
-        return 'text-success'; // Clase para texto verde si el estado es "activo"
+        return 'text-success';
       } else if (status === 'Rechazado') {
-        return 'text-danger'; // Clase para texto rojo si el estado es "inactivo"
+        return 'text-danger';
       } else if(status === 'Pendiente'){
-        return 'text-warning'; // Si no se encuentra un estado específico, no se aplica ninguna clase adicional
+        return 'text-warning';
       }else{
-        return ''; // Clase para texto amarillo si el estado es "pendiente"
+        return '';
       }
     }
   },
