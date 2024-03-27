@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 @Component
 @Order(1)
@@ -95,7 +96,7 @@ public class DecryptingFilter implements Filter {
                 @Override
                 public Enumeration<String> getHeaders(String name) {
                     if ("content-type".equalsIgnoreCase(name)) {
-                        return Collections.enumeration(Arrays.asList("application/json"));
+                        return Collections.enumeration(List.of("application/json"));
                     }
                     return super.getHeaders(name);
                 }
