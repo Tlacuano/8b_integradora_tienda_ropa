@@ -41,11 +41,3 @@ export const decrypt = (data) => {
 
     return JSON.parse(decryptedString);
 }
-
-export const decryptData = (data) => {
-    try {
-        return decrypt(data);
-    } catch (e) {
-        console.log(e);
-    }
-}
