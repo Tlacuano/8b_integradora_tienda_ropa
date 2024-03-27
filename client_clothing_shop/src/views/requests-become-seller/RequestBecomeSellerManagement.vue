@@ -10,28 +10,20 @@
       <b-col>
         <b-row>
           <b-col lg="4" v-for="request in requests" :key="request.id">
-            <b-card no-body class="highlight-on-hover mb-2">
+            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
                   <b-avatar
-                      v-if="request.status"
                       size="2.5rem"
-                      variant="success"
                       class="text-uppercase"
-                      :src="request.picture"
+                      :src="request.picture ? request.picture : 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'"
                   />
-                  <b-avatar
-                      v-else
-                      size="2.5rem"
-                      variant="secondary"
-                      class="text-uppercase"
-                  >{{ request.personName.charAt(0) }}</b-avatar>
                 </b-col>
 
                 <b-col cols="8" class="ml-2">
                   <b-row>
                     <b-col>
-                      <div class="text-truncate font-weight-bold small"> {{ request.email }}</div>
+                      <div class="text-truncate font-weight-bold small"> {{ request.userEmail }}</div>
                     </b-col>
                   </b-row>
                   <b-row>
@@ -41,7 +33,7 @@
                   </b-row>
                   <b-row>
                     <b-col>
-                      <b-badge :variant="request.status.status ? 'success' : 'warning'" class="text-ellipsis text-secondary small">{{ request.status.status }}</b-badge>
+                      <b-badge :variant="getVariant(request.status.status)" class="text-ellipsis text-white small">{{ request.status.status }}</b-badge>
                     </b-col>
                   </b-row>
                 </b-col>
@@ -51,6 +43,19 @@
         </b-row>
       </b-col>
     </b-row>
+
+    <b-row>
+      <b-col>
+        <b-pagination
+            v-model="objectPagination.page"
+            :total-rows="objectPagination.elements"
+            :per-page="objectPagination.size"
+            aria-controls="my-table"
+        ></b-pagination>
+      </b-col>
+    </b-row>
+
+    <DetailsRequestModal :request="selectedRequest" @request-updated="refreshRequests" />
   </section>
 </template>
 
@@ -60,6 +65,9 @@ import RequestsBecomeSellerService from "@/services/requests-become-seller/Reque
 
 export default Vue.extend({
   name: "RequestsBecomeSellerManagement",
+  components: {
+    DetailsRequestModal: () => import("@/views/requests-become-seller/DetailsRequestModal.vue")
+  },
   data() {
     return {
       objectPagination: {
@@ -67,7 +75,8 @@ export default Vue.extend({
         size: 24,
         elements: 0
       },
-      requests: []
+      requests: [],
+      selectedRequest: {},
     }
   },
   methods: {
@@ -76,14 +85,36 @@ export default Vue.extend({
       const response = await RequestsBecomeSellerService.getPageRequestsService(this.objectPagination);
       this.showOverlay();
 
-      console.log(response.content);
-
       this.objectPagination.elements = response.totalElements;
       this.requests = response.content;
     },
 
+    getVariant(status) {
+      switch (status) {
+        case "Pendiente":
+          return "warning";
+        case "Aprobado":
+          return "success";
+        case "Rechazado":
+          return "danger";
+        default:
+          return "secondary";
+      }
+    },
+
+    openDetailsRequestModal(request) {
+      this.selectedRequest = request;
+      this.$nextTick(() => {
+        this.$bvModal.show("detailsRequestModal");
+      })
+    },
+
     showOverlay() {
       this.$store.dispatch('changeStatusOverlay')
+    },
+
+    refreshRequests() {
+      this.getPageRequests();
     }
   },
   mounted() {
@@ -93,7 +124,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.container-subcategories {
+.container-requests {
   height: 65vh !important;
   overflow-x: hidden;
 }

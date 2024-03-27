@@ -40,5 +40,12 @@ export const decrypt = (data) => {
     const decryptedString = decipher.output.toString("utf8");
 
     return JSON.parse(decryptedString);
+}
 
+export const decryptData = (data) => {
+    try {
+        return decrypt(data);
+    } catch (e) {
+        console.log(e);
+    }
 }

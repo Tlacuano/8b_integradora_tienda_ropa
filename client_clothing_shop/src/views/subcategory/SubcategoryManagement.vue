@@ -20,10 +20,10 @@
       </b-col>
     </b-row>
 
-    <b-row class="mt-4 container-subcategories">
+    <b-row class="mt-4 mb-4 container-subcategories">
       <b-col >
         <b-row></b-row>
-        <b-row>
+        <b-row class="mt-4">
           <b-col cols="auto" v-for="subcategory in subcategories" :key="subcategory.id">
             <b-card
                 class="highlight-on-hover mb-2"
@@ -69,11 +69,11 @@
           :total-rows="objectPagination.elements"
           :per-page="objectPagination.size"
           aria-controls="my-table"
-        />
+        ></b-pagination>
       </b-col>
     </b-row>
     <AddSubcategoryModal @subcategory-added="refreshSubcategories"/>
-    <EditSubcategoryModal @subcategory-edited="refreshSubcategories" subcategory="selectedSubcategory"/>
+    <EditSubcategoryModal @subcategory-edited="refreshSubcategories" :subcategory="selectedSubcategory"/>
   </section>
 </template>
 
@@ -96,7 +96,7 @@ export default Vue.extend({
         elements: 0
       },
       subcategories: [],
-      selectedSubcategory: null,
+      selectedSubcategory: {},
     }
   },
   methods: {
@@ -153,5 +153,7 @@ export default Vue.extend({
   margin-left: 0.1rem;
   margin-right: 0.1rem;
   border-radius: 0.5rem;
+  height: 65vh !important;
+  overflow-x: hidden;
 }
 </style>

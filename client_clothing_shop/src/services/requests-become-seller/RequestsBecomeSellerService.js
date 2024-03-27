@@ -1,4 +1,5 @@
 import axios from "@/config/http-client.gateway";
+import { decryptData } from "@/utils/security/aes";
 
 const getPageRequestsService = async (pagination) => {
     try {
@@ -11,6 +12,19 @@ const getPageRequestsService = async (pagination) => {
     }
 }
 
+const getRequestByIdService = async (request) => {
+    try {
+        console.log(request)
+        const response = await axios.doPost("/venta-ropa/api/requests-become-seller/get-by-id-request-become-seller", {
+            requestId: request.idRequestBecomeSeller
+        });
+        console.log(response)
+    } catch (e) {
+        console.log(decryptData(e.data))
+    }
+}
+
 export default {
-    getPageRequestsService
+    getPageRequestsService,
+    getRequestByIdService
 }
