@@ -131,6 +131,7 @@ public class RequestsBecomeSellerService {
         dto.setPersonLastName(request.getUser().getPerson().getLastName());
         dto.setStatusId(request.getStatus().getIdStatus());
         dto.setStatus(request.getStatus().getStatus());
+        dto.setUserEmail(request.getUser().getEmail());
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();

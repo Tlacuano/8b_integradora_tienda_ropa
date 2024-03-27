@@ -107,5 +107,13 @@ public class UserController {
         );
     }
 
+    @PostMapping("/get-profile")
+    public ResponseEntity<Object> getProfile(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.getProfile(payload.getEmail()), "Perfil encontrado", false, 200),
+                HttpStatus.OK
+        );
+    }
+
 
 }

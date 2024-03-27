@@ -51,7 +51,7 @@ public class RequestsBecomeSellerController {
         return requestsBecomeSellerService.getPageRequestBecomeSeller(pageable);
     }
 
-    @PostMapping("/get-by-email")
+    @PostMapping("/get-by-id-request-become-seller")
     public ResponseEntity<CustomResponse<RequestBecomeSellerGetByIdResponseDTO>> getRequestBecomeSellerById(@RequestBody RequestBecomeSellerGetByIdDTO getByIdDTO) {
         UUID requestId = getByIdDTO.getRequestId();
         RequestBecomeSellerGetByIdResponseDTO requestData = requestsBecomeSellerService.getRequestBecomeSellerById(requestId).orElse(null);
