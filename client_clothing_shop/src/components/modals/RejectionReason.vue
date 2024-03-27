@@ -59,17 +59,16 @@ export default{
         this.$bvModal.hide('rejectionReason');
       }
     },
-    //validar que no se ingresen caracteres especiales
     validateInput(){
       const regex = /^[a-zA-Z0-9 ]*$/;
-      if (this.reason.trim().length === 0) { // Verifica si la razón está vacía o contiene solo espacios en blanco
+      if (this.reason.trim().length === 0) {
         this.notNull = true
         this.error = false;
-      } else if (!regex.test(this.reason)) { // Verifica si la razón contiene caracteres no permitidos
+      } else if (!regex.test(this.reason)) {
         this.error = true;
         this.notNull = false;
       } else {
-        this.error = false; // La razón es válida
+        this.error = false;
         this.notNull = false;
       }
     },
