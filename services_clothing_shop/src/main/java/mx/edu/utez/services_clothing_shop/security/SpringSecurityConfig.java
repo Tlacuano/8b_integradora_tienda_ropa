@@ -125,6 +125,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/sellers-information/put-seller-information").hasRole("SELLER")
 
                                 //Modulo categories
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/get-categories").permitAll()
 
                                 //Modulo subcategories
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-by-category").permitAll()

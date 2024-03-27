@@ -16,18 +16,18 @@ const router = new VueRouter({
         {
             path: "/",
             name: "UserProducts",
-            component: () => import("../views/products/GuestProducts.vue"),
+            component: () => import("../views/product/GuestProducts.vue"),
         },
         {
             path: "/:category",
             name: "UserProductsCategory",
-            component: () => import("../views/products/GuestProducts.vue"),
+            component: () => import("../views/product/GuestProducts.vue"),
             props: true
         },
         {
             path: "/:category/:subcategory",
             name: "UserProductsSubcategory",
-            component: () => import("../views/products/GuestProducts.vue"),
+            component: () => import("../views/product/GuestProducts.vue"),
             props: true
         },
         {
