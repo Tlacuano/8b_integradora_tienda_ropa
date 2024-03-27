@@ -22,18 +22,25 @@ const router = new VueRouter({
       props: true,
     },
     {
-        path: "/subcategory-management",
-        name: "ADMINSubcategoryManagement",
-        component: () => import("../views/subcategory/SubcategoryManagement.vue"),
-        meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+      path: "/privacy-policy",
+      name: "PrivacyPolicy",
+      component: () => import("../views/privacy-policy/PrivacyPolicy.vue"),
+      meta: { requiresAuth: false },
+    },
+    {
+      path: "/profile",
+      name: "Profile",
+      component: () => import("../views/user/Profile.vue"),
+        meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
     }
+    
   ]
 });
 
 
 router.beforeEach((to, from, next) => {
   const { requiresAuth, roles } = to.meta;
-  const isAuthenticated = !!(store.getters.isLoggedIn || localStorage.getItem("token"));
+  const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
   const role = store.getters.getRole || localStorage.getItem("role");
 
   if (!requiresAuth){

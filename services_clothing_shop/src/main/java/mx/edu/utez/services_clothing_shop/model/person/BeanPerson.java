@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,12 +22,13 @@ import java.util.UUID;
 @Entity
 public class BeanPerson {
     @Id
-    @Column(name = "id_person")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id_person", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idPerson;
 
     //relacion uno a uno con la tabla users, usamos la misma llave primaria
     @OneToOne
-    @MapsId
     @JoinColumn(name = "fk_id_user")
     @JsonIgnore
     private BeanUser user;
@@ -52,7 +55,18 @@ public class BeanPerson {
     @Column(name = "gender")
     private GenderEnum gender;
 
+
+
+    @Column(name = "verification_phone", columnDefinition = "TINYINT(1)")
+    private boolean verificationPhone;
+
     //relacion uno a uno con la tabla seller_information
     @OneToOne(mappedBy = "person", orphanRemoval = true)
     private BeanSellerInformation sellerInformation;
+
+    //relacion uno a muchos con la tabla address
+    @OneToMany(mappedBy = "person")
+    @JsonIgnore
+    private List<BeanAddress> addresses;
+
 }

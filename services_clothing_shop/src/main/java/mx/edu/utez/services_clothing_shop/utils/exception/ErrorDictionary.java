@@ -29,6 +29,7 @@ public class ErrorDictionary {
         errorMessages.put("person.birthday.notnull", "La fecha de nacimiento es obligatoria.");
         errorMessages.put("person.birthday.age", "El usuario debe ser mayor de edad.");
         errorMessages.put("person.gender.notnull", "El género es obligatorio.");
+        errorMessages.put("person.privacyPolicy.accepted", "Debes aceptar la política de privacidad.");
 
         //error messages payment card
         errorMessages.put("payment.cardholderName.notnull", "El nombre del titular de la tarjeta es obligatorio.");
