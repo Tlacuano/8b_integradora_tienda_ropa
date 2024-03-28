@@ -11,7 +11,7 @@
                 <b-col>
                     <!--<b-form @submit="addSubcategory">-->
                     <b-form>
-                        <b-form-group label="Nombre de la categoria" laber-for="category">
+                        <b-form-group label="Nombre de la categoria:" laber-for="category">
                             <b-form-input id="category" v-model="form.category"
                                 v-validate="'required|alpha_spaces|min:5|max:15'" name="category" />
                             <span class="text-danger" v-show="errors.has('category')">
@@ -19,7 +19,7 @@
                             </span>
                         </b-form-group>
 
-                        <b-form-group label="Imagen de la categoria" label-for="image">
+                        <b-form-group label="Imagen de la categoria:" label-for="image">
                             <b-form-file id="image" v-model="form.image" accept="image/jpeg, image/png, image/jpg"
                                 :state="Boolean(form.image)" placeholder="Seleccione una imagen"
                                 @input="handleFileUpload" name="image"
@@ -28,6 +28,15 @@
                                 {{ errors.first("image") }}
                             </span>
                         </b-form-group>
+
+                        <b-form-group label="Estado:" label-for="status">
+                            <b-form-select id="status" v-model="form.status" :options="statusOptions" value-field="value"
+                                text-field="text" name="status" v-validate="'required'" required/>
+                            <span class="text-danger" v-show="errors.has('status')">
+                                {{ errors.first("status") }}
+                            </span>
+                        </b-form-group>
+
                     </b-form>
                 </b-col>
 
@@ -56,7 +65,7 @@ import { showInfoAlert, showWarningToast } from "@/components/alerts/alerts";
 import CloudinaryService from "../../services/cloudinary/CloudinaryService";
 
 export default Vue.extend({
-    name: "addCategoryModal",
+    name: "AddCategoryModal",
     data() {
         return {
             form: {
@@ -64,8 +73,11 @@ export default Vue.extend({
                 image: null,
                 status: true,
             },
-            categories: [],
             imgPreview: null,
+            statusOptions: [
+                { value: true, text: 'Habilitado'},
+                { value: false, text: 'Deshabilitado'}
+            ]
         };
     },
     methods: {

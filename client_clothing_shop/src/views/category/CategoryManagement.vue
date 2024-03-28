@@ -86,7 +86,7 @@ import {showInfoAlert} from "@/components/alerts/Alerts";
 export default Vue.extend({
     name: "CategoryManagement",
     components: {
-        AddCategoryModal: () => import("@/views/AddCategoryModal.vue"), //agrega el modal|
+        AddCategoryModal: () => import("@/views/category/AddCategoryModal.vue"), //agrega el modal|
     },
     data() {
         return {
