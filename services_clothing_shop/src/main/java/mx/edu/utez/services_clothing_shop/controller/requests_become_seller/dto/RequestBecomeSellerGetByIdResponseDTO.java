@@ -12,16 +12,12 @@ public class RequestBecomeSellerGetByIdResponseDTO {
     private UUID personId;
     private String personName;
     private String personLastName;
+    private String personSecondLastName;
+    private String phoneNumber;
     private UUID statusId;
+    private String address;
+    private String picture;
     private String status;
     private String userEmail;
     private UserSellerInformation userSellerInformation;
-
-    public UserSellerInformation getUserSellerInformation() {
-        return userSellerInformation;
-    }
-
-    public void setUserSellerInformation(UserSellerInformation userSellerInformation) {
-        this.userSellerInformation = userSellerInformation;
-    }
 }

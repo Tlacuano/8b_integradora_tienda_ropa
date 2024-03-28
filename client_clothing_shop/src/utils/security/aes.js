@@ -1,5 +1,4 @@
 import forge from "node-forge";
-import {showInfoAlert} from "@/components/alerts/alerts";
 
 
 const key = import.meta.env.VITE_AES_KEY;
@@ -40,4 +39,4 @@ export const decrypt = (data) => {
     const decryptedString = decipher.output.toString("utf8");
 
     return JSON.parse(decryptedString);
-}
+};

@@ -6,5 +6,5 @@ import java.util.UUID;
 
 @Data
 public class RequestBecomeSellerGetByIdDTO {
-    private UUID requestId;
+    private UUID idRequestBecomeSeller;
 }
