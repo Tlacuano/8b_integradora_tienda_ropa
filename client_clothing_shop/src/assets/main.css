@@ -1,9 +1,7 @@
 @import "./base.css";
 
 #app {
-  height: 100vh;
   margin: 0 auto;
-  overflow-y: hidden;
   font-weight: normal;
 }
 
@@ -17,7 +15,7 @@
 
 /*interfaz ocupa el 100% del contenido*/
 .interface{
-  min-height: 86vh;
+  height: 100%;
 }
 
 

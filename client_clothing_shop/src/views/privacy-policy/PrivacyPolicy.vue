@@ -1,5 +1,5 @@
 <template>
-  <section class="interface">
+  <section class="interface mt-4  pb-2">
     <b-container>
       <b-card class="mb-5">
         <b-row>
@@ -245,5 +245,7 @@ export default {
 .logo-policy {
   width: 40% !important;
 }
+
+
 
 </style>

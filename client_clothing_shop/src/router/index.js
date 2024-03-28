@@ -9,70 +9,79 @@ const router = new VueRouter({
     base: import.meta.env.BASE_URL,
     routes: [
         {
-            path: "/user-management",
-            name: "ADMINUserManagement",
-            component: () => import("../views/user/UserManagement.vue"),
+            path: "/privacy-policy",
+            name: "PrivacyPolicy",
+            component: () => import("../views/privacy-policy/PrivacyPolicy.vue"),
+            meta: { requiresAuth: false },
         },
         {
             path: "/",
-            name: "UserProducts",
-            component: () => import("../views/product/GuestProducts.vue"),
+            name: "Home",
+            component: () => import("../Home.vue"),
+            children: [
+                {
+                    path: "/",
+                    name: "UserProducts",
+                    component: () => import("../views/product/GuestProducts.vue"),
+                },
+                {
+                    path: "user-management",
+                    name: "ADMINUserManagement",
+                    component: () => import("../views/user/UserManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                },
+                {
+                    path: "user-details/:email",
+                    name: "UserDetails",
+                    component: () => import("../views/user/UserDetails.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                    props: true,
+                },
+                {
+                    path: "profile",
+                    name: "Profile",
+                    component: () => import("../views/user/Profile.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
+                },
+                {
+                    path: "/:category",
+                    name: "UserProductsCategory",
+                    component: () => import("../views/product/GuestProducts.vue"),
+                    props: true
+                },
+                {
+                    path: "/:category/:subcategory",
+                    name: "UserProductsSubcategory",
+                    component: () => import("../views/product/GuestProducts.vue"),
+                    props: true
+                },
+                {
+                    path:"user-management",
+                    name:"ADMINUserManagement",
+                    component: () => import("../views/user/UserManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                },
+                {
+                    path: "product-sale-request",
+                    name: "ProductSaleRequest",
+                    component: () => import("../views/admin/ProductSalesRequests.vue"),
+                    meta: {requiresAuth: true, roles: ["ADMIN"]},
+                },
+                {
+                    path: "subcategory-management",
+                    name: "ADMINSubcategoryManagement",
+                    component: () => import("../views/subcategory/SubcategoryManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] }
+                },
+                {
+                    path: "request-become-seller-management",
+                    name: "ADMINRequestBecomeSellerManagement",
+                    component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                },
+            ]
         },
-        {
-            path: "/:category",
-            name: "UserProductsCategory",
-            component: () => import("../views/product/GuestProducts.vue"),
-            props: true
-        },
-        {
-            path: "/:category/:subcategory",
-            name: "UserProductsSubcategory",
-            component: () => import("../views/product/GuestProducts.vue"),
-            props: true
-        },
-        {
-          path:"/user-management",
-          name:"ADMINUserManagement",
-          component: () => import("../views/user/UserManagement.vue"),
-          meta: { requiresAuth: true, roles: ["ADMIN"] },
-        },
-        {
-          path: "/user-details/:email",
-          name: "UserDetails",
-          component: () => import("../views/user/UserDetails.vue"),
-          meta: { requiresAuth: true, roles: ["ADMIN"] },
-          props: true,
-        },
-        {
-          path: "/privacy-policy",
-          name: "PrivacyPolicy",
-          component: () => import("../views/privacy-policy/PrivacyPolicy.vue"),
-          meta: { requiresAuth: false },
-        },
-        {
-          path: "/profile",
-          name: "Profile",
-          component: () => import("../views/user/Profile.vue"),
-            meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
-        },
-        {
-            path: "/product-sale-request",
-            name: "ProductSaleRequest",
-            component: () => import("../views/admin/ProductSalesRequests.vue"),
-            meta: {requiresAuth: true, roles: ["ADMIN"]},
-        },
-        {
-          path: "/subcategory-management",
-          name: "ADMINSubcategoryManagement",
-          component: () => import("../views/subcategory/SubcategoryManagement.vue"),
-          meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] }
-        },
-        {
-          path: "/request-become-seller-management",
-          name: "ADMINRequestBecomeSellerManagement",
-          component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
-          meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
-        }
+
     ]
 });
 
