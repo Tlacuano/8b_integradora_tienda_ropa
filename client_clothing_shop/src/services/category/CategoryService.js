@@ -20,8 +20,18 @@ const getPageCategoriesService = async (pagination) => {
     }
 }
 
+const putStatusCategoryService = async (category) => {
+    try {
+        const response = await axios.doPut("/venta-ropa/api/categories/put-status-category", {idCategory: category});
+        return response.data;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 export default {
     getCategories,
-    getPageCategoriesService
+    getPageCategoriesService,
+    putStatusCategoryService,
 }
 
