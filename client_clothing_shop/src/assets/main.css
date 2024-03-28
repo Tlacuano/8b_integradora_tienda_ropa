@@ -1,9 +1,7 @@
 @import "./base.css";
 
 #app {
-  height: 100vh;
   margin: 0 auto;
-  overflow-y: hidden;
   font-weight: normal;
 }
 
@@ -104,4 +102,18 @@ input.form-control:disabled {
 
 .page-link {
   color: #fff;
+}
+
+
+
+.b-avatar .b-avatar-badge {
+  position: absolute;
+  min-height: 1.5em;
+  min-width: 1.5em;
+  padding: 0.25em;
+  line-height: 1;
+  border-radius: 10em;
+  font-weight: 700;
+  z-index: 1;
+  font-size: calc(40px) !important;
 }

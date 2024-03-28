@@ -91,7 +91,7 @@ export default {
       this.selectedCategory = category;
       this.$router.push({name: 'UserProductsCategory', params: {category: category.name}});
     },
-    prepateForNavigate(route){
+    prepareToNavigate(route){
       if(this.isLoggedIn){
         if(this.$route.path !== route){
           this.$router.push(route);

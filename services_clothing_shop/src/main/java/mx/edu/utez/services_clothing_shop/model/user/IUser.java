@@ -17,11 +17,11 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
 
     @Query("SELECT u FROM BeanUser u WHERE u.idUser NOT IN (" +
             "SELECT ur.user.idUser FROM BeanUserRoles ur WHERE ur.role.roleName IN ('ROLE_ADMIN', 'ROLE_SUPERADMIN')) " +
-            "ORDER BY u.status DESC")
+            "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
     Page<BeanUser> findAllByOrderByStatusDesc (Pageable pageable);
 
     @Query("SELECT u FROM BeanUser u JOIN u.roles ur WHERE ur.role.roleName = 'ROLE_ADMIN'" +
-            "ORDER BY u.status DESC")
+            "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
     Page<BeanUser> findAllAdminsByOrderByStatusDesc (Pageable pageable);
 
     BeanUser findByEmail(String email);
@@ -34,5 +34,4 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
 
     @Query(value = "CALL sp_delete_user(:p_email)", nativeQuery = true)
     String deleteAccount(@Param("p_email") String email);
-
 }

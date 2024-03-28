@@ -43,3 +43,20 @@ body {
 .interface-container::-webkit-scrollbar-thumb:hover {
   background: #a3a3a3;
 }
+
+#app::-webkit-scrollbar {
+  width: 10px;
+}
+
+#app::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#app::-webkit-scrollbar-thumb {
+  background: #bab9b9;
+  border-radius: 4px;
+}
+
+#app::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}

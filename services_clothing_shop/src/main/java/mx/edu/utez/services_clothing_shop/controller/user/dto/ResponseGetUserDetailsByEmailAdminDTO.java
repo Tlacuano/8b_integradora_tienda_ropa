@@ -37,6 +37,13 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
         UserDetails.setEmail(user.getEmail());
         UserDetails.setStatus(user.isStatus());
 
+
+        UserDetails.setRoles(user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList());
+
+        if(user.getPerson() == null){
+            return UserDetails;
+        }
+        
         UserDetails.setIdPerson(user.getPerson().getIdPerson());
         UserDetails.setName(user.getPerson().getName());
         UserDetails.setLastName(user.getPerson().getLastName());
@@ -45,7 +52,6 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
         UserDetails.setBirthday(user.getPerson().getBirthday());
         UserDetails.setPhoneNumber(user.getPerson().getPhoneNumber());
         UserDetails.setGender(String.valueOf(user.getPerson().getGender()));
-
 
         if(user.getPerson().getSellerInformation() == null){
             return UserDetails;
@@ -56,7 +62,6 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
         UserDetails.setImageIdentification(user.getPerson().getSellerInformation().getImageIdentification());
         UserDetails.setCurp(user.getPerson().getSellerInformation().getCurp());
 
-        UserDetails.setRoles(user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList());
 
         return UserDetails;
     }

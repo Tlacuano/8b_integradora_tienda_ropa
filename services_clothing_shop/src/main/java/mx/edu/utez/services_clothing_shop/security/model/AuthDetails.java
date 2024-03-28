@@ -19,12 +19,18 @@ public class AuthDetails implements UserDetails {
     private String password;
     private boolean status;
     private List<String> role;
+    private boolean emailVerified;
+    private boolean privacyPolicy;
+    private boolean verificationPhone;
 
     public AuthDetails(BeanUser user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.status = user.isStatus();
         this.role = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();
+        this.emailVerified = user.isEmailVerified();
+        this.privacyPolicy = user.isPrivacyPolicy();
+        this.verificationPhone = user.getPerson() != null && user.getPerson().isVerificationPhone();
     }
 
     @Override
