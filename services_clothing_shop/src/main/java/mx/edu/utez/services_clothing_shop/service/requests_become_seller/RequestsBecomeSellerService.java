@@ -3,7 +3,6 @@ package mx.edu.utez.services_clothing_shop.service.requests_become_seller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.RequestBecomeSellerGetByIdResponseDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.UserSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
@@ -17,6 +16,7 @@ import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -62,13 +62,13 @@ public class RequestsBecomeSellerService {
                                 userSellerInformation.getSecondaryPhoneNumber() != null &&
                                 userSellerInformation.getPrivacyPolicyAgreement() != null &&
                                 userSellerInformation.getImageIdentification() != null &&
-                                userSellerInformation.getcurp() != null) {
+                                userSellerInformation.getCurp() != null) {
 
                             sellerInformation.setTaxIdentificationNumber(userSellerInformation.getTaxIdentificationNumber());
                             sellerInformation.setSecondaryPhoneNumber(userSellerInformation.getSecondaryPhoneNumber());
                             sellerInformation.setPrivacyPolicyAgreement(userSellerInformation.getPrivacyPolicyAgreement());
                             sellerInformation.setImageIdentification(userSellerInformation.getImageIdentification());
-                            sellerInformation.setCurp(userSellerInformation.getcurp());
+                            sellerInformation.setCurp(userSellerInformation.getCurp());
                             sellerInformation.setPerson(person);
                         } else {
                             throw new CustomException("Todos los campos de UserSellerInformation deben estar llenos");
@@ -95,7 +95,7 @@ public class RequestsBecomeSellerService {
                 StringUtils.isEmpty(userSellerInformation.getSecondaryPhoneNumber()) ||
                 (userSellerInformation.getPrivacyPolicyAgreement() == null || !userSellerInformation.getPrivacyPolicyAgreement()) ||
                 StringUtils.isEmpty(userSellerInformation.getImageIdentification()) ||
-                StringUtils.isEmpty(userSellerInformation.getcurp())) {
+                StringUtils.isEmpty(userSellerInformation.getCurp())) {
             throw new CustomException("requestBecomeSeller.userSellerInformation.empty");
         }
 
@@ -109,13 +109,12 @@ public class RequestsBecomeSellerService {
         IRequestsBecomeSeller.insertRequestBecomeSeller(email, userSellerInformationJSON);
     }
 
-
-
+    @Transactional
     public Page<IRequestsBecomeSeller.RequestBecomeSellerProjection> getPageRequestBecomeSeller(Pageable pageable) {
         return IRequestsBecomeSeller.findAllStatusesWithDetails(pageable);
     }
 
-
+    @Transactional
     public Optional<RequestBecomeSellerGetByIdResponseDTO> getRequestBecomeSellerById(UUID requestId) {
         Optional<BeanRequestsBecomeSeller> requestOptional = IRequestsBecomeSeller.findById(requestId);
         return requestOptional.map(this::convertToDTO);
@@ -129,6 +128,14 @@ public class RequestsBecomeSellerService {
         dto.setPersonId(request.getUser().getPerson().getIdPerson());
         dto.setPersonName(request.getUser().getPerson().getName());
         dto.setPersonLastName(request.getUser().getPerson().getLastName());
+        dto.setPersonSecondLastName(request.getUser().getPerson().getSecondLastName());
+        dto.setPhoneNumber(request.getUser().getPerson().getPhoneNumber());
+        dto.setAddress(request.getUser().getPerson().getAddresses().get(0).getAddress() + ", " +
+                request.getUser().getPerson().getAddresses().get(0).getStreet() + ", " +
+                request.getUser().getPerson().getAddresses().get(0).getNeighborhood() + ", " +
+                request.getUser().getPerson().getAddresses().get(0).getPostalCode() + ", " +
+                request.getUser().getPerson().getAddresses().get(0).getState());
+        dto.setPicture(request.getUser().getPerson().getPicture());
         dto.setStatusId(request.getStatus().getIdStatus());
         dto.setStatus(request.getStatus().getStatus());
         dto.setUserEmail(request.getUser().getEmail());
