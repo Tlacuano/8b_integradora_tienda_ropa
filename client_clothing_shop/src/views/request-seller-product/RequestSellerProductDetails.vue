@@ -67,14 +67,14 @@
   </b-modal>
 </template>
 <script>
-import ProductSalesRequestsService from '@/services/admin/adminService';
-import RejectionReason from "@/components/modals/RejectionReason.vue";
+import ProductSalesRequestsService from '@/services/request-seller-product/RequestSellerProduct';
+import RejectionReason from "@/views/request-seller-product/RejectionReason.vue";
 export default {
+  name: "ProductSalesRequestsDetails",
   components: {RejectionReason},
   props: {
     productId: String,
   },
-  name: "ProductSalesRequestsDetails",
   data() {
     return {
       product: {},

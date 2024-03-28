@@ -15,41 +15,44 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-row class="mt-3 container-products">
-      <b-col lg="4" v-for="product in products" :key="product.id" >
-        <b-card no-body class="highlight-on-hover mb-2" @click="openModal(product)">
-          <b-row class="m-2" no-gutters>
-            <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
-              <b-avatar
-                  v-if="product.status"
-                  size="2.5rem"
-                  variant="success"
-                  class="text-uppercase"
-                  :src="product.image"
-              />
-              <b-avatar
-                  v-else
-                  size="2.5rem"
-                  variant="secondary"
-                  class="text-uppercase"
-              >{{ product.productName.charAt(0) }}
-              </b-avatar>
-            </b-col>
-            <b-col cols="8" class="ml-2">
-              <b-row>
-                <b-col>
-                  <div class="text-truncate font-weight-bold small">{{ product.productName }}</div>
+    <b-row class="mt-3 container-products" >
+      <b-col>
+        <b-row>
+          <b-col lg="3" md="4" sm="6" v-for="product in products" :key="product.id" >
+            <b-card no-body class="highlight-on-hover mb-2" @click="openModal(product)">
+              <b-row class="m-2" no-gutters>
+                <b-col cols="auto" class="d-none d-md-block my-auto">
+                  <b-avatar
+                      v-if="product.status"
+                      size="2.5rem"
+                      variant="success"
+                      class="text-uppercase"
+                      :src="product.image"
+                  />
+                  <b-avatar
+                      v-else
+                      size="2.5rem"
+                      variant="secondary"
+                      class="text-uppercase"
+                  >{{ product.productName.charAt(0) }}
+                  </b-avatar>
+                </b-col>
+                <b-col cols="8" class="ml-2">
+                  <b-row>
+                    <b-col>
+                      <div class="text-truncate font-weight-bold small">{{ product.productName }}</div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <b-badge :variant="getVariant(product.status.status)" class="text-ellipsis text-white small">{{ product.status.status }}</b-badge>
+                    </b-col>
+                  </b-row>
                 </b-col>
               </b-row>
-              <b-row>
-                <b-col>
-                  <!-- Aplica una clase condicional según el estado -->
-                  <div :class="getStatusColorClass(product.status.status) + ' status text-truncate font-weight-bold small'">{{ product.status.status }}</div>
-                </b-col>
-              </b-row>
-            </b-col>
-          </b-row>
-        </b-card>
+            </b-card>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
     <b-row>
@@ -66,11 +69,12 @@
   </section>
 </template>
 <script>
-import ProductSalesRequestsService from '@/services/admin/adminService';
+import ProductSalesRequestsService from '@/services/request-seller-product/RequestSellerProduct';
 import swal from "sweetalert2";
 export default {
+  name:"RequestSellerProduct",
   components: {
-    ProductSalesRequestsDetails: () => import('@/components/modals/ProductSalesRequestsDetails.vue')
+    ProductSalesRequestsDetails: () => import('@/views/request-seller-product/RequestSellerProductDetails.vue')
   },
   data() {
     return {
@@ -115,17 +119,18 @@ export default {
         button: 'Aceptar'
       });
     },
-    getStatusColorClass(status) {
-      if (status === 'Aprobado') {
-        return 'text-success';
-      } else if (status === 'Rechazado') {
-        return 'text-danger';
-      } else if(status === 'Pendiente'){
-        return 'text-warning';
-      }else{
-        return '';
+    getVariant(status) {
+      switch (status) {
+        case "Pendiente":
+          return "warning";
+        case "Aprobado":
+          return "success";
+        case "Rechazado":
+          return "danger";
+        default:
+          return "secondary";
       }
-    }
+    },
   },
   mounted() {
     this.getPageProductSalesRequests();
@@ -135,7 +140,7 @@ export default {
 </script>
 <style>
 .container-products {
-  height: 60vh !important;
+  height: 65vh !important;
   overflow-x: hidden;
 }
 

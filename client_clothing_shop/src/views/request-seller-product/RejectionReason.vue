@@ -33,9 +33,11 @@
   </b-modal>
 </template>
 <script>
-import ProductSalesRequestsService from "@/services/admin/adminService";
+import ProductSalesRequestsService from "@/services/request-seller-product/RequestSellerProduct";
+import {regexRejectionReason} from "@/utils/validation/regex";
 
 export default{
+  name: "RejectionReason",
   props: {
     productId: String,
   },
@@ -60,7 +62,7 @@ export default{
       }
     },
     validateInput(){
-      const regex = /^[a-zA-Z0-9 ]*$/;
+      const regex = regexRejectionReason;
       if (this.reason.trim().length === 0) {
         this.notNull = true
         this.error = false;
