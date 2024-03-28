@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,6 +18,10 @@ public class RequestDataChangeIdDTO {
     private UUID personId;
     private String personName;
     private String personLastName;
+    private String personSecondLastName;
+    private LocalDate birthday;
+    private String phoneNumber;
+    private String gender;
 
     public UUID getRequestId() {
         return requestId;
