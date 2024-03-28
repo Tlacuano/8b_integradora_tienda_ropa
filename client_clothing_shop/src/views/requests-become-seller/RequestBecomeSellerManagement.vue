@@ -10,7 +10,7 @@
       <b-col>
         <b-row>
           <b-col lg="4" v-for="request in requests" :key="request.id">
-            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request)">
+            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request.idRequestBecomeSeller)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
                   <b-avatar
@@ -55,7 +55,7 @@
       </b-col>
     </b-row>
 
-    <DetailsRequestModal :request="selectedRequest" @request-updated="refreshRequests" />
+    <DetailsRequestModal :idRequest="selectedRequest" @request-updated="refreshRequests" />
   </section>
 </template>
 
@@ -76,7 +76,7 @@ export default Vue.extend({
         elements: 0
       },
       requests: [],
-      selectedRequest: {},
+      selectedRequest: "",
     }
   },
   methods: {
@@ -102,8 +102,8 @@ export default Vue.extend({
       }
     },
 
-    openDetailsRequestModal(request) {
-      this.selectedRequest = request;
+    openDetailsRequestModal(idRequest) {
+      this.selectedRequest = idRequest;
       this.$nextTick(() => {
         this.$bvModal.show("detailsRequestModal");
       })

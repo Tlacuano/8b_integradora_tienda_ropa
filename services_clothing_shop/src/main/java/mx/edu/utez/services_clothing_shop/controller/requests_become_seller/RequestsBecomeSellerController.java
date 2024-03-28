@@ -32,8 +32,9 @@ public class RequestsBecomeSellerController {
         return ResponseEntity.ok(new CustomResponse<>("Request created successfully", "Request created", false, 200));
     }
 
-    @PutMapping("/put-request-become-seller")
+    @PostMapping("/put-request-become-seller")
     public ResponseEntity<CustomResponse<String>> putRequestBecomeSeller(@RequestBody RequestsBecomeSellerPutDTO requestData) {
+        System.out.println(requestData);
         UUID requestId = requestData.getIdRequestBecomeSeller();
         String status = requestData.getStatus();
         String rejectionReason = requestData.getRejectionReason();
@@ -52,8 +53,8 @@ public class RequestsBecomeSellerController {
     }
 
     @PostMapping("/get-by-id-request-become-seller")
-    public ResponseEntity<CustomResponse<RequestBecomeSellerGetByIdResponseDTO>> getRequestBecomeSellerById(@RequestBody RequestBecomeSellerGetByIdDTO getByIdDTO) {
-        UUID requestId = getByIdDTO.getRequestId();
+    public ResponseEntity<CustomResponse<Object>> getRequestBecomeSellerById(@RequestBody RequestBecomeSellerGetByIdDTO getByIdDTO) {
+        UUID requestId = getByIdDTO.getIdRequestBecomeSeller();
         RequestBecomeSellerGetByIdResponseDTO requestData = requestsBecomeSellerService.getRequestBecomeSellerById(requestId).orElse(null);
 
         if (requestData != null) {
