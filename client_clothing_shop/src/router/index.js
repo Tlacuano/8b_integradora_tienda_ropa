@@ -64,7 +64,7 @@ const router = new VueRouter({
                 {
                     path: "product-sale-request",
                     name: "ProductSaleRequest",
-                    component: () => import("../views/admin/ProductSalesRequests.vue"),
+                    component: () => import("../views/request-seller-product/RequestSellerProduct.vue"),
                     meta: {requiresAuth: true, roles: ["ADMIN"]},
                 },
                 {
