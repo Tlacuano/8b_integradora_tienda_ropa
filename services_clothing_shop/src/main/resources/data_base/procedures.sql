@@ -12,23 +12,22 @@ END $$
 DELIMITER ;
 
 
-
-
+-- procedute to logicall delete a user
 DROP PROCEDURE IF EXISTS `sp_delete_user`;
 DELIMITER $$
 CREATE PROCEDURE `sp_delete_user`(
-    IN p_email VARCHAR(255),
-    OUT result BOOLEAN)
+    IN p_email VARCHAR(255))
 BEGIN
     DECLARE v_user_id BINARY(16);
+    DECLARE result VARCHAR(255);
+
 
     SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
-
 
     UPDATE users
     SET
         password = '',
-        email = CONCAT(p_email, '_deleted'),
+        email = CONCAT(p_email, '_deleted_', UUID()),
         status = 0
     WHERE id_user = v_user_id;
 
@@ -59,15 +58,17 @@ BEGIN
         expiration_date = ''
     WHERE fk_id_user = v_user_id;
 
-
     UPDATE products
     SET
         status = 0
     WHERE fk_id_user = v_user_id;
 
-    SELECT NOT status FROM users WHERE id_user = v_user_id;
+    SET result = 'Usuario eliminado';
+    SELECT result;
+
 END$$
 DELIMITER ;
+
 
 
 -- Procedure to change the status of a payment card
@@ -243,5 +244,167 @@ BEGIN
         END IF;
     END IF;
 
+END $$
+DELIMITER ;
+
+
+-- Procedure to insert a new product gallery
+DROP PROCEDURE IF EXISTS `sp_post_product_gallery`;
+DELIMITER $$
+CREATE PROCEDURE `sp_post_product_gallery`(
+    IN p_product_id VARCHAR(255),
+    IN p_image VARCHAR(255),
+    IN p_status_id VARCHAR(255)
+)
+BEGIN
+    DECLARE v_total_products INT;
+    DECLARE v_total_images INT;
+    DECLARE v_new_total_images INT;
+
+    -- Declare handler for SQL exceptions
+    DECLARE exit handler for sqlexception
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    -- Start the transaction
+    START TRANSACTION;
+
+-- 1. Verify if the product exists
+    SELECT COUNT(*)
+    INTO v_total_products
+    FROM products
+    WHERE id_product = UUID_TO_BIN(p_product_id)
+    FOR UPDATE;
+
+    IF v_total_products = 0 THEN
+        SELECT 'Product does not exist' AS message;
+        -- Rollback the transaction if the product does not exist
+        ROLLBACK;
+    ELSE
+        -- 2. Verify how many images the product has
+        SELECT COUNT(*)
+        INTO v_total_images
+        FROM product_gallery
+        WHERE fk_id_product = UUID_TO_BIN(p_product_id);
+
+        -- 3. Insert a new image into the product gallery
+        INSERT INTO product_gallery(fk_id_product, fk_id_status, id_image, image)
+        VALUES (UUID_TO_BIN(p_product_id), UUID_TO_BIN(p_status_id), UUID_TO_BIN(UUID()), p_image);
+
+        -- 4. Verify if the image was inserted
+        SELECT COUNT(*)
+        INTO v_new_total_images
+        FROM product_gallery
+        WHERE fk_id_product = UUID_TO_BIN(p_product_id);
+
+        IF v_new_total_images > v_total_images THEN
+            SELECT 'Image was inserted' AS message;
+            -- Commit the transaction if the image was inserted
+            COMMIT;
+        ELSE
+            SELECT 'Image was not inserted' AS message;
+            -- Rollback the transaction if the image was not inserted
+            ROLLBACK;
+        END IF;
+    END IF;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `insert_request_data_change`;
+DELIMITER $$
+CREATE PROCEDURE insert_request_data_change(IN p_email VARCHAR(100), IN p_new_user_information JSON)
+BEGIN
+    DECLARE v_user_id BINARY(16);
+    DECLARE v_pending_status_id BINARY(16);
+
+    SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
+
+    SELECT id_status INTO v_pending_status_id FROM request_status WHERE status = 'Pendiente';
+
+
+    INSERT INTO requests_data_change (id_request_data_change, fk_id_user, new_user_information, fk_id_status)
+    VALUES (UUID_TO_BIN(UUID()) , v_user_id, p_new_user_information, v_pending_status_id);
+    SELECT TRUE as messagge;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `update_request_data_change`;
+DELIMITER $$
+CREATE PROCEDURE update_request_data_change(
+    IN p_request_id BINARY(16),
+    IN p_status VARCHAR(255),
+    IN p_rejection_reason VARCHAR(255)
+)
+BEGIN
+    DECLARE v_status_id BINARY(16);
+
+    -- Buscar el ID del estado basado en el texto proporcionado
+    SELECT id_status INTO v_status_id
+    FROM request_status
+    WHERE status = p_status;
+
+    -- Verificar si el estado existe
+    IF v_status_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Estado no válido';
+    ELSE
+        -- Verificar si la solicitud existe
+        IF EXISTS (SELECT 1 FROM requests_data_change WHERE id_request_data_change = p_request_id) THEN
+            -- Actualizar la solicitud
+            UPDATE requests_data_change
+            SET fk_id_status = v_status_id,
+                rejection_reason = p_rejection_reason
+            WHERE id_request_data_change = p_request_id;
+        ELSE
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no existe';
+        END IF;
+    END IF;
+    SELECT TRUE as messagge;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `insert_request_become_seller`;
+DELIMITER $$
+CREATE PROCEDURE insert_request_become_seller(IN p_email VARCHAR(100), IN p_user_seller_information JSON)
+BEGIN
+    DECLARE v_user_id BINARY(16);
+    DECLARE v_pending_status_id BINARY(16);
+
+    SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
+
+    SELECT id_status INTO v_pending_status_id FROM request_status WHERE status = 'Pendiente';
+
+    INSERT INTO requests_become_seller (id_request_become_seller, fk_id_user, user_seller_information, fk_id_status)
+    VALUES (UUID_TO_BIN(UUID()) , v_user_id, p_user_seller_information, v_pending_status_id);
+    SELECT TRUE as message;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `update_request_become_seller`;
+DELIMITER $$
+CREATE PROCEDURE update_request_become_seller(
+    IN p_request_id BINARY(16),
+    IN p_status VARCHAR(255),
+    IN p_rejection_reason VARCHAR(255)
+)
+BEGIN
+    DECLARE v_status_id BINARY(16);
+
+    SELECT id_status INTO v_status_id FROM request_status WHERE status = p_status;
+
+    IF v_status_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Estado no válido';
+    ELSE
+        IF EXISTS (SELECT 1 FROM requests_become_seller WHERE id_request_become_seller = p_request_id) THEN
+            UPDATE requests_become_seller
+            SET fk_id_status = v_status_id,
+                rejection_reason = p_rejection_reason
+            WHERE id_request_become_seller = p_request_id;
+        ELSE
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no existe';
+        END IF;
+    END IF;
+    SELECT TRUE as message;
 END $$
 DELIMITER ;

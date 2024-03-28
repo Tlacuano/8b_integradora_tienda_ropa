@@ -8,21 +8,35 @@ import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 public class ResponsePageUsersDTO {
     UUID idUser;
     String fullName;
-    List<BeanRole> roles;
+    String email;
+    String roles;
+    String picture;
     boolean status;
 
     public static ResponsePageUsersDTO fromUser(BeanUser user) {
         ResponsePageUsersDTO responsePageUsersDTO = new ResponsePageUsersDTO();
         responsePageUsersDTO.setIdUser(user.getIdUser());
-        responsePageUsersDTO.setFullName(user.getPerson().getName() + " " + user.getPerson().getLastName() + " " + user.getPerson().getSecondLastName());
-        responsePageUsersDTO.setRoles(user.getRoles().stream().map(BeanUserRoles::getRole).toList());
+        responsePageUsersDTO.setEmail(user.getEmail());
+
+        responsePageUsersDTO.setRoles(user.getRoles()
+                .stream().map(BeanUserRoles::getRole)
+                .map(BeanRole::getRoleName)
+                .collect(Collectors.joining("/")));
+
+        if(user.getPerson() == null){
+            responsePageUsersDTO.setFullName("Registro incompleto");
+            return responsePageUsersDTO;
+        }
+        responsePageUsersDTO.setFullName(user.getPerson().getName()+ " " + user.getPerson().getLastName() + " " + user.getPerson().getSecondLastName());
         responsePageUsersDTO.setStatus(user.isStatus());
+        responsePageUsersDTO.setPicture(user.getPerson().getPicture());
         return responsePageUsersDTO;
     }
 }

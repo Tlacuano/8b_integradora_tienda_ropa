@@ -2,14 +2,10 @@ package mx.edu.utez.services_clothing_shop.controller.user;
 
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
-import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-import mx.edu.utez.services_clothing_shop.service.person.PersonService;
 import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
-import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
-import mx.edu.utez.services_clothing_shop.utils.validations.ValidatesFunctions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,23 +16,20 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/venta-ropa/api/user")
+@RequestMapping("/venta-ropa/api/users")
 @CrossOrigin(origins = {"*"})
 public class UserController {
     private final UserService userService;
-    private final PersonService personService;
 
-    public UserController(UserService userService, PersonService personService) {
+
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.personService = personService;
     }
 
 
     @GetMapping("/get-page")
     ResponseEntity<Object> getPageUsers(Pageable pageable){
-        Page<BeanUser> users = userService.getPageUsers(pageable);
-        Page<ResponsePageUsersDTO> pageUsers = users.map(ResponsePageUsersDTO::fromUser);
-
+        Page<ResponsePageUsersDTO> pageUsers = userService.getPageUsers(pageable);
 
         return new ResponseEntity<>(
                 new CustomResponse<>(pageUsers, "Usuarios encontrados",false, 200),
@@ -53,51 +46,38 @@ public class UserController {
         );
     }
 
+    @PostMapping("/exist-by-email")
+    public ResponseEntity<Object> existByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.existByEmail(payload.getEmail()), "Consulta exitosa", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/get-user-detaiil-by-email-admin")
+    public ResponseEntity<Object> getUserDetailByEmailAdmin(@Validated @RequestBody RequestActionByEmailDTO payload){
+        System.out.println(userService.getUserDetailsByEmailAdmin(payload.getEmail()));
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.getUserDetailsByEmailAdmin(payload.getEmail()), "Usuario encontrado", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+
     @PostMapping("/post-account")
     public ResponseEntity<Object> postAccount(@Validated @RequestBody RequestPostAccountDTO user){
-        //verify if the email exists
-        if(userService.existsByEmail(user.getEmail())){
-            throw new RuntimeException("user.email.exists");
-        }
-
-        //save user
-        BeanUser newAccount = new BeanUser();
-        newAccount.setEmail(user.getEmail());
-
-        String encodedPassword = EncryptionFunctions.encryptString(user.getPassword());
-        newAccount.setPassword(encodedPassword);
-        newAccount.setStatus(true);
-
-        newAccount = userService.postAccount(newAccount);
-
-        //assign role
-        userService.postRoleUser(
-                user.getRole().toString(),
-                newAccount.getIdUser().toString()
-        );
-
-        //organize save personal information
-        BeanPerson personalInformation = new BeanPerson();
-        personalInformation.setName(user.getName());
-        personalInformation.setLastName(user.getLastName());
-        personalInformation.setSecondLastName(user.getSecondLastName());
-        personalInformation.setPhoneNumber(user.getPhoneNumber());
-        personalInformation.setPicture(user.getPicture());
-        personalInformation.setGender(user.getGender());
-        personalInformation.setUser(newAccount);
-
-        //verify if the birthday is valid
-        if(!ValidatesFunctions.isAdult(user.getBirthday())){
-            throw new RuntimeException("person.birthday.age");
-        }
-        personalInformation.setBirthday(user.getBirthday());
-        personalInformation = personService.postPersonalInformation(personalInformation);
-        
-        //assign personal information
-        newAccount.setPerson(personalInformation);
-
+        user.setRoleToAssign("ROLE_BUYER");
         return new ResponseEntity<>(
-                new CustomResponse<>(true, "Cuenta registrada correctamente", false, 201),
+                new CustomResponse<>(userService.postAccount(user), "Cuenta registrada correctamente", false, 201),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/post-admin-account")
+    public ResponseEntity<Object> postAdminAccount(@Validated @RequestBody RequestPostAccountDTO user){
+        user.setRoleToAssign("ROLE_ADMIN");
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.postAccount(user), "Cuenta registrada correctamente", false, 201),
                 HttpStatus.OK
         );
     }
@@ -111,35 +91,29 @@ public class UserController {
         );
     }
 
-    @PostMapping("/change-status")
-    public ResponseEntity<Object> changeStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
-        BeanUser user = userService.getByEmail(payload.getEmail());
-
-        if(user == null){
-            throw new RuntimeException("user.email.exists");
-        }
-
-        user.setStatus(!user.isStatus());
-
-        userService.postAccount(user);
-
+    @PostMapping("/put-status")
+    public ResponseEntity<Object> putStatus(@Validated @RequestBody RequestActionByEmailDTO payload){
         return new ResponseEntity<>(
-                new CustomResponse<>(true, "Estado de la cuenta cambiado correctamente", false, 200),
+                new CustomResponse<>(userService.changeStatusAccount(payload), "Estado de cuenta cambiado correctamente", false, 200),
                 HttpStatus.OK
         );
     }
 
-    @PostMapping("/get-roles-by-email")
-    public ResponseEntity<Object> getRolesByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){
-        BeanUser user = userService.getByEmail(payload.getEmail());
-
-        if(user == null){
-            throw new RuntimeException("user.email.exists");
-        }
-
+    @PostMapping("/verify-email")
+    public ResponseEntity<Object> verifyCode(@Validated @RequestBody RequestCodeDTO payload){
         return new ResponseEntity<>(
-                new CustomResponse<>(user.getRoles(), "Roles encontrados", false, 200),
+                new CustomResponse<>(userService.verifyCode(payload), "Código verificado correctamente", false, 200),
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/get-profile")
+    public ResponseEntity<Object> getProfile(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.getProfile(payload.getEmail()), "Perfil encontrado", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+
 }

@@ -10,6 +10,7 @@ import mx.edu.utez.services_clothing_shop.model.person.GenderEnum;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,9 @@ public class RequestPutPersonalInformationDTO {
     @NotBlank
     private String email;
 
+    private UUID idPerson;
+
+    private boolean privacyPolicy;
 
     @NotBlank(message = "person.name.notnull")
     @Pattern(regexp = RegexPatterns.NAME_REGEX, message = "person.name.pattern")

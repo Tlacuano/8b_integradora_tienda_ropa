@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,15 @@ import java.util.UUID;
 @Repository
 public interface IUser extends JpaRepository<BeanUser, UUID> {
     boolean existsByEmail(String email);
-    Page<BeanUser> findAllBy (Pageable pageable);
+
+    @Query("SELECT u FROM BeanUser u WHERE u.idUser NOT IN (" +
+            "SELECT ur.user.idUser FROM BeanUserRoles ur WHERE ur.role.roleName IN ('ROLE_ADMIN', 'ROLE_SUPERADMIN')) " +
+            "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
+    Page<BeanUser> findAllByOrderByStatusDesc (Pageable pageable);
+
+    @Query("SELECT u FROM BeanUser u JOIN u.roles ur WHERE ur.role.roleName = 'ROLE_ADMIN'" +
+            "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
+    Page<BeanUser> findAllAdminsByOrderByStatusDesc (Pageable pageable);
 
     BeanUser findByEmail(String email);
 
@@ -24,8 +33,5 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     );
 
     @Query(value = "CALL sp_delete_user(:p_email)", nativeQuery = true)
-    String deleteAccount(
-            @Param("p_email") String email
-    );
-
+    String deleteAccount(@Param("p_email") String email);
 }

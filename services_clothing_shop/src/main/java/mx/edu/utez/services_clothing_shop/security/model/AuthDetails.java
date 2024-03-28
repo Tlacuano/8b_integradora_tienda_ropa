@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -17,17 +18,27 @@ public class AuthDetails implements UserDetails {
     private String email;
     private String password;
     private boolean status;
-    private List<GrantedAuthority> authorities;
+    private List<String> role;
+    private boolean emailVerified;
+    private boolean privacyPolicy;
+    private boolean verificationPhone;
 
     public AuthDetails(BeanUser user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.status = user.isStatus();
-        this.authorities = user.getRoles().stream().map(role -> (GrantedAuthority) role).toList();
+        this.role = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();
+        this.emailVerified = user.isEmailVerified();
+        this.privacyPolicy = user.isPrivacyPolicy();
+        this.verificationPhone = user.getPerson() != null && user.getPerson().isVerificationPhone();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new java.util.ArrayList<>();
+        for (String role : role) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
         return authorities;
     }
 

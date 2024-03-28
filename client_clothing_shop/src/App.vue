@@ -1,12 +1,23 @@
 <template>
   <div id="app">
-    <b-container fluid>
-      <router-view />
-    </b-container>
+    <router-view />
   </div>
 </template>
 
-<style >
-  
+<script>
+
+export default {
+  name: 'App',
+}
+</script>
+
+<style>
+#app{
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
 </style>
 

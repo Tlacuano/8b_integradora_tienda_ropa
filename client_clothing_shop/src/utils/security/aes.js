@@ -39,5 +39,4 @@ export const decrypt = (data) => {
     const decryptedString = decipher.output.toString("utf8");
 
     return JSON.parse(decryptedString);
-
-}
+};
