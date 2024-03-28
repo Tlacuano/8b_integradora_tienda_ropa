@@ -19,7 +19,6 @@ public class RequestDataChangePutDTO {
     private String name;
     private String lastName;
     private String secondLastName;
-    private String picture;
     private LocalDate birthday;
     private String phoneNumber;
     private GenderEnum gender;
