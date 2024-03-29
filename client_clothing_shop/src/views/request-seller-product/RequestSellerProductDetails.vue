@@ -78,12 +78,7 @@ export default {
   data() {
     return {
       product: {},
-      images:[
-          "https://pm1.aminoapps.com/7556/76d57096d621f0cd1cffbb914a0f848c3d68473er1-797-1080v2_hq.jpg",
-          "https://pm1.aminoapps.com/7556/76d57096d621f0cd1cffbb914a0f848c3d68473er1-797-1080v2_hq.jpg",
-          "https://pm1.aminoapps.com/7556/76d57096d621f0cd1cffbb914a0f848c3d68473er1-797-1080v2_hq.jpg",
-          "https://pm1.aminoapps.com/7556/76d57096d621f0cd1cffbb914a0f848c3d68473er1-797-1080v2_hq.jpg",
-      ],
+      images:null,
       selectProductId: null
     };
   },
@@ -91,6 +86,7 @@ export default {
     async getByIdRequestSellProduct(){
       const response = await ProductSalesRequestsService.getByIdProductSalesRequest(this.productId)
       this.product = response.data;
+      this.images = Array.isArray(this.product.image) ? this.product.image : [this.product.image];
     },
     async acceptRequestSellProduct(){
       const response = await ProductSalesRequestsService.putProductSalesRequestStatus(this.productId, 'Aprobado','sin comentarios')
@@ -112,8 +108,7 @@ export default {
     },
     handleRequestError(error) {
       this.$emit('request-error', error);
-    }
-
+    },
   },
 
 
