@@ -36,13 +36,13 @@
                         </b-form-group>
 
                     </b-form>
-                    
+
                     <div class="text-right">
-                    <router-link :to="{ name: 'ADMINSubcategoryManagement' }" class="my-3">
-                        Ir a Gestionar subcategorias
-                    </router-link> 
+                        <router-link :to="{ name: 'ADMINSubcategoryManagement' }" class="my-3">
+                            Ir a Gestionar subcategorias
+                        </router-link>
                     </div>
-                    
+
                 </b-col>
 
                 <b-col class="text-center">
@@ -122,65 +122,77 @@ export default Vue.extend({
                                 status: this.form.status,
                             };
 
-                            const response = await CategoriesService.putCategoryService(category);  //con post porque no hay put 
+                            const response = await CategoriesService.putCategoryService(category);
 
-                    if (response && response.status === 201) {
-                        this.clean();
-                        this.$emit("category-edited");
-                        this.$bvModal.hide("editCategoryModal");
-                    } else {
-                        showWarningToast(
-                            "Error al editar la categoría",
-                            "No se pudo editar la categoría"
-                        );
-                    }
+                            if (response && response.status === 201) {
+                                this.clean();
+                                this.$emit("category-edited");
+                                this.$bvModal.hide("editCategoryModal");
+                            } else {
+                                showWarningToast(
+                                    "Error al editar la categoría",
+                                    "No se pudo editar la categoría"
+                                );
+                            }
+                        }
+                    );
                 }
-            );
-        }
-    });
-    },
+            });
+        },
 
         async getCategories() {
-    const pagination = {
-        page: 1,
-        size: 100,
-    };
-    const response = await CategoriesService.getPageCategoriesService(
-        pagination
-    );
-    this.categories = response.data.content;
-},
-handleFileUpload() {
-    this.imgPreview = URL.createObjectURL(this.newImage);
-},
-closeModal() {
-    this.clean();
-    this.$bvModal.hide("editCategoryModal");
-},
-clean() {
-    this.newImage = null;
-    this.imgPreview = null;
-},
-    },
-mounted() {
-   // Verifica si la categoría y su imagen están disponibles
-   if (this.category && this.category.image) {
-        // Crea un nuevo objeto File con la URL de la imagen
-        const imageFile = new File([this.category.image], 'image.jpg', { type: 'image/jpeg' });
-        // Asigna el objeto File al formulario
-        this.form.image = imageFile;
+            const pagination = {
+                page: 1,
+                size: 100,
+            };
+            const response = await CategoriesService.getPageCategoriesService(
+                pagination
+            );
+            this.categories = response.data.content;
+        },
+        handleFileUpload() {
+            this.imgPreview = URL.createObjectURL(this.newImage);
+        },
+        closeModal() {
+            this.clean();
+            this.$bvModal.hide("editCategoryModal");
+        },
+        clean() {
+            this.newImage = null;
+            this.imgPreview = null;
+        },
+        initializeFormData() {
+            // Verifica si la categoría está disponible
+            if (this.category) {
+                // Asigna los valores de la categoría al formulario presentado
+                this.form.idCategory = this.category.idCategory;
+                this.form.category = this.category.category;
+                this.form.status = this.category.status;
 
-        // Asigna otros valores del formulario
-        this.form.idCategory = this.category.idCategory;
-        this.form.category = this.category.category;
-        this.form.status = this.category.status;
-        this.imgPreview = this.category.image;
-        console.log("Valor de image:", this.form.image);
-    } else {
-        // Si la imagen de la categoría no está disponible, maneja este caso adecuadamente
-        console.warn("La imagen de la categoría no está disponible.");
-        // Puedes mostrar un mensaje al usuario o tomar alguna otra acción apropiada
+                // Si la categoría tiene una imagen, asigna la imagen al formulario y muestra la vista previa
+                if (this.category.image) {
+                    this.form.image = this.category.image;
+                    this.imgPreview = this.category.image;
+                }
+            } else {
+                // Si la categoría no está disponible, limpia los datos del formulario y la vista previa de la imagen
+                this.clean();
+            }
+        }
+    },
+    mounted() {
+        // Inicializa los datos del formulario y la vista previa de la imagen al cargar el componente modal
+        this.initializeFormData();
+    },
+    watch: {
+        // Observador para detectar cambios en la categoría seleccionada
+        category: {
+            handler(newCategory) {
+                // Si cambia la categoría seleccionada, vuelve a inicializar los datos del formulario y la vista previa de la imagen
+                this.initializeFormData();
+            },
+            deep: true // Observa los cambios en las propiedades anidadas de la categoría
+        }
     }
-},
 });
 </script>
