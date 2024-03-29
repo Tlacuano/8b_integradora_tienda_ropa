@@ -80,6 +80,12 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {
+                    path: "category-management",
+                    name: "ADMINCategoryManagement",
+                    component: () => import("../views/category/CategoryManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                },
+                {
                     path: "product-management",
                     name: "ProductManagement",
                     component: () => import("../views/product-management/ProductManagement.vue"),
@@ -113,7 +119,7 @@ const router = new VueRouter({
                     path:"register-product-request",
                     name:"RegisterProductRequest",
                     component: () => import("../views/product-management/RegisterProductRequest.vue"),
-                }
+                },
             ]
         },
 

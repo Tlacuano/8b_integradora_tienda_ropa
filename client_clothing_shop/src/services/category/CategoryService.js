@@ -20,8 +20,38 @@ const getPageCategoriesService = async (pagination) => {
     }
 }
 
+const postCategoryService = async (category) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/categories/post-category", category);
+        return response.data;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const putCategoryService = async (category) => {
+    try {
+        const response = await axios.doPut("/venta-ropa/api/categories/put-category", category);
+        return response.data;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const putStatusCategoryService = async (category) => {
+    try {
+        const response = await axios.doPut("/venta-ropa/api/categories/put-status-category", {idCategory: category});
+        return response.data;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 export default {
     getCategories,
-    getPageCategoriesService
+    getPageCategoriesService,
+    postCategoryService,
+    putCategoryService,
+    putStatusCategoryService,
 }
 
