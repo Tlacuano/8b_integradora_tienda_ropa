@@ -85,6 +85,41 @@ const router = new VueRouter({
                     component: () => import("../views/category/CategoryManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN"] },
                 },
+                {
+                    path: "product-management",
+                    name: "ProductManagement",
+                    component: () => import("../views/product-management/ProductManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
+                    path: "product-details",
+                    name: "ProductDetails",
+                    component: () => import("../views/product-management/ViewProductDetails.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
+                    path:"product-sale",
+                    name:"ProductSale",
+                    component: () => import("../views/product-management/ViewProductSales.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
+                    path:"product-reviews",
+                    name:"ProductReviews",
+                    component: () => import("../views/product-management/ViewProductReviews.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
+                    path:"register-product-edition",
+                    name:"RegisterProductEditionRequest",
+                    component: () => import("../views/product-management/RegisterProductEditionRequest.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
+                    path:"register-product-request",
+                    name:"RegisterProductRequest",
+                    component: () => import("../views/product-management/RegisterProductRequest.vue"),
+                },
             ]
         },
 
