@@ -44,7 +44,7 @@
                                     <template v-slot:button-content>
                                         <font-awesome-icon icon="ellipsis-v" />
                                     </template>
-                                    <b-dropdown-item>Editar</b-dropdown-item>
+                                    <b-dropdown-item @click="openEditCategoryModal(category)">Editar</b-dropdown-item>
                                     <b-dropdown-item @click="changeStatusCategory(category)">
                                         <div v-if="!category.status">
                                             Habilitar
@@ -76,6 +76,7 @@
         </b-row>
 
         <AddCategoryModal @category-added="refreshCategories"/>
+        <EditCategoryModal :category="selectedCategory" @category-edited="refreshCategories"/>
     </section>
 </template>
 <script>
@@ -86,7 +87,8 @@ import {showInfoAlert} from "@/components/alerts/Alerts";
 export default Vue.extend({
     name: "CategoryManagement",
     components: {
-        AddCategoryModal: () => import("@/views/category/AddCategoryModal.vue"), //agrega el modal|
+        AddCategoryModal: () => import("@/views/category/AddCategoryModal.vue"),
+        EditCategoryModal: () => import("@/views/category/EditCategoryModal.vue"),
     },
     data() {
         return {
@@ -122,6 +124,12 @@ export default Vue.extend({
             this.$nextTick(() => {
                 this.$bvModal.show('addCategoryModal');
             });
+        },
+        openEditCategoryModal(category) {
+            this.selectedCategory = category;
+            this.$nextTick(() => {
+                this.$bvModal.show('editCategoryModal');
+            })
         },
         showOverlay(){
             this.$store.dispatch('changeStatusOverlay')

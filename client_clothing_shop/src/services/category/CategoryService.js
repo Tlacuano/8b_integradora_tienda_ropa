@@ -29,6 +29,15 @@ const postCategoryService = async (category) => {
     }
 }
 
+const putCategoryService = async (category) => {
+    try {
+        const response = await axios.doPut("/venta-ropa/api/categories/put-category", category);
+        return response.data;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 const putStatusCategoryService = async (category) => {
     try {
         const response = await axios.doPut("/venta-ropa/api/categories/put-status-category", {idCategory: category});
@@ -42,6 +51,7 @@ export default {
     getCategories,
     getPageCategoriesService,
     postCategoryService,
+    putCategoryService,
     putStatusCategoryService,
 }
 
