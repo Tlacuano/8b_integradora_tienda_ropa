@@ -57,7 +57,7 @@
       <b-row class="mt-3">
         <b-col>
           <div class="mb-3 text-center">
-            <b-link href="#" >¿No tienes cuenta?<span class="font-weight-bold"> Resgistrate</span></b-link>
+            <b-link @click="changeToPostUser" >¿No tienes cuenta?<span class="font-weight-bold"> Regístrate</span></b-link>
           </div>
         </b-col>
       </b-row>
@@ -67,6 +67,7 @@
 
 <script>
 import AuthService from "@/services/auth/authService";
+import {codeCrypto} from "@/utils/security/cryptoJs";
 export default {
   name: 'LoginModal',
   data() {
@@ -92,12 +93,23 @@ export default {
 
           if (response.status === 200) {
             this.$bvModal.hide('login-modal');
+
             this.$store.dispatch('login', {
               token: response.data.token,
               email: response.data.email,
               role: response.data.role,
               hasMultipleRoles: response.data.hasMultipleRoles,
             });
+
+            const verified = {
+              emailVerified: response.data.email,
+              privacyPolicy: response.data.role,
+              verificationPhone: response.data.hasMultipleRoles,
+            }
+            const verifiedString = JSON.stringify(verified);
+            const verifiedCrypto = codeCrypto(verifiedString);
+            localStorage.setItem('verified', verifiedCrypto);
+
           }
           this.showOverlay();
         }
@@ -107,6 +119,10 @@ export default {
     resetModal(){
       this.form.email = '';
       this.form.password = '';
+    },
+    changeToPostUser(){
+      this.$bvModal.hide('login-modal');
+      this.$bvModal.show('post-user-modal');
     },
 
 

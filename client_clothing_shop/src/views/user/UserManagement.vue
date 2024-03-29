@@ -1,5 +1,5 @@
 <template>
-  <section class="interface">
+  <section>
     <b-row>
       <b-col class="text-center">
         <h1>Cuentas registradas</h1>
@@ -30,19 +30,11 @@
               >
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
-                  <b-img
-                      v-if="person.picture"
-                    :src="person.picture"
-                    alt="Image"
-                    fluid
-                    thumbnail
-                  ></b-img>
                   <b-avatar
-                    v-else
-                    size="2.5rem"
-                    variant="secondary"
-                    class="text-uppercase"
-                  >{{person.fullName.charAt(0)}}</b-avatar>
+                      size="2.5rem"
+                      :src="person.picture || null"
+                      variant="dark"
+                  />
 
                 </b-col>
 
@@ -167,7 +159,7 @@ export default {
 
 <style scoped>
 .container-users{
-  height: 65vh !important;
-  overflow-x: hidden ;
+  height: 800px;
+  overflow-x: hidden;
 }
 </style>

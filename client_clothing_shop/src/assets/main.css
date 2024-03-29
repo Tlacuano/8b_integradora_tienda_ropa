@@ -1,13 +1,13 @@
 @import "./base.css";
 
 #app {
-  height: 100vh;
   margin: 0 auto;
-  overflow-y: hidden;
   font-weight: normal;
 }
 
-
+.underline {
+  text-decoration: underline;
+}
 /* para que el mause cambie a manita cuando pasas el mause encima */
 .selectable{
   cursor: pointer;
@@ -69,6 +69,29 @@ a{
   color: var(--black-base) !important;
 }
 
+.dropdown-menu .dropdown-item:active {
+  background-color: #f1f1f1;
+}
+
+input.form-control:focus {
+  border: 1px solid #ced4da;
+    box-shadow: 0 0 0 0.2rem rgba(199, 199, 199, 0.25);
+}
+input.form-control:disabled {
+  background-color: #fff;
+}
+
+.custom-select:focus {
+  border: 1px solid #ced4da;
+    box-shadow: 0 0 0 0.2rem rgba(199, 199, 199, 0.25);
+}
+
+.custom-select:disabled {
+  background-color: #fff !important;
+  color: black !important;
+}
+
+
 
 .page-item.active .page-link {
   z-index: 3;
@@ -79,4 +102,18 @@ a{
 
 .page-link {
   color: #fff;
+}
+
+
+
+.b-avatar .b-avatar-badge {
+  position: absolute;
+  min-height: 1.5em;
+  min-width: 1.5em;
+  padding: 0.25em;
+  line-height: 1;
+  border-radius: 10em;
+  font-weight: 700;
+  z-index: 1;
+  font-size: calc(40px) !important;
 }

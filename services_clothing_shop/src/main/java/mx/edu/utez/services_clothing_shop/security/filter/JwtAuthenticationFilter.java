@@ -67,6 +67,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             }
             break;
         }
+        boolean emailVerified = user.isEmailVerified();
+        boolean privacyPolicy = user.isPrivacyPolicy();
+        boolean verificationPhone = user.isVerificationPhone();
+
         System.out.println("role: " + role);
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
         Claims claims = Jwts.claims()
@@ -87,6 +91,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("email", email);
         body.put("hasMultipleRoles", hasMultipleRoles);
         body.put("role", role);
+        body.put("emailVerified", emailVerified);
+        body.put("privacyPolicy", privacyPolicy);
+        body.put("verificationPhone", verificationPhone);
+
 
         String json = JsonMapper.builder().build().writeValueAsString(body);
         String encryptedJson = EncryptionFunctions.encryptString(json);

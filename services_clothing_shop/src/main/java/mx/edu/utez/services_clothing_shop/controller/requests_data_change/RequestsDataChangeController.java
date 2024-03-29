@@ -1,13 +1,8 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_data_change;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto.*;
-import mx.edu.utez.services_clothing_shop.exception.ErrorDictionary;
-import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.IRequestsDataChange;
-import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.service.requests_data_change.RequestsDataChangeService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 
@@ -44,21 +39,18 @@ public class RequestsDataChangeController {
 
     @PutMapping("/put-request-data-change")
     public ResponseEntity<CustomResponse<String>> putRequestDataChange(@RequestBody RequestDataChangePutDTO requestData) {
-        UUID requestId = requestData.getIdRequestDataChange();
-        String status = requestData.getStatus();
-        String rejectionReason = requestData.getRejectionReason();
-
         try {
-            requestsDataChangeService.putRequestDataChange(requestId, status, rejectionReason);
+            requestsDataChangeService.putRequestDataChange(requestData);
             return ResponseEntity.ok(new CustomResponse<>("Request updated successfully", "Request updated", false, 200));
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(new CustomResponse<>(e.getMessage(), "Bad request", true, 400));
         }
     }
 
+
     @GetMapping("/get-page")
-    public Page<IRequestsDataChange.RequestDataChangeStatusProjection> getPageRequestDataChange(Pageable pageable) {
-        return requestsDataChangeService.getPageRequestDataChange(pageable);
+    public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChange(Pageable pageable) {
+        return requestsDataChangeService.getPageRequestDataChangeWithPersonName(pageable);
     }
 
     @PostMapping("/get-by-id-request-data-change")

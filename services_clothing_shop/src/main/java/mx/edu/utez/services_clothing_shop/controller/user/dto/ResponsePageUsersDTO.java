@@ -24,14 +24,17 @@ public class ResponsePageUsersDTO {
         ResponsePageUsersDTO responsePageUsersDTO = new ResponsePageUsersDTO();
         responsePageUsersDTO.setIdUser(user.getIdUser());
         responsePageUsersDTO.setEmail(user.getEmail());
-        responsePageUsersDTO.setFullName(user.getPerson()
-                .getName() + " " + user.getPerson().getLastName() + " " + user.getPerson().getSecondLastName());
 
         responsePageUsersDTO.setRoles(user.getRoles()
                 .stream().map(BeanUserRoles::getRole)
                 .map(BeanRole::getRoleName)
                 .collect(Collectors.joining("/")));
 
+        if(user.getPerson() == null){
+            responsePageUsersDTO.setFullName("Registro incompleto");
+            return responsePageUsersDTO;
+        }
+        responsePageUsersDTO.setFullName(user.getPerson().getName()+ " " + user.getPerson().getLastName() + " " + user.getPerson().getSecondLastName());
         responsePageUsersDTO.setStatus(user.isStatus());
         responsePageUsersDTO.setPicture(user.getPerson().getPicture());
         return responsePageUsersDTO;

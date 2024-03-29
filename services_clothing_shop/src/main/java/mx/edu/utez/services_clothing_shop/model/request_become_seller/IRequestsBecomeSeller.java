@@ -1,4 +1,5 @@
 package mx.edu.utez.services_clothing_shop.model.request_become_seller;
+import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,27 @@ public interface IRequestsBecomeSeller extends JpaRepository<BeanRequestsBecomeS
 
     @Query("SELECT r.status FROM BeanRequestsBecomeSeller r")
     Page<StatusProjection> findAllStatuses(Pageable pageable);
+
+
+    interface RequestBecomeSellerProjection {
+        UUID getIdRequestBecomeSeller();
+        BeanRequestStatus getStatus();
+        UUID getUserId();
+        UUID getPersonId();
+        String getPersonName();
+        String getPersonLastName();
+        String getUserEmail();
+        String getPicture();
+    }
+
+    @Query("SELECT r.idRequestBecomeSeller as idRequestBecomeSeller, r.status as status, " +
+            "r.user.idUser as userId, r.user.person.idPerson as personId, " +
+            "r.user.person.name as personName, r.user.person.lastName as personLastName, r.user.person.picture as picture ,"
+            + "r.user.email as userEmail " +
+            "FROM BeanRequestsBecomeSeller r")
+    Page<RequestBecomeSellerProjection> findAllStatusesWithDetails(Pageable pageable);
+
+
+    @Query("SELECT r.user.person FROM BeanRequestsBecomeSeller r WHERE r.idRequestBecomeSeller = :requestId")
+    BeanPerson findPersonByRequestId(@Param("requestId") UUID requestId);
 }

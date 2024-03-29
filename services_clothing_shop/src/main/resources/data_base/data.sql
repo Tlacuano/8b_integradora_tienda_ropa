@@ -1,195 +1,1078 @@
+# drop database if exists clothingshop;
 use clothingshop;
-insert ignore into request_status (id_status, status)
-values (uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'Pendiente'),
-       (uuid_to_bin('7c5409f1-64c5-431d-8b4c-e0d60058d100'), 'Aprobado'),
-       (uuid_to_bin('0d64c931-8f3c-4b0c-a16b-dad013cdaeb4'), 'Cancelado'),
-       (uuid_to_bin('ab34b311-dd64-11ee-8508-64006a586a6a'), 'Rechazado');
 
-insert ignore into address_status (id_status, status)
-values (uuid_to_bin('3b43b9d0-9f46-49fe-ae14-e69b8d1ca821'), 'Habilitada'),
-       (uuid_to_bin('6c013eed-dd65-11ee-8508-64006a586a6a'), 'Desabilitada'),
-       (uuid_to_bin('6c013f97-dd65-11ee-8508-64006a586a6a'), 'Predeterminada'),
-       (uuid_to_bin('6c013ff1-dd65-11ee-8508-64006a586a6a'), 'Venta');
+-- CATEGORIES
+INSERT IGNORE INTO categories (id_category,
+                               category,
+                               image,
+                               status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6'),
+        'Hombres',
+        'https://via.placeholder.com/300.png?text=hombres',
+        true),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7'),
+        'Mujeres',
+        'https://via.placeholder.com/300.png?text=mujeres',
+        true),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd8'),
+        'Niños',
+        'https://via.placeholder.com/300.png?text=niños',
+        true);
 
-insert ignore into order_status (id_status, status)
-values (uuid_to_bin('9b8c35d0-7870-41c6-8719-745eaaae1a13'), 'Preparacion'),
-       (uuid_to_bin('a5c21dd3-dd66-11ee-8508-64006a586a6a'), 'Entregado'),
-       (uuid_to_bin('a5c223d6-dd66-11ee-8508-64006a586a6a'), 'Rembolsado'),
-       (uuid_to_bin('a5c223d6-dd66-12ee-8508-64006a586a6a'), 'Enviado'),
-       (uuid_to_bin('a5c225a4-dd66-11ee-8508-64006a586a6a'), 'Cancelado');
+-- SUBCATEGORIES
+INSERT IGNORE INTO subcategories (id_subcategory,
+                                  image,
+                                  status,
+                                  subcategory,
+                                  fk_id_category)
+VALUES
+    -- HOMBRES
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd9'),
+     'https://via.placeholder.com/300.png?text=camisas',
+     true,
+     'Camisas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bda'),
+     'https://via.placeholder.com/300.png?text=pantalones',
+     true,
+     'Pantalones',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdb'),
+     'https://via.placeholder.com/300.png?text=camisetas',
+     true,
+     'Camisetas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdc'),
+     'https://via.placeholder.com/300.png?text=chaquetas',
+     true,
+     'Chaquetas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdd'),
+     'https://via.placeholder.com/300.png?text=accesorios',
+     true,
+     'Accesorios',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6')),
+    -- MUJERES
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bde'),
+     'https://via.placeholder.com/300.png?text=blusas',
+     true,
+     'Blusas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdf'),
+     'https://via.placeholder.com/300.png?text=faldas',
+     true,
+     'Faldas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be0'),
+     'https://via.placeholder.com/300.png?text=pantalones',
+     true,
+     'Pantalones',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be1'),
+     'https://via.placeholder.com/300.png?text=vestidos',
+     true,
+     'Vestidos',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be2'),
+     'https://via.placeholder.com/300.png?text=zapatos',
+     true,
+     'Zapatos',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7')),
+    -- NIÑOS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be3'),
+     'https://via.placeholder.com/300.png?text=camisetas',
+     true,
+     'Camisetas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd8')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be4'),
+     'https://via.placeholder.com/300.png?text=pantalones',
+     true,
+     'Pantalones',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd8')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be5'),
+     'https://via.placeholder.com/300.png?text=disfraces',
+     true,
+     'Disfraces',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd8')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be6'),
+     'https://via.placeholder.com/300.png?text=accesorios',
+     true,
+     'Accesorios',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd8'));
 
-insert ignore into card_status (id_status, status)
-values (UUID_TO_BIN('1a14b8df-8269-4484-ba7d-1441f1e1d148'), 'Habilitada'),
-       (UUID_TO_BIN('efade8fb-6465-4e48-8a0a-146fca51b59d'), 'Deshabilitada'),
-       (UUID_TO_BIN('691b3419-dd67-11ee-8508-64006a586a6a'), 'Predeterminada');
+-- USERS
+INSERT IGNORE INTO users
+(id_user,
+ email,
+ email_verified,
+ password,
+ privacy_policy,
+ status,
+ verification_code)
+VALUES
+    -- SUPER ADMIN
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be7'),
+     'superadmin@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234'),
+    -- ADMINS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be8'),
+     'admin1@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234'),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be9'),
+     'admin2@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234'),
+    -- SELLERS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea'),
+     'seller1@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234'),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb'),
+     'seller2@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234'),
+    -- BUYERS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec'),
+     'buyer1@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234'),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'),
+     'buyer2@example.com',
+     true,
+     '$2a$10$9ecu02DGkGrQhl9iEN4uvuCm18oS.9jnqdDBQIzIEj00tm9tjud0S',
+     true,
+     true,
+     'ABCD1234');
 
-insert ignore into image_product_status (id_status, status)
-values (uuid_to_bin('bc43ef1a-13a2-4b67-bb13-f1d376e5b510'), 'Habilitada'),
-       (uuid_to_bin('2f4b3cb9-e1d8-4cf9-8e16-5e6208bc7e20'), 'Deshabilitada'),
-       (uuid_to_bin('f02ff8b1-dd67-11ee-8508-64006a586a6a'), 'Predeterminada');
+-- ROLES
+INSERT IGNORE INTO roles
+(id_role,
+ role_name)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bee'),
+        'ROLE_SUPERADMIN'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bef'),
+        'ROLE_ADMIN'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf0'),
+        'ROLE_SELLER'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf1'),
+        'ROLE_BUYER');
 
-insert ignore into categories (id_category, category, image, status)
-values (uuid_to_bin('3cc47b97-5728-4c81-92bb-3880f8c27e12'), 'Hombres', 'imagen_categoria_a.jpg', 1),
-       (uuid_to_bin('8367843c-47f7-4f12-af6b-2267f6819969'), 'Mujeres', 'imagen_categoria_b.jpg', 1),
-       (uuid_to_bin('a4a4d8aa-5e1d-45a3-84e6-63f1708377d0'), 'Niños', 'imagen_categoria_c.jpg', 1);
+-- PEOPLE
+INSERT IGNORE INTO people
+(id_person,
+ birthday,
+ gender,
+ last_name,
+ name,
+ phone_number,
+ picture,
+ second_last_name,
+ verification_phone,
+ fk_id_user)
+VALUES
+-- SUPER ADMIN
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf2'),
+ '1990-01-01',
+ 'masculino',
+ 'Bezos',
+ 'Jeff',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=superadmin',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be7')),
+-- ADMINS
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf3'),
+ '1985-07-10',
+ 'masculino',
+ 'Gates',
+ 'Bill',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=admin1',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be8')),
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf4'),
+ '1988-04-09',
+ 'femenino',
+ 'Gates',
+ 'Melinda',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=admin2',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be9')),
+-- SELLERS
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
+ '1968-10-12',
+ 'masculino',
+ 'Musk',
+ 'Elon',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=seller1',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
+ '1996-05-01',
+ 'femenino',
+ 'Musk',
+ 'Maye',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=seller2',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+-- BUYERS
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf7'),
+ '1975-12-05',
+ 'masculino',
+ 'Jobs',
+ 'Steve',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=buyer1',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+(UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf8'),
+ '1980-03-15',
+ 'femenino',
+ 'Jobs',
+ 'Eve',
+ '1234567890',
+ 'https://via.placeholder.com/500.png?text=buyer2',
+ 'Carsi',
+ true,
+ UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 
-insert ignore into subcategories (id_subcategory, fk_id_category, subcategory, image, status)
-values (uuid_to_bin('9e9df4fd-036d-48b1-85e8-4f8f4389f1d4'), uuid_to_bin('3cc47b97-5728-4c81-92bb-3880f8c27e12'),
-        'Subcategoría A', 'imagen_subcategoria_a.jpg', 1),
-       (uuid_to_bin('80c49d95-7edf-4475-91b6-74ef025d2c15'), uuid_to_bin('8367843c-47f7-4f12-af6b-2267f6819969'),
-        'Subcategoría B', 'imagen_subcategoria_b.jpg', 0),
-       (uuid_to_bin('1e2029f0-25b3-4954-bfb7-17a778f12612'), uuid_to_bin('a4a4d8aa-5e1d-45a3-84e6-63f1708377d0'),
-        'Subcategoría C', 'imagen_subcategoria_c.jpg', 1);
+-- USER_ROLES
+INSERT IGNORE INTO user_roles
+(id_user_role,
+ fk_id_role,
+ fk_id_user)
+VALUES
+    -- SUPER ADMIN
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf9'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bee'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be7')),
+    -- ADMINS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bfa'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bef'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be8')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bfb'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bef'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be9')),
+    -- SELLERS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bfc'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf0'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bfd'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf0'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+    -- BUYERS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bfe'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf1'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bff'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf1'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 
-insert ignore into roles (id_role, role_name)
-values (uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'), 'ROLE_ADMIN'),
-       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SELLER'),
-       (uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'), 'ROLE_SUPERADMIN'),
-       (uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'), 'ROLE_BUYER');
+-- ADDRESS STATUS
+INSERT IGNORE INTO address_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c00'),
+        'Habilitada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c01'),
+        'Deshabilitada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02'),
+        'Predeterminada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c03'),
+        'Venta');
 
-insert ignore into users (id_user, password, email, verification_code, status)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'contraseña123', 'usuario1@example.com', 'ABCD1234',
-        1),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'password456', 'usuario2@example.com', 'WXYZ5678',
-        1),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'pass789', 'usuario3@example.com', '1234EFGH', 1);
+-- ADDRESS
+INSERT IGNORE INTO address
+(id_address,
+ address,
+ neighborhood,
+ postal_code,
+ references_address,
+ state,
+ street,
+ fk_id_user,
+ fk_id_status) -- references id_status from address_status
+VALUES
+    -- SUPER ADMIN
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c00'),
+     'Mansion Bezos',
+     'Polanco',
+     '11560',
+     'Hay un Oxxo en la esquina',
+     'Ciudad de México',
+     'Av. Presidente Masaryk',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf2'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    -- ADMINS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c01'),
+     'Mansion Gates',
+     'Roma',
+     '06700',
+     'Hay un indigente abajo del puente de la esquina',
+     'Ciudad de México',
+     'Av. Álvaro Obregón',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf3'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02'),
+     'Mansion Gates',
+     'Roma',
+     '06700',
+     'Hay un indigente abajo del puente de la esquina',
+     'Ciudad de México',
+     'Av. Álvaro Obregón',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf4'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    -- SELLERS
+    -- PREDETERMINADAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c03'),
+     'Mansion Musk',
+     'Condesa',
+     '06140',
+     'Hay un Starbucks en la esquina',
+     'Ciudad de México',
+     'Av. Tamaulipas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c04'),
+     'Mansion Musk',
+     'Condesa',
+     '06140',
+     'Hay un Starbucks en la esquina',
+     'Ciudad de México',
+     'Av. Tamaulipas',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    -- VENTA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c05'),
+     'Tienda de Modas Musky',
+     'Tlalnepantla',
+     '54000',
+     'Hay un perro cojo de tres patas en la esquina',
+     'Estado de México',
+     'Av. Gustavo Baz',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c03')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c06'),
+     'Cuidado con el Husk',
+     'Emiliano Zapata',
+     '62760',
+     'Hay un señor cojo de tres patas en la esquina',
+     'Morelos',
+     'Av. Emiliano Zapata',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c03')),
+-- BUYERS
+-- PREDETERMINADAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c07'),
+     'Mansion Jobs',
+     'Coyoacán',
+     '04000',
+     'Al sur del hospital',
+     'Ciudad de México',
+     'Av. Universidad',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf7'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c08'),
+     'Mansion Jobs',
+     'Coyoacán',
+     '04000',
+     'Al sur del hospital',
+     'Ciudad de México',
+     'Av. Universidad',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf8'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c02')),
+    -- HABILITADAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c09'),
+     'Casa Vacacional Jobs',
+     'Playa del Carmen',
+     '77710',
+     'Al lado del hotel',
+     'Quintana Roo',
+     'Av. Playa del Carmen',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf7'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c00')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0a'),
+     'Apartamento Jobs',
+     'Polanco',
+     '11560',
+     'Al lado del Oxxo',
+     'Ciudad de México',
+     'Av. Presidente Masaryk',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf8'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c00'));
 
-insert ignore into user_roles (id_user_role, fk_id_role, fk_id_user)
-values (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e397837582d'), uuid_to_bin('0f8fad5b-d9cb-469f-a165-70867728950e'),
-        uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4')),
-       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375822'), uuid_to_bin('1ff1e570-3b33-4e1f-a9d0-5fd500e4ac9c'),
-        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6')),
-       (uuid_to_bin('65ac0dd9-4b5d-4b51-9475-4e3978375811'), uuid_to_bin('58c0d70e-8d7b-47e3-bfa9-6f150c0b5c6e'),
-        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'));
+-- SELLERS INFORMATION
+INSERT IGNORE INTO sellers_information
+(fk_id_user, -- references id_person from people
+ curp,
+ image_identification,
+ privacy_policy_agreement,
+ secondary_phone_number,
+ tax_identification_number)
+VALUES
+    -- SELLER 1
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
+     'MUEA680101HDFLNS09',
+     'https://via.placeholder.com/500x300.png?text=identificacion1',
+     true,
+     '1234567891',
+     'IRMUEA680101HDFLNS09'),
+    -- SELLER 2
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
+     'MUEA960501HDFLNS09',
+     'https://via.placeholder.com/500x300.png?text=identificacion2',
+     true,
+     '1234567892',
+     'IRMUEA960501HDFLNS09');
 
-insert ignore into people(fk_id_user, name, last_name, second_last_name, picture, birthday, phone_number, gender)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), 'federico', 'peluche', 'smith', '',
-        '2000-09-12', '7772314221', 'otros'),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), 'billie', 'guzman', 'eilish', '',
-        '2001-12-18', '7778933214', 'femenino'),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), 'dario jose', 'fernandez', 'pinkman', '',
-        '1998-10-01', '7778291039', 'masculino');
+-- CARD STATUS
+INSERT IGNORE INTO card_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0b'),
+        'Habilitada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0c'),
+        'Deshabilitada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
+        'Predeterminada');
 
-insert ignore into address(id_address, address, references_address, postal_code, state, street, neighborhood,
-                           fk_id_user, fk_id_status)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be2'), 'Avenida Juárez 123',
-        'Entre la calle 5 de mayo y la calle 16 de septiembre', '76000', 'Querétaro', 'Juárez', 'Centro',
-        uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), uuid_to_bin('3b43b9d0-9f46-49fe-ae14-e69b8d1ca821')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be3'), 'Avenida Juárez 124',
-        'Entre la calle 5 de mayo y la calle 16 de septiembre', '76000', 'Querétaro', 'Juárez', 'Centro',
-        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), uuid_to_bin('6c013eed-dd65-11ee-8508-64006a586a6a')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be4'), 'Avenida Juárez 125',
-        'Entre la calle 5 de mayo y la calle 16 de septiembre', '76000', 'Querétaro', 'Juárez', 'Centro',
-        uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), uuid_to_bin('3b43b9d0-9f46-49fe-ae14-e69b8d1ca821'));
+-- PAYMENT CARDS
+INSERT IGNORE INTO payment_cards
+(id_payment_card,
+ card_number,
+ cardholder_name,
+ cvv,
+ expiration_date,
+ fk_id_status,
+ fk_id_user)
+VALUES
+    -- SELLERS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0e'),
+     '1234567890123456',
+     'Elon Musk',
+     '123',
+     '12/25',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0f'),
+     '6543210987654321',
+     'Maye Musk',
+     '321',
+     '06/27',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+    -- BUYERS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c10'),
+     '1234567890123457',
+     'Steve Jobs',
+     '456',
+     '04/26',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c11'),
+     '6543210987654322',
+     'Eve Jobs',
+     '654',
+     '03/23',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 
-insert ignore into requests_become_seller (id_request_become_seller, fk_id_user, fk_id_status, rejection_reason)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be5'), uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'),
-        uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'No cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be6'), uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'),
-        uuid_to_bin('7c5409f1-64c5-431d-8b4c-e0d60058d100'), 'Cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be7'), uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'),
-        uuid_to_bin('0d64c931-8f3c-4b0c-a16b-dad013cdaeb4'), 'No cumple con los requisitos');
+-- PRODUCTS
+INSERT IGNORE INTO products
+(id_product,
+ amount,
+ description,
+ price,
+ product_name,
+ status,
+ fk_id_subcategory,
+ fk_id_user)
+VALUES
+    -- SELLER 1
+    -- HOMBRES CAMISAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c12'),
+     8,
+     'Camisa de vestir blanca para hombre de manga larga con tela de algodón',
+     359.99,
+     'Camisa de vestir',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd9'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    -- HOMBRES PANTALONES
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c13'),
+     5,
+     'Pantalón cargo verde militar para hombre con bolsas laterales y traseras',
+     499.99,
+     'Pantalón cargo',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bda'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    -- HOMBRES CAMISETAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c14'),
+     10,
+     'Camiseta negra para hombre con cuello redondo y manga corta',
+     199.99,
+     'Camiseta negra',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdb'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    -- HOMBRES CHAQUETAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c15'),
+     3,
+     'Chamarra de piel negra para hombre con cierre frontal y bolsas laterales',
+     999.99,
+     'Chamarra de piel',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdc'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    -- HOMBRES ACCESORIOS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c16'),
+     15,
+     'Reloj de pulsera para hombre con correa de piel y caja de acero inoxidable',
+     799.99,
+     'Reloj de pulsera',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdd'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    -- SELLER 2
+    -- MUJERES BLUSAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c17'),
+     8,
+     'Blusa de tirantes color rosa para mujer con cuello en V y tela de algodón',
+     259.99,
+     'Blusa rosa',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bde'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+    -- MUJERES FALDAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c18'),
+     5,
+     'Falda corta color azul marino para mujer con cintura elástica y tela de poliéster',
+     399.99,
+     'Falda azul',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdf'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+    -- MUJERES PANTALONES
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c19'),
+     10,
+     'Pantalón de mezclilla color azul para mujer con corte recto y bolsas laterales',
+     499.99,
+     'Pantalón de mezclilla',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be0'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+    -- MUJERES VESTIDOS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1a'),
+     3,
+     'Vestido largo color morado para mujer con cuello en V y manga corta',
+     799.99,
+     'Vestido morado',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be1'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+-- MUJERES ZAPATOS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1b'),
+     15,
+     'Zapatos de tacón color café para mujer con punta redonda y tacón de 10 cm',
+     899.99,
+     'Zapatos de tacón',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be2'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+    -- NIÑOS CAMISETAS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1c'),
+     8,
+     'Camiseta de manga corta color azul para niño con estampado de dinosaurio',
+     199.99,
+     'Camiseta de dinosaurio',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be3'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    -- NIÑOS PANTALONES
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1d'),
+     5,
+     'Pantalón de mezclilla color azul para niño con corte recto y bolsas laterales',
+     299.99,
+     'Pantalón de mezclilla',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be4'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    -- NIÑOS DISFRACES
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1e'),
+     10,
+     'Disfraz de superhéroe para niño con capa y antifaz',
+     399.99,
+     'Disfraz de superhéroe',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be5'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    -- NIÑOS ACCESORIOS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1f'),
+     15,
+     'Mochila escolar para niño con estampado de dinosaurios y bolsas laterales',
+     299.99,
+     'Mochila de dinosaurios',
+     true,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be6'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec'));
 
-insert ignore into sellers_information (fk_id_user, tax_identification_number, privacy_policy_agreement,
-                                        image_identification, curp)
-values (uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'), '123456789', 1, 'imagen_identificacion', 'CURP123456789'),
-       (uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), '987654321', 1, 'imagen_identificacion', 'CURP987654321'),
-       (uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'), '123987456', 0, 'imagen_identificacion', 'CURP123987456');
+-- IMAGE PRODUCT STATUS
+INSERT IGNORE INTO image_product_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20'),
+        'Habilitada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c21'),
+        'Deshabilitada'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22'),
+        'Principal');
 
-insert ignore into payment_cards(id_payment_card, cardholder_name, card_number, expiration_date, cvv, fk_id_user,
-                                 fk_id_status)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be8'), 'Federico Peluche Smith', '1234567891234567', '12/25',
-        '123', uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'),
-        uuid_to_bin('1a14b8df-8269-4484-ba7d-1441f1e1d148')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be9'), 'Billie Guzman Eilish', '9876543219876543', '12/25', '321',
-        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'), uuid_to_bin('efade8fb-6465-4e48-8a0a-146fca51b59d')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be0'), 'Dario Jose Fernandez Pinkman', '1239874561239874',
-        '12/25', '456', uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'),
-        uuid_to_bin('691b3419-dd67-11ee-8508-64006a586a6a'));
+-- PRODUCT GALLERY
+INSERT IGNORE INTO product_gallery
+(id_image,
+ image,
+ fk_id_product,
+ fk_id_status)
+VALUES
+    -- SELLER 1
+    -- CAMISA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c23'),
+     'https://via.placeholder.com/500.png?text=camisa1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c12'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c24'),
+     'https://via.placeholder.com/500.png?text=camisa2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c12'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- PANTALON
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c25'),
+     'https://via.placeholder.com/500.png?text=pantalon1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c13'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c26'),
+     'https://via.placeholder.com/500.png?text=pantalon2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c13'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- CAMISETA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c27'),
+     'https://via.placeholder.com/500.png?text=camiseta1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c14'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c28'),
+     'https://via.placeholder.com/500.png?text=camiseta2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c14'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c99'),
+     'https://via.placeholder.com/500.png?text=camiseta3',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c14'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- CHAMARRA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c29'),
+     'https://via.placeholder.com/500.png?text=chamarra1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c15'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c2a'),
+     'https://via.placeholder.com/500.png?text=chamarra2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c15'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- ACCESORIO
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c2b'),
+     'https://via.placeholder.com/500.png?text=reloj1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c16'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c2c'),
+     'https://via.placeholder.com/500.png?text=reloj2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c16'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- SELLER 2
+    -- BLUSA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c2d'),
+     'https://via.placeholder.com/500.png?text=blusa1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c17'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c2e'),
+     'https://via.placeholder.com/500.png?text=blusa2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c17'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- FALDA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c2f'),
+     'https://via.placeholder.com/500.png?text=falda1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c18'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c30'),
+     'https://via.placeholder.com/500.png?text=falda2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c18'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- PANTALON
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c31'),
+     'https://via.placeholder.com/500.png?text=pantalon1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c19'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c32'),
+     'https://via.placeholder.com/500.png?text=pantalon2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c19'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- VESTIDO
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c33'),
+     'https://via.placeholder.com/500.png?text=vestido1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1a'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c34'),
+     'https://via.placeholder.com/500.png?text=vestido2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1a'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- ZAPATOS
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c35'),
+     'https://via.placeholder.com/500.png?text=zapatos1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1b'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c36'),
+     'https://via.placeholder.com/500.png?text=zapatos2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1b'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- NIÑOS CAMISETA
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c37'),
+     'https://via.placeholder.com/500.png?text=camiseta1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1c'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c38'),
+     'https://via.placeholder.com/500.png?text=camiseta2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1c'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- NIÑOS PANTALON
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c39'),
+     'https://via.placeholder.com/500.png?text=pantalon1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1d'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c3a'),
+     'https://via.placeholder.com/500.png?text=pantalon2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1d'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- NIÑOS DISFRAZ
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c3b'),
+     'https://via.placeholder.com/500.png?text=disfraz1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1e'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c3c'),
+     'https://via.placeholder.com/500.png?text=disfraz2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1e'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20')),
+    -- NIÑOS ACCESORIO
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c3d'),
+     'https://via.placeholder.com/500.png?text=mochila1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1f'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c22')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c3e'),
+     'https://via.placeholder.com/500.png?text=mochila2',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1f'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c20'));
 
-insert ignore into orders (id_order, order_date, order_number, fk_id_payment_card, fk_id_address)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be1'), '2021-12-01', '123456789',
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be8'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be2')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b33'), '2021-12-02', '987654321',
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be9'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be3')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b34'), '2021-12-03', '123987456',
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be0'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be4'));
+-- WISH LIST
+INSERT IGNORE INTO wish_list
+(id_wish,
+ amount,
+ fk_id_product,
+ fk_id_user)
+VALUES
+    -- BUYER 1
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c3f'),
+     1,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c12'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c40'),
+     2,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c13'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    -- BUYER 2
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c41'),
+     3,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c17'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c42'),
+     2,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c18'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 
-insert ignore into products (id_product, product_name, description, price, amount, fk_id_subcategory, status,fk_id_user)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'), 'playera',
-        'playera de algodon', 200.0, 1,
-        uuid_to_bin('9e9df4fd-036d-48b1-85e8-4f8f4389f1d4'), 1,
-        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'), 'pantalon',
-        'pantalon de mezclilla', 300.5, 5,
-        uuid_to_bin('80c49d95-7edf-4475-91b6-74ef025d2c15'), 1,
-        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'), 'zapatos',
-        'zapatos de piel', 400.5, 3,
-        uuid_to_bin('1e2029f0-25b3-4954-bfb7-17a778f12612'), 1,
-        uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'));
+-- SHOPPING CART
+INSERT IGNORE INTO shopping_cart
+(id_shopping_cart,
+ amount,
+ fk_id_product,
+ fk_id_user)
+VALUES
+    -- BUYER 1
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c43'),
+     2,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c14'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c44'),
+     1,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c15'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+    -- BUYER 2
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c45'),
+     1,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c19'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c46'),
+     2,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1a'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 
-insert ignore into product_gallery (id_image, fk_id_product, image, fk_id_status)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b28'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'),
-        'imagen1', uuid_to_bin('bc43ef1a-13a2-4b67-bb13-f1d376e5b510')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b29'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'),
-        'imagen2', uuid_to_bin('2f4b3cb9-e1d8-4cf9-8e16-5e6208bc7e20')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b30'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'),
-        'imagen3', uuid_to_bin('f02ff8b1-dd67-11ee-8508-64006a586a6a'));
+-- REQUEST STATUS
+INSERT IGNORE INTO request_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c47'),
+        'Pendiente'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c48'),
+        'Aprobado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c49'),
+        'Rechazado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4a'),
+        'Cancelado');
 
-insert ignore into orders_has_products (id_order_product, fk_id_order, fk_id_product, amount, fk_id_status)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b10'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89be1'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'), 1, uuid_to_bin('9b8c35d0-7870-41c6-8719-745eaaae1a13')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b11'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b33'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'), 2, uuid_to_bin('9b8c35d0-7870-41c6-8719-745eaaae1a13')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b12'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b34'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'), 3, uuid_to_bin('9b8c35d0-7870-41c6-8719-745eaaae1a13'));
+-- REQUESTS BECOME SELLER
+INSERT IGNORE INTO requests_become_seller
+(id_request_become_seller,
+ rejection_reason,
+ user_seller_information,
+ fk_id_status,
+ fk_id_user)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4b'),
+        '',
+        '{
+          "curp": "MUEA680101HDFLNS09",
+          "image_identification": "https://via.placeholder.com/500x300.png?text=identificacion1",
+          "privacy_policy_agreement": true,
+          "secondary_phone_number": "1234567891",
+          "tax_identification_number": "IRMUEA680101HDFLNS09"
+        }',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c48'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4c'),
+        '',
+        '{
+          "curp": "MUEA960501HDFLNS09",
+          "image_identification": "https://via.placeholder.com/500x300.png?text=identificacion2",
+          "privacy_policy_agreement": true,
+          "secondary_phone_number": "1234567892",
+          "tax_identification_number": "IRMUEA960501HDFLNS09"
+        }',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c48'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4d'),
+        'El CURP proporcionado no coincide con la identificación oficial',
+        '{
+          "curp": "MVEA960501HDFLNS09",
+          "image_identification": "https://via.placeholder.com/500x300.png?text=identificacion2",
+          "privacy_policy_agreement": true,
+          "secondary_phone_number": "1234567892",
+          "tax_identification_number": "IRMUEA960501HDFLNS09"
+        }',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c49'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 
-insert ignore into reviews(id_review,comment, fk_id_order_product, review_date, assessment)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b13'), 'Excelente producto', uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b10'),
-        '2021-12-01', 5),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b14'), 'Buen producto', uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b11'),
-        '2021-12-02', 4),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b15'), 'Malo producto', uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b12'),
-        '2021-12-03', 2);
+-- REQUESTS DATA CHANGE
+INSERT IGNORE INTO requests_data_change
+(id_request_data_change,
+ new_user_information,
+ rejection_reason,
+ fk_id_status,
+ fk_id_user)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4e'),
+        '{
+          "secondary_phone_number": "1234567899"
+        }',
+        '',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c47'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea'));
 
-insert ignore into shopping_cart(id_shopping_cart, fk_id_user, fk_id_product, amount)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b16'), uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'), 1),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b17'), uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'), 2),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b18'), uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'), 3);
+-- REQUESTS SELL PRODUCT
+INSERT IGNORE INTO requests_sell_product
+(id_request_sell_product,
+ rejection_reason,
+ fk_id_product,
+ fk_id_status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4f'),
+        '',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1e'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c47')),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c50'),
+        '',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1f'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c47'));
 
-insert ignore into wish_list (id_wish, amount, fk_id_user, fk_id_product)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b19'), 1, uuid_to_bin('64327ac8-6bd5-47b4-b9a3-25b3438f6ec4'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b20'), 2, uuid_to_bin('5e56a7ab-7e5d-4f7d-b2de-42b3cc8d74f6'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26')),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b21'), 3, uuid_to_bin('e53cf28d-90b9-4c5b-9a2e-f0f343e8e42f'),
-        uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'));
+-- ORDERS
+INSERT IGNORE INTO orders
+(id_order,
+ order_date,
+ order_number, -- 16 alfanumeric
+ fk_id_address,
+ fk_id_payment_card)
+VALUES
+    -- BUYER 1
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c51'),
+     '2024-01-01',
+     'A1B2C3D4E5F6G7H8',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c07'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c10')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c52'),
+     '2024-01-02',
+     'H8G7F6E5D4C3B2A1',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c09'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c10')),
+    -- BUYER 2
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c53'),
+     '2024-01-03',
+     '1A2B3C4D5E6F7G8H',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c08'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c11')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c54'),
+     '2024-01-04',
+     'H7G6F5E4D3C2B1A',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0a'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c11'));
 
-insert ignore into requests_return_product (id_request_return_product, order_has_product, fk_id_status, rejection_reason)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b22'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b10'),
-        uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'No cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b23'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b11'),
-        uuid_to_bin('7c5409f1-64c5-431d-8b4c-e0d60058d100'), 'Cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b24'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b12'),
-        uuid_to_bin('0d64c931-8f3c-4b0c-a16b-dad013cdaeb4'), 'No cumple con los requisitos');
+-- ORDER STATUS
+INSERT IGNORE INTO order_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c55'),
+        'Preparación'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c56'),
+        'Enviado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c57'),
+        'Entregado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c58'),
+        'Cancelado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c59'),
+        'Reembolsado');
 
-insert ignore into return_product_gallery (id_image, fk_id_request_return_product, image)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b22'),
-        'imagen1'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b23'),
-        'imagen2'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b24'),
-        'imagen3');
+-- ORDERS HAS PRODUCTS
+INSERT IGNORE INTO orders_has_products
+(id_order_product,
+ amount,
+ fk_id_order,
+ fk_id_product,
+ fk_id_status)
+VALUES
+    -- BUYER 1
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5a'),
+     1,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c51'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1b'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c55')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5b'),
+     2,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c51'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c19'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c55')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5c'),
+     3,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c52'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c16'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c57')),
+    -- BUYER 2
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c88'),
+     3,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c53'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c15'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c56')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5d'),
+     2,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c53'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c12'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c56')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5e'),
+     1,
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c54'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1c'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c59'));
 
-insert ignore into requests_sell_product(id_request_sell_product, fk_id_product, fk_id_status, rejection_reason)
-values (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b28'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b25'),
-        uuid_to_bin('9f1cb62f-8b57-46d1-95d4-8481e4f1c9e2'), 'No cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b29'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b26'),
-        uuid_to_bin('7c5409f1-64c5-431d-8b4c-e0d60058d100'), 'Cumple con los requisitos'),
-       (uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b30'), uuid_to_bin('58d09dec-94b3-4db7-a60c-abb986a89b27'),
-        uuid_to_bin('0d64c931-8f3c-4b0c-a16b-dad013cdaeb4'), 'No cumple con los requisitos');
+-- REVIEWS
+INSERT IGNORE INTO reviews
+(id_review,
+ assessment,
+ comment,
+ review_date,
+ fk_id_order_product)
+VALUES
+    -- BUYER 1
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5f'),
+     5,
+     'Excelente producto, muy buena calidad',
+     '2024-01-02',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5a')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c60'),
+     4,
+     'Buena calidad, pero tardó un poco en llegar',
+     '2024-01-03',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5b')),
+    -- BUYER 2
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c61'),
+     3,
+     'No era lo que esperaba, pero está bien',
+     '2024-01-04',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5c')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c62'),
+     2,
+     'No me gustó, no era lo que esperaba',
+     '2024-01-05',
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5d'));
 
+-- REQUESTS RETURN PRODUCT
+INSERT IGNORE INTO requests_return_product
+(id_request_return_product,
+ rejection_reason,
+ order_has_product,
+ fk_id_status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c63'),
+        '',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c5e'),
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c48'));
+
+-- RETURN PRODUCT GALLERY
+INSERT IGNORE INTO return_product_gallery
+(id_image,
+ image,
+ fk_id_request_return_product)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c64'),
+        'https://via.placeholder.com/500.png?text=devolucion1',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c63')),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c65'),
+        'https://via.placeholder.com/500.png?text=devolucion2',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c63')),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c66'),
+        'https://via.placeholder.com/500.png?text=devolucion3',
+        UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c63'));

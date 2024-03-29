@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -24,18 +23,6 @@ public class RequestsBecomeSellerController {
         this.requestsBecomeSellerService = requestsBecomeSellerService;
     }
 
-    @PostMapping("/get-by-email")
-    public ResponseEntity<CustomResponse<RequestsBecomeSellerResponseDTO>> getRequestBecomeSellerByEmail(@RequestBody RequestBecomeSellerGetDTO getRequestData) {
-        String email = getRequestData.getEmail();
-        RequestsBecomeSellerResponseDTO requestData = requestsBecomeSellerService.getRequestBecomeSellerByEmail(email).orElse(null);
-
-        if (requestData != null) {
-            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomResponse<>(null, "Request not found", true, 404));
-        }
-    }
 
     @PostMapping("/post-request-become-seller")
     public ResponseEntity<CustomResponse<String>> postRequestBecomeSeller(@RequestBody RequestsBecomeSellerPostDTO requestData){
@@ -45,8 +32,9 @@ public class RequestsBecomeSellerController {
         return ResponseEntity.ok(new CustomResponse<>("Request created successfully", "Request created", false, 200));
     }
 
-    @PutMapping("/put-request-become-seller")
+    @PostMapping("/put-request-become-seller")
     public ResponseEntity<CustomResponse<String>> putRequestBecomeSeller(@RequestBody RequestsBecomeSellerPutDTO requestData) {
+        System.out.println(requestData);
         UUID requestId = requestData.getIdRequestBecomeSeller();
         String status = requestData.getStatus();
         String rejectionReason = requestData.getRejectionReason();
@@ -60,7 +48,20 @@ public class RequestsBecomeSellerController {
     }
 
     @GetMapping("/get-page")
-    public Page<IRequestsBecomeSeller.StatusProjection> getPageRequestBecomeSeller(Pageable pageable) {
+    public Page<IRequestsBecomeSeller.RequestBecomeSellerProjection> getPageRequestBecomeSeller(Pageable pageable) {
         return requestsBecomeSellerService.getPageRequestBecomeSeller(pageable);
+    }
+
+    @PostMapping("/get-by-id-request-become-seller")
+    public ResponseEntity<CustomResponse<Object>> getRequestBecomeSellerById(@RequestBody RequestBecomeSellerGetByIdDTO getByIdDTO) {
+        UUID requestId = getByIdDTO.getIdRequestBecomeSeller();
+        RequestBecomeSellerGetByIdResponseDTO requestData = requestsBecomeSellerService.getRequestBecomeSellerById(requestId).orElse(null);
+
+        if (requestData != null) {
+            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomResponse<>(null, "Request not found", true, 404));
+        }
     }
 }
