@@ -10,7 +10,7 @@
             <b-col cols="12" lg=4>
                 <b-form-group>
                     <div class="position-relative">
-                        <b-form-input class="pr-5" id="search" type="text" placeholder="Buscar..."/>
+                        <b-form-input class="pr-5" id="search" type="text" placeholder="Buscar..." v-model="searchTerm" @input="filterCategories"/>
                         <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
                     </div>
                 </b-form-group>
@@ -25,8 +25,14 @@
             <b-col>
                 <b-row></b-row>
 
+                <b-row class="text-center mt-3" v-if="filteredCategories.length === 0" >
+                    <b-col>
+                        <p>No se encuentra la categoria "{{ searchTerm }}"</p>
+                    </b-col>
+                </b-row>
+
                 <b-row>
-                    <b-col cols="auto" v-for="category in categories" :key="category.id">
+                    <b-col cols="auto" v-for="category in filteredCategories" :key="category.id">
                         <b-card
                             class="highlight-on-hover mb-2"
                             :img-src="category.image"
@@ -59,9 +65,6 @@
                     </b-col>
                 </b-row>
             </b-col>
-            <b-col class="align-seld-start" cols="auto" style="margin-top: 1rem">
-                <font-awesome-icon icon="fa-solid fa-filter" />
-            </b-col>
         </b-row>
 
         <b-row class="mt-5">
@@ -93,22 +96,22 @@ export default Vue.extend({
     data() {
         return {
             categories: [],
+            filteredCategories: [],
             objectPagination: {
                 page: 1,
                 size: 24,
                 elements: 0
             },
             selectedCategory: {},
+            searchTerm: ''
         }
     },
     methods: {
         async getCategories() {
-            //this.showOverlay();
             const response = await CategoriesService.getCategories();
             console.log("response... ", response.data.content);
-            //this.showOverlay();
-            //this.objectPagination.elements = response.totalElements;
             this.categories = response.data.content;
+            this.filteredCategories = this.categories;
         },
         async changeStatusCategory(category) {
             await showInfoAlert(
@@ -135,8 +138,13 @@ export default Vue.extend({
             this.$store.dispatch('changeStatusOverlay')
         },
         refreshCategories(){
-        this.getCategories();
+            this.getCategories();
         },
+        filterCategories() {
+            this.filteredCategories = this.categories.filter(category =>
+                category.category.toLowerCase().startsWith(this.searchTerm.trim().toLowerCase())
+            );
+        }
     },
     
     mounted() {
