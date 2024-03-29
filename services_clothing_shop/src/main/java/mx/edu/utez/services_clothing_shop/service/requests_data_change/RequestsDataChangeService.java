@@ -82,10 +82,7 @@ public class RequestsDataChangeService {
             if (newSecondLastName != null) {
                 person.setSecondLastName(newSecondLastName);
             }
-            String newPicture = requestData.getPicture();
-            if (newPicture != null) {
-                person.setPicture(newPicture);
-            }
+
             LocalDate newBirthday = requestData.getBirthday();
             if (newBirthday != null) {
                 person.setBirthday(newBirthday);
@@ -121,6 +118,9 @@ public class RequestsDataChangeService {
 
             BeanUser user = requestDataChange.getUser();
             BeanPerson person = user.getPerson();
+            String genderAsString = person != null ? person.getGender().toString() : null;
+
+
 
             return new RequestDataChangeIdDTO(
                     requestDataChange.getIdRequestDataChange(),
@@ -130,7 +130,11 @@ public class RequestsDataChangeService {
                     requestDataChange.getStatus().getStatus(),
                     person != null ? person.getIdPerson() : null,
                     person != null ? person.getName() : null,
-                    person != null ? person.getLastName() : null
+                    person != null ? person.getLastName() : null,
+                    person != null ? person.getSecondLastName() : null,
+                    person != null ? person.getBirthday() : null,
+                    person != null ? person.getPhoneNumber() : null,
+                    genderAsString
             );
         } else {
             throw new CustomException("dataChange.requestId.notFound");

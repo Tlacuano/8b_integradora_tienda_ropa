@@ -4,7 +4,6 @@ public class NewInformation {
     private String name;
     private String lastName;
     private String secondLastName;
-    private String picture;
     private String birthday;
     private String phoneNumber;
     private String gender;
@@ -22,9 +21,6 @@ public class NewInformation {
     }
 
 
-    public String getPicture() {
-        return picture;
-    }
 
     public String getBirthday() {
         return birthday;
