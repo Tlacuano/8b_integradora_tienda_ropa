@@ -70,6 +70,9 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/delete-personal-information-incomplete").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/verify-phone").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/resend-phone-code").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/get-personal-information").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/put-personal-information").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/put-picture").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
 
                                 //Modulo shopping-cart
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").hasRole("BUYER")

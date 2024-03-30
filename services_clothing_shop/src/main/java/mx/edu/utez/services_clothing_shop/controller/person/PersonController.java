@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.person;
 
 import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPersonalInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPictureDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
@@ -24,11 +25,24 @@ public class PersonController {
         this.personService = personService;
     }
 
+    @PostMapping("/get-personal-information")
+    public ResponseEntity<Object> getPersonalInformation(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.getPersonalInformation(payload.getEmail()), "Información personal encontrada", false, 200),
+                HttpStatus.OK);
+    }
 
     @PostMapping("/post-personal-information")
     public ResponseEntity<Object> postPersonalInformation(@Validated @RequestBody RequestPutPersonalInformationDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(personService.postPersonalInformation(payload), "Información personal registrada correctamente", false, 201),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/put-personal-information")
+    public ResponseEntity<Object> putPersonalInformation(@Validated @RequestBody RequestPutPersonalInformationDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.putPersonalInformation(payload), "Información personal actualizada correctamente", false, 200),
                 HttpStatus.OK);
     }
 
@@ -50,6 +64,13 @@ public class PersonController {
     public ResponseEntity<Object> deletePersonalInformationIncomplete(@Validated @RequestBody RequestActionByEmailDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(personService.deletePersonalInformationIncomplete(payload), "Información personal eliminada correctamente", false, 200),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/put-picture")
+    public ResponseEntity<Object> putPicture(@Validated @RequestBody RequestPutPictureDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.putPicture(payload), "Imagen actualizada correctamente", false, 200),
                 HttpStatus.OK);
     }
 
