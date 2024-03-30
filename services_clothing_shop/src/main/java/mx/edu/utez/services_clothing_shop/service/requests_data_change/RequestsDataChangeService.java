@@ -109,8 +109,8 @@ public class RequestsDataChangeService {
         IRequestsDataChange.insertRequestDataChange(email, newUserInfoJSON);
     }
 
-    public RequestDataChangeIdDTO getRequestByID(UUID requestId) {
-        Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(requestId);
+    public RequestDataChangeIdDTO getRequestByID(UUID idRequestDataChange) {
+        Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(idRequestDataChange);
 
         if (requestDataChangeOptional.isPresent()) {
             BeanRequestDataChange requestDataChange = requestDataChangeOptional.get();
