@@ -58,6 +58,15 @@ const putPersonalInformationService = async (payload) => {
     }
 }
 
+const putPictureService = async (payload) => {
+    try {
+        return await axios.doPost("/venta-ropa/api/person/put-picture", payload)
+    } catch (e) {
+        showWarningToast('',error)
+        return e.data
+    }
+}
+
 
 export default {
     postPersonalInformationService,
@@ -65,5 +74,6 @@ export default {
     deletePersonalInformationIncompleteService,
     resendPhoneCodeService,
     getPersonalInformationService,
-    putPersonalInformationService
+    putPersonalInformationService,
+    putPictureService
 }

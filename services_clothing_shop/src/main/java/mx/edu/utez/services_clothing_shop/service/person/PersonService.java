@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.service.person;
 
 
 import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPersonalInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPictureDTO;
 import mx.edu.utez.services_clothing_shop.controller.person.dto.ResponseGetPersonalInformationDTO;
 import mx.edu.utez.services_clothing_shop.controller.twilio.dto.SendSmsDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
@@ -204,4 +205,21 @@ public class PersonService {
     }
 
 
+    @Transactional
+    public boolean putPicture(RequestPutPictureDTO payload) {
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+
+        BeanPerson person = personRepository.findByUser(user);
+        if(person == null){
+            throw new CustomException("person.not.found");
+        }
+
+        person.setPicture(payload.getPicture());
+        personRepository.save(person);
+
+        return true;
+    }
 }

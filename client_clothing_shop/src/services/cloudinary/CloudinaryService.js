@@ -1,14 +1,14 @@
 import axios from "../../config/http-client.gateway"
+import {showWarningToast} from "@/components/alerts/alerts";
 
 const uploadImage = async (file) => {
     try {
-        console.log(file);
         const formData = new FormData();
         formData.append('file', file);
 
         return await axios.doPostImage("/venta-ropa/api/images/upload-image", formData);
     } catch (e) {
-        console.log(e.response.data);
+        showWarningToast( "Error al cargar la imagen")
         throw new Error("Error al cargar la imagen")
     }
 }

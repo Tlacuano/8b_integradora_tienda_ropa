@@ -22,7 +22,7 @@
                   @mouseleave="showEditPicture = false"
               >
                 <template #badge v-if="showEditPicture"  >
-                  <font-awesome-icon icon="fa-solid fa-pen" class="selectable"/>
+                  <font-awesome-icon icon="fa-solid fa-pen" class="selectable" v-b-modal:put-picture-profile-modal/>
                 </template>
               </b-avatar>
             </div>
@@ -214,6 +214,7 @@
     </b-row>
 
     <PutPersonalInformationProfileModal/>
+    <PutPictureProfileModal/>
   </section>
 </template>
 
@@ -224,6 +225,7 @@ export default {
   name: 'UserDetails',
   components: {
     PutPersonalInformationProfileModal: () => import("@/views/user/PutPersonalInformationProfileModal.vue"),
+    PutPictureProfileModal: () => import("@/views/user/PutPictureProfileModal.vue"),
   },
   data() {
     return {
