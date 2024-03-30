@@ -26,6 +26,7 @@ export default {
         {id: 2, title: 'Solicitudes de venta', icon: 'fa-solid fa-shopping-cart', to: 'ProductSaleRequest'},
         {id: 3, title: 'Subcategorías', icon: 'fa-solid fa-folder-tree', to: 'ADMINSubcategoryManagement'},
         {id: 4, title: 'Solcitudes de vendedor', icon: 'fa-solid fa-user-plus', to: 'ADMINRequestBecomeSellerManagement'},
+        {id: 5, title: 'Categorías', icon: 'fa-solid fa-layer-group', to: 'ADMINCategoryManagement'},
       ]
 
     };
