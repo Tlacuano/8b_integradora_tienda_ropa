@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface IOrder extends JpaRepository<BeanOrder, UUID> {
+
+    @Query(value = "SELECT  o from BeanOrder o join  BeanAddress a on o.address.idAddress = a.idAddress join BeanPerson p on a.person.idPerson = p.idPerson join BeanUser u on p.user.idUser = u.idUser where u.email = :email")
     Page<BeanOrder> findAllByAddress_Person_User_Email(String email, Pageable page);
 
     @Query(value = "CALL sp_post_order(:p_user_id, :p_order_date, :p_order_id_address, :p_order_id_payment_card, :p_order_number);", nativeQuery = true)

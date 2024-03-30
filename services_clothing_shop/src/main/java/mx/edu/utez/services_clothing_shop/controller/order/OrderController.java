@@ -6,10 +6,12 @@ import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderAddr
 import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderDTO;
 import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestOrderByUserEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.ResponsePaymentCardDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,8 @@ public class OrderController {
     }
 
     @PostMapping("/get-orders-by-user-email")
-    public ResponseEntity<CustomResponse<Page<ResponseOrderDTO>>> getOrdersByUserEmail(@Valid @RequestBody RequestOrderByUserEmailDTO userEmailPageRequestDTO) {
-        Page<BeanOrder> orders = orderService.getOrdersByUserEmail(userEmailPageRequestDTO.getEmail(), userEmailPageRequestDTO.getPage());
+    public ResponseEntity<Object> getOrdersByUserEmail(@Valid @RequestBody RequestActionByEmailDTO payload, Pageable pageable) {
+        Page<BeanOrder> orders = orderService.getOrdersByUserEmail(payload.getEmail(), pageable);
         Page<ResponseOrderDTO> responseOrders = orders.map(order -> new ResponseOrderDTO().toOrderDTO(order));
         return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(responseOrders, "Orders found", false, HttpStatus.OK.value()));
     }
