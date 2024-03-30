@@ -31,7 +31,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-row no-gutters>
+      <b-row v-if="products.length > 0" no-gutters>
         <b-col
             v-for="product in products"
             :key="product.idProduct"
@@ -58,22 +58,34 @@
                   <b-icon icon="heart"/>
                 </b-col>
               </b-row>
-              <p class="mb-0">{{ product.price }}</p>
+              <p class="mb-0">$ {{ product.price }} MXN</p>
               <p class="mb-0">{{ product.amount }} disponibles</p>
             </b-card-text>
           </b-card>
         </b-col>
       </b-row>
+      <b-row v-else class="full-page" no-gutters>
+        <b-col class="text-center" cols="12">
+          <h3>No existen productos con los datos que especificaste</h3>
+        </b-col>
+      </b-row>
     </div>
+
+    <LoginModal/>
   </div>
 </template>
 
 <script>
 import ProductService from "@/services/product/ProductService";
 import CategoryService from "@/services/category/CategoryService";
+import {codeCrypto} from "@/utils/security/cryptoJs";
 
 export default {
   name: "GuestProducts",
+  components: {
+    LoginModal: () => import("@/views/auth/LoginModal.vue"),
+  },
+
   data() {
     return {
       search: "",
@@ -95,7 +107,6 @@ export default {
     },
 
     async getCategoryProducts() {
-      console.log("Getting category products")
       if (!this.selectedCategory) {
         await this.getCategories();
         return;
@@ -129,7 +140,8 @@ export default {
     },
 
     selectProduct(productId) {
-
+      const encodedId = codeCrypto(productId);
+      this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
     },
 
     showOverlay() {

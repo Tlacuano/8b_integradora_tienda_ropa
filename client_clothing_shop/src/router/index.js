@@ -25,7 +25,7 @@ const router = new VueRouter({
             component: () => import("../Home.vue"),
             children: [
                 {
-                    path: "/",
+                    path: "store",
                     name: "UserProducts",
                     component: () => import("../views/product/GuestProducts.vue"),
                 },
@@ -50,20 +50,22 @@ const router = new VueRouter({
                 },
 
                 {
-                    path: "/:category",
+                    path: "store/:category",
                     name: "UserProductsCategory",
                     component: () => import("../views/product/GuestProducts.vue"),
                     props: true
                 },
                 {
-                    path: "/:category/:subcategory",
+                    path: "store/:category/:subcategory",
                     name: "UserProductsSubcategory",
                     component: () => import("../views/product/GuestProducts.vue"),
                     props: true
                 },
                 {
-                    path: "/product-details/:id",
-                    name: "ProductDetails",
+                    path: "product-details/:id",
+                    name: "UserProductDetails",
+                    component: () => import("../views/product/ProductDetails.vue"),
+                    props: true
                 },
                 {
                     path:"user-management",
