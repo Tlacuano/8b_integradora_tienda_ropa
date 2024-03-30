@@ -23,11 +23,13 @@ const router = new VueRouter({
             path: "/",
             name: "Home",
             component: () => import("../Home.vue"),
+            redirect: "/store",
             children: [
                 {
-                    path: "/",
+                    path: "store",
                     name: "UserProducts",
                     component: () => import("../views/product/GuestProducts.vue"),
+                    meta: { title: "K&I | Tienda" },
                 },
                 {
                     path: "user-management",
@@ -50,20 +52,25 @@ const router = new VueRouter({
                 },
 
                 {
-                    path: "/:category",
+                    path: "store/:category",
                     name: "UserProductsCategory",
                     component: () => import("../views/product/GuestProducts.vue"),
-                    props: true
+                    props: true,
+                    meta: { title: "K&I | Tienda" },
                 },
                 {
-                    path: "/:category/:subcategory",
+                    path: "store/:category/:subcategory",
                     name: "UserProductsSubcategory",
                     component: () => import("../views/product/GuestProducts.vue"),
-                    props: true
+                    props: true,
+                    meta: { title: "K&I | Tienda" },
                 },
                 {
-                    path: "/product-details/:id",
-                    name: "ProductDetails",
+                    path: "product-details/:id",
+                    name: "UserProductDetails",
+                    component: () => import("../views/product/ProductDetails.vue"),
+                    props: true,
+                    meta: { title: "K&I | Detalles del producto" },
                 },
                 {
                     path:"user-management",
