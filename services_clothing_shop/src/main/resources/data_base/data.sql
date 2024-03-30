@@ -290,6 +290,13 @@ VALUES
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf0'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
     -- BUYERS
+     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bda'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf1'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
+    (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bdb'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf1'),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
+
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bfe'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf1'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
