@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.logging.Logger;
+
 
 @ControllerAdvice
 public class EncryptionAdvice implements ResponseBodyAdvice<Object>{
@@ -48,7 +50,7 @@ public class EncryptionAdvice implements ResponseBodyAdvice<Object>{
 
                 return encryptedJson;
             } catch (Exception e) {
-
+                Logger.getLogger("Error encriptando respuesta" + e.getMessage());
                 throw new CustomException("controller.advice.encrypter");
             }
         }
