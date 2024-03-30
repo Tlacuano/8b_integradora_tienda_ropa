@@ -6,7 +6,9 @@
       <NavbarSeller v-if="getRole === 'SELLER' && isLoggedIn" />
 
       <b-container fluid class="app-container pt-2" >
-        <router-view />
+        <transition name="fade" mode="out-in">
+          <router-view />
+        </transition>
       </b-container>
     </b-overlay>
   </div>
@@ -36,9 +38,16 @@ export default {
 </script>
 
 <style >
+
 .app-container{
   height: calc(100vh - 50px);
   overflow-y: auto;
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.35s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
 }
 
 .app-container::-webkit-scrollbar {
