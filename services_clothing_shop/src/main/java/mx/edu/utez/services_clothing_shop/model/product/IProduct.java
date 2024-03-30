@@ -21,9 +21,9 @@ public interface IProduct extends JpaRepository<BeanProduct, UUID> {
 
     boolean existsByProductName(String productName);
 
-    @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.category.category = :category AND p.status = true")
+    @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
     List<BeanProduct> findAllByCategory(String category);
 
-    @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.subcategory = :subcategory AND p.status = true")
-    List<BeanProduct> findAllBySubcategory(String subcategory);
+    @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.subcategory = :subcategory AND p.status = true AND p.subcategory.category.category = :category AND p.amount > 0")
+    List<BeanProduct> findAllBySubcategory(String category, String subcategory);
 }

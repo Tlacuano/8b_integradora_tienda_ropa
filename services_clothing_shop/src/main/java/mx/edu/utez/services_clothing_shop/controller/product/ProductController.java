@@ -56,7 +56,7 @@ public class ProductController {
     @PostMapping("/get-by-subcategory")
     public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload) {
         try {
-            List<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getSubcategory());
+            List<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory());
             List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
             for (BeanProduct product : beanProductList) {
                 responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));

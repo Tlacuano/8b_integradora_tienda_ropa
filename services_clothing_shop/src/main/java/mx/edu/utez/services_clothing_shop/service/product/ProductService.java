@@ -37,8 +37,8 @@ public class ProductService {
     }
 
     @Transactional
-    public List<BeanProduct> getProductsBySubcategory(String subcategory) {
-        return iProduct.findAllBySubcategory(subcategory);
+    public List<BeanProduct> getProductsBySubcategory(String category, String subcategory) {
+        return iProduct.findAllBySubcategory(category, subcategory);
     }
 
     @Transactional

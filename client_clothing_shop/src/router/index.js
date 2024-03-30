@@ -62,6 +62,10 @@ const router = new VueRouter({
                     props: true
                 },
                 {
+                    path: "/product-details/:id",
+                    name: "ProductDetails",
+                },
+                {
                     path:"user-management",
                     name:"ADMINUserManagement",
                     component: () => import("../views/user/UserManagement.vue"),
