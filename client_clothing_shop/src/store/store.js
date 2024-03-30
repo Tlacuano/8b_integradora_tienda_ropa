@@ -25,9 +25,8 @@ export default new Vuex.Store({
             state.role = '';
             state.hasMultipleRoles = false;
         },
-        switchUserRole(state, { newRole, newToken }){
+        switchUserRole(state, { newRole}){
             state.role = newRole;
-            state.token = newToken;
         },
         setStatusOverlay(state, {newStateOverlay}){
             state.showOverlay = newStateOverlay;
@@ -63,10 +62,6 @@ export default new Vuex.Store({
             localStorage.clear();
             window.location.href = '/';
             commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
-        },
-        switchRole({ commit, state }, { newRole, newToken }) {
-            commit('switchUserRole', { newRole, newToken });
-            window.location.reload();
         },
         changeStatusOverlay({state,commit}){
             commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
