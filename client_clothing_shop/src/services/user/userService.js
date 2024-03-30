@@ -13,6 +13,16 @@ const getPageUsersService = async (pagination) => {
     }
 }
 
+const getPageUsersByEmailService = async (pagination, payload) => {
+    try {
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/users/get-page-by-email?size=${size}&page=${page - 1}`, payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
+
 const putStatusUserService = async (payload) => {
     try{
         const response = await axios.doPost("/venta-ropa/api/users/put-status", payload);
@@ -96,5 +106,6 @@ export default {
     verifyCodeService,
     getProfileService,
     resendEmailCode,
-    deleteIncompleteAccountService
+    deleteIncompleteAccountService,
+    getPageUsersByEmailService
 };

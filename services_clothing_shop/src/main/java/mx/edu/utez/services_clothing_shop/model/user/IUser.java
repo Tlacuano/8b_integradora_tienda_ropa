@@ -34,4 +34,6 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
 
     @Query(value = "CALL sp_delete_user(:p_email)", nativeQuery = true)
     String deleteAccount(@Param("p_email") String email);
+
+    Page<BeanUser> findAllByEmailLikeIgnoreCase(String email, Pageable pageable);
 }
