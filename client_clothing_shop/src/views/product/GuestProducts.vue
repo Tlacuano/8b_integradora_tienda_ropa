@@ -36,34 +36,30 @@
             v-for="product in products"
             :key="product.idProduct"
             cols="12"
-            sm="6" s
+            sm="6"
             md="4"
             lg="3"
-            class="mb-4 p-3"
+            class="p-3"
         >
           <b-card
-              :img-src="product.productGallery[0].imageUrl"
+              :img-src="product.productGallery[0].image"
               img-alt="Image"
               img-top
               tag="article"
-              class="mb-2 selectable zoom-on-hover"
+              class="mb-2 selectable zoom-on-hover h-100"
           >
-            <b-row no-gutters>
-              <b-col cols="12" lg="8">
-                <b-card-text class="text-left">
+            <b-card-text class="text-left">
+              <b-row no-gutters>
+                <b-col cols="8">
                   <p class="mb-0 font-weight-bold">{{ product.productName }}</p>
-                  <p class="mb-0">{{ product.price }}</p>
-                  <p>{{ product.amount }} disponibles</p>
-                </b-card-text>
-              </b-col>
-              <b-col cols="12" lg="4" class="">
-                <b-row class="h-50" no-gutters>
-                  <b-col cols="12" class="text-right">
-                    <b-icon icon="heart"/>
-                  </b-col>
-                </b-row>
-              </b-col>
-            </b-row>
+                </b-col>
+                <b-col cols="4" class="text-right">
+                  <b-icon icon="heart"/>
+                </b-col>
+              </b-row>
+              <p class="mb-0">{{ product.price }}</p>
+              <p class="mb-0">{{ product.amount }} disponibles</p>
+            </b-card-text>
           </b-card>
         </b-col>
       </b-row>
