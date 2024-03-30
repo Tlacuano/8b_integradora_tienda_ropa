@@ -54,8 +54,8 @@ public class RequestsDataChangeController {
     }
 
     @PostMapping("/get-by-id-request-data-change")
-    public ResponseEntity<RequestDataChangeIdDTO> getRequestDataChangeById(@RequestBody RequestDataChangeIdDTO requestBody) {
-        UUID requestId = requestBody.getRequestId();
+    public ResponseEntity<RequestDataChangeIdDTO> getRequestDataChangeById(@RequestBody GetRequestDataChangeId requestDTO) {
+        UUID requestId = requestDTO.getIdRequestDataChange();
 
         try {
             RequestDataChangeIdDTO response = requestsDataChangeService.getRequestByID(requestId);

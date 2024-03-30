@@ -27,6 +27,7 @@ export default {
         {id: 3, title: 'Subcategorías', icon: 'fa-solid fa-folder-tree', to: 'ADMINSubcategoryManagement'},
         {id: 4, title: 'Solcitudes de vendedor', icon: 'fa-solid fa-user-plus', to: 'ADMINRequestBecomeSellerManagement'},
         {id: 5, title: 'Categorías', icon: 'fa-solid fa-layer-group', to: 'ADMINCategoryManagement'},
+        {id: 6, title: 'Solicitudes de cambio de datos', icon: 'fa-solid fa-user-edit', to: 'ADMINRequestDataChangeManagement'},
       ]
 
     };
