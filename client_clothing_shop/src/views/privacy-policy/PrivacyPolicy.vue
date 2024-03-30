@@ -1,7 +1,7 @@
 <template>
-  <section class="interface mt-4  pb-2">
+  <section class="interface pb-2">
     <b-container>
-      <b-card class="mb-5">
+      <b-card class="my-3">
         <b-row>
           <b-col class="text-center">
             <img src="../../assets/image/logo.png" alt="logo k&I" class="logo-policy">
@@ -244,6 +244,12 @@ export default {
 <style>
 .logo-policy {
   width: 40% !important;
+}
+
+.interface{
+  background-color: #eff1f1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 

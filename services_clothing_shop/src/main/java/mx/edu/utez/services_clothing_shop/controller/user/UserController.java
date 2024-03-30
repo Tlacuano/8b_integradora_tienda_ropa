@@ -116,4 +116,20 @@ public class UserController {
     }
 
 
+    @PostMapping("/resend-email-code")
+    public ResponseEntity<Object> resendEmailCode(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.resendEmailCode(payload.getEmail()), "Código reenviado correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/delete-incomplete-account")
+    public ResponseEntity<Object> deleteIncompleteAccount(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.deleteIncompleteAccount(payload.getEmail()), "Cuenta eliminada correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
+
 }

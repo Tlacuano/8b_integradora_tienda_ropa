@@ -58,7 +58,7 @@ public class BeanPerson {
 
 
     @Column(name = "verification_phone", columnDefinition = "TINYINT(1)")
-    private boolean verificationPhone;
+        private boolean verificationPhone;
 
     //relacion uno a uno con la tabla seller_information
     @OneToOne(mappedBy = "person", orphanRemoval = true)

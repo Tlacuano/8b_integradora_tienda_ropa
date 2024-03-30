@@ -101,17 +101,23 @@ export default {
               hasMultipleRoles: response.data.hasMultipleRoles,
             });
 
-            const verified = {
-              emailVerified: response.data.email,
-              privacyPolicy: response.data.role,
-              verificationPhone: response.data.hasMultipleRoles,
+            if(response.data.emailVerified !== undefined || response.data.privacyPolicy !== undefined || response.data.verificationPhone !== undefined){
+              const verified = {
+                emailVerified: response.data.emailVerified,
+                privacyPolicy: response.data.privacyPolicy,
+                verificationPhone: response.data.verificationPhone,
+              }
+              console.log(verified);
+              const verifiedString = JSON.stringify(verified);
+              const verifiedCrypto = codeCrypto(verifiedString);
+              localStorage.setItem('verified', verifiedCrypto);
+
+              await this.$router.push({name: 'FinishRegistration'});
             }
-            const verifiedString = JSON.stringify(verified);
-            const verifiedCrypto = codeCrypto(verifiedString);
-            localStorage.setItem('verified', verifiedCrypto);
 
           }
           this.showOverlay();
+
         }
       });
     },

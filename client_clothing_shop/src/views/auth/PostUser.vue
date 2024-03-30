@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="post-user-modal" hide-footer hide-header centered @hidden="resetModal" :size="modalSize" no-close-on-backdrop>
+  <b-modal id="post-user-modal" hide-footer hide-header centered @shown="initModal" @hidden="resetModal" :size="modalSize" no-close-on-backdrop>
     <b-overlay :show="showOverlay">
       <b-container>
         <section v-show="registerPage===1">
@@ -83,9 +83,20 @@
             </b-col>
           </b-row>
 
+          <div
+              ref="container"
+              class="frc-captcha"
+              data-sitekey="FCMGAFOETVPP0BIP"
+              data-lang="es"
+
+
+          ></div>
+          <span v-if="verifiedCaptcha.error.length > 0 && verifiedCaptcha.done === false" class="text-danger">{{verifiedCaptcha.error}}</span>
+
+
           <b-row class="my-4">
             <b-col>
-              <b-button class="main-button" @click="validateUserInformation()">
+              <b-button class="main-button" @click="validateUserInformation()" >
                 Siguiente
               </b-button>
             </b-col>
@@ -131,8 +142,11 @@
           </b-row>
 
           <b-row class="my-4">
-            <b-col>
-              <b-button class="main-button" @click="validateCode()">
+            <b-col class="text-right">
+              <span class="text-black-50 px-3 selectable" @click="backPage1()">
+                Atrás
+              </span>
+              <b-button class="small-main-button px-5" @click="validateCode()">
                 Verificar
               </b-button>
             </b-col>
@@ -219,6 +233,7 @@
                     v-model="form.person.birthday"
                     name="birthday"
                     min="1940-01-01"
+                    :max="today"
                     v-validate="'required|over_18'"
                 ></b-form-input>
                 <span v-show="errors.has('birthday')" class="text-danger">{{ errors.first('birthday') }}</span>
@@ -269,8 +284,11 @@
           </b-row>
 
           <b-row class="my-4">
-            <b-col>
-              <b-button class="main-button" @click="validatePersonalInformation()">
+            <b-col class="text-right">
+              <span class="text-black-50 px-3 selectable" @click="backPage1()">
+                Atrás
+              </span>
+              <b-button class="small-main-button  px-5" @click="validatePersonalInformation()">
                 Siguiente
               </b-button>
             </b-col>
@@ -311,8 +329,11 @@
           </b-row>
 
           <b-row class="my-4">
-            <b-col>
-              <b-button class="main-button" @click="validateCodePhone()">
+            <b-col class="text-right">
+              <span class="text-black-50 px-3 selectable" @click="backPage3()">
+                Atrás
+              </span>
+              <b-button class="small-main-button  px-5" @click="validateCodePhone()">
                 Verificar
               </b-button>
             </b-col>
@@ -325,10 +346,12 @@
 </template>
 
 <script>
+import { WidgetInstance } from "friendly-challenge";
 import {mapGetters} from "vuex";
 import UserService from "@/services/user/userService";
 import PersonService from "@/services/person/personService";
 import {showSuccessToast} from "@/components/alerts/alerts";
+import CaptchaService from "@/services/captcha/CaptchaService";
 export default {
   name: 'PostUser',
   data() {
@@ -355,6 +378,11 @@ export default {
         code: ''
       },
 
+      verifiedCaptcha: {
+        error: '',
+        done: false
+      }
+
 
     };
   },
@@ -363,9 +391,21 @@ export default {
       Promise.all([
         this.$validator.validate('email'),
         this.$validator.validate('password'),
-        this.$validator.validate('repeatPassword')
+        this.$validator.validate('repeatPassword'),
       ]).then(async (result) => {
         if (result.every(e => e)) {
+          //validar captcha
+          if(this.verifiedCaptcha.done === false){
+            this.verifiedCaptcha.error = 'Por favor complete el captcha';
+            return;
+          }else{
+            this.verifiedCaptcha.error = '';
+          }
+
+          if(this.verifiedCaptcha.error.length > 0){
+            return;
+          }
+
           const payloadEmail = {
             email: this.form.user.email,
           };
@@ -484,15 +524,52 @@ export default {
     },
 
 
+    doneCapcha(solution){
+      this.verifyCaptcha(solution);
+    },
+    async verifyCaptcha(solution){
+      const payload = {
+        solution: solution
+      };
+      const response = await CaptchaService.verifyService(payload);
+      this.verifiedCaptcha.done = response.data.success;
+
+      if(!this.verifiedCaptcha){
+        this.verifiedCaptcha.error = 'Intentelo de nuevo';
+
+        if (this.widget) {
+          this.widget.destroy();
+        }
+        this.initModal();
+      }
+    },
+
+    async backPage1(){
+      this.changeStatusOverlay();
+      const payload = {
+        email: this.form.user.email
+      };
+      await UserService.deleteIncompleteAccountService(payload);
+      this.changeStatusOverlay();
+      this.registerPage = 1;
+    },
+
+
+    async backPage3(){
+      this.changeStatusOverlay()
+      const payload = {
+        email: this.form.user.email
+      };
+      await PersonService.deletePersonalInformationIncompleteService(payload);
+      this.changeStatusOverlay();
+      this.registerPage = 3;
+    },
 
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
     },
     increaseRegisterPage(){
       this.registerPage++;
-    },
-    decreaseRegisterPage(){
-      this.registerPage--;
     },
     changeStatusOverlay(){
       this.$store.dispatch('changeStatusOverlay');
@@ -511,11 +588,35 @@ export default {
       this.form.person.gender = '';
       this.form.person.privacyPolicy = false;
       this.errors.clear();
+      if (this.widget) {
+        this.widget.destroy();
+      }
+      this.verifiedCaptcha = {
+        error: '',
+        done: false
+      }
+    },
+    initModal(){
+      if (this.$refs.container) {
+        this.widget = new WidgetInstance(
+            this.$refs.container, {
+              startMode: "",
+              doneCallback: this.doneCapcha,
+              errorCallback: this.errorCallback,
+            }
+        );
+      }
     }
   },
   computed: {
-    ...mapGetters(['showOverlay'])
-  }
+    ...mapGetters(['showOverlay']),
+    today() {
+      const today = new Date();
+      const month = `0${today.getMonth() + 1}`.slice(-2); // Ensure two digits
+      const day = `0${today.getDate()}`.slice(-2); // Ensure two digits
+      return `${today.getFullYear()}-${month}-${day}`;
+    }
+  },
 }
 </script>
 

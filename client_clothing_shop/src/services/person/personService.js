@@ -21,10 +21,28 @@ const verifyCodeService = async (payload) => {
     }
 }
 
+const deletePersonalInformationIncompleteService = async (payload) => {
+    try {
+        return await axios.doPost("/venta-ropa/api/person/delete-personal-information-incomplete", payload)
+    } catch (e) {
+        showWarningToast('',error)
+        return e.data
+    }
+}
 
+const resendPhoneCodeService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/person/resend-phone-code", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
 
 
 export default {
     postPersonalInformationService,
-    verifyCodeService
+    verifyCodeService,
+    deletePersonalInformationIncompleteService,
+    resendPhoneCodeService
 }

@@ -16,6 +16,7 @@ public class ErrorDictionary {
         errorMessages.put("user.email.invalid", "El email no es válido.");
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("user.email.exists", "El email no esta disponible.");
+        errorMessages.put("user.privacy.policy.accepted", "Esta cuenta no puede eliminarse por este metodo.");
 
         //error messages person
         errorMessages.put("person.name.notnull", "El nombre es obligatorio.");
@@ -29,6 +30,7 @@ public class ErrorDictionary {
         errorMessages.put("person.birthday.age", "El usuario debe ser mayor de edad.");
         errorMessages.put("person.gender.notnull", "El género es obligatorio.");
         errorMessages.put("person.privacyPolicy.accepted", "Debes aceptar la política de privacidad.");
+        errorMessages.put("person.phone.verified", "Esta cuenta no puede eliminarse por este metodo.");
 
         //error messages payment card
         errorMessages.put("payment.cardholderName.notnull", "El nombre del titular de la tarjeta es obligatorio.");

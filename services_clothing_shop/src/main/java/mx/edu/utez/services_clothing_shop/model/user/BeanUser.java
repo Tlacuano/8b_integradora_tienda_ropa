@@ -57,7 +57,7 @@ public class BeanUser {
     private BeanPerson person;
 
     //relacion muchos a uno con la tabla status
-    @Column(name = "status", columnDefinition = "TINYINT(1)")
+        @Column(name = "status", columnDefinition = "TINYINT(1)")
     private boolean status;
 
     //relacion uno a muchos con la tabla de products
@@ -76,9 +76,9 @@ public class BeanUser {
     private List<BeanShoppingCart> shoppingCart;
 
     //relacion uno a muchos con la tabla de request data change
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<BeanRequestDataChange> requestDataChange;
+        @OneToMany(mappedBy = "user")
+        @JsonIgnore
+        private List<BeanRequestDataChange> requestDataChange;
 
     //relacion uno a muchos con la tabla de request becom seller
     @OneToMany(mappedBy = "user")

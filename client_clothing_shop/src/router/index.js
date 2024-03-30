@@ -15,6 +15,11 @@ const router = new VueRouter({
             meta: { requiresAuth: false },
         },
         {
+            path: "/finish-registration",
+            name: "FinishRegistration",
+            component: () => import("../views/user/FinishRegistration.vue"),
+        },
+        {
             path: "/",
             name: "Home",
             component: () => import("../Home.vue"),
@@ -43,6 +48,7 @@ const router = new VueRouter({
                     component: () => import("../views/user/Profile.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
                 },
+
                 {
                     path: "/:category",
                     name: "UserProductsCategory",
@@ -131,6 +137,16 @@ router.beforeEach((to, from, next) => {
     const {requiresAuth, roles} = to.meta;
     const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
     const role = store.getters.getRole || localStorage.getItem("role");
+
+    const verifiedIncomplete = localStorage.getItem("verified");
+    const path = to.path; // Assume 'to' is the target route object
+
+    if (verifiedIncomplete && path !== "/finish-registration" && path !== "/privacy-policy") {
+        next("/finish-registration");
+    }else if (!verifiedIncomplete && path === "/finish-registration") {
+        next("/");
+    }
+
 
     if (!requiresAuth) {
         next();

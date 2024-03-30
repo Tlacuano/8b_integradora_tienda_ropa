@@ -68,6 +68,24 @@ const getProfileService = async (payload) => {
     }
 }
 
+const resendEmailCode = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/resend-email-code", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
+
+const deleteIncompleteAccountService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/delete-incomplete-account", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
+
 
 export default {
     getPageUsersService,
@@ -76,5 +94,7 @@ export default {
     existUserByEmailService,
     postUserService,
     verifyCodeService,
-    getProfileService
+    getProfileService,
+    resendEmailCode,
+    deleteIncompleteAccountService
 };

@@ -70,6 +70,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         boolean emailVerified = user.isEmailVerified();
         boolean privacyPolicy = user.isPrivacyPolicy();
         boolean verificationPhone = user.isVerificationPhone();
+        System.out.println("emailVerified: " + emailVerified);
+        System.out.println("privacyPolicy: " + privacyPolicy);
+        System.out.println("verificationPhone: " + verificationPhone);
 
         System.out.println("role: " + role);
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
@@ -91,9 +94,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("email", email);
         body.put("hasMultipleRoles", hasMultipleRoles);
         body.put("role", role);
-        body.put("emailVerified", emailVerified);
-        body.put("privacyPolicy", privacyPolicy);
-        body.put("verificationPhone", verificationPhone);
+
+        if(!emailVerified){
+            body.put("emailVerified", false);
+        }
+        if(!privacyPolicy){
+            body.put("privacyPolicy", false);
+        }
+        if(!verificationPhone){
+            body.put("verificationPhone", false);
+        }
 
 
         String json = JsonMapper.builder().build().writeValueAsString(body);

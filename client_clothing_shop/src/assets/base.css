@@ -27,15 +27,15 @@ body {
 }
 
 
-.interface-container::-webkit-scrollbar {
+.interface::-webkit-scrollbar {
   width: 10px;
 }
 
-.interface-container::-webkit-scrollbar-track {
+.interface::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-.interface-container::-webkit-scrollbar-thumb {
+.interface::-webkit-scrollbar-thumb {
   background: #bab9b9;
   border-radius: 4px;
 }

@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.person;
 
 import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPersonalInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
@@ -35,6 +36,20 @@ public class PersonController {
     public ResponseEntity<Object> verifyPhone(@Validated @RequestBody RequestCodeDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(personService.verifyPhone(payload), "Teléfono verificado correctamente", false, 200),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/resend-phone-code")
+    public ResponseEntity<Object> resendPhoneCode(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.resendPhoneCode(payload), "Código reenviado correctamente", false, 200),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("delete-personal-information-incomplete")
+    public ResponseEntity<Object> deletePersonalInformationIncomplete(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.deletePersonalInformationIncomplete(payload), "Información personal eliminada correctamente", false, 200),
                 HttpStatus.OK);
     }
 

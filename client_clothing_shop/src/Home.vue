@@ -37,8 +37,24 @@ export default {
 
 <style >
 .app-container{
-  max-height: calc(100vh - 100px);
+  height: calc(100vh - 50px);
   overflow-y: auto;
+}
+
+.app-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.app-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.app-container::-webkit-scrollbar-thumb {
+  background: #bab9b9;
+  border-radius: 4px;
+}
+
+.app-container::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
 }
 
 </style>
