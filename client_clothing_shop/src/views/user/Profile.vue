@@ -236,10 +236,8 @@ export default {
       }
 
       this.showOverlay();
-      console.log(payload);
       const response = await UserService.getProfileService(payload);
       this.showOverlay();
-      console.log(response);
       this.user = response.data;
       console.log(this.user);
     },
