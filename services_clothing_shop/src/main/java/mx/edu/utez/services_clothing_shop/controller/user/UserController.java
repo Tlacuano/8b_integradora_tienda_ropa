@@ -37,6 +37,16 @@ public class UserController {
         );
     }
 
+    @PostMapping("/get-page-by-email")
+    ResponseEntity<Object> getPageUsersByEmail(Pageable pageable, @RequestBody RequestActionByEmailDTO email){
+        Page<ResponsePageUsersDTO> pageUsers = userService.getPageUserByEmail(email.getEmail(), pageable);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(pageUsers, "Usuarios encontrados",false, 200),
+                HttpStatus.OK
+        );
+    }
+
 
     @PostMapping("/get-by-email")
     public ResponseEntity<Object> getByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){
@@ -56,7 +66,6 @@ public class UserController {
 
     @PostMapping("/get-user-detaiil-by-email-admin")
     public ResponseEntity<Object> getUserDetailByEmailAdmin(@Validated @RequestBody RequestActionByEmailDTO payload){
-        System.out.println(userService.getUserDetailsByEmailAdmin(payload.getEmail()));
         return new ResponseEntity<>(
                 new CustomResponse<>(userService.getUserDetailsByEmailAdmin(payload.getEmail()), "Usuario encontrado", false, 200),
                 HttpStatus.OK
@@ -131,5 +140,7 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+
 
 }

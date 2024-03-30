@@ -34,7 +34,6 @@ public class RequestsBecomeSellerController {
 
     @PostMapping("/put-request-become-seller")
     public ResponseEntity<CustomResponse<String>> putRequestBecomeSeller(@RequestBody RequestsBecomeSellerPutDTO requestData) {
-        System.out.println(requestData);
         UUID requestId = requestData.getIdRequestBecomeSeller();
         String status = requestData.getStatus();
         String rejectionReason = requestData.getRejectionReason();

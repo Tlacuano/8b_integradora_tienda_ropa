@@ -88,7 +88,6 @@ public class UserService {
         String code = SecurityCode.generateCode();
         emailService.sendEmail(user.getEmail(), "Código de verificación", "Código de verificación", "Su código de verificación es: ", code);
 
-        System.out.println(newUser.getIdUser().toString());
 
         newUser.setVerificationCode(code);
         userRepository.save(newUser);
@@ -184,6 +183,11 @@ public class UserService {
         return true;
     }
 
-
+    @Transactional
+    public Page<ResponsePageUsersDTO> getPageUserByEmail(String email,Pageable pageable){
+        String emailModified = "%" + email + "%";
+        Page<BeanUser> users = userRepository.findAllByEmailLikeIgnoreCase(emailModified,pageable);
+        return users.map(ResponsePageUsersDTO::fromUser);
+    }
 
 }

@@ -89,8 +89,6 @@ public class SubcategoryController {
             if (result.hasFieldErrors()) {
                 return validation(result);
             }
-            System.out.println("si llega");
-            System.out.println(subcategory);
             BeanSubcategory updatedSubcategory = new BeanSubcategory();
             updatedSubcategory.setIdSubcategory(subcategory.getIdSubcategory());
             updatedSubcategory.setSubcategory(subcategory.getSubcategory());

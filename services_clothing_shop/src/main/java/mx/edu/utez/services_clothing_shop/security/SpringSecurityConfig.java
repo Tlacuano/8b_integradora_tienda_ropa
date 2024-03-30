@@ -57,12 +57,13 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/exist-by-email").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/verify-email").permitAll()
 
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-users").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-user-detail-by-email-admin").hasAnyRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-profile").hasAnyRole("ADMIN", "BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-page").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-page-by-email").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-user-detail-by-email-admin").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-profile").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/resend-email-code").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
 
                                 //Modulo personas

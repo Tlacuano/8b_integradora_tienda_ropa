@@ -45,7 +45,6 @@ public class SmsService {
 
             //generar numero random seguro de 6 digitos
             String code = SecurityCode.generateCode();
-            System.out.println(payload.getTo());
 
             user.setVerificationCode(code);
             userRepository.save(user);

@@ -32,7 +32,6 @@ public class ShoppingCartServices {
 
     @Transactional
     public List<ResponseShoppingCartDTO> findShoppingCartsByUserEmail(String userEmail) {
-        System.out.println("userEmail: " + userEmail);
         if (userEmail == null || userEmail.isEmpty()) {
             throw new CustomException("user.email.notnull");
         } else if (!userEmail.matches(EMAIL_REGEX)) {
@@ -105,7 +104,6 @@ public class ShoppingCartServices {
 
     @Transactional
     public ResponsePutShoppingCartDTO updateShoppingCartById(@RequestBody BeanShoppingCart shoppingCart) {
-        System.out.println("shoppingCart: " + shoppingCart);
         if (shoppingCart.getIdShoppingCart() == null) {
             throw new CustomException("shoppingCart.id.notnull");
         } else{
