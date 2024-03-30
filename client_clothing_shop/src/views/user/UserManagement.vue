@@ -142,6 +142,7 @@ export default {
     },
 
 
+
     seeUserDetails(email){
       const codeParam = codeCrypto(email);
       this.$router.push(`/user-details/${codeParam}`);
@@ -159,7 +160,7 @@ export default {
 
 <style scoped>
 .container-users{
-  height: 800px;
+  height: calc(100vh - 300px);
   overflow-x: hidden;
 }
 </style>

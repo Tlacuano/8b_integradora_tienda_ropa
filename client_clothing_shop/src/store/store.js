@@ -60,6 +60,7 @@ export default new Vuex.Store({
         logout({commit, state}) {
             commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
             commit('clearAuthData');
+            localStorage.clear();
             window.location.href = '/';
             commit('setStatusOverlay', {newStateOverlay: !state.showOverlay});
         },

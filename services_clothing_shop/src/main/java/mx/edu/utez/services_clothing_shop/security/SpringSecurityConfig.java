@@ -48,21 +48,28 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(auth ->
                         auth
+                                //captcha
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/captcha/validate").permitAll()
                                 //Modulo usuarios
                                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-account").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-incomplete-account").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/exist-by-email").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/verify-email").permitAll()
+
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-users").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-user-detail-by-email-admin").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-profile").hasAnyRole("ADMIN", "BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/resend-email-code").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
 
                                 //Modulo personas
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/post-personal-information").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/delete-personal-information-incomplete").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/verify-phone").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/resend-phone-code").permitAll()
 
                                 //Modulo shopping-cart
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").hasRole("BUYER")
