@@ -29,13 +29,7 @@ public class PersonService {
         this.userRepository = userRepository;
         this.smsService = smsService;
     }
-
-    //get
-    @Transactional
-    public BeanPerson getPersonalInformationById(UUID id) {
-        return personRepository.findById(id).get();
-    }
-
+    
     //post
     @Transactional
     public boolean postPersonalInformation(RequestPutPersonalInformationDTO payload) {
@@ -50,7 +44,6 @@ public class PersonService {
         }
 
         BeanPerson newPersonalInformation = new BeanPerson();
-        newPersonalInformation.setIdPerson(payload.getIdPerson());
         newPersonalInformation.setName(payload.getName());
         newPersonalInformation.setLastName(payload.getLastName());
         newPersonalInformation.setSecondLastName(payload.getSecondLastName());
@@ -153,4 +146,47 @@ public class PersonService {
 
         return true;
     }
+
+    @Transactional
+    public boolean putPersonalInformation(RequestPutPersonalInformationDTO payload) {
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+
+        BeanPerson person = personRepository.findByUser(user);
+        if(person == null){
+            throw new CustomException("person.not.found");
+        }
+
+        String phoneNumber = person.getPhoneNumber();
+
+        person.setName(payload.getName());
+        person.setLastName(payload.getLastName());
+        person.setSecondLastName(payload.getSecondLastName());
+        person.setPhoneNumber(payload.getPhoneNumber());
+        person.setGender(payload.getGender());
+        person.setBirthday(payload.getBirthday());
+
+        if(!ValidatesFunctions.isAdult(payload.getBirthday())){
+            throw new CustomException("person.birthday.age");
+        }
+
+        boolean result = !phoneNumber.equals(payload.getPhoneNumber());
+
+        if(result){
+            person.setVerificationPhone(false);
+            SendSmsDTO sendSmsDTO = new SendSmsDTO();
+            sendSmsDTO.setEmail(payload.getEmail());
+            sendSmsDTO.setTo(payload.getPhoneNumber());
+            smsService.sendSms(sendSmsDTO);
+        }
+
+
+        personRepository.save(person);
+
+        return true;
+    }
+
+
 }

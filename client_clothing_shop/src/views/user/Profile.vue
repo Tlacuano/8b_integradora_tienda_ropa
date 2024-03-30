@@ -20,7 +20,6 @@
                   badge-variant="secondary"
                   @mouseenter="showEditPicture = true"
                   @mouseleave="showEditPicture = false"
-
               >
                 <template #badge v-if="showEditPicture"  >
                   <font-awesome-icon icon="fa-solid fa-pen" class="selectable"/>
@@ -98,7 +97,7 @@
           </b-col>
         </b-row>
 
-        <b-row v-if="user.buyer || user.seller" class="my-2">
+        <b-row v-if="user.buyer || user.seller" class="my-2" @click="openPrivacyPolicy">
           <b-col>
             <b-card no-body class="selectable highlight-on-hover">
               <b-row align-h="between" class="p-2 mx-1">
@@ -200,8 +199,6 @@
           </b-col>
         </b-row>
 
-        
-
         <b-row class="mt-5">
           <b-col class="text-center">
             <b-button v-if="user.buyer && !user.seller" class="main-button" style="width: 60%">
@@ -239,12 +236,14 @@ export default {
       const response = await UserService.getProfileService(payload);
       this.showOverlay();
       this.user = response.data;
-      console.log(this.user);
     },
 
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
-    }
+    },
+    openPrivacyPolicy() {
+      window.open('/privacy-policy', '_blank');
+    },
   },
   mounted() {
     this.getProfile();
@@ -254,7 +253,13 @@ export default {
 
 
 <style scoped>
+.interface{
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .main{
-  min-height: 86vh;
+  height: 100%;
 }
 </style>

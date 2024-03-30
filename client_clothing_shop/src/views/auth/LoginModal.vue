@@ -1,6 +1,6 @@
 <template>
   <b-modal id="login-modal" hide-footer hide-header centered @hidden="resetModal" >
-    <b-container>
+    <b-container @keyup.enter="login">
       <b-row>
         <b-col class="text-right">
           <font-awesome-icon icon="times" class="selectable text-secondary" @click="$bvModal.hide('login-modal')"/>

@@ -58,12 +58,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         boolean hasMultipleRoles = user.getAuthorities().size() > 1;
         String role = "";
         for (GrantedAuthority authority : user.getAuthorities()) {
-            role = authority.getAuthority();
             if (authority.getAuthority().equals("ROLE_ADMIN")) {
                 role = "ADMIN";
-            } else {
+            }else if(authority.getAuthority().equals("ROLE_SUPERADMIN")){
+                role = "SUPERADMIN";
+            }else {
                 role = "BUYER";
-
             }
             break;
         }
