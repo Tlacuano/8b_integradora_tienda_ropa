@@ -16,7 +16,7 @@
         </b-form-group>
       </b-col>
       <b-col cols="auto" class="text-right">
-        <b-button variant="dark">Registrar</b-button>
+        <b-button v-b-modal:post-user-modal variant="dark">Registrar</b-button>
       </b-col>
     </b-row>
 
@@ -97,6 +97,8 @@
         ></b-pagination>
       </b-col>
     </b-row>
+
+    <PostUserModal/>
   </section>
 </template>
 
@@ -107,6 +109,9 @@ import {codeCrypto} from "@/utils/security/cryptoJs";
 
 export default {
   name: "UserManagement",
+  components: {
+    PostUserModal: () => import("@/views/auth/PostUser.vue"),
+  },
   data() {
     return {
       objetPagination:{
