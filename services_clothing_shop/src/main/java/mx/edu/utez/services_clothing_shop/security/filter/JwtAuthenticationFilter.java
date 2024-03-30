@@ -70,11 +70,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         boolean emailVerified = user.isEmailVerified();
         boolean privacyPolicy = user.isPrivacyPolicy();
         boolean verificationPhone = user.isVerificationPhone();
-        System.out.println("emailVerified: " + emailVerified);
-        System.out.println("privacyPolicy: " + privacyPolicy);
-        System.out.println("verificationPhone: " + verificationPhone);
 
-        System.out.println("role: " + role);
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
         Claims claims = Jwts.claims()
                 .add("authorities", new ObjectMapper().writeValueAsString(roles))

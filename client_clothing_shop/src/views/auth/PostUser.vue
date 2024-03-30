@@ -511,7 +511,7 @@ export default {
 
           if(response.data){
             this.form.code = '';
-            showSuccessToast('', 'Su cuenta ha sido creada con éxito');
+            showSuccessToast('', 'Cuenta creada exitosamente');
             this.$bvModal.hide('post-user-modal');
           }else{
             this.errors.add({

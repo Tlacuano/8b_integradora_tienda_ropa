@@ -39,10 +39,31 @@ const resendPhoneCodeService = async (payload) => {
     }
 }
 
+const getPersonalInformationService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/person/get-personal-information",payload)
+        return response.data
+    } catch (e) {
+        showWarningToast('',error)
+        return e.data
+    }
+}
+
+const putPersonalInformationService = async (payload) => {
+    try {
+        return await axios.doPost("/venta-ropa/api/person/put-personal-information", payload)
+    } catch (e) {
+        showWarningToast('',error)
+        return e.data
+    }
+}
+
 
 export default {
     postPersonalInformationService,
     verifyCodeService,
     deletePersonalInformationIncompleteService,
-    resendPhoneCodeService
+    resendPhoneCodeService,
+    getPersonalInformationService,
+    putPersonalInformationService
 }

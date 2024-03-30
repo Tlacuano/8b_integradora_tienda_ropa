@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.service.person;
 
 
 import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPersonalInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.person.dto.ResponseGetPersonalInformationDTO;
 import mx.edu.utez.services_clothing_shop.controller.twilio.dto.SendSmsDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
@@ -29,8 +30,22 @@ public class PersonService {
         this.userRepository = userRepository;
         this.smsService = smsService;
     }
-    
-    //post
+
+    @Transactional
+    public ResponseGetPersonalInformationDTO getPersonalInformation(String email) {
+        BeanUser user = userRepository.findByEmail(email);
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+
+        BeanPerson person = personRepository.findByUser(user);
+        if(person == null){
+            throw new CustomException("person.not.found");
+        }
+
+        return ResponseGetPersonalInformationDTO.fromPerson(person);
+    }
+
     @Transactional
     public boolean postPersonalInformation(RequestPutPersonalInformationDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
@@ -75,7 +90,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Object verifyPhone(RequestCodeDTO payload) {
+    public boolean verifyPhone(RequestCodeDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
         if(user == null){

@@ -24,11 +24,24 @@ public class PersonController {
         this.personService = personService;
     }
 
+    @PostMapping("/get-personal-information")
+    public ResponseEntity<Object> getPersonalInformation(@Validated @RequestBody RequestActionByEmailDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.getPersonalInformation(payload.getEmail()), "Información personal encontrada", false, 200),
+                HttpStatus.OK);
+    }
 
     @PostMapping("/post-personal-information")
     public ResponseEntity<Object> postPersonalInformation(@Validated @RequestBody RequestPutPersonalInformationDTO payload){
         return new ResponseEntity<>(
                 new CustomResponse<>(personService.postPersonalInformation(payload), "Información personal registrada correctamente", false, 201),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/put-personal-information")
+    public ResponseEntity<Object> putPersonalInformation(@Validated @RequestBody RequestPutPersonalInformationDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(personService.putPersonalInformation(payload), "Información personal actualizada correctamente", false, 200),
                 HttpStatus.OK);
     }
 

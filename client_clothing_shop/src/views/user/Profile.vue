@@ -116,7 +116,7 @@
 
         <b-row  class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" v-b-modal:put-personal-information-profile-modal>
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -212,6 +212,8 @@
 
       </b-col>
     </b-row>
+
+    <PutPersonalInformationProfileModal/>
   </section>
 </template>
 
@@ -220,6 +222,9 @@ import UserService from "@/services/user/userService";
 
 export default {
   name: 'UserDetails',
+  components: {
+    PutPersonalInformationProfileModal: () => import("@/views/user/PutPersonalInformationProfileModal.vue"),
+  },
   data() {
     return {
       showEditPicture: false,
