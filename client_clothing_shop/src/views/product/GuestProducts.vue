@@ -47,6 +47,7 @@
               img-top
               tag="article"
               class="mb-2 selectable zoom-on-hover h-100"
+              @click="selectProduct(product.idProduct)"
           >
             <b-card-text class="text-left">
               <b-row no-gutters>
@@ -94,7 +95,9 @@ export default {
     },
 
     async getCategoryProducts() {
+      console.log("Getting category products")
       if (!this.selectedCategory) {
+        await this.getCategories();
         return;
       }
       const payload = {
@@ -108,8 +111,9 @@ export default {
       this.showOverlay();
     },
 
-    getSubcategoryProducts() {
+    async getSubcategoryProducts() {
       if (!this.selectedCategory || !this.selectedSubcategory) {
+        await this.getCategoryProducts();
         return;
       }
       const payload = {
@@ -117,13 +121,15 @@ export default {
         subcategory: this.selectedSubcategory
       };
       this.showOverlay();
-      ProductService.getProductsBySubcategory(payload)
-          .then(response => {
-            if (response.status === 200) {
-              this.products = response.data;
-            }
-            this.showOverlay();
-          });
+      const response = await ProductService.getProductsBySubcategory(payload);
+      if (response.status === 200) {
+        this.products = response.data;
+      }
+      this.showOverlay();
+    },
+
+    selectProduct(productId) {
+
     },
 
     showOverlay() {
