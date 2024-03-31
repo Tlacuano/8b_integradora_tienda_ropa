@@ -9,7 +9,14 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input
+                id="search"
+                type="text"
+                placeholder="Buscar..."
+                class="pr-5"
+                v-model="searchQuery"
+                @input="getPageRequestsDataChange(searchQuery)"
+            ></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -83,8 +90,8 @@ export default{
     }
   },
   methods: {
-    async getPageRequestsDataChange() {
-      const response = await RequestsDataChangeService.getPageRequestsDataChangeService(this.objectPagination);
+    async getPageRequestsDataChange(searchQuery) {
+      const response = await RequestsDataChangeService.getPageRequestsDataChangeService(this.objectPagination, searchQuery);
       this.objectPagination.elements = response.totalElements;
       this.requests = response.content;
     },
@@ -94,8 +101,6 @@ export default{
         this.$bvModal.show("requestDataChangeModal");
       });
     },
-
-
 
     handleRequestSuccess(response) {
       swal.fire({
