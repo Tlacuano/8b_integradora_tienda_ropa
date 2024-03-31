@@ -105,7 +105,6 @@ export default {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
       }
-      // this.productIsWishlisted = !this.productIsWishlisted;
     },
 
     // TODO: Implement function to add product to cart
