@@ -80,6 +80,7 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.update.amount.error","Error al actualizar misma cantidad.");
         errorMessages.put("shoppingCart.id.notnull", "El id del carrito de compras es obligatorio.");
         errorMessages.put("shoppingCart.id.notfound", "El carrito de compras no fue encontrado.");
+        errorMessages.put("shoppingCart.product.invalidate", "El producto no se encuentra disponible.");
         //error image uploading
         errorMessages.put("image.upload.error", "Error al subir imagen.");
 

@@ -1,19 +1,16 @@
 package mx.edu.utez.services_clothing_shop.service.shopping_cart;
 
 
-import jdk.swing.interop.SwingInterOpUtils;
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPostShoppingCartDTO;
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPutShoppingCartDTO;
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.*;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product.IProduct;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.IShoppingCart;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.model.user.IUser;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +23,12 @@ public class ShoppingCartServices {
 
     private final IShoppingCart shoppingCartRepository;
     private final IProduct productRepository;
+    private final IUser userRepository;
 
-    public ShoppingCartServices(IShoppingCart shoppingCartRepository, IProduct productRepository) {
+    public ShoppingCartServices(IShoppingCart shoppingCartRepository, IProduct productRepository, IUser userRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -53,37 +52,34 @@ public class ShoppingCartServices {
     }
 
     @Transactional
-    public RequestPostShoppingCartDTO saveShoppingCar(BeanShoppingCart shoppingCart) {
-        if (shoppingCart == null) {
-            throw new CustomException("shoppingCart.notnull");
-        }else if(shoppingCart.getIdShoppingCart()!=null){
-            throw new CustomException("shoppingCart.id.automatic");
-        } else if (shoppingCart.getAmount() <= 0) {
-            throw new CustomException("shoppingCart.amount.notnull");
-        } else if (shoppingCart.getProduct().getIdProduct() == null) {
-            throw new CustomException("shoppingCart.product.notnull");
-        } else if(shoppingCart.getUser().getIdUser() == null) {
-            throw new CustomException("shoppingCart.user.notnull");
-        }else {
-            BeanProduct product = productRepository.findByIdProduct(shoppingCart.getProduct().getIdProduct());
-            if (product == null) {
-                throw new CustomException("shoppingCart.product.notFound");
-            }
-            int amount = product.getAmount();
-            if(shoppingCart.getAmount() > amount){
-                throw new CustomException("shoppingCart.amount.error");
-            }
-            List<BeanShoppingCart> existingShoppingCart = shoppingCartRepository.findAllByUser_Email(shoppingCart.getUser().getEmail());
-            if(!existingShoppingCart.isEmpty()){
-                for (BeanShoppingCart cart : existingShoppingCart) {
-                    if(cart.getProduct().getIdProduct().equals(shoppingCart.getProduct().getIdProduct())){
-                        throw new CustomException("shoppingCart.product.exists");
-                    }
-                }
-            }
-            BeanShoppingCart response = shoppingCartRepository.save(shoppingCart);
-            return RequestPostShoppingCartDTO.fromPostShoppingCart(response);
+    public boolean saveShoppingCar(RequestPostCartDTO shoppingCart) {
+        BeanUser user = userRepository.findByEmail(shoppingCart.getEmail());
+
+        if(user == null){
+            throw new CustomException("user.email.not.found");
         }
+
+        BeanProduct product = productRepository.findByIdProduct(shoppingCart.getIdProduct());
+        if (product == null) {
+            throw new CustomException("product.id.notfound");
+        }
+
+        if(shoppingCartRepository.existsByProductAndUser(product,user)){
+            throw new CustomException("shoppingCart.product.exists");
+        }
+
+        if(!product.isStatus() || product.getAmount() == 0){
+            throw new CustomException("shoppingCart.product.invalidate");
+        }
+
+        BeanShoppingCart newCart = new BeanShoppingCart();
+        newCart.setAmount(1);
+        newCart.setProduct(product);
+        newCart.setUser(user);
+
+        shoppingCartRepository.save(newCart);
+
+        return true;
     }
 
     @Transactional
@@ -109,11 +105,8 @@ public class ShoppingCartServices {
         if (shoppingCart.getIdShoppingCart() == null) {
             throw new CustomException("shoppingCart.id.notnull");
         } else{
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             BeanShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
-            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
             if (existingShoppingCart != null) {
-                System.out.println(existingShoppingCart.getProduct().getIdProduct());
                 BeanProduct product = productRepository.findByIdProduct(existingShoppingCart.getProduct().getIdProduct());
                 if(shoppingCart.getAmount() <= 0){
                     throw new CustomException("shoppingCart.amount.notnull");
