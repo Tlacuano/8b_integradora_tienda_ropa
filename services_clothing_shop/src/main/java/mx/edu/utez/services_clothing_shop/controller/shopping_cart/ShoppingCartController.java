@@ -30,9 +30,8 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/post-shopping-cart")
-    public ResponseEntity<Object> createShoppingCart(@Validated @RequestBody BeanShoppingCart shoppingCart) {
-        RequestPostShoppingCartDTO response = shoppingCartServices.saveShoppingCar(shoppingCart);
-        return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200));
+    public ResponseEntity<Object> createShoppingCart(@Validated @RequestBody RequestPostCartDTO shoppingCart) {
+        return ResponseEntity.ok(new CustomResponse<>(shoppingCartServices.saveShoppingCar(shoppingCart), "ok", false, 200));
     }
 
     @PostMapping("/delete-shopping-cart")

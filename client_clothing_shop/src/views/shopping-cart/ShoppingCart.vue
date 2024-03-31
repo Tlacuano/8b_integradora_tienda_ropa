@@ -18,8 +18,8 @@
                 >
                   <b-row>
                     <b-col cols="auto" class="pr-0 my-auto ml-sm-1">
-                      <img :src="findMainImage(product.product.gallery)" class="d-lg-none ml-3" style="width: 100px; height: auto;">
-                      <img :src="findMainImage(product.product.gallery)" class="d-none d-lg-block" style="width: 240px; height: auto;">
+                      <img @click="getProductDetails(product)" :src="findMainImage(product.product.gallery)" class="d-lg-none ml-3 selectable" style="width: 100px; height: auto;">
+                      <img @click="getProductDetails(product)"  :src="findMainImage(product.product.gallery)" class="d-none d-lg-block selectable" style="width: 240px; height: auto;">
                     </b-col>
                     <b-col class="mr-5">
                       <b-row class="mt-3">
@@ -139,6 +139,7 @@
 import ShoppingCartService from "@/services/shopping-cart/ShoppingCartService";
 import Big from "big.js";
 import Vue from "vue";
+import {codeCrypto} from "@/utils/security/cryptoJs";
 
 export default {
   name: "ShoppingCart",
@@ -161,6 +162,7 @@ export default {
       this.products = response.data.reduce((acumulado, producto) => acumulado + producto.amount, 0);
       this.total = this.calcTotal(response.data);
     },
+
     async increaseAmount(product){
       const payload = {
         idShoppingCart: product.idShoppingCart,
@@ -174,6 +176,7 @@ export default {
         this.getCart();
       }
     },
+
     async decreaseAmount(product){
       if(product.amount > 1){
         const payload = {
@@ -210,7 +213,10 @@ export default {
       }
     },
 
-
+    getProductDetails(product){
+      const encodedId = codeCrypto(product.product.idProduct);
+      this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
+    },
 
 
 
