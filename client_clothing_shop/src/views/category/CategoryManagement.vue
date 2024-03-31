@@ -22,9 +22,7 @@
         </b-row>
 
         <b-row class="mt-4 container-categories py-4">
-            <b-col>
-                <b-row></b-row>
-
+            <b-col cols="12">
                 <b-row class="text-center mt-3" v-if="filteredCategories.length === 0" >
                     <b-col>
                         <p>No se encuentra la categoria "{{ searchTerm }}"</p>
@@ -32,12 +30,12 @@
                 </b-row>
 
                 <b-row>
-                    <b-col cols="auto" v-for="category in filteredCategories" :key="category.id">
+                    <b-col cols="4" v-for="category in filteredCategories" :key="category.id">
                         <b-card
                             class="highlight-on-hover mb-2"
                             :img-src="category.image"
                             img-bottom
-                            style="max-width: 14rem;"
+                            style="max-width: 28rem;"
                         >
                             <b-card-text class="d-flex justify-content-between align-items-center" style="max-height: 0.1rem;">
                                 <h5>{{category.category}}</h5>
@@ -67,17 +65,6 @@
             </b-col>
         </b-row>
 
-        <b-row class="mt-5">
-            <b-col>
-                <b-pagination 
-                    v-model="objectPagination.page"
-                    :total-rows="objectPagination.elements"
-                    :per-page="objectPagination.size"
-                    aria-controls="my-table"
-                />
-            </b-col>
-        </b-row>
-
         <AddCategoryModal @category-added="refreshCategories"/>
         <EditCategoryModal :category="selectedCategory" @category-edited="refreshCategories"/>
     </section>
@@ -97,11 +84,6 @@ export default Vue.extend({
         return {
             categories: [],
             filteredCategories: [],
-            objectPagination: {
-                page: 1,
-                size: 24,
-                elements: 0
-            },
             selectedCategory: {},
             searchTerm: ''
         }
@@ -132,6 +114,8 @@ export default Vue.extend({
             this.selectedCategory = category;
             this.$nextTick(() => {
                 this.$bvModal.show('editCategoryModal');
+                //console marcando que entro al edit
+                console.log("entro al edit");
             })
         },
         showOverlay(){
@@ -154,10 +138,17 @@ export default Vue.extend({
 </script>
 <style>
 .container-categories {
-    border: 1px solid black;
     margin-left: 0.1rem;
     margin-right: 0.1rem;
     border-radius: 0.5rem;
+}
+.b-card img{
+    width: 100%;
+    height: 200px;
+}
+
+.b-card {
+    margin: 0.5rem;
 }
     
 </style>
