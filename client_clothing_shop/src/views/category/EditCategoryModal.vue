@@ -7,7 +7,7 @@
                 </b-col>
             </b-row>
 
-            <b-row class="my-3">
+            <b-row class="my-3 mb-5">
                 <b-col>
                     <b-form>
                         <b-form-group label="Nombre de la categoria:" laber-for="category">
@@ -47,7 +47,7 @@
 
                 <b-col class="text-center">
                     <b-img :src="imgPreview ? imgPreview : category.image" thumbnail
-                        style="max-width: 50%; max-height: 95%" />
+                        style="max-width: 100%; max-height: 100%" />
                 </b-col>
             </b-row>
 
@@ -83,7 +83,7 @@ export default Vue.extend({
                 status: true,
             },
             imgPreview: null,
-            selectedFile: null, // Almacena la imagen seleccionada
+            selectedFile: null,
             statusOptions: [
                 { value: true, text: 'Habilitado' },
                 { value: false, text: 'Deshabilitado' }
@@ -145,7 +145,7 @@ export default Vue.extend({
         async getCategories() {
             const response = await CategoriesService.getCategories();
             this.categories = response.data.content;
-            this.filteredCategories = this.categories; // Se inicializa el filtro de categorías
+            this.filteredCategories = this.categories;
         },
         handleFileUpload() {
             if(this.selectedFile && this.selectedFile.length > 0) {
@@ -162,44 +162,34 @@ export default Vue.extend({
             this.imgPreview = null;
         },
         initializeFormData() {
-            // Verifica si la categoría está disponible
             if (this.category) {
-                // Asigna los valores de la categoría al formulario presentado
                 this.form.idCategory = this.category.idCategory;
                 this.form.category = this.category.category;
                 this.form.status = this.category.status;
 
-                // Si la categoría tiene una imagen, asigna la imagen al formulario y muestra la vista previa
                 if (this.category.image) {
                     this.form.image = this.category.image;
                     this.imgPreview = this.category.image;
                 }
             } else {
-                // Si la categoría no está disponible, limpia los datos del formulario y la vista previa de la imagen
                 this.clean();
             }
         }
     },
     mounted() {
-        // Inicializa los datos del formulario y la vista previa de la imagen al cargar el componente modal
         this.initializeFormData();
     },
     watch: {
-        // Observador para detectar cambios en la categoría seleccionada
         category: {
             handler(newCategory) {
-                // Si cambia la categoría seleccionada, vuelve a inicializar los datos del formulario y la vista previa de la imagen
                 this.initializeFormData();
             },
-            deep: true // Observa los cambios en las propiedades anidadas de la categoría
         },
         selectedFile: {
             handler(newFile) {
-                // Si cambia el archivo seleccionado, muestra la vista previa de la imagen
                 if(newFile) {
                     this.imgPreview = URL.createObjectURL(newFile);
             } else {
-                // Si no hay archivo seleccionado, limpia la vista previa de la imagen
                 this.imgPreview = null;
             }
         }
