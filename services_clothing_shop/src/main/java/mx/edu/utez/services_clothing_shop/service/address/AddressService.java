@@ -51,6 +51,32 @@ public class AddressService {
     }
 
     @Transactional
+    public List<ResponseGetAddressesByEmailDTO> getAddressesByEmail(String email) {
+        List<BeanAddress> addresses = iAddress.findAllByUserEmail(email);
+        if (addresses.isEmpty()) {
+            throw new CustomException("addresses.notfound");
+        }
+        return addresses.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ResponseGetAddressesByEmailDTO convertToDTO(BeanAddress address) {
+        ResponseGetAddressesByEmailDTO dto = new ResponseGetAddressesByEmailDTO();
+        dto.setIdAddress(address.getIdAddress());
+        dto.setAddress(address.getAddress());
+        dto.setReferencesAddress(address.getReferencesAddress());
+        dto.setPostalCode(address.getPostalCode());
+        dto.setState(address.getState());
+        dto.setStreet(address.getStreet());
+        dto.setStatus(address.getStatus().getStatus());
+        dto.setNeighborhood(address.getNeighborhood());
+        return dto;
+    }
+
+
+
+    @Transactional
     public BeanAddress postAddress(RequestPostAddressDTO payload){
         BeanAddress newAddress = new BeanAddress();
         newAddress.setAddress(payload.getAddress());
@@ -59,13 +85,18 @@ public class AddressService {
         newAddress.setState(payload.getState());
         newAddress.setStreet(payload.getStreet());
         newAddress.setNeighborhood(payload.getNeighborhood());
-        BeanPerson person = iPerson.findById(payload.getPersonId()).orElse(null);
+
+        BeanPerson person = iAddress.findPersonByUserEmail(payload.getEmail())
+                .orElseThrow(() -> new CustomException("person.email.notfound"));
         newAddress.setPerson(person);
-        BeanAddressStatus status = iAddressStatus.findById(payload.getStatusId()).orElse(null);
+
+        BeanAddressStatus status = iAddressStatus.findByStatus("Habilitada")
+                .orElseThrow(() -> new CustomException("status.notfound"));
         newAddress.setStatus(status);
 
         return iAddress.saveAndFlush(newAddress);
     }
+
 
     @Transactional
     public BeanAddress putAddress(RequestPutAddressDTO payload){

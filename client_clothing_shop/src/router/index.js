@@ -142,6 +142,12 @@ const router = new VueRouter({
                     name:"ADMINRequestDataChangeManagement",
                     component: () => import("../views/requests-data-change/RequestsDataChangeManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                },
+                {
+                    path:"buyer-address-management",
+                    name:"BuyerAddressManagement",
+                    component: () => import("../views/address-management/BuyerAddressManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
                 }
             ]
         },

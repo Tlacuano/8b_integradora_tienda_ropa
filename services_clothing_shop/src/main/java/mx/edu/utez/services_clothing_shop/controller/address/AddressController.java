@@ -39,8 +39,19 @@ public class AddressController {
             );
     }
 
+    @PostMapping("/get-addresses-by-email")
+    public ResponseEntity<Object> getAddressesByEmail(@RequestBody RequestGetAddressesByEmailDTO emailDTO) {
+        List<ResponseGetAddressesByEmailDTO> responseDTOs = addressService.getAddressesByEmail(emailDTO.getEmail());
+        return new ResponseEntity<>(
+                new CustomResponse<>(responseDTOs, "Addresses retrieved successfully", false, 200),
+                HttpStatus.OK
+        );
+    }
+
+
+
     @PostMapping("/post-address")
-        public ResponseEntity<Object> postAddress(@Validated @RequestBody RequestPostAddressDTO payload){
+    public ResponseEntity<Object> postAddress(@Validated @RequestBody RequestPostAddressDTO payload){
         BeanAddress newAddress = addressService.postAddress(payload);
         ResponsePostAddressDTO responseDTO = addressService.mapToResponseDTO(newAddress);
         return new ResponseEntity<>(
