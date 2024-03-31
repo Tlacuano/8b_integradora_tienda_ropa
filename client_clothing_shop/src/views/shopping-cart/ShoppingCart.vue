@@ -10,7 +10,7 @@
 
         <b-row class="mt-3">
           <b-col class="container-products" lg="8">
-            <b-row>
+            <b-row v-if="cart.length >0">
               <b-col class="mb-3" cols="12" v-for="product in cart" :id="product.idShoppingCart">
                 <b-card
                   tag="article"
@@ -46,7 +46,6 @@
                         <b-col lg="6">
                           <b-row>
                             <b-col cols="auto my-auto">
-
                               <span class="pr-4">Cantidad</span>
                               <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable" @click="decreaseAmount(product)"/>
                               <span class="mx-2">{{product.amount}}</span>
@@ -78,6 +77,11 @@
                     </b-col>
                   </b-row>
                 </b-card>
+              </b-col>
+            </b-row>
+            <b-row v-else>
+              <b-col>
+                <h3 class="text-center">No hay productos en el carrito</h3>
               </b-col>
             </b-row>
           </b-col>
@@ -134,6 +138,7 @@
 <script>
 import ShoppingCartService from "@/services/shopping-cart/ShoppingCartService";
 import Big from "big.js";
+import Vue from "vue";
 
 export default {
   name: "ShoppingCart",
@@ -152,13 +157,64 @@ export default {
       }
       const response = await ShoppingCartService.getOrdersByEmailService(payload);
       this.showOverlay()
-      console.log(response.data)
       this.cart = response.data;
-      //calcular el total de productos
       this.products = response.data.reduce((acumulado, producto) => acumulado + producto.amount, 0);
       this.total = this.calcTotal(response.data);
-
     },
+    async increaseAmount(product){
+      const payload = {
+        idShoppingCart: product.idShoppingCart,
+        amount: product.amount + 1,
+        product: product.product
+      }
+      this.showOverlay()
+      const response = await ShoppingCartService.putShoppingCartService(payload);
+      this.showOverlay()
+      if(response.status === 200){
+        this.getCart();
+      }
+    },
+    async decreaseAmount(product){
+      if(product.amount > 1){
+        const payload = {
+          idShoppingCart: product.idShoppingCart,
+          amount: product.amount - 1,
+        }
+        this.showOverlay()
+        const response = await ShoppingCartService.putShoppingCartService(payload);
+        this.showOverlay()
+        if(response.status === 200){
+          this.getCart();
+        }
+      }else{
+        Vue.swal({
+          title: '¿Estás seguro?',
+          text: "¿Deseas eliminar el producto del carrito?",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: 'var( --black-base)',
+          confirmButtonText: 'Sí, eliminar'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            this.showOverlay()
+            const payload = {
+              idShoppingCart: product.idShoppingCart,
+            }
+            const response = await ShoppingCartService.deleteShoppingCartService(payload);
+            this.showOverlay()
+            if(response.status === 200){
+              this.getCart();
+            }
+          }
+        })
+      }
+    },
+
+
+
+
+
+
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
     },

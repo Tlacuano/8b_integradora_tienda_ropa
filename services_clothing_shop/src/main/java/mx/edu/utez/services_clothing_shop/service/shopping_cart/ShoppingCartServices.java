@@ -1,7 +1,9 @@
 package mx.edu.utez.services_clothing_shop.service.shopping_cart;
 
 
+import jdk.swing.interop.SwingInterOpUtils;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPostShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPutShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -103,12 +105,15 @@ public class ShoppingCartServices {
 
 
     @Transactional
-    public ResponsePutShoppingCartDTO updateShoppingCartById(@RequestBody BeanShoppingCart shoppingCart) {
+    public ResponsePutShoppingCartDTO updateShoppingCartById(RequestPutShoppingCartDTO shoppingCart) {
         if (shoppingCart.getIdShoppingCart() == null) {
             throw new CustomException("shoppingCart.id.notnull");
         } else{
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             BeanShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCart.getIdShoppingCart()).orElse(null);
+            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
             if (existingShoppingCart != null) {
+                System.out.println(existingShoppingCart.getProduct().getIdProduct());
                 BeanProduct product = productRepository.findByIdProduct(existingShoppingCart.getProduct().getIdProduct());
                 if(shoppingCart.getAmount() <= 0){
                     throw new CustomException("shoppingCart.amount.notnull");

@@ -12,6 +12,26 @@ const getOrdersByEmailService = async (payload) => {
     }
 }
 
+const putShoppingCartService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/shopping-carts/put-shopping-cart`, payload);
+        return response.data;
+    } catch (e) {
+        showWarningToast('',error)
+    }
+}
+
+const deleteShoppingCartService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/shopping-carts/delete-shopping-cart`, payload);
+        return response.data;
+    } catch (e) {
+        showWarningToast('',error)
+    }
+}
+
 export default {
-    getOrdersByEmailService
+    getOrdersByEmailService,
+    putShoppingCartService,
+    deleteShoppingCartService
 }
