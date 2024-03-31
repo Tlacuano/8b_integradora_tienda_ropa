@@ -30,8 +30,18 @@ const deleteShoppingCartService = async (payload) => {
     }
 }
 
+const postShoppingCartService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/shopping-carts/post-shopping-cart`, payload);
+        return response.data;
+    } catch (e) {
+        showWarningToast('',error)
+    }
+}
+
 export default {
     getOrdersByEmailService,
     putShoppingCartService,
-    deleteShoppingCartService
+    deleteShoppingCartService,
+    postShoppingCartService
 }
