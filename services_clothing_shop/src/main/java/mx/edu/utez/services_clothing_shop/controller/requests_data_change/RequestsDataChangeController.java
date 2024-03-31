@@ -49,9 +49,10 @@ public class RequestsDataChangeController {
 
 
     @GetMapping("/get-page")
-    public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChange(Pageable pageable) {
-        return requestsDataChangeService.getPageRequestDataChangeWithPersonName(pageable);
+    public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChange(Pageable pageable, @RequestParam(defaultValue = "") String searchTerm) {
+        return requestsDataChangeService.getPageRequestDataChangeWithPersonName(pageable, searchTerm);
     }
+
 
     @PostMapping("/get-by-id-request-data-change")
     public ResponseEntity<RequestDataChangeIdDTO> getRequestDataChangeById(@RequestBody GetRequestDataChangeId requestDTO) {
