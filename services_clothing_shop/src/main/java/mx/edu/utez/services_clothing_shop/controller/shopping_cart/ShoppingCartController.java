@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.RequestPostShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.service.shopping_cart.ShoppingCartServices;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -25,9 +26,8 @@ public class ShoppingCartController {
 
 
     @PostMapping("/get-shopping-cart")
-    public ResponseEntity<CustomResponse<List<ResponseShoppingCartDTO>>> findShoppingCarsByUserEmail(@Validated @RequestBody Map<String, String> requestBody) {
-        String userEmail = requestBody.get("userEmail");
-        List<ResponseShoppingCartDTO> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(userEmail);
+    public ResponseEntity<CustomResponse<List<ResponseShoppingCartDTO>>> findShoppingCarsByUserEmail(@Validated @RequestBody RequestActionByEmailDTO payload) {
+        List<ResponseShoppingCartDTO> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(payload.getEmail());
         return ResponseEntity.ok(new CustomResponse<>(shoppingCarts, "ok", false, 200));
     }
 

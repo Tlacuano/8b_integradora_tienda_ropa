@@ -50,7 +50,12 @@ const router = new VueRouter({
                     component: () => import("../views/user/Profile.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
                 },
-
+                {
+                    name:"shopping-cart",
+                    path:"shopping-cart",
+                    component: () => import("../views/shopping-cart/ShoppingCart.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
+                },
                 {
                     path: "store/:category",
                     name: "UserProductsCategory",
