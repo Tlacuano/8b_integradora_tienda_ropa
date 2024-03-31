@@ -19,7 +19,7 @@
                 type="email"
                 v-model="form.email"
                 name="email"
-                v-validate="'required|email'"
+                v-validate="'required'"
             ></b-form-input>
             <span v-show="errors.has('email')" class="text-danger">{{ errors.first('email') }}</span>
           </b-form-group>
