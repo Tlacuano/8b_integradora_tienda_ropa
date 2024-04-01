@@ -112,7 +112,15 @@ const changePasswordService = async (payload) => {
     }catch (e){
         showWarningToast('', error)
     }
+}
 
+const deleteAccountService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/delete-account", payload);
+        return response.data
+    } catch (e) {
+        showWarningToast('', error)
+    }
 }
 
 
@@ -128,5 +136,6 @@ export default {
     deleteIncompleteAccountService,
     getPageUsersByEmailService,
     restorePasswordService,
-    changePasswordService
+    changePasswordService,
+    deleteAccountService
 };

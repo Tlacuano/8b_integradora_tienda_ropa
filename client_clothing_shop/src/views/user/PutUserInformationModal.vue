@@ -15,11 +15,11 @@
           </b-row>
           <b-row class="mt-4">
             <b-col>
-              <b-card no-body class="selectable highlight-on-hover">
+              <b-card no-body class="selectable highlight-on-hover" @click="changePasswordMenu">
                 <b-row align-h="between" class="p-2 mx-1">
                   <b-col>
                     <b>
-                      Cambiar correo electrónico
+                      Cambiar contraseña
                     </b>
                   </b-col>
                   <b-col cols="auto" class="text-right">
@@ -31,11 +31,11 @@
           </b-row>
           <b-row class="mt-2 mb-3">
             <b-col>
-              <b-card no-body class="selectable highlight-on-hover" @click="changePasswordMenu">
+              <b-card no-body class="selectable highlight-on-hover" @click="deleteAccountMenu">
                 <b-row align-h="between" class="p-2 mx-1">
                   <b-col>
                     <b>
-                      Cambiar contraseña
+                      Eliminar cuenta
                     </b>
                   </b-col>
                   <b-col cols="auto" class="text-right">
@@ -131,6 +131,37 @@
           </b-row>
         </section>
 
+        <section v-show="page===2.2">
+          <b-row>
+            <b-col class="text-center">
+              <h3>Eliminar cuenta</h3>
+            </b-col>
+          </b-row>
+          <b-row class="mt-4">
+            <b-col>
+              <b-form-group label="Contraseña" label-for="input-password-delete">
+                <b-form-input
+                    id="input-password-delete"
+                    type="password"
+                    v-model="form.Password"
+                    required
+                    name="password-delete"
+                    v-validate="'required'"
+                    ref="password"
+                ></b-form-input>
+                <span v-show="errors.has('password-delete')" class="text-danger">{{ errors.first('password-delete') }}</span>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row class="mt-4 mb-2">
+            <b-col>
+              <b-button class="main-button" @click="deleteAccount()" >
+                Eliminar cuenta
+              </b-button>
+            </b-col>
+          </b-row>
+        </section>
+
       </b-container>
     </b-overlay>
   </b-modal>
@@ -140,6 +171,7 @@
 import {mapGetters} from "vuex";
 import UserService from "@/services/user/userService";
 import {showSuccessToast} from "@/components/alerts/alerts";
+import Vue from "vue";
 
 export default {
   name: "PutUserInformationModal",
@@ -163,24 +195,70 @@ export default {
         this.$validator.validate('confirmPassword')
       ]).then(async (values) => {
         if(values.every(value => value)){
-          this.changeStatusOverlay()
 
-          const payload = {
-            oldPassword: this.form.Password,
-            password: this.form.newPassword,
-            email: this.$store.getters.getEmail
-          }
-          const response = await UserService.changePasswordService(payload);
+          Vue.swal({
+            title: '¿Estás seguro?',
+            text: "¿Deseas cambiar tu contraseña?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--black-base)',
+            confirmButtonText: 'Sí, cambiar'
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              this.changeStatusOverlay()
 
-          this.changeStatusOverlay()
-          if(response.data){
-            this.$bvModal.hide('put-user-information-modal');
-            showSuccessToast('', 'Contraseña actualizada correctamente')
-          }
+              const payload = {
+                oldPassword: this.form.Password,
+                password: this.form.newPassword,
+                email: this.$store.getters.getEmail
+              }
+              const response = await UserService.changePasswordService(payload);
 
+              this.changeStatusOverlay()
+              if(response.data){
+                this.$bvModal.hide('put-user-information-modal');
+                showSuccessToast('', 'Contraseña actualizada correctamente')
+              }
+            }
+          });
         }
       });
     },
+
+    deleteAccount(){
+      Promise.all([
+        this.$validator.validate('password-delete')
+      ]).then(async (values) => {
+        if(values.every(value => value)){
+          Vue.swal({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar tu cuenta?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--black-base)',
+            confirmButtonText: 'Sí, eliminar'
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              this.changeStatusOverlay()
+              const payload = {
+                email: this.$store.getters.getEmail,
+                password: this.form.Password
+              }
+              const response = await UserService.deleteAccountService(payload);
+              this.changeStatusOverlay()
+              if(response.data){
+                this.$store.dispatch('logout');
+              }
+            }
+          });
+        }
+      });
+    },
+
+    deleteAccountMenu(){
+      this.page = 2.2;
+    },
+
 
     changePasswordMenu(){
       this.page = 2.1;

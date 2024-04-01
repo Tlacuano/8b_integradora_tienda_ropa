@@ -114,8 +114,17 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteAccount(String email){
-        userRepository.deleteAccount(email);
+    public void deleteAccount(RequestRestorePasswordDTO payload){
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+        if(user == null){
+            throw new CustomException("user.email.not.found");
+        }
+
+        if(!passwordEncoder.matches(payload.getPassword(), user.getPassword())){
+            throw new CustomException("user.password.incorrect");
+        }
+
+        userRepository.deleteAccount(payload.getEmail());
     }
 
 
