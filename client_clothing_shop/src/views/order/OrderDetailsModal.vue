@@ -61,7 +61,7 @@
               </b-col>
             </b-row>
           </b-col>
-          <b-col style="border: 1px solid black;" class="m-2">
+          <b-col style="border: 1px solid black;" class="m-2" >
             <p>Detalles</p>
             <b-card img-left no-body>
               <b-img :src="image" fluid alt="Fluid image" style="max-width: 10rem;" class="mt-4 mb-4 ml-2"/>

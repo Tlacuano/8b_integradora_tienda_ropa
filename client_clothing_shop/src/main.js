@@ -42,9 +42,17 @@ const dictionary = {
             digits: () => 'Debe contener exactamente 5 dígitos',
             min: () => 'Debe contener al menos 5 caracteres',
             max: () => 'Debe contener máximo 100 caracteres',
+            name_max: () => "Debe contener máximo 15 caracteres",
         }
     }
 };
+
+//for subcategory name lenght
+Validator.extend("name_max", {
+    validate: value => {
+        return value.length <= 15;
+    }
+})
 
 //for image size
 Validator.extend('image_size', {
