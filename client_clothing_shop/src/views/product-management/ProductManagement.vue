@@ -25,10 +25,10 @@
       <b-col>
         <b-row>
           <b-col class="container-card" lg="4" v-for="item in items" :key="item">
-            <b-card no-body class="card overflow-hidden" style="max-width: 540px;">
+            <b-card no-body class="card highlight-on-hover" style="max-width: 540px;">
               <b-row no-gutters>
                 <b-col lg="4">
-                  <b-card-img :src="item.img"></b-card-img>
+                  <b-img :src="item.img"  class="img w-100"></b-img>
                 </b-col>
                 <b-col lg="7">
                   <b-row>
@@ -57,17 +57,18 @@
                     </b-col>
                   </b-row>
                 </b-col>
-                <b-col lg="1" class="position-relative">
-                  <b-dropdown variant="link" no-caret class="card-dropdown">
-                    <template #button-content>
-                      <font-awesome-icon icon="ellipsis-v" class="text-dark" />
-                    </template>
-                    <b-dropdown-item @click="enableAddress(address.idAddress)">Habilitar</b-dropdown-item>
-                    <b-dropdown-item @click="deleteAddress(address.idAddress)">Deshabilitar</b-dropdown-item>
-                    <b-dropdown-item @click="setAsDefault(address)">Marcar como predeterminada</b-dropdown-item>
-                    <b-dropdown-item @click="openEditModal(address)">Modificar</b-dropdown-item>
-                  </b-dropdown>
-                </b-col>
+                <b-dropdown
+                    variant="link-dark"
+                    toggle-class="text-decoration-none"
+                    no-caret
+                >
+                  <template v-slot:button-content>
+                    <font-awesome-icon icon="ellipsis-v"/>
+                  </template>
+                  <b-dropdown-item>Ver detalles</b-dropdown-item>
+                  <b-dropdown-item>Editar</b-dropdown-item>
+                  <b-dropdown-item>Desabilitar</b-dropdown-item>
+                </b-dropdown>
               </b-row>
             </b-card>
           </b-col>
@@ -104,6 +105,7 @@
       };
     },
     methods:{
+
     },
     mounted() {
     }
@@ -111,31 +113,15 @@
 </script>
 
 <style>
-.card-dropdown {
-  position: absolute;
-  
+.img{
+  background-size: cover;
+  height: 100%;
 }
-
-.card-dropdown .dropdown-menu {
-  position: absolute !important; /* Cambia la posición a estática para que el dropdown se ajuste automáticamente */
-}
-
-.card-dropdown .dropdown-toggle {
-  border: none;
-  padding: 0;
-  background: transparent;
-}
-
-.card-dropdown .dropdown-toggle .fa-ellipsis-v {
-  color: black;
-}
-
-
-
 .container-card{
   height: 175px;
 }
 .card{
   height: 175px;
 }
+
 </style>
