@@ -117,7 +117,7 @@ export default {
 }
 
 .categoria {
-  width: 140px;
+  width: 125px;
 }
 
 

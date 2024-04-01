@@ -7,7 +7,7 @@
                 </b-col>
             </b-row>
 
-            <b-row class="my-3">
+            <b-row class="my-3 mb-5">
                 <b-col>
                     <b-form>
                         <b-form-group label="Nombre de la categoria:" laber-for="category">
@@ -19,8 +19,8 @@
                         </b-form-group>
 
                         <b-form-group label="Imagen de la categoria:" label-for="image">
-                            <b-form-file id="image" v-model="form.image" accept="image/jpeg, image/png, image/jpg"
-                                :state="Boolean(newImage)" placeholder="Seleccione una imagen" @input="handleFileUpload"
+                            <b-form-file id="image" v-model="selectedFile" accept="image/jpeg, image/png, image/jpg"
+                                :state="Boolean(selectedFile)" placeholder="Seleccione una imagen" @input="handleFileUpload"
                                 name="image" v-validate="'required|image|mimes:jpeg,jpg,png|image_size'" />
                             <span class="text-danger" v-show="errors.has('image')">
                                 {{ errors.first("image") }}
@@ -47,7 +47,7 @@
 
                 <b-col class="text-center">
                     <b-img :src="imgPreview ? imgPreview : category.image" thumbnail
-                        style="max-width: 50%; max-height: 95%" />
+                        style="max-width: 100%; max-height: 100%" />
                 </b-col>
             </b-row>
 
@@ -83,7 +83,7 @@ export default Vue.extend({
                 status: true,
             },
             imgPreview: null,
-            newImage: null,
+            selectedFile: null,
             statusOptions: [
                 { value: true, text: 'Habilitado' },
                 { value: false, text: 'Deshabilitado' }
@@ -99,12 +99,14 @@ export default Vue.extend({
                         "Se guardaran los cambios",
                         "Sí, guardar",
                         async () => {
-                            if (this.newImage) {
-                                const payload = this.newImage;
+                            if (this.selectedFile) {
+                                const payload = this.selectedFile;
                                 const imageUrl = await CloudinaryService.uploadImage(payload);
 
                                 if (imageUrl.status === 200) {
-                                    this.form.image = imageUrl.data.data;
+                                    this.form.image = imageUrl.data.data; 
+                                    // Evita la caché de la imagen
+                                    this.imgPreview = `${this.form.image}?${Math.random()}`; 
                                 } else {
                                     showWarningToast(
                                         "Error al editar la categoría",
@@ -122,12 +124,13 @@ export default Vue.extend({
                                 status: this.form.status,
                             };
 
-                            const response = await CategoriesService.putCategoryService(category);
+                            const response = await CategoriesService.putCategoryService(payload);
 
                             if (response && response.status === 201) {
                                 this.clean();
                                 this.$emit("category-edited");
                                 this.$bvModal.hide("editCategoryModal");
+                                this.getCategories();
                             } else {
                                 showWarningToast(
                                     "Error al editar la categoría",
@@ -139,60 +142,58 @@ export default Vue.extend({
                 }
             });
         },
-
         async getCategories() {
-            const pagination = {
-                page: 1,
-                size: 100,
-            };
-            const response = await CategoriesService.getPageCategoriesService(
-                pagination
-            );
+            const response = await CategoriesService.getCategories();
             this.categories = response.data.content;
+            this.filteredCategories = this.categories;
         },
         handleFileUpload() {
-            this.imgPreview = URL.createObjectURL(this.newImage);
+            if(this.selectedFile && this.selectedFile.length > 0) {
+                this.selectedFile = this.selectedFile[0];
+                this.imgPreview = URL.createObjectURL(this.selectedFile);
+            }
         },
         closeModal() {
             this.clean();
             this.$bvModal.hide("editCategoryModal");
         },
         clean() {
-            this.newImage = null;
+            this.selectedFile = null;
             this.imgPreview = null;
         },
         initializeFormData() {
-            // Verifica si la categoría está disponible
             if (this.category) {
-                // Asigna los valores de la categoría al formulario presentado
                 this.form.idCategory = this.category.idCategory;
                 this.form.category = this.category.category;
                 this.form.status = this.category.status;
 
-                // Si la categoría tiene una imagen, asigna la imagen al formulario y muestra la vista previa
                 if (this.category.image) {
                     this.form.image = this.category.image;
                     this.imgPreview = this.category.image;
                 }
             } else {
-                // Si la categoría no está disponible, limpia los datos del formulario y la vista previa de la imagen
                 this.clean();
             }
         }
     },
     mounted() {
-        // Inicializa los datos del formulario y la vista previa de la imagen al cargar el componente modal
         this.initializeFormData();
     },
     watch: {
-        // Observador para detectar cambios en la categoría seleccionada
         category: {
             handler(newCategory) {
-                // Si cambia la categoría seleccionada, vuelve a inicializar los datos del formulario y la vista previa de la imagen
                 this.initializeFormData();
             },
-            deep: true // Observa los cambios en las propiedades anidadas de la categoría
+        },
+        selectedFile: {
+            handler(newFile) {
+                if(newFile) {
+                    this.imgPreview = URL.createObjectURL(newFile);
+            } else {
+                this.imgPreview = null;
+            }
         }
     }
+}
 });
 </script>

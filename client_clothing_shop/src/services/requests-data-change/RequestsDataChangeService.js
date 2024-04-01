@@ -4,13 +4,13 @@ import axios from "../../config/http-client.gateway";
 const MESSAGE_ACCEPTED = "Tu solicitud de cambio de datos ha sido aprobada. " +
                                 "Revisa tus nuevos datos, si tienes alguna duda contacta al equipo de soporte."
 
-const getPageRequestsDataChangeService = async (pagination) => {
+const getPageRequestsDataChangeService = async (pagination, searchTerm = '') => {
     try {
-        const {page, size} = pagination;
-        const response = await axios.doGet(`/venta-ropa/api/requests-data-change/get-page?size=${size}&page=${page - 1}`);
-        return response.data
+        const { page, size } = pagination;
+        const response = await axios.doGet(`/venta-ropa/api/requests-data-change/get-page?size=${size}&page=${page - 1}&searchTerm=${searchTerm}`);
+        return response.data;
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
 }
 

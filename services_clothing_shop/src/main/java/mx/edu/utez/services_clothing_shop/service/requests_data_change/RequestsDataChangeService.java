@@ -143,9 +143,10 @@ public class RequestsDataChangeService {
 
 
     @Transactional
-    public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChangeWithPersonName(Pageable pageable) {
-        return IRequestsDataChange.findAllStatusesWithPersonNameAndLastName(pageable);
+    public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChangeWithPersonName(Pageable pageable, String searchTerm) {
+        return IRequestsDataChange.findAllStatusesWithPersonNameAndLastName(pageable, searchTerm);
     }
+
 
     private Map<String, Object> convertJsonToMap(String json) {
         try {

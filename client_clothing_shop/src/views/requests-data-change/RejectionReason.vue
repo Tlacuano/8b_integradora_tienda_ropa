@@ -34,6 +34,8 @@
 <script>
 import {regexRejectionReason} from "../../utils/validation/regex";
 import RequestsDataChangeService from "../../services/requests-data-change/RequestsDataChangeService";
+import { showSuccessToast, showInfoAlert} from "../../components/alerts/alerts";
+
 export default {
   props:{
     selectedRequestId: String
@@ -55,22 +57,30 @@ export default {
     async submitRejection() {
       if (this.rejectionReason.trim() && !this.error) {
         this.isLoading = true;
-        try {
-          const requestDataChangePutDTO = {
-            idRequestDataChange: this.selectedRequestId,
-            status: "Rechazado",
-            rejectionReason: this.rejectionReason,
-          };
+        showInfoAlert(
+            'Confirmación',
+            '¿Estás seguro de que quieres rechazar esta solicitud?',
+            'Aceptar',
+            async () => {
+              try {
+                const requestDataChangePutDTO = {
+                  idRequestDataChange: this.selectedRequestId,
+                  status: "Rechazado",
+                  rejectionReason: this.rejectionReason,
+                };
 
-
-          const response = await RequestsDataChangeService.putRequestDataChangeService(requestDataChangePutDTO);
-          this.$emit('rejection-submitted', response);
-          this.$bvModal.hide('rejectionModal');
-        } catch (error) {
-          console.error("Error al rechazar la solicitud de cambio de datos:", error);
-        } finally {
-          this.isLoading = false;
-        }
+                const response = await RequestsDataChangeService.putRequestDataChangeService(requestDataChangePutDTO);
+                this.$emit('rejection-submitted', response);
+                this.$bvModal.hide('rejectionModal');
+                this.$emit('close-main-modal');
+                showSuccessToast('Éxito', 'La solicitud ha sido rechazada exitosamente');
+              } catch (error) {
+                console.error("Error al rechazar la solicitud de cambio de datos:", error);
+              } finally {
+                this.isLoading = false;
+              }
+            }
+        );
       }
     },
 

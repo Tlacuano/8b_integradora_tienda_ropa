@@ -14,20 +14,13 @@
       </b-row>
     </div>
     <div v-else>
-      <b-row no-gutters>
-        <b-col class="px-3" cols="12" xl="3" lg="4">
-          <b-form-group class="mb-0">
-            <b-input-group>
-              <b-input-group-prepend is-text>
-                <b-icon icon="search"/>
-              </b-input-group-prepend>
-              <b-form-input
-                  id="search"
-                  v-model="search"
-                  type="search"
-                  placeholder="Buscar producto..."
-              ></b-form-input>
-            </b-input-group>
+      <b-row class="mt-4 px-3" align-h="between">
+        <b-col cols="12" lg="4">
+          <b-form-group>
+            <div class="position-relative">
+              <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+              <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
+            </div>
           </b-form-group>
         </b-col>
       </b-row>
@@ -55,7 +48,9 @@
                   <p class="mb-0 font-weight-bold">{{ product.productName }}</p>
                 </b-col>
                 <b-col cols="4" class="text-right">
-                  <b-icon icon="heart"/>
+                  <b-button pill variant="light" class="wishlist-btn p-0" @click.stop="wishlistProduct">
+                    <b-icon class="icon-container" :icon="false ? 'heart-fill' : 'heart'"/>
+                  </b-button>
                 </b-col>
               </b-row>
               <p class="mb-0">$ {{ product.price }} MXN</p>
@@ -79,6 +74,7 @@
 import ProductService from "@/services/product/ProductService";
 import CategoryService from "@/services/category/CategoryService";
 import {codeCrypto} from "@/utils/security/cryptoJs";
+import {mapGetters} from "vuex";
 
 export default {
   name: "GuestProducts",
@@ -94,6 +90,10 @@ export default {
       products: [],
       categories: []
     };
+  },
+
+  computed: {
+    ...mapGetters(["isLoggedIn"]),
   },
 
   methods: {
@@ -137,6 +137,12 @@ export default {
         this.products = response.data;
       }
       this.showOverlay();
+    },
+
+    wishlistProduct() {
+      if (!this.isLoggedIn) {
+        this.$bvModal.show("login-modal");
+      }
     },
 
     selectProduct(productId) {
@@ -185,5 +191,17 @@ export default {
 <style scoped>
 .full-page {
   height: 80vh;
+}
+
+.wishlist-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

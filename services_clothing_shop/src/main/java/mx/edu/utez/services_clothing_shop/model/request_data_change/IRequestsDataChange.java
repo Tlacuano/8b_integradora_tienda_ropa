@@ -27,8 +27,10 @@ public interface IRequestsDataChange extends JpaRepository<BeanRequestDataChange
         BeanRequestStatus getStatus();
     }
 
-    @Query("SELECT r.idRequestDataChange as requestId, r.status as status, p.name as personName, p.lastName as personLastName, p.picture as personPicture FROM BeanRequestDataChange r LEFT JOIN r.user u LEFT JOIN u.person p")
-    Page<RequestDataChangeStatusPersonProjection> findAllStatusesWithPersonNameAndLastName(Pageable pageable);
+    @Query("SELECT r.idRequestDataChange as requestId, r.status as status, p.name as personName, p.lastName as personLastName, p.picture as personPicture " +
+            "FROM BeanRequestDataChange r LEFT JOIN r.user u LEFT JOIN u.person p " +
+            "WHERE (:searchTerm = '' OR CONCAT(p.name, ' ', p.lastName) LIKE %:searchTerm%)")
+    Page<RequestDataChangeStatusPersonProjection> findAllStatusesWithPersonNameAndLastName(Pageable pageable, @Param("searchTerm") String searchTerm);
 
     @Query("SELECT r.user.person.idPerson FROM BeanRequestDataChange r WHERE r.idRequestDataChange = :requestId")
     UUID findPersonIdByRequestId(@Param("requestId") UUID requestId);

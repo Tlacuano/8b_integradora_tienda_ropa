@@ -54,6 +54,7 @@
           @request-error="handleRequestError"
           :selected-request-id="selectedRequestId"
           @rejection-submitted="handleRejection"
+          @close-main-modal="closeMainModal"
       />    </b-container>
   </b-modal>
 </template>
@@ -61,6 +62,7 @@
 <script>
 import RejectionReason from "../../views/requests-data-change/RejectionReason.vue";
 import RequestsDataChangeService from "../../services/requests-data-change/RequestsDataChangeService";
+import {showInfoAlert, showSuccessToast} from "../../components/alerts/alerts";
 
 export default {
   name: "RequestsDataChangeManagementModal",
@@ -76,8 +78,15 @@ export default {
   },
   methods: {
     formatLabel(key) {
-      const formatted = key.replace(/([A-Z])/g, " $1");
-      return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+      const translations = {
+        name: 'Nombre',
+        lastName: 'Apellido',
+        secondLastName: 'Segundo Apellido',
+        gender: 'Género',
+        birthday: 'Fecha de Nacimiento',
+        phoneNumber: 'Número de Teléfono'
+      };
+      return translations[key] || key;
     },
 
     async getByIdRequestDataChange() {
@@ -94,25 +103,32 @@ export default {
     },
 
     async acceptRequestDataChange() {
-      try {
-        const requestDataChangePutDTO = {
-          idRequestDataChange: this.request.requestId,
-          status: "Aprobado",
-          rejectionReason: "",
-          name: this.request.newUserInformation.name || null,
-          lastName: this.request.newUserInformation.lastName || null,
-          secondLastName: this.request.newUserInformation.secondLastName || null,
-          birthday: this.request.newUserInformation.birthday || null,
-          phoneNumber: this.request.newUserInformation.phoneNumber || null,
-          gender: this.request.newUserInformation.gender || null,
-        };
+      showInfoAlert(
+          'Confirmación',
+          '¿Estás seguro de que quieres aprobar esta solicitud?',
+          'Aceptar',
+          async () => {
+            try {
+              const requestDataChangePutDTO = {
+                idRequestDataChange: this.request.requestId,
+                status: "Aprobado",
+                rejectionReason: "",
+                name: this.request.newUserInformation.name || null,
+                lastName: this.request.newUserInformation.lastName || null,
+                secondLastName: this.request.newUserInformation.secondLastName || null,
+                birthday: this.request.newUserInformation.birthday || null,
+                phoneNumber: this.request.newUserInformation.phoneNumber || null,
+                gender: this.request.newUserInformation.gender || null,
+              };
 
-        const response = await RequestsDataChangeService.putRequestDataChangeService(requestDataChangePutDTO);
-
-        this.$bvModal.hide('requestDataChangeModal');
-      } catch (error) {
-        console.error("Error al aceptar la solicitud de cambio de datos:", error);
-      }
+              const response = await RequestsDataChangeService.putRequestDataChangeService(requestDataChangePutDTO);
+              this.$bvModal.hide('requestDataChangeModal');
+              showSuccessToast('Éxito', 'La solicitud ha sido aprobada exitosamente');
+            } catch (error) {
+              console.error("Error al aceptar la solicitud de cambio de datos:", error);
+            }
+          }
+      );
     },
 
 
@@ -135,6 +151,9 @@ export default {
     handleRejection(response) {
       this.$emit("request-success", response);
     },
+    closeMainModal() {
+      this.$bvModal.hide('requestDataChangeModal');
+    },
   },
   computed: {
     formattedRequestData() {
@@ -148,7 +167,7 @@ export default {
           ? `${birthdayArray[0]}-${String(birthdayArray[1]).padStart(2, '0')}-${String(birthdayArray[2]).padStart(2, '0')}`
           : 'No especificado';
 
-      const oldBirthdayArray = this.request.birthday; // Asegúrate de que esta es la forma en que se reciben los datos
+      const oldBirthdayArray = this.request.birthday;
       const formattedBirthdayOld = oldBirthdayArray
           ? `${oldBirthdayArray[0]}-${String(oldBirthdayArray[1]).padStart(2, '0')}-${String(oldBirthdayArray[2]).padStart(2, '0')}`
           : 'No especificado';

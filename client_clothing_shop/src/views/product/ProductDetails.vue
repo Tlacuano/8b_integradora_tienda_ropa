@@ -66,6 +66,8 @@
 <script>
 import ProductService from "@/services/product/ProductService";
 import {mapGetters} from "vuex";
+import ShoppingCartService from "@/services/shopping-cart/ShoppingCartService";
+import {showSuccessToast} from "@/components/alerts/alerts";
 
 export default {
   name: "ProductDetails",
@@ -105,17 +107,28 @@ export default {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
       }
-      // this.productIsWishlisted = !this.productIsWishlisted;
     },
 
     // TODO: Implement function to add product to cart
-    addToCart(product) {
+    async addToCart(product) {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
+      }else{
+        this.showOverlay()
+        const payload = {
+          email: this.$store.getters.getEmail,
+          idProduct: product.idProduct,
+        }
+        const response = await ShoppingCartService.postShoppingCartService(payload);
+        this.showOverlay()
+        if(response.data) showSuccessToast('', 'Producto añadido al carrito');
       }
+    },
+
+    showOverlay(){
+      this.$store.dispatch('changeStatusOverlay');
     }
   },
-
   created() {
     this.getProduct();
   }

@@ -3,7 +3,9 @@ package mx.edu.utez.services_clothing_shop.controller.product.dto;
 import lombok.Data;
 import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
+import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -14,6 +16,7 @@ public class ResponseShoppingCartProductDTO {
     private double price;
     private String category;
     private String subcategory;
+    private List<BeanProductGallery> gallery;
 
     public ResponseShoppingCartProductDTO(){
 
@@ -26,6 +29,7 @@ public class ResponseShoppingCartProductDTO {
         productDTO.setPrice(product.getPrice());
         productDTO.setCategory(product.getSubcategory().getCategory().getCategory());
         productDTO.setSubcategory(product.getSubcategory().getSubcategory());
+        productDTO.setGallery(product.getProductGallery());
         return productDTO;
     }
 }

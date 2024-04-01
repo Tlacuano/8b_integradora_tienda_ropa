@@ -170,13 +170,23 @@ export default {
   },
   mounted() {
     this.getPageUsers();
+  },
+  watch:{
+    objetPagination:{
+      handler(){
+        this.getPageUsers();
+      },
+      deep:true
+    }
   }
+
+
 }
 </script>
 
 <style scoped>
 .container-users{
-  height: calc(100vh - 300px);
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 </style>
