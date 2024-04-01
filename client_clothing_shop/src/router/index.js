@@ -159,6 +159,12 @@ const router = new VueRouter({
                     name:"ADMINRequestsReturnProductManagement",
                     component: () => import("../views/requests-return-product/RequestsReturnProductManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN"] },
+                },
+                {
+                    path: "order-management",
+                    name: "ADMINOrderManagement",
+                    component: () => import("../views/order/OrderManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 }
             ]
         },

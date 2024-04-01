@@ -21,6 +21,7 @@ const getRequestByIdService = async (request) => {
         });
         return response.data.data;
     } catch (e) {
+        console.log(e)
     }
 }
 

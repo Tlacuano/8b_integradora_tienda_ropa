@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,7 +19,7 @@ public class OrderHasProductsService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public Page<BeanOrderHasProducts> getOrdersHasProductsByOrder_IdOrder(UUID idOrder, Pageable page) {
-        return orderHasProductsRepository.findAllByOrder_IdOrder(idOrder, page);
+    public List<BeanOrderHasProducts> getOrdersHasProductsByOrder_IdOrder(UUID idOrder) {
+        return orderHasProductsRepository.findAllByOrder_IdOrder(idOrder);
     }
 }

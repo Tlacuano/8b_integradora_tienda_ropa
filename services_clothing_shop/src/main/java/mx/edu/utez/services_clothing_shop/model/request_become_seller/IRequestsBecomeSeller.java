@@ -40,13 +40,14 @@ public interface IRequestsBecomeSeller extends JpaRepository<BeanRequestsBecomeS
         UUID getPersonId();
         String getPersonName();
         String getPersonLastName();
+        String getPersonSecondLastName();
         String getUserEmail();
         String getPicture();
     }
 
     @Query("SELECT r.idRequestBecomeSeller as idRequestBecomeSeller, r.status as status, " +
             "r.user.idUser as userId, r.user.person.idPerson as personId, " +
-            "r.user.person.name as personName, r.user.person.lastName as personLastName, r.user.person.picture as picture ,"
+            "r.user.person.name as personName, r.user.person.lastName as personLastName, r.user.person.secondLastName as personSecondLastName, r.user.person.picture as picture ,"
             + "r.user.email as userEmail " +
             "FROM BeanRequestsBecomeSeller r")
     Page<RequestBecomeSellerProjection> findAllStatusesWithDetails(Pageable pageable);

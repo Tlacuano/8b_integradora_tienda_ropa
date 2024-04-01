@@ -62,7 +62,6 @@
             </b-col>
         </b-row>
 
-        <AddCategoryModal @category-added="refreshCategories"/>
         <EditCategoryModal :category="selectedCategory" @category-edited="refreshCategories"/>
     </section>
 </template>

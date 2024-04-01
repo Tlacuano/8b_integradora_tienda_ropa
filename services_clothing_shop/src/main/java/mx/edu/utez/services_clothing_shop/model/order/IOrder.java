@@ -23,4 +23,35 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
             @Param("p_order_id_payment_card") String orderIdPaymentCard,
             @Param("p_order_number") String orderNumber
     );
+
+    interface OrderProjection {
+        UUID getIdOrder();
+        String getOrderNumber();
+        String getStatus();
+        String getPicture();
+        String getPersonName();
+        String getPersonLastName();
+        String getPersonSecondLastName();
+    }
+
+    @Query("SELECT o.idOrder as idOrder,  o.orderNumber as orderNumber, o.address.person.picture as picture, " +
+            "o.address.person.name as personName, o.address.person.lastName as personLastName, o.address.person.secondLastName as personSecondLastName, " +
+            "ohp.status.status as status FROM BeanOrder o INNER JOIN o.orderHasProducts ohp")
+    Page<OrderProjection> findAllOrdersForAdmin(Pageable pageable);
+
+    interface OrderDetailsProjection {
+        String getOrderNumber();
+        String getAddress();
+        String getStreet();
+        String getNeighborhood();
+        String getReferencesAddress();
+        String getPostalCode();
+        String getState();
+        String getCardNumber();
+    }
+
+    @Query("SELECT o.orderNumber as orderNumber, o.address.address as address, o.address.street as street, o.address.neighborhood as neighborhood," +
+            "o.address.referencesAddress as referencesAdrress, o.address.postalCode as postalCode, o.address.state as state," +
+            "o.paymentCard.cardNumber as cardNumber FROM BeanOrder o WHERE o.idOrder = :idOrder")
+    OrderDetailsProjection findOrderDetailsByIdOrder(@Param("idOrder") UUID idOrder);
 }
