@@ -27,6 +27,9 @@ public class BeanRequestReturnProduct {
     @Column(name = "rejection_reason", length = 255)
     private String rejectionReason;
 
+    @Column(name = "return_reason", length = 255)
+    private String returnReason;
+
     //relacion muchos a uno con la tabla de status
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
