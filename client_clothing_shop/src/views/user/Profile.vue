@@ -65,7 +65,7 @@
       <b-col class="my-auto">
         <b-row v-if="user.buyer || user.seller" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToAddresses">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -116,7 +116,7 @@
 
         <b-row  class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover" v-b-modal:put-personal-information-profile-modal>
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToAddresses">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -252,6 +252,9 @@ export default {
     },
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
+    },
+    redirectToAddresses() {
+      this.$router.push({ name: 'BuyerAddressManagement' });
     },
   },
   mounted() {
