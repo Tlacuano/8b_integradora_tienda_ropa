@@ -2,13 +2,22 @@
   <section class="interface">
     <b-row>
       <b-col class="text-center">
-        <h1>Gestion de Direcciones</h1>
+        <h1 class="tittle">Gestion de Direcciones</h1>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-row>
+          <b-col text-right>
+            <b-button @click="showRegistrationModal" class="register-button" variant="primary">Registrar</b-button>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
     <b-row class="mt-3 container-address">
       <b-col>
         <b-row>
-          <b-col v-for="address in addresses" :key="address.idAddress" cols="12" sm="6" lg="4">
+          <b-col v-for="address in addresses" :key="address.idAddress" cols="12" sm="6" lg="3">
             <div class="address-card" :class="address.status.toLowerCase()">
               <div class="address-info">
                 <div class="address-title"><strong>Dirección:</strong> {{ address.address }}</div>
@@ -23,51 +32,112 @@
                 <template #button-content>
                   <font-awesome-icon icon="ellipsis-v" class="text-dark" />
                 </template>
-                <b-dropdown-item @click="deleteAddress(address.idAddress)">Eliminar</b-dropdown-item>
-                <b-dropdown-item @click="setAsDefault(address.idAddress)">Marcar como predeterminada</b-dropdown-item>
-                <b-dropdown-item @click="editAddress(address.idAddress)">Modificar</b-dropdown-item>
+                <b-dropdown-item @click="enableAddress(address.idAddress)">Habilitar</b-dropdown-item>
+                <b-dropdown-item @click="deleteAddress(address.idAddress)">Deshabilitar</b-dropdown-item>
+                <b-dropdown-item @click="setAsDefault(address)">Marcar como predeterminada</b-dropdown-item>
+                <b-dropdown-item @click="openEditModal(address)">Modificar</b-dropdown-item>
               </b-dropdown>
             </div>
           </b-col>
         </b-row>
       </b-col>
     </b-row>
+    <address-edit-modal ref="editModal" :address="currentAddress"  @update:success="handleUpdateSuccess" @registered="fetchAddresses"/>
+    <address-registration-modal ref="registrationModal" :email="email" @registered="fetchAddresses"></address-registration-modal>
   </section>
 </template>
 
 
 <script>
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
 import AddressService from '../../services/adressess-management/AddressesManagement';
+import { showSuccessToast, showWarningToast } from '../../components/alerts/alerts';
+import AddressEditModal from '../../views/address-management/AdressManagementEditModal.vue';
+import AddressRegistrationModal from '../../views/address-management/AddressManagementRegisterModal.vue';
 
 export default {
+  components: {
+    AddressEditModal,
+    AddressRegistrationModal,
+  },
   data() {
     return {
       addresses: [],
+      currentAddress: {},
     };
   },
   computed: {
     ...mapGetters(['getEmail']),
+    email() {
+      return this.getEmail;
+    }
   },
   methods: {
-      async fetchAddresses() {
-        const email = this.getEmail;
-        try {
-          const response = await AddressService.getAddressByEmailService(email);
-          console.log("Direcciones recibidas:", response);
-          this.addresses = response.data;
-        } catch (error) {
-          console.error("Error al obtener direcciones:", error);
-        }
-      },
-    deleteAddress(idAddress) {
-      // Aquí la lógica para eliminar la dirección
+    async fetchAddresses() {
+      const email = this.getEmail;
+      try {
+        const response = await AddressService.getAddressByEmailService(email);
+        this.addresses = response.data
+      } catch (error) {
+        console.error("Error al obtener direcciones:", error);
+      }
     },
-    setAsDefault(idAddress) {
-      // Aquí la lógica para marcar como dirección predeterminada
+    async deleteAddress(idAddress) {
+      try {
+        await AddressService.disableAddressService(idAddress);
+        showSuccessToast('Éxito', 'Dirección deshabilitada correctamente');
+        this.fetchAddresses();  // Recargar las direcciones para reflejar los cambios
+      } catch (error) {
+        console.error("Error al deshabilitar la dirección:", error);
+        showWarningToast('Error', 'No se pudo deshabilitar la dirección');
+      }
     },
-    editAddress(idAddress) {
-      // Aquí la lógica para editar la dirección
+
+    async setAsDefault(address) {
+      try {
+        const response = await AddressService.putAddressStatusService({
+          idAddress: address.idAddress,
+          status: "Predeterminada",
+          idPerson: address.idPerson
+        });
+        showSuccessToast('Éxito', 'Dirección marcada como predeterminada');
+        this.fetchAddresses();
+      } catch (error) {
+        console.error("Error al marcar como predeterminada:", error);
+        showWarningToast('Error', 'No se pudo marcar como predeterminada');
+      }
+    },
+    async enableAddress(idAddress) {
+      try {
+        await AddressService.enableAddressService(idAddress);
+        showSuccessToast('Éxito', 'Dirección habilitada correctamente');
+        this.fetchAddresses();
+      } catch (error) {
+        console.error("Error al habilitar la dirección:", error);
+        showWarningToast('Error', 'No se pudo habilitar la dirección');
+      }
+    },
+
+    openEditModal(address) {
+      this.currentAddress = address;
+      this.$refs.editModal.show();
+    },
+
+    handleUpdateSuccess(updatedAddress) {
+      this.fetchAddresses();
+    },
+
+    showRegistrationModal() {
+      this.currentAddress = {
+        idAddress: null,
+        address: '',
+        neighborhood: '',
+        street: '',
+        referencesAddress: '',
+        postalCode: '',
+        state: '',
+      };
+      this.$refs.registrationModal.show();
     },
   },
   mounted() {
@@ -78,18 +148,25 @@ export default {
 
 <style scoped>
 .container-address {
-  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
 }
+
 
 .address-card {
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  margin: 3px 0;
   padding: 15px;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 70%;
+  width: calc(100% - 1rem);
+  box-sizing: border-box;
+  margin-bottom: 20px;
+
+
 }
 
 .address-card:hover {
@@ -117,7 +194,7 @@ export default {
 
 .address-title {
   font-size: 1.5em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .card-dropdown {
@@ -134,5 +211,24 @@ export default {
 
 .card-dropdown .dropdown-toggle .fa-ellipsis-v {
   color: black;
+}
+
+.register-button {
+  background-color: #353942;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  width: auto;
+  margin-left: auto;
+  margin-right: 0;
+
+}
+
+.tittle{
+  margin-bottom: 50px;
 }
 </style>

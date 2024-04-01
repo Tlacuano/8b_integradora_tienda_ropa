@@ -14,5 +14,5 @@ public class ResponseGetAddressesByEmailDTO {
     private String street;
     private String status;
     private String neighborhood;
-
+    private UUID idPerson;
 }

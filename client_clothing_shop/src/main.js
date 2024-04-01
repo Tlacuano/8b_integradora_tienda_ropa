@@ -38,7 +38,10 @@ const dictionary = {
             phone_number: () => 'El número de teléfono no es válido',
             over_18: () => 'Debes ser mayor de 18 años',
             privacy_policy: () => 'Debes aceptar la política de privacidad',
-            image_size: () => 'La imagen no debe pesar más de 2MB'
+            image_size: () => 'La imagen no debe pesar más de 2MB',
+            digits: () => 'Debe contener exactamente 5 dígitos',
+            min: () => 'Debe contener al menos 5 caracteres',
+            max: () => 'Debe contener máximo 100 caracteres',
         }
     }
 };

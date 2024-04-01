@@ -1,13 +1,11 @@
 package mx.edu.utez.services_clothing_shop.service.address;
 
 import mx.edu.utez.services_clothing_shop.controller.address.dto.*;
-import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.address.IAddress;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.address_status.IAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.person.IPerson;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +19,9 @@ import java.util.stream.Collectors;
 public class AddressService {
     private final IAddress iAddress;
     private final IAddressStatus iAddressStatus;
-    private final IPerson iPerson;
-    private ErrorDictionary errorDictionary;
-    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus, IPerson iPerson, ErrorDictionary errorDictionary){
+    public AddressService(IAddress iAddress, IAddressStatus iAddressStatus){
         this.iAddress = iAddress;
         this.iAddressStatus = iAddressStatus;
-        this.iPerson = iPerson;
-        this.errorDictionary = errorDictionary;
     }
 
     @Transactional
@@ -71,6 +65,7 @@ public class AddressService {
         dto.setStreet(address.getStreet());
         dto.setStatus(address.getStatus().getStatus());
         dto.setNeighborhood(address.getNeighborhood());
+        dto.setIdPerson(address.getPerson().getIdPerson());
         return dto;
     }
 
@@ -126,24 +121,48 @@ public class AddressService {
         if (payload.getNeighborhood() != null) {
             existingAddress.setNeighborhood(payload.getNeighborhood());
         }
-        //guardar el objeto y regresar el objeto guardado
         return iAddress.saveAndFlush(existingAddress);
     }
 
     @Transactional
     public ResponseAllAddressDTO updateAddressStatus(RequestPutStatusAddressDTO payload) {
-        UUID idAddress = payload.getIdAddress();
-        UUID idStatus = payload.getStatusId();
-        BeanAddress address = iAddress.findById(idAddress)
+        BeanAddress addressToUpdate = iAddress.findById(payload.getIdAddress())
                 .orElseThrow(() -> new CustomException("address.notfound"));
 
-        BeanAddressStatus status = iAddressStatus.findById(idStatus)
-                .orElseThrow(() -> new CustomException("status.notfound"));
+        if ("Predeterminada".equals(payload.getStatus())) {
+            List<BeanAddress> currentDefaultAddresses = iAddress.findByStatusAndPersonId("Predeterminada", payload.getIdPerson());
+            for (BeanAddress currentDefaultAddress : currentDefaultAddresses) {
+                if (!currentDefaultAddress.getIdAddress().equals(payload.getIdAddress())) {
+                    BeanAddressStatus defaultStatus = iAddressStatus.findByStatus("Habilitada")
+                            .orElseThrow(() -> new CustomException("status.notfound"));
+                    currentDefaultAddress.setStatus(defaultStatus);
+                    iAddress.save(currentDefaultAddress);
+                }
+            }
+        }
 
-        address.setStatus(status);
-        iAddress.save(address);
-        return mapToResponseAllDTO(new Object[]{address.getAddress(), address.getReferencesAddress(), address.getPostalCode(), address.getState(), address.getStreet(), address.getNeighborhood(), address.getStatus().getIdStatus()});
+        BeanAddressStatus newStatus = iAddressStatus.findByStatus(payload.getStatus())
+                .orElseThrow(() -> new CustomException("status.notfound"));
+        addressToUpdate.setStatus(newStatus);
+        BeanAddress updatedAddress = iAddress.save(addressToUpdate);
+
+        return convertToDTOStatus(updatedAddress);
     }
+
+    private ResponseAllAddressDTO convertToDTOStatus(BeanAddress address) {
+        ResponseAllAddressDTO dto = new ResponseAllAddressDTO();
+        dto.setIdAddress(address.getIdAddress());
+        dto.setAddress(address.getAddress());
+        dto.setReferencesAddress(address.getReferencesAddress());
+        dto.setPostalCode(address.getPostalCode());
+        dto.setState(address.getState());
+        dto.setStreet(address.getStreet());
+        dto.setNeighborhood(address.getNeighborhood());
+        dto.setStatus(address.getStatus().getStatus());
+        return dto;
+    }
+
+
 
     @Transactional
     public ResponseAllAddressDTO deleteAddress(RequestActionByIdDTO payload){
@@ -186,7 +205,6 @@ public class AddressService {
         ResponseStatusDTO statusDTO = new ResponseStatusDTO();
         statusDTO.setStatusID(status.getIdStatus());
         statusDTO.setStatus(status.getStatus());
-        responseDTO.setStatus(statusDTO);
         return responseDTO;
     }
 

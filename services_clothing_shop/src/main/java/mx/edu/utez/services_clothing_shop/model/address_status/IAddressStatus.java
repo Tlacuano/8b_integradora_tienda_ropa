@@ -12,4 +12,5 @@ public interface IAddressStatus extends JpaRepository<BeanAddressStatus, UUID> {
 
     Optional<BeanAddressStatus> findByStatus(String status);
 
+
 }
