@@ -56,6 +56,7 @@ export default {
         {id: 5, title: 'Categorías', icon: 'fa-solid fa-layer-group', to: 'ADMINCategoryManagement'},
         {id: 6, title: 'Solicitudes de cambio de datos', icon: 'fa-solid fa-user-edit', to: 'ADMINRequestDataChangeManagement'},
         {id: 7, title: 'Solicitudes de devolución', icon: 'fa-solid fa-box-open', to: 'ADMINRequestsReturnProductManagement'},
+        {id: 8, title: "Pedidos", icon: "fa-solid fa-box", to: "ADMINOrderManagement"},
       ]
 
     };
