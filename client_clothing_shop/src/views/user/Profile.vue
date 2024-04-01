@@ -1,6 +1,6 @@
 <template>
   <section class="interface">
-    <b-row class="main">
+    <b-row class="main pb-4">
       <b-col md="5" class="text-center my-auto">
         <b-row>
           <b-col
@@ -116,7 +116,7 @@
 
         <b-row  class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover" @click="redirectToAddresses">
+            <b-card no-body class="selectable highlight-on-hover" v-b-modal:put-personal-information-profile-modal>
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -203,9 +203,6 @@
           <b-col class="text-center">
             <b-button v-if="user.buyer && !user.seller" class="main-button" style="width: 60%">
               Comenzar a vender!!
-            </b-button>
-            <b-button variant="outline-dark" class=" mt-3"  style="width: 60%">
-              Eliminar cuenta
             </b-button>
           </b-col>
         </b-row>

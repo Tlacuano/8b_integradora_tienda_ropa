@@ -89,8 +89,8 @@ public class UserController {
     }
 
     @PostMapping("/delete-account")
-    public ResponseEntity<Object> deleteAccount(@Validated @RequestBody RequestActionByEmailDTO payload){
-        userService.deleteAccount(payload.getEmail());
+    public ResponseEntity<Object> deleteAccount(@Validated @RequestBody RequestRestorePasswordDTO payload){
+        userService.deleteAccount(payload);
         return new ResponseEntity<>(
                 new CustomResponse<>(true, "Cuenta eliminada correctamente", false, 200),
                 HttpStatus.OK
