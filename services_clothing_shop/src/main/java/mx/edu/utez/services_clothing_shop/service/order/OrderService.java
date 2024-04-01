@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -20,6 +21,10 @@ public class OrderService {
 
     public Page<IOrder.OrderProjection> getOrders(Pageable page) {
         return orderRepository.findAllOrdersForAdmin(page);
+    }
+
+    public IOrder.OrderDetailsProjection getOrderDetailsByIdOrder(UUID idOrder) {
+        return orderRepository.findOrderDetailsByIdOrder(idOrder);
     }
 
     public Page<BeanOrder> getOrdersByUserEmail(String email, Pageable page) {

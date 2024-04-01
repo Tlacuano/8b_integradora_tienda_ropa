@@ -125,8 +125,6 @@ export default {
   },
   methods:{
     async getPageUsers(){
-      console.log(this.search)
-
       if(this.search === null || this.search === ""){
         this.showOverlay()
         const response = await PeopleService.getPageUsersService(this.objetPagination);

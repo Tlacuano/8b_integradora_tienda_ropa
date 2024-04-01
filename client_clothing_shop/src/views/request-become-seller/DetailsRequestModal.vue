@@ -8,7 +8,7 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col md="6" class="modal-info">
+          <b-col class="modal-info">
             <ul>
               <li><strong>Nombre:</strong> {{ request.personName }}</li>
               <li><strong>Apellidos:</strong> {{ request.personLastName + " "  + request.personSecondLastName }}</li>
@@ -20,7 +20,7 @@
               <li v-if="request.status === 'Rechazado'"><strong>Razón del rechazo:</strong> {{ request.rejectionReason }}</li>
             </ul>
           </b-col>
-          <b-col md="6" class="d-flex justify-content-center align-items-center">
+          <b-col class="d-flex justify-content-center align-items-center">
             <b-avatar
                 v-if="request.picture"
                 size="18rem"

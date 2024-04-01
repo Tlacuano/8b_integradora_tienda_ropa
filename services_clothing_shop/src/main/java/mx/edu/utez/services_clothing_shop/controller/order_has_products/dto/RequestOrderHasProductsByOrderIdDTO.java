@@ -8,13 +8,11 @@ import java.util.UUID;
 @Data
 public class RequestOrderHasProductsByOrderIdDTO {
     private UUID idOrder;
-    private Pageable page;
 
     public RequestOrderHasProductsByOrderIdDTO() {
     }
 
-    public RequestOrderHasProductsByOrderIdDTO(UUID idOrder, Pageable page) {
+    public RequestOrderHasProductsByOrderIdDTO(UUID idOrder) {
         this.idOrder = idOrder;
-        this.page = page;
     }
 }

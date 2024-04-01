@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("venta-ropa/api/order-has-products")
 @CrossOrigin(origins = "*")
@@ -21,9 +23,9 @@ public class OrderHasProductsController {
     }
 
     @PostMapping("/get-orders-has-products-by-order-id")
-    public ResponseEntity<CustomResponse<Page<ResponseOrderHasProductsDTO>>> getOrdersHasProductsByOrderId(@RequestBody RequestOrderHasProductsByOrderIdDTO requestBody) {
-        Page<BeanOrderHasProducts> ordersHasProducts = orderHasProductsService.getOrdersHasProductsByOrder_IdOrder(requestBody.getIdOrder(), requestBody.getPage());
-        Page<ResponseOrderHasProductsDTO> dtoPage = ordersHasProducts.map(orderHasProducts -> new ResponseOrderHasProductsDTO().toOrderHasProductsDTO(orderHasProducts));
+    public ResponseEntity<CustomResponse<List<ResponseOrderHasProductsDTO>>> getOrdersHasProductsByOrderId(@RequestBody RequestOrderHasProductsByOrderIdDTO requestBody) {
+        List<BeanOrderHasProducts> ordersHasProducts = orderHasProductsService.getOrdersHasProductsByOrder_IdOrder(requestBody.getIdOrder());
+        List<ResponseOrderHasProductsDTO> dtoPage = ordersHasProducts.stream().map(ResponseOrderHasProductsDTO::toOrderHasProductsDTO).toList();
         return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(dtoPage, "Orders has products found", false, HttpStatus.OK.value()));
     }
 }

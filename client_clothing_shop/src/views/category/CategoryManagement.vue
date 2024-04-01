@@ -62,7 +62,6 @@
             </b-col>
         </b-row>
 
-        <AddCategoryModal @category-added="refreshCategories"/>
         <EditCategoryModal :category="selectedCategory" @category-edited="refreshCategories"/>
     </section>
 </template>
@@ -74,7 +73,6 @@ import {showInfoAlert} from "@/components/alerts/Alerts";
 export default Vue.extend({
     name: "CategoryManagement",
     components: {
-        AddCategoryModal: () => import("@/views/category/AddCategoryModal.vue"),
         EditCategoryModal: () => import("@/views/category/EditCategoryModal.vue"),
     },
     data() {

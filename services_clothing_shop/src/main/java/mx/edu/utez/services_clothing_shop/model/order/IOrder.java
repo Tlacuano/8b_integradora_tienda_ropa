@@ -1,7 +1,5 @@
 package mx.edu.utez.services_clothing_shop.model.order;
 
-import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
-import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +38,20 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
             "o.address.person.name as personName, o.address.person.lastName as personLastName, o.address.person.secondLastName as personSecondLastName, " +
             "ohp.status.status as status FROM BeanOrder o INNER JOIN o.orderHasProducts ohp")
     Page<OrderProjection> findAllOrdersForAdmin(Pageable pageable);
+
+    interface OrderDetailsProjection {
+        String getOrderNumber();
+        String getAddress();
+        String getStreet();
+        String getNeighborhood();
+        String getReferencesAddress();
+        String getPostalCode();
+        String getState();
+        String getCardNumber();
+    }
+
+    @Query("SELECT o.orderNumber as orderNumber, o.address.address as address, o.address.street as street, o.address.neighborhood as neighborhood," +
+            "o.address.referencesAddress as referencesAdrress, o.address.postalCode as postalCode, o.address.state as state," +
+            "o.paymentCard.cardNumber as cardNumber FROM BeanOrder o WHERE o.idOrder = :idOrder")
+    OrderDetailsProjection findOrderDetailsByIdOrder(@Param("idOrder") UUID idOrder);
 }

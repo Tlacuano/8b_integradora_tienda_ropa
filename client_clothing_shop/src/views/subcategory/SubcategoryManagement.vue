@@ -98,7 +98,6 @@ export default Vue.extend({
       this.showOverlay()
       const response = await SubcategoriesService.getPageSubcategoriesService(this.objectPagination);
       this.showOverlay()
-      console.log(response.data)
       this.objectPagination.elements = response.data.totalElements;
       this.subcategories = response.data.content;
     },

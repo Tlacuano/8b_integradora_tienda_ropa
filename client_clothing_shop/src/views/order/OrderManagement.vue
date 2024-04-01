@@ -10,7 +10,7 @@
       <b-col>
         <b-row>
           <b-col lg="4" v-for="(order, index) in orders" :key="index">
-            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;">
+            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openOrderDetailsModal(order.idOrder)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
                   <b-avatar
@@ -54,6 +54,8 @@
         ></b-pagination>
       </b-col>
     </b-row>
+
+    <OrderDetailsModal :idOrder="selectedOrder" @updateOrder="getPageOrders"/>
   </section>
 </template>
 
@@ -63,6 +65,9 @@ import OrderService from "@/services/order/OrderService";
 
 export default Vue.extend({
   name: "OrderManagement",
+  components: {
+    OrderDetailsModal: () => import("@/views/order/OrderDetailsModal.vue")
+  },
   data() {
     return {
       objectPagination: {
@@ -71,6 +76,7 @@ export default Vue.extend({
         elements: 0,
       },
       orders: [],
+      selectedOrder: "",
     }
   },
   methods: {
@@ -95,6 +101,13 @@ export default Vue.extend({
           return 'secondary';
       }
     },
+
+    openOrderDetailsModal(order) {
+      this.selectedOrder = order;
+      this.$nextTick(() => {
+        this.$bvModal.show('orderDetailsModal');
+      });
+    }
   },
   mounted() {
     this.getPageOrders()

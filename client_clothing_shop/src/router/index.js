@@ -92,7 +92,7 @@ const router = new VueRouter({
                 {
                     path: "request-become-seller-management",
                     name: "ADMINRequestBecomeSellerManagement",
-                    component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
+                    component: () => import("../views/request-become-seller/RequestBecomeSellerManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {
@@ -147,7 +147,13 @@ const router = new VueRouter({
                     name:"BuyerAddressManagement",
                     component: () => import("../views/address-management/BuyerAddressManagement.vue"),
                     meta: { requiresAuth: true, roles: ["BUYER"] },
-                }
+                },
+                {
+                    path:"order-management",
+                    name:"ADMINOrderManagement",
+                    component: () => import("../views/order/OrderManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                },
             ]
         },
         {
@@ -168,7 +174,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     const {requiresAuth, roles} = to.meta;
-    const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
+    const isAuthenticated = !!(store.getters.isLoggedIn || localStorage.getItem("token"));
     const role = store.getters.getRole || localStorage.getItem("role");
 
     const verifiedIncomplete = localStorage.getItem("verified");
