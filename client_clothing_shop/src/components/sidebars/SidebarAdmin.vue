@@ -10,6 +10,12 @@
           <ProfileComponent/>
         </b-nav-item>
         <hr>
+        <b-nav-item v-if="this.$store.getters.getRole === 'SUPERADMIN'" class="selectable highlight-on-hover " :to="{name:'AdminManagement'}">
+          <b>
+            <font-awesome-icon icon="fa-solid fa-user-tie" class="mr-2"/>
+            Administradores registrados
+          </b>
+        </b-nav-item>
         <b-nav-item v-for="item in items" :key="item.id" :to="{name:item.to}" class="selectable highlight-on-hover ">
           <b>
             <font-awesome-icon :icon="item.icon" class="mr-2"/>

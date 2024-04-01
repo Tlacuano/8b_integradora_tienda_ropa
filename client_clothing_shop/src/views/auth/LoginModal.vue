@@ -108,7 +108,6 @@ export default {
                 privacyPolicy: response.data.privacyPolicy,
                 verificationPhone: response.data.verificationPhone,
               }
-              console.log(verified);
               const verifiedString = JSON.stringify(verified);
               const verifiedCrypto = codeCrypto(verifiedString);
               localStorage.setItem('verified', verifiedCrypto);
