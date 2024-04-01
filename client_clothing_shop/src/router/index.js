@@ -98,7 +98,7 @@ const router = new VueRouter({
                 {
                     path: "request-become-seller-management",
                     name: "ADMINRequestBecomeSellerManagement",
-                    component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
+                    component: () => import("../views/request-become-seller/RequestBecomeSellerManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {

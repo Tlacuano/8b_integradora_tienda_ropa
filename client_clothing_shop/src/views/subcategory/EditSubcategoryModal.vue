@@ -17,7 +17,7 @@
                   id="subcategory"
                   :placeholder="subcategory.subcategory"
                   v-model="form.subcategory"
-                  v-validate="'required|alpha_spaces|min:5|max:15'"
+                  v-validate="'required|alpha_spaces|min:5|name_max'"
                   name="subcategory"
               />
               <span v-show="errors.has('subcategory')" class="text-danger">{{ errors.first('subcategory') }}</span>
