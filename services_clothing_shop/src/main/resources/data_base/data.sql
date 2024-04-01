@@ -880,10 +880,10 @@ VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4b'),
         '',
         '{
           "curp": "MUEA680101HDFLNS09",
-          "image_identification": "https://via.placeholder.com/500x300.png?text=identificacion1",
-          "privacy_policy_agreement": true,
-          "secondary_phone_number": "1234567891",
-          "tax_identification_number": "IRMUEA680101HDFLNS09"
+          "imageIdentification": "https://via.placeholder.com/500x300.png?text=identificacion1",
+          "privacyPolicyAgreement": true,
+          "secondaryPhoneNumber": "1234567891",
+          "taxIdentificationNumber": "IRMUEA680101HDFLNS09"
         }',
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c48'),
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
@@ -891,10 +891,10 @@ VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4b'),
         '',
         '{
           "curp": "MUEA960501HDFLNS09",
-          "image_identification": "https://via.placeholder.com/500x300.png?text=identificacion2",
-          "privacy_policy_agreement": true,
-          "secondary_phone_number": "1234567892",
-          "tax_identification_number": "IRMUEA960501HDFLNS09"
+          "imageIdentification": "https://via.placeholder.com/500x300.png?text=identificacion2",
+          "privacyPolicyAgreement": true,
+          "secondaryPhoneNumber": "1234567892",
+          "taxIdentificationNumber": "IRMUEA960501HDFLNS09"
         }',
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c48'),
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
@@ -902,10 +902,10 @@ VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c4b'),
         'El CURP proporcionado no coincide con la identificación oficial',
         '{
           "curp": "MVEA960501HDFLNS09",
-          "image_identification": "https://via.placeholder.com/500x300.png?text=identificacion2",
-          "privacy_policy_agreement": true,
-          "secondary_phone_number": "1234567892",
-          "tax_identification_number": "IRMUEA960501HDFLNS09"
+          "imageIdentification": "https://via.placeholder.com/500x300.png?text=identificacion2",
+          "privacyPolicyAgreement": true,
+          "secondaryPhoneNumber": "1234567892",
+          "taxIdentificationNumber": "IRMUEA960501HDFLNS09"
         }',
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c49'),
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));

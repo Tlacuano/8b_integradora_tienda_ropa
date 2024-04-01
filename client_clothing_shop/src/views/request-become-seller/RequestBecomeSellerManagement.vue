@@ -9,7 +9,7 @@
     <b-row class="mt-3 container-requests">
       <b-col>
         <b-row>
-          <b-col lg="4" v-for="request in requests" :key="request.id">
+          <b-col lg="4" v-for="(request, index) in requests" :key="index">
             <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request.idRequestBecomeSeller)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
@@ -28,7 +28,7 @@
                   </b-row>
                   <b-row>
                     <b-col>
-                      <div class="text-ellipsis text-secondary small"> {{ request.personName + ' ' + request.personLastName }}</div>
+                      <div class="text-ellipsis text-secondary small"> {{ request.personName + ' ' + request.personLastName + ' ' + request.personSecondLastName }}</div>
                     </b-col>
                   </b-row>
                   <b-row>
@@ -66,7 +66,7 @@ import RequestsBecomeSellerService from "@/services/requests-become-seller/Reque
 export default Vue.extend({
   name: "RequestsBecomeSellerManagement",
   components: {
-    DetailsRequestModal: () => import("@/views/requests-become-seller/DetailsRequestModal.vue")
+    DetailsRequestModal: () => import("@/views/request-become-seller/DetailsRequestModal.vue")
   },
   data() {
     return {

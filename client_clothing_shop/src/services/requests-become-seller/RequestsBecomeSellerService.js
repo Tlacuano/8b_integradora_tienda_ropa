@@ -19,8 +19,10 @@ const getRequestByIdService = async (request) => {
         const response = await axios.doPost("/venta-ropa/api/requests-become-seller/get-by-id-request-become-seller", {
             idRequestBecomeSeller: request
         });
+        console.log(response.data.data)
         return response.data.data;
     } catch (e) {
+        console.log(e)
     }
 }
 

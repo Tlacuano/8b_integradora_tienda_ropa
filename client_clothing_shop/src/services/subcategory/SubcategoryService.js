@@ -11,9 +11,8 @@ const getSubcategoriesByCategory = async (payload) => {
 
 const getPageSubcategoriesService = async (pagination) => {
     try {
-        const response = await axios.doGet(`/venta-ropa/api/subcategories/get-subcategories`, {
-            pagination
-        } );
+        const { page, size } = pagination;
+        const response = await axios.doGet(`/venta-ropa/api/subcategories/get-subcategories?size=${size}&page=${page - 1}`);
         return response.data;
     } catch (e) {
         console.log(e);

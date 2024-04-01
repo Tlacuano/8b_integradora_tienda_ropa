@@ -93,7 +93,7 @@ const router = new VueRouter({
                 {
                     path: "request-become-seller-management",
                     name: "ADMINRequestBecomeSellerManagement",
-                    component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
+                    component: () => import("../views/request-become-seller/RequestBecomeSellerManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {
@@ -141,6 +141,12 @@ const router = new VueRouter({
                     path:"request-data-change-management",
                     name:"ADMINRequestDataChangeManagement",
                     component: () => import("../views/requests-data-change/RequestsDataChangeManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                },
+                {
+                    path:"order-management",
+                    name:"ADMINOrderManagement",
+                    component: () => import("../views/order/OrderManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 }
             ]

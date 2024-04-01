@@ -18,6 +18,10 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
+    public Page<IOrder.OrderProjection> getOrders(Pageable page) {
+        return orderRepository.findAllOrdersForAdmin(page);
+    }
+
     public Page<BeanOrder> getOrdersByUserEmail(String email, Pageable page) {
         return orderRepository.findAllByAddress_Person_User_Email(email, page);
     }

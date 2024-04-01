@@ -173,7 +173,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/payment-cards/put-payment-cards").permitAll()
 
                                 //Modulo orders
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/orders/get-orders").permitAll()
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/orders/get-orders").hasAnyRole("ADMIN", "SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order/get-orders-by-user-email").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
 
                                 //Modulo order-has-products

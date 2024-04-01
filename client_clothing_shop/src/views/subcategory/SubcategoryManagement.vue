@@ -20,16 +20,14 @@
       </b-col>
     </b-row>
 
-    <b-row class="mt-4 mb-4 container-subcategories">
-      <b-col >
-        <b-row></b-row>
-        <b-row class="mt-4">
-          <b-col cols="auto" v-for="subcategory in subcategories" :key="subcategory.id">
+    <b-row class="container-subcategories align-content-center">
+        <b-row class="justify-content-center">
+          <b-col cols="2" v-for="(subcategory, index) in subcategories" :key="index">
             <b-card
                 class="highlight-on-hover mb-2"
                 :img-src="subcategory.image"
                 img-bottom
-                style="max-width: 14rem;"
+                style="max-width: 18rem;"
             >
               <b-card-text class="d-flex justify-content-between align-items-center" style="max-height: 0.1rem;">
                 <h5>{{subcategory.subcategory}}</h5>
@@ -56,10 +54,6 @@
             </b-card>
           </b-col>
         </b-row>
-      </b-col>
-      <b-col cols="auto" class="align-self-start" style="margin-top: 1rem">
-          <font-awesome-icon icon="fa-solid fa-filter" />
-      </b-col>
     </b-row>
 
     <b-row>
@@ -92,7 +86,7 @@ export default Vue.extend({
     return {
       objectPagination: {
         page: 1,
-        size: 24,
+        size: 5,
         elements: 0
       },
       subcategories: [],
@@ -104,6 +98,7 @@ export default Vue.extend({
       this.showOverlay()
       const response = await SubcategoriesService.getPageSubcategoriesService(this.objectPagination);
       this.showOverlay()
+      console.log(response.data)
       this.objectPagination.elements = response.data.totalElements;
       this.subcategories = response.data.content;
     },
@@ -149,11 +144,7 @@ export default Vue.extend({
 
 <style>
 .container-subcategories {
-  border: 1px solid black;
-  margin-left: 0.1rem;
-  margin-right: 0.1rem;
-  border-radius: 0.5rem;
-  height: 65vh !important;
+  height: calc(100vh - 300px);
   overflow-x: hidden;
 }
 </style>

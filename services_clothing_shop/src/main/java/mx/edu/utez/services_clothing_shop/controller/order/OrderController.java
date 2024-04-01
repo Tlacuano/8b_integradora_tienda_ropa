@@ -2,12 +2,10 @@ package mx.edu.utez.services_clothing_shop.controller.order;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestPostOrderDTO;
-import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderAddressDTO;
 import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderDTO;
-import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestOrderByUserEmailDTO;
-import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.ResponsePaymentCardDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
+import mx.edu.utez.services_clothing_shop.model.order.IOrder;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
@@ -23,7 +21,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("venta-ropa/api/order")
+@RequestMapping("venta-ropa/api/orders")
 @CrossOrigin(origins = "*")
 public class OrderController {
     private final OrderService orderService;
@@ -31,6 +29,12 @@ public class OrderController {
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @GetMapping("/get-orders")
+    public ResponseEntity<Object> getOrders(Pageable page) {
+        Page<IOrder.OrderProjection> orders = orderService.getOrders(page);
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(orders, "Orders found", false, HttpStatus.OK.value()));
     }
 
     @PostMapping("/get-orders-by-user-email")

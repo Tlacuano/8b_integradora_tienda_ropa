@@ -15,6 +15,7 @@
             >
               <b-form-input
                   id="subcategory"
+                  :placeholder="subcategory.subcategory"
                   v-model="form.subcategory"
                   v-validate="'required|alpha_spaces|min:5|max:15'"
                   name="subcategory"
@@ -49,6 +50,7 @@
                   :options="categories"
                   value-field="idCategory"
                   text-field="category"
+                  :placeholder="subcategory.category"
                   name="category"
                   v-validate="'required'"
               />
