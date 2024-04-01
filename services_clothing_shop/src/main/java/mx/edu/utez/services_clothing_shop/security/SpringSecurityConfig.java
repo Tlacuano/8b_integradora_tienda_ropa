@@ -119,6 +119,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/post-address").hasAnyRole("BUYER", "SELLER")
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/addresses/put-address").hasAnyRole("BUYER", "SELLER")
                                 .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/addresses/delete-address").hasAnyRole("BUYER", "SELLER")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/get-addresses-by-email").hasAnyRole("BUYER", "SELLER")
 
                                 //Modulo return-product-gallery
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/return-product-galleries/get-return-product-galleries").hasAnyRole("ADMIN", "BUYER")
