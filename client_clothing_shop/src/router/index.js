@@ -78,12 +78,6 @@ const router = new VueRouter({
                     meta: { title: "K&I | Detalles del producto" },
                 },
                 {
-                    path:"user-management",
-                    name:"ADMINUserManagement",
-                    component: () => import("../views/user/UserManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
-                },
-                {
                     path: "product-sale-request",
                     name: "ProductSaleRequest",
                     component: () => import("../views/request-seller-product/RequestSellerProduct.vue"),
@@ -179,6 +173,7 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+
 });
 
 export default router

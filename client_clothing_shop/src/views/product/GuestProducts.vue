@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="interface">
     <div v-if="!selectedCategory">
       <b-row class="full-page" no-gutters>
         <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="p-4">
@@ -14,7 +14,7 @@
       </b-row>
     </div>
     <div v-else>
-      <b-row class="mt-4 px-3" align-h="between">
+      <b-row class="mt-2 px-3" align-h="between">
         <b-col cols="12" lg="4">
           <b-form-group>
             <div class="position-relative">
@@ -189,8 +189,8 @@ export default {
 </script>
 
 <style scoped>
-.full-page {
-  height: 80vh;
+.interface {
+  padding-bottom: calc(100px);
 }
 
 .wishlist-btn {
