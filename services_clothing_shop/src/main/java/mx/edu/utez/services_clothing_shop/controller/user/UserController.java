@@ -146,6 +146,12 @@ public class UserController {
         );
     }
 
-
+    @PostMapping("/change-password")
+    public ResponseEntity<Object> changePassword(@Validated @RequestBody RequestRestorePasswordDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.changePassword(payload), "Contraseña cambiada correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
 
 }

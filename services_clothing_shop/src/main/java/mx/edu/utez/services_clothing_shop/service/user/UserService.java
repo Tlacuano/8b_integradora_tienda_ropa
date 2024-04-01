@@ -197,9 +197,28 @@ public class UserService {
             throw new CustomException("user.email.not.found");
         }
 
+        if(!user.getVerificationCode().equals(payload.getCode())){
+            throw new CustomException("user.code.incorrect");
+        }
+
         user.setPassword(passwordEncoder.encode(payload.getPassword()));
         userRepository.save(user);
         return true;
 
+    }
+
+    public boolean changePassword(RequestRestorePasswordDTO payload) {
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+        if(user == null){
+            throw new CustomException("user.email.not.found");
+        }
+
+        if(!passwordEncoder.matches(payload.getOldPassword(), user.getPassword())){
+            throw new CustomException("user.password.incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(payload.getPassword()));
+        userRepository.save(user);
+        return true;
     }
 }
