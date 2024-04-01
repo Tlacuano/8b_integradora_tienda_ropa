@@ -44,6 +44,26 @@ public class UserController {
         );
     }
 
+    @GetMapping("/get-page-admins")
+    public ResponseEntity<Object> getPageAdmins(Pageable pageable){
+        Page<ResponsePageUsersDTO> pageUsers = userService.getPageAdmins(pageable);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(pageUsers, "Usuarios encontrados",false, 200),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/get-page-admins-by-email")
+    public ResponseEntity<Object> getPageAdminsByEmail(Pageable pageable, @RequestBody RequestActionByEmailDTO email){
+        Page<ResponsePageUsersDTO> pageUsers = userService.getPageAdminByEmail(email.getEmail(), pageable);
+
+        return new ResponseEntity<>(
+                new CustomResponse<>(pageUsers, "Usuarios encontrados",false, 200),
+                HttpStatus.OK
+        );
+    }
+
 
     @PostMapping("/get-by-email")
     public ResponseEntity<Object> getByEmail(@Validated @RequestBody RequestActionByEmailDTO payload){

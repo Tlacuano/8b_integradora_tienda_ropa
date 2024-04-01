@@ -8,7 +8,7 @@
       </b-navbar-nav>
 
 
-      <b-navbar-brand class="mx-auto pl-md-5">
+      <b-navbar-brand class="mx-auto pl-md-5" :to="'/'">
         <img src="../../assets/image/logo.png" alt="logo k&I" class="d-inline-block align-top logo selectable">
       </b-navbar-brand>
 

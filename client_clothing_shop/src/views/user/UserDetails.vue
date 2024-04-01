@@ -1,86 +1,138 @@
 <template>
   <section class="interface">
-    <b-row>
-      <b-col class="text-center">
-        <h1>Detalles del usuario</h1>
-      </b-col>
-    </b-row>
 
     <b-row class="mt-2">
-      <b-col lg="4">
+      <b-col lg="4" class="my-auto pb-3">
         <b-row>
           <b-col class="text-center">
-            <b-avatar
-                v-if="user.person.picture!==null"
-                :src="user.person.picture"
-                alt="Image"
-                size="200px"
-                fluid
-                thumbnail
-            />
-            <b-avatar
-                v-else
-                size="200px"
-                variant="secondary"
-                class="text-uppercase"
-            />
+            <div
+                @mousemove="showEditPicture = true"
+                @mouseleave="showEditPicture = false"
+            >
+              <b-avatar
+                  :src="user.picture || null"
+                  alt="Image"
+                  size="180px"
+                  fluid
+                  variant="dark"
+                  thumbnail
+                  class="custom-avatar-badge"
+                  badge-variant="secondary"
+                  @mouseenter="showEditPicture = true"
+                  @mouseleave="showEditPicture = false"
+              >
+                <template #badge v-if="showEditPicture"  >
+                  <font-awesome-icon icon="fa-solid fa-pen" class="selectable" v-b-modal:put-picture-profile-modal/>
+                </template>
+              </b-avatar>
+            </div>
           </b-col>
         </b-row>
-        <b-row class="mt-2">
+
+        <b-row class="mt-4">
           <b-col>
-            <b-card>
-              <b-row>
-                <b-col class="text-center">
-                  <h4>Datos de usuario</h4>
-                </b-col>
-              </b-row>
-              <b-row class="mt-2">
+            <b-card no-body class="selectable highlight-on-hover">
+              <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
-                  <b-form-group label="Correo electrónico">
-                    <b-form-input
-                        v-model="user.email"
-                        disabled
-                    ></b-form-input>
-                  </b-form-group>
+                  <b>
+                    Cambiar información personal
+                  </b>
+                </b-col>
+                <b-col cols="auto" class="text-right">
+                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
                 </b-col>
               </b-row>
-              <b-row>
-                <b-col>
-                  <b-form-group label="Roles"  >
-                    <b-input
-                        v-for="role in user.roles"
-                        :value="role"
-                        class="mt-2"
-                        disabled
-                    >
-                    </b-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-form-group label="Estado">
-                    <b-input
-                        :value="user.status ? 'Activo': 'Deshabilitado'"
-                        disabled
-                    >
-                    </b-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-
-
             </b-card>
           </b-col>
         </b-row>
-      </b-col>
 
+        <b-row class="mt-1">
+          <b-col>
+            <b-card no-body class="selectable highlight-on-hover">
+              <b-row align-h="between" class="p-2 mx-1">
+                <b-col>
+                  <b>
+                    {{ user.status ? 'Deshabilitar cuenta' : 'Habilitar cuenta' }}
+                  </b>
+                </b-col>
+                <b-col cols="auto" class="text-right">
+                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            <b-card no-body class="selectable highlight-on-hover">
+              <b-row align-h="between" class="p-2 mx-1">
+                <b-col>
+                  <b>
+                    Eliminar cuenta
+                  </b>
+                </b-col>
+                <b-col cols="auto" class="text-right">
+                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+
+      </b-col>
 
       <b-col>
         <b-row class="container-right mt-sm-5 mt-md-0">
           <b-col>
             <b-row>
               <b-col>
+                <b-card>
+                  <b-row>
+                    <b-col class="text-center">
+                      <h4>Datos de usuario</h4>
+                    </b-col>
+                  </b-row>
+                  <b-row class="mt-2">
+                    <b-col>
+                      <b-form-group label="Correo electrónico">
+                        <b-form-input
+                            v-model="user.email"
+                            disabled
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                    <b-col>
+                      <b-form-group label="Estado">
+                        <b-input
+                            :value="user.status ? 'Activo': 'Deshabilitado'"
+                            disabled
+                        >
+                        </b-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <b-form-group label="Roles"  >
+                        <b-input
+                            v-for="role in user.roles"
+                            :value="role"
+                            class="mt-2"
+                            disabled
+                        >
+                        </b-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                  </b-row>
+                </b-card>
+              </b-col>
+            </b-row>
+
+            <b-row class="mt-2" >
+               <b-col>
                 <b-card>
                   <b-row>
                     <b-col>
@@ -182,7 +234,7 @@
                         <b-card class="selectable highlight-on-hover">
                           <b-row>
                             <b-col>
-                              <p class="p-0 m-0"><span class="small text-truncate"><b>Numero de orden: </b>{{order.orderNumber}}</span></p>
+                              <div class="small text-truncate"><p class="p-0 m-0"><span ><b>Numero de orden: </b>{{order.orderNumber}}</span></p></div>
                               <p  class="p-0 m-0"><span class="small text-truncate"><b>Fecha: </b>{{order.orderDate}}</span></p>
                             </b-col>
                           </b-row>
@@ -296,7 +348,8 @@ export default {
     email: {
       type: String,
       required: true
-    }
+    },
+    showEditPicture: false
   },
   data() {
     return {
@@ -404,7 +457,7 @@ export default {
   overflow-x: hidden;
 }
 .container-right{
-  height: calc(100vh - 175px);
+  height: calc(100vh - 100px);
   overflow-y: auto;
   overflow-x: hidden;
 }

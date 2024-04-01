@@ -33,16 +33,17 @@ public class UserService {
         this.userRolesRepository = userRolesRepository;
     }
 
-    //exist
-    @Transactional
-    public boolean existsByEmail(String email){
-        return userRepository.existsByEmail(email);
-    }
 
     //get
     @Transactional
     public Page<ResponsePageUsersDTO> getPageUsers(Pageable pageable){
         Page<BeanUser> users = userRepository.findAllByOrderByStatusDesc(pageable);
+        return users.map(ResponsePageUsersDTO::fromUser);
+    }
+
+    @Transactional
+    public Page<ResponsePageUsersDTO> getPageAdmins(Pageable pageable){
+        Page<BeanUser> users = userRepository.findAllAdminsByOrderByStatusDesc(pageable);
         return users.map(ResponsePageUsersDTO::fromUser);
     }
 
@@ -92,6 +93,7 @@ public class UserService {
         newUser.setVerificationCode(code);
         userRepository.save(newUser);
 
+
         return newUser.getIdUser().toString();
     }
 
@@ -102,11 +104,17 @@ public class UserService {
             throw new CustomException("user.email.not.found");
         }
         user.setStatus(!user.isStatus());
+
         userRepository.saveAndFlush(user);
+
+        emailService.sendEmail(user.getEmail(),
+                "Cuanta "+(user.isStatus()?"activada":"desactivada"),
+                "Cambios en tu cuenta",
+                "Tu cuenta ha sido "+(user.isStatus()?"activada":"desactivada")+" por un administrador",
+                "");
+
         return user.isStatus();
     }
-
-
 
     @Transactional
     public void postRoleUser(String roleId, String userId){
@@ -125,6 +133,12 @@ public class UserService {
         }
 
         userRepository.deleteAccount(payload.getEmail());
+
+        emailService.sendEmail(user.getEmail(),
+                "Cuenta eliminada",
+                "Lamentamos que te vayas",
+                "Tu cuenta ha sido eliminada exitosamente",
+                "");
     }
 
 
@@ -200,6 +214,13 @@ public class UserService {
     }
 
     @Transactional
+    public Page<ResponsePageUsersDTO> getPageAdminByEmail(String email,Pageable pageable){
+        String emailModified = "%" + email + "%";
+        Page<BeanUser> users = userRepository.findAllAdminsByEmailLikeIgnoreCase(emailModified,pageable);
+        return users.map(ResponsePageUsersDTO::fromUser);
+    }
+
+    @Transactional
     public boolean restorePassword(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
@@ -212,10 +233,17 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(payload.getPassword()));
         userRepository.save(user);
+
+        emailService.sendEmail(user.getEmail(),
+                "Contraseña restaurada",
+                "Cambios en tu cuenta",
+                "Tu contraseña ha sido restaurada exitosamente",
+                "");
         return true;
 
     }
 
+    @Transactional
     public boolean changePassword(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
@@ -228,6 +256,12 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(payload.getPassword()));
         userRepository.save(user);
+
+        emailService.sendEmail(user.getEmail(),
+                "Contraseña cambiada",
+                "Cambios en tu cuenta",
+                "Tu contraseña ha sido cambiada exitosamente",
+                "");
         return true;
     }
 }
