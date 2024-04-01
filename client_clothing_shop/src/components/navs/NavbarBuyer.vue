@@ -61,6 +61,7 @@
     <SidebarBuyer/>
     <SwitchUserRoleModal/>
     <PostUser/>
+    <RecoverPassword/>
   </header>
 </template>
 
@@ -75,6 +76,7 @@ export default {
     SidebarBuyer: () => import("@/components/sidebars/SidebarBuyer.vue"),
     SwitchUserRoleModal: () => import("@/views/auth/SwitchUserRoleModal.vue"),
     PostUser: () => import("@/views/auth/PostUser.vue"),
+    RecoverPassword: () => import("@/views/auth/RecoverPassword.vue"),
   },
   data() {
     return {
@@ -83,7 +85,8 @@ export default {
         {name: 'Hombres', id: 2},
         {name: 'Niños', id: 3},
       ],
-      selectedCategory: {}
+      selectedCategory: {},
+
     }
   },
   methods: {
@@ -117,7 +120,7 @@ export default {
 }
 
 .categoria {
-  width: 140px;
+  width: 125px;
 }
 
 

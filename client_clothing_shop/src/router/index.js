@@ -50,7 +50,12 @@ const router = new VueRouter({
                     component: () => import("../views/user/Profile.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "BUYER", "SELLER", "SUPERADMIN"] },
                 },
-
+                {
+                    name:"shopping-cart",
+                    path:"shopping-cart",
+                    component: () => import("../views/shopping-cart/ShoppingCart.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
+                },
                 {
                     path: "store/:category",
                     name: "UserProductsCategory",
@@ -71,12 +76,6 @@ const router = new VueRouter({
                     component: () => import("../views/product/ProductDetails.vue"),
                     props: true,
                     meta: { title: "K&I | Detalles del producto" },
-                },
-                {
-                    path:"user-management",
-                    name:"ADMINUserManagement",
-                    component: () => import("../views/user/UserManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
                 },
                 {
                     path: "product-sale-request",
@@ -180,6 +179,7 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+
 });
 
 export default router
