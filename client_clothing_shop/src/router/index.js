@@ -153,6 +153,12 @@ const router = new VueRouter({
                     name:"BuyerAddressManagement",
                     component: () => import("../views/address-management/BuyerAddressManagement.vue"),
                     meta: { requiresAuth: true, roles: ["BUYER"] },
+                },
+                {
+                    path:"request-return-product-management",
+                    name:"ADMINRequestsReturnProductManagement",
+                    component: () => import("../views/requests-return-product/RequestsReturnProductManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN"] },
                 }
             ]
         },
