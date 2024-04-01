@@ -23,6 +23,7 @@
               <font-awesome-icon icon="fa-solid fa-user"/>
             </template>
             <b-dropdown-item  @click="prepateForNavigate('/profile')">{{getEmail || "Perfil"}}</b-dropdown-item>
+            <b-dropdown-item  @click="prepateForNavigate('/orders')">Pedidos</b-dropdown-item>
             <b-dropdown-item  @click="logout()">Cerrar sesión</b-dropdown-item>
 
           </b-nav-item-dropdown>
