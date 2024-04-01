@@ -83,13 +83,22 @@ const resendEmailCode = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/users/resend-email-code", payload);
         return response.data
     }catch (e){
-        showWarningToast('', error)
+
     }
 }
 
 const deleteIncompleteAccountService = async (payload) => {
     try {
         const response = await axios.doPost("/venta-ropa/api/users/delete-incomplete-account", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
+
+const restorePasswordService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/restore-password", payload);
         return response.data
     }catch (e){
         showWarningToast('', error)
@@ -107,5 +116,6 @@ export default {
     getProfileService,
     resendEmailCode,
     deleteIncompleteAccountService,
-    getPageUsersByEmailService
+    getPageUsersByEmailService,
+    restorePasswordService
 };

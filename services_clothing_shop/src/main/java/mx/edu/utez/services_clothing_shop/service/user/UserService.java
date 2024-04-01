@@ -190,4 +190,16 @@ public class UserService {
         return users.map(ResponsePageUsersDTO::fromUser);
     }
 
+    @Transactional
+    public boolean restorePassword(RequestRestorePasswordDTO payload) {
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+        if(user == null){
+            throw new CustomException("user.email.not.found");
+        }
+
+        user.setPassword(passwordEncoder.encode(payload.getPassword()));
+        userRepository.save(user);
+        return true;
+
+    }
 }

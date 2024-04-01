@@ -43,7 +43,7 @@
       <b-row class="mt-2">
         <b-col>
           <div class="mb-3 text-center">
-            <b-link href="#" >¿Has olvidado tu contraseña?</b-link>
+            <b-link @click="changeToRecoverPassword()" >¿Has olvidado tu contraseña?</b-link>
           </div>
         </b-col>
       </b-row>
@@ -70,6 +70,7 @@ import AuthService from "@/services/auth/authService";
 import {codeCrypto} from "@/utils/security/cryptoJs";
 export default {
   name: 'LoginModal',
+
   data() {
     return {
       form: {
@@ -114,6 +115,8 @@ export default {
 
               await this.$router.push({name: 'FinishRegistration'});
             }
+            this.showOverlay();
+            window.location.reload();
 
           }
           this.showOverlay();
@@ -129,6 +132,10 @@ export default {
     changeToPostUser(){
       this.$bvModal.hide('login-modal');
       this.$bvModal.show('post-user-modal');
+    },
+    changeToRecoverPassword(){
+      this.$bvModal.hide('login-modal');
+      this.$bvModal.show('recover-password-modal');
     },
 
 
