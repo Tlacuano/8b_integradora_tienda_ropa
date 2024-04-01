@@ -2,6 +2,7 @@ import { encrypt, decrypt } from "@/utils/security/aes";
 import Vue from 'vue';
 import axios from "axios";
 import store from '../store/store'
+import {showWarningToast} from "@/components/alerts/alerts";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -51,16 +52,7 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (!error.response) {
-            Vue.swal.fire({
-                title: "El servidor no responde",
-                text: "Sin respuesta del servidor, por favor inténtelo de nuevo",
-                icon: "error",
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                timer: 3000,
-            });
-            return Promise.reject(error);
+            window.location.href = "/no-response";
         }
 
         if(error.response.status === 500){
@@ -73,9 +65,17 @@ instance.interceptors.response.use(
                 allowEscapeKey: false,
                 timer: 3000,
             });
-        }else{
-            return Promise.reject(error.response);
         }
+
+        if(error.response.status === 401){
+            store.dispatch("logout");
+        }
+
+
+        showWarningToast('', decrypt(error.response.data))
+        store.state.showOverlay = false;
+        return Promise.reject(error);
+
 
     }
 );

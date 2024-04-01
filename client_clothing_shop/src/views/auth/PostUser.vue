@@ -88,8 +88,6 @@
               class="frc-captcha"
               data-sitekey="FCMGAFOETVPP0BIP"
               data-lang="es"
-
-
           ></div>
           <span v-if="verifiedCaptcha.error.length > 0 && verifiedCaptcha.done === false" class="text-danger">{{verifiedCaptcha.error}}</span>
 

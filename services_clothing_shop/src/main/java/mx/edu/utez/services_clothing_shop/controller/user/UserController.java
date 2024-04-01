@@ -1,9 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.user;
 
-import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestPostAccountDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.*;
 import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
@@ -92,8 +89,8 @@ public class UserController {
     }
 
     @PostMapping("/delete-account")
-    public ResponseEntity<Object> deleteAccount(@Validated @RequestBody RequestActionByEmailDTO payload){
-        userService.deleteAccount(payload.getEmail());
+    public ResponseEntity<Object> deleteAccount(@Validated @RequestBody RequestRestorePasswordDTO payload){
+        userService.deleteAccount(payload);
         return new ResponseEntity<>(
                 new CustomResponse<>(true, "Cuenta eliminada correctamente", false, 200),
                 HttpStatus.OK
@@ -141,6 +138,20 @@ public class UserController {
         );
     }
 
+    @PostMapping("/restore-password")
+    public ResponseEntity<Object> restorePassword(@Validated @RequestBody RequestRestorePasswordDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.restorePassword(payload), "Contraseña restaurada correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<Object> changePassword(@Validated @RequestBody RequestRestorePasswordDTO payload){
+        return new ResponseEntity<>(
+                new CustomResponse<>(userService.changePassword(payload), "Contraseña cambiada correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
 
 }

@@ -9,4 +9,8 @@ import java.util.UUID;
 @Repository
 public interface IAddressStatus extends JpaRepository<BeanAddressStatus, UUID> {
     Optional<BeanAddressStatus> findByIdStatus(UUID idStatus);
+
+    Optional<BeanAddressStatus> findByStatus(String status);
+
+
 }

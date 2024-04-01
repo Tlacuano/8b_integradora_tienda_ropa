@@ -4,7 +4,7 @@
       <b-overlay :show="showOverlay">
         <b-row>
           <b-col class="text-right">
-            <font-awesome-icon icon="times" class="text-secondary" @click="$bvModal.hide('put-picture-profile-modal')"/>
+            <font-awesome-icon icon="times" class="text-secondary selectable" @click="$bvModal.hide('put-picture-profile-modal')"/>
           </b-col>
         </b-row>
         <b-row class="mt-3">

@@ -78,12 +78,6 @@ const router = new VueRouter({
                     meta: { title: "K&I | Detalles del producto" },
                 },
                 {
-                    path:"user-management",
-                    name:"ADMINUserManagement",
-                    component: () => import("../views/user/UserManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
-                },
-                {
                     path: "product-sale-request",
                     name: "ProductSaleRequest",
                     component: () => import("../views/request-seller-product/RequestSellerProduct.vue"),
@@ -98,7 +92,7 @@ const router = new VueRouter({
                 {
                     path: "request-become-seller-management",
                     name: "ADMINRequestBecomeSellerManagement",
-                    component: () => import("../views/request-become-seller/RequestBecomeSellerManagement.vue"),
+                    component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {
@@ -149,13 +143,24 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {
-                    path:"order-management",
-                    name:"ADMINOrderManagement",
-                    component: () => import("../views/order/OrderManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                    path:"buyer-address-management",
+                    name:"BuyerAddressManagement",
+                    component: () => import("../views/address-management/BuyerAddressManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
                 }
             ]
         },
+        {
+            path:"/no-response",
+            name:"ServerError",
+            component: () => import("../views/error/NoResponse.vue"),
+
+        },
+        {
+            path: "/*",
+            name: "NotFound",
+            component: () => import("../views/error/Error404.vue"),
+        }
 
     ]
 });
@@ -185,6 +190,7 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+
 });
 
 export default router
