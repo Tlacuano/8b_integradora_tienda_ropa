@@ -2,7 +2,7 @@
   <section>
     <b-row>
       <b-col class="text-center">
-        <h1>Cuentas registradas</h1>
+        <h1>Administradores registrados</h1>
       </b-col>
     </b-row>
 
@@ -16,7 +16,7 @@
         </b-form-group>
       </b-col>
       <b-col cols="auto" class="text-right">
-        <b-button v-b-modal:post-user-modal variant="dark">Registrar</b-button>
+        <b-button variant="dark">Registrar</b-button>
       </b-col>
     </b-row>
 
@@ -25,9 +25,9 @@
         <b-row>
           <b-col lg="4" v-for="person in people"  :key="person.id">
             <b-card
-              no-body
-              class="highlight-on-hover mb-2"
-              >
+                no-body
+                class="highlight-on-hover mb-2"
+            >
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-none d-md-block px-2 my-auto">
                   <b-avatar
@@ -59,10 +59,10 @@
 
                 <b-col  class="text-right">
                   <b-dropdown
-                    variant="link-dark"
-                    toggle-class="text-decoration-none"
-                    no-caret
-                    >
+                      variant="link-dark"
+                      toggle-class="text-decoration-none"
+                      no-caret
+                  >
                     <template v-slot:button-content>
                       <font-awesome-icon icon="ellipsis-v"/>
                     </template>
@@ -83,52 +83,44 @@
             </b-card>
           </b-col>
         </b-row>
-
       </b-col>
     </b-row>
-
     <b-row>
       <b-col>
         <b-pagination
-          v-model="objetPagination.page"
-          :total-rows="objetPagination.elements"
-          :per-page="objetPagination.size"
-          aria-controls="my-table"
+            v-model="objetPagination.page"
+            :total-rows="objetPagination.elements"
+            :per-page="objetPagination.size"
+            aria-controls="my-table"
         ></b-pagination>
       </b-col>
     </b-row>
-
-    <PostUserModal/>
   </section>
 </template>
 
 <script>
 import PeopleService from "@/services/user/userService";
-import {showInfoAlert} from "@/components/alerts/alerts";
 import {codeCrypto} from "@/utils/security/cryptoJs";
+import {showInfoAlert} from "@/components/alerts/alerts";
 
 export default {
-  name: "UserManagement",
-  components: {
-    PostUserModal: () => import("@/views/auth/PostUser.vue"),
-  },
+  name: "AdminManagement",
   data() {
     return {
+      search: '',
+      people:[],
       objetPagination:{
         page: 1,
         size: 24,
         elements: 0,
       },
-      people:[],
-      search: null
-    };
+    }
   },
-  methods:{
+  methods: {
     async getPageUsers(){
-
       if(this.search === null || this.search === ""){
         this.showOverlay()
-        const response = await PeopleService.getPageUsersService(this.objetPagination);
+        const response = await PeopleService.getPageAdminsService(this.objetPagination);
         this.showOverlay()
 
         this.objetPagination.elements = response.data.totalElements;
@@ -137,55 +129,43 @@ export default {
         const payload ={
           email : this.search
         }
-        const response = await PeopleService.getPageUsersByEmailService(this.objetPagination, payload);
+        const response = await PeopleService.getPageAdminsByEmailService(this.objetPagination, payload);
 
         this.objetPagination.elements = response.data.totalElements;
         this.people = response.data.content;
       }
     },
-
+    seeUserDetails(email){
+      const codeParam = codeCrypto(email);
+      this.$router.push(`/user-details/${codeParam}`);
+    },
     async changeStatusUser(dato){
       const payoad = {
         email:dato
       }
       showInfoAlert(
-        "¿Estás seguro?",
-        "¿Deseas cambiar el estado de la cuenta?",
-        "Sí, cambiar",
-        async () => {
-          await PeopleService.putStatusUserService(payoad);
-        }
+          "¿Estás seguro?",
+          "¿Deseas cambiar el estado de la cuenta?",
+          "Sí, cambiar",
+          async () => {
+            await PeopleService.putStatusUserService(payoad);
+          }
       )
     },
-
-    seeUserDetails(email){
-      const codeParam = codeCrypto(email);
-      this.$router.push(`/user-details/${codeParam}`);
-    },
-
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
     }
   },
   mounted() {
-    this.getPageUsers();
-  },
-  watch:{
-    objetPagination:{
-      handler(){
-        this.getPageUsers();
-      },
-      deep:true
-    }
+    this.getPageUsers()
   }
-
-
 }
 </script>
 
-<style scoped>
+<style>
 .container-users{
   height: calc(100vh - 270px);
   overflow-x: hidden;
 }
+
 </style>

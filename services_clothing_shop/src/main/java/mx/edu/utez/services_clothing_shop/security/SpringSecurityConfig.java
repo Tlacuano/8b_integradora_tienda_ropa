@@ -57,16 +57,20 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/exist-by-email").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/verify-email").permitAll()
 
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-page").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-page-by-email").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-user-detail-by-email-admin").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-profile").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/change-password").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasAnyRole("SUPERADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-page").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-page-by-email").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-user-detail-by-email-admin").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/put-status").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-profile").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/change-password").hasAnyRole("ADMIN", "BUYER", "SELLER", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/resend-email-code").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/restore-password").permitAll()
+
+
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-page-admins").hasRole("SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-page-admins-by-email").hasRole("SUPERADMIN")
 
 
                                 //Modulo personas
@@ -74,9 +78,9 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/delete-personal-information-incomplete").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/verify-phone").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/resend-phone-code").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/get-personal-information").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/put-personal-information").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/put-picture").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/get-personal-information").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/put-personal-information").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/person/put-picture").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
 
                                 //Modulo shopping-cart
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/shopping-carts/get-shopping-cart").hasRole("BUYER")
@@ -91,28 +95,28 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/wishes-list/delete-wish-list").hasRole("BUYER")
 
                                 //Modulo requests-data-change
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-data-change/get-page").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-data-change/get-by-id-request-data-change").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-data-change/get-page").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-data-change/get-by-id-request-data-change").hasAnyRole("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-data-change/post-request-data-change").hasAnyRole("BUYER", "SELLER")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-data-change/put-request-data-change").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-data-change/put-request-data-change").hasAnyRole("ADMIN", "SUPERADMIN")
 
                                 //Modulo requests-become-seller
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-become-seller/get-page").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-id-request-become-seller").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-become-seller/get-page").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-id-request-become-seller").hasAnyRole("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/post-request-become-seller").hasRole("BUYER")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/put-request-become-seller").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/put-request-become-seller").hasAnyRole("ADMIN", "SUPERADMIN")
 
                                 //Modulo requests-return-product
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-return-product/get-page").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/get-by-id-request-return-product").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-return-product/get-page").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/get-by-id-request-return-product").hasAnyRole("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/post-request-return-product").hasRole("BUYER")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-return-product/put-request-return-product-status").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-return-product/put-request-return-product-status").hasAnyRole("ADMIN", "SUPERADMIN")
 
                                 //Modulo requests-sell-product
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-sell-product/get-page").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-sell-product/get-by-id-request-sell-product").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-sell-product/get-page").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-sell-product/get-by-id-request-sell-product").hasAnyRole("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-sell-product/post-request-sell-product").hasRole("SELLER")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-sell-product/put-request-sell-product").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-sell-product/put-request-sell-product").hasAnyRole("ADMIN", "SUPERADMIN")
 
                                 //Modulo address
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/addresses/get-addresses").hasAnyRole("BUYER", "SELLER")
@@ -137,38 +141,38 @@ public class SpringSecurityConfig {
 
                                 //Modulo seller-information
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/sellers-information/get-sellers-information").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/get-seller-information").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/get-seller-information").hasAnyRole("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/post-seller-information").hasRole("SELLER")
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/sellers-information/put-seller-information").hasRole("SELLER")
 
                                 //Modulo categories
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/categories/get-categories").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/get-category").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/post-category").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/categories/put-category").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/categories/put-status-category").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/get-category").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/categories/post-category").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/categories/put-category").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/categories/put-status-category").hasAnyRole("ADMIN", "SUPERADMIN")
 
                                 //Modulo subcategories
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-by-category").permitAll()
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/subcategories/get-subcategories").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/post-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-status-subcategory").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-subcategory").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/post-subcategory").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-subcategory").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-status-subcategory").hasAnyRole("ADMIN", "SUPERADMIN")
 
                                 //Modulo products
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-category").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-subcategory").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-product").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products-by-user").hasAnyRole("SELLER", "ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products-by-user").hasAnyRole("SELLER", "ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/post-product").hasRole("SELLER")
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-product").hasRole("SELLER")
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-status-product").hasAnyRole("SELLER", "ADMIN","SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-status-product").hasAnyRole("SELLER", "ADMIN","SUPERADMIN")
 
                                 //Modulo cloudinary
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/images/upload-images").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/images/upload-image").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/images/upload-images").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/images/upload-image").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
 
                                 //Modulo payment-cards
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/payment-cards/get-payment-cards").permitAll()
@@ -177,9 +181,8 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/payment-cards/put-payment-cards").permitAll()
 
                                 //Modulo orders
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/orders/get-orders").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/orders/get-orders-by-user-email").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPER_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/orders/get-order-details").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/orders/get-orders").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/order/get-orders-by-user-email").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
 
                                 //Modulo order-has-products
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-order-id").permitAll()

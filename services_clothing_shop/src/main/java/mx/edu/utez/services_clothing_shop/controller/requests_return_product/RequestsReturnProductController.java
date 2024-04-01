@@ -1,10 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_return_product;
 
 
-import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductDTO;
-import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductGetDTO;
-import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductPostDTO;
-import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductPutDTO;
+import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.*;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
 import mx.edu.utez.services_clothing_shop.service.requests_return_product.RequestsReturnProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -28,19 +25,15 @@ public class RequestsReturnProductController {
     }
 
     @PostMapping("/get-by-id-request-return-product")
-    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> getRequestReturnProductById(@RequestBody RequestsReturnProductGetDTO requestDTO) {
+    public ResponseEntity<CustomResponse<RequestsReturnProductGetByIdResponseDTO>> getRequestReturnProductById(@RequestBody RequestsReturnProductGetByIdRequestDTO requestDTO) {
         UUID idRequest = requestDTO.getIdRequestReturnProduct();
-        RequestsReturnProductDTO requestData = requestsReturnProductService.getRequestReturnProductById(idRequest);
+        RequestsReturnProductGetByIdResponseDTO requestData = requestsReturnProductService.getRequestReturnProductInfoById(idRequest);
 
-        if (requestData != null) {
-            String status = requestsReturnProductService.getRequestStatusById(requestData.getStatusId());
-            requestData.setStatus(status);
-
-            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomResponse<>(null, "Request not found", true, 404));
+       if (requestData == null) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Request not found", true, 404), HttpStatus.NOT_FOUND);
         }
+
+        return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
     }
 
     @PostMapping("/post-request-return-product")
@@ -56,9 +49,21 @@ public class RequestsReturnProductController {
     }
 
     @GetMapping("/get-page")
-    public Page<IRequestsReturnProduct.ReturnStatusProjection> getPageRequests(Pageable pageable) {
-        return requestsReturnProductService.getPageRequests(pageable);
+    public ResponseEntity<Page<RequestsReturnGetPageResponseDTO>> getPageRequests(
+            Pageable pageable,
+            @RequestParam(required = false, defaultValue = "") String searchTerm) {
+        Page<IRequestsReturnProduct.ReturnRequestProjection> requests = requestsReturnProductService.findRequestsByPageAndSearchTerm(pageable, searchTerm);
+        Page<RequestsReturnGetPageResponseDTO> response = requests.map(this::convertToDTO);
+        return ResponseEntity.ok(response);
+    }
 
+    private RequestsReturnGetPageResponseDTO convertToDTO(IRequestsReturnProduct.ReturnRequestProjection request) {
+        RequestsReturnGetPageResponseDTO dto = new RequestsReturnGetPageResponseDTO();
+        dto.setIdRequestReturnProduct(request.getIdRequestReturnProduct());
+        dto.setStatus(request.getStatus());
+        dto.setOrderDate(request.getOrderDate());
+        dto.setOrderNumber(request.getOrderNumber());
+        return dto;
     }
 
 }

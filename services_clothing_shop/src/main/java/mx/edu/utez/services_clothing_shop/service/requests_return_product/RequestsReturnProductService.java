@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.service.requests_return_product;
 
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductDTO;
+import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductGetByIdResponseDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct.ReturnRequestProjection;
 
 @Service
 public class RequestsReturnProductService {
@@ -55,13 +57,25 @@ public class RequestsReturnProductService {
         return matcher.matches();
     }
 
-    public RequestsReturnProductDTO getRequestReturnProductById(UUID idRequestReturnProduct) {
-        Optional<BeanRequestReturnProduct> request = IRequestsReturnProduct.findById(idRequestReturnProduct);
-        if (request.isPresent()) {
-            return convertToDTO(request.get());
-        } else {
-            throw new CustomException("requestReturnProduct.id.notnull");
-        }
+    public RequestsReturnProductGetByIdResponseDTO getRequestReturnProductInfoById(UUID idRequestReturnProduct) {
+        return IRequestsReturnProduct.findReturnProductInfoById(idRequestReturnProduct)
+                .map(this::convertToReturnProductInfoDTO)
+                .orElseThrow(() -> new CustomException("requestReturnProduct.id.notFound"));
+    }
+
+    private RequestsReturnProductGetByIdResponseDTO convertToReturnProductInfoDTO(IRequestsReturnProduct.ReturnProductInfoProjection request) {
+        RequestsReturnProductGetByIdResponseDTO dto = new RequestsReturnProductGetByIdResponseDTO();
+        dto.setIdRequestReturnProduct(request.getIdRequestReturnProduct());
+        dto.setReturnReason(request.getReturnReason());
+        dto.setIdOrderProduct(request.getIdOrderProduct());
+        dto.setIdOrder(request.getIdOrder());
+        dto.setOrderNumber(request.getOrderNumber());
+        dto.setAmount(request.getAmount());
+        dto.setEmail(request.getEmail());
+        dto.setImage(request.getImage());
+        dto.setPrice(request.getPrice());
+        dto.setProductName(request.getProductName());
+        return dto;
     }
 
     public String getRequestStatusById(UUID statusId) {
@@ -86,10 +100,10 @@ public class RequestsReturnProductService {
         return convertToDTO(savedRequest);
     }
 
-    @Transactional
-    public Page<IRequestsReturnProduct.ReturnStatusProjection> getPageRequests(Pageable pageable) {
-        return IRequestsReturnProduct.findAllStatuses(pageable);
+    public Page<ReturnRequestProjection> findRequestsByPageAndSearchTerm(Pageable pageable, String searchTerm) {
+        return IRequestsReturnProduct.findRequestsWithOrderInfo(pageable, searchTerm);
     }
+
 
     private RequestsReturnProductDTO convertToDTO(BeanRequestReturnProduct request) {
         RequestsReturnProductDTO dto = new RequestsReturnProductDTO();

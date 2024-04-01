@@ -18,7 +18,7 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
 
-      <b-navbar-brand class="mx-auto">
+      <b-navbar-brand class="mx-auto" :to="'/'">
         <img src="../../assets/image/logo.png" alt="logo k&I" class="d-inline-block align-top logo selectable">
       </b-navbar-brand>
 
