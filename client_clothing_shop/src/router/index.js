@@ -150,6 +150,17 @@ const router = new VueRouter({
                 }
             ]
         },
+        {
+            path:"/no-response",
+            name:"ServerError",
+            component: () => import("../views/error/NoResponse.vue"),
+
+        },
+        {
+            path: "/*",
+            name: "NotFound",
+            component: () => import("../views/error/Error404.vue"),
+        }
 
     ]
 });

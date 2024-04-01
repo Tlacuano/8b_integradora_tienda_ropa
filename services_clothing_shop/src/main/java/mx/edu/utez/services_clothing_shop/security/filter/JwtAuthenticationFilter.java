@@ -116,13 +116,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Map<String, Object> body = new HashMap<>();
         body.put("message", "Error de autenticación: correo o contraseña incorrectos");
         body.put("error", failed.getMessage());
-        body.put("status", HttpStatus.UNAUTHORIZED.value());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
 
         String json = JsonMapper.builder().build().writeValueAsString(body);
         String encryptedJson = EncryptionFunctions.encryptString(json);
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(encryptedJson));
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType(CONTENT_TYPE);
     }
 }

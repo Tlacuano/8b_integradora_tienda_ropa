@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class RequestRestorePasswordDTO {
     private String email;
     private String password;
+    private String oldPassword;
+    private String code;
 }

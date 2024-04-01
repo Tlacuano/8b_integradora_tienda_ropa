@@ -105,6 +105,16 @@ const restorePasswordService = async (payload) => {
     }
 }
 
+const changePasswordService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/change-password", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+
+}
+
 
 export default {
     getPageUsersService,
@@ -117,5 +127,6 @@ export default {
     resendEmailCode,
     deleteIncompleteAccountService,
     getPageUsersByEmailService,
-    restorePasswordService
+    restorePasswordService,
+    changePasswordService
 };

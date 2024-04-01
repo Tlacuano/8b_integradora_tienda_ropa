@@ -268,7 +268,8 @@ export default {
         if(result.every(e => e)){
           const payload = {
             email: this.email,
-            password: this.form.password
+            password: this.form.password,
+            code: this.code
           };
 
           this.changeStatusOverlay();
