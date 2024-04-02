@@ -14,7 +14,7 @@
         </b-row>
         <b-row class="my-3">
           <b-col class="text-center">
-            <b-avatar v-if="image === null" size="300"  class="" variant="dark"/>
+            <b-avatar v-if="image === null || error.show" size="300"  class="" variant="dark"/>
             <img v-else :src="image" alt="Imagen seleccionada" class=" rounded-circle" style="width: 300px; height: 300px"/>
           </b-col>
         </b-row>
@@ -24,7 +24,7 @@
             >
               <b-form-file
                   v-model="image"
-                  accept="image/*"
+                  accept=".jpg, .jpeg, .png, .gif"
                   placeholder="Seleccione una imagen"
                   @change="handleFileChange($event)"
                   lang="es"
@@ -32,8 +32,6 @@
               </b-form-file>
             </b-form-group>
             <span v-if="error.show" class="text-danger small">{{error.message}}</span>
-
-
           </b-col>
         </b-row>
         <b-row>
@@ -69,39 +67,39 @@ export default {
     async handleFileChange(event) {
       const fileInput = event.target;
 
-      if (fileInput.files.length > 0) {
-        const selectedFile = fileInput.files[0];
+      this.image = null;
+      this.file = null;
+      this.error.show = false;
+      this.error.message = '';
 
-        const validExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-        if (!validExtensions.exec(selectedFile.name)) {
-          this.error.show = true;
-          this.error.message = 'Formato de archivo no válido. Solo se permiten archivos .jpg, .jpeg, .png, .gif.';
+      if (fileInput.files.length === 0) {
           return;
-        }
-
-        if (selectedFile.size > 2097152) {
-          this.error.show = true;
-          this.error.message = 'El archivo es demasiado grande, debe ser menor de 2MB.';
-          return;
-        }
-
-        this.error.show = false;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.image = e.target.result
-        };
-        reader.readAsDataURL(selectedFile);
       }
+      const selectedFile = fileInput.files[0];
+      const validExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
 
-      if(!this.error.show){
-        this.file = fileInput.files[0];
-      }
-      if(this.error.show){
+      if (!validExtensions.exec(selectedFile.name)) {
+        this.error.show = true;
+        this.error.message = 'Formato de archivo no válido. Solo se permiten archivos .jpg, .jpeg, .png, .gif.';
         this.image = null;
+        return;
       }
+
+      if (selectedFile.size > 2097152) {
+        this.error.show = true;
+        this.error.message = 'El archivo es demasiado grande, debe ser menor de 2MB.';
+        this.image = null;
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.image = e.target.result;
+        this.file = selectedFile;
+      };
+      reader.readAsDataURL(selectedFile);
 
     },
-
     async putPictureProfile() {
       if(this.error.show){
         return;
