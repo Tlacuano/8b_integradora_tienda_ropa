@@ -87,25 +87,25 @@ const router = new VueRouter({
                     path: "product-sale-request",
                     name: "ProductSaleRequest",
                     component: () => import("../views/request-seller-product/RequestSellerProduct.vue"),
-                    meta: {requiresAuth: true, roles: ["ADMIN"]},
+                    meta: {requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"]},
                 },
                 {
                     path: "subcategory-management",
                     name: "ADMINSubcategoryManagement",
                     component: () => import("../views/subcategory/SubcategoryManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] }
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] }
                 },
                 {
                     path: "request-become-seller-management",
                     name: "ADMINRequestBecomeSellerManagement",
                     component: () => import("../views/request-become-seller/RequestBecomeSellerManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                 },
                 {
                     path: "category-management",
                     name: "ADMINCategoryManagement",
                     component: () => import("../views/category/CategoryManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                 },
                 {
                     path: "product-management",
@@ -146,7 +146,7 @@ const router = new VueRouter({
                     path:"request-data-change-management",
                     name:"ADMINRequestDataChangeManagement",
                     component: () => import("../views/requests-data-change/RequestsDataChangeManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                 },
                 {
                     path:"buyer-address-management",
@@ -158,13 +158,13 @@ const router = new VueRouter({
                     path:"request-return-product-management",
                     name:"ADMINRequestsReturnProductManagement",
                     component: () => import("../views/requests-return-product/RequestsReturnProductManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                 },
                 {
                     path: "order-management",
                     name: "ADMINOrderManagement",
                     component: () => import("../views/order/OrderManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                 }
             ]
         },

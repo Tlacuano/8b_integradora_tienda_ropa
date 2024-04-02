@@ -134,7 +134,7 @@ export default {
 
 <style>
 .container-requests {
-  height: 65vh !important;
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 .status {
