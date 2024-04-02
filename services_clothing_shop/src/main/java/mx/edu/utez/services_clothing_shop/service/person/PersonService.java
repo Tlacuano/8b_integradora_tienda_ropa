@@ -11,13 +11,12 @@ import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.person.IPerson;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.service.twilio.SmsService;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.validations.ValidatesFunctions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -26,10 +25,13 @@ public class PersonService {
     private final IUser userRepository;
     private final SmsService smsService;
 
-    public PersonService(IPerson personRepository, IUser userRepository, SmsService smsService) {
+    private final EmailService emailService;
+
+    public PersonService(IPerson personRepository, IUser userRepository, SmsService smsService, EmailService emailService) {
         this.personRepository = personRepository;
         this.userRepository = userRepository;
         this.smsService = smsService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -200,6 +202,12 @@ public class PersonService {
 
 
         personRepository.save(person);
+
+        emailService.sendEmail(payload.getEmail(),
+                "Actualización de información",
+                "Cambios en tu cuenta",
+                "Tus datos han sido actualizados correctamente.",
+                "");
 
         return true;
     }

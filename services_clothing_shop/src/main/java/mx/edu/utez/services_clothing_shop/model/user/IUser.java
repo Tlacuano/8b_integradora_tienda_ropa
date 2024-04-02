@@ -35,5 +35,15 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     @Query(value = "CALL sp_delete_user(:p_email)", nativeQuery = true)
     String deleteAccount(@Param("p_email") String email);
 
-    Page<BeanUser> findAllByEmailLikeIgnoreCase(String email, Pageable pageable);
+    @Query("SELECT u FROM BeanUser u WHERE u.idUser NOT IN (" +
+            "SELECT ur.user.idUser FROM BeanUserRoles ur WHERE ur.role.roleName IN ('ROLE_ADMIN', 'ROLE_SUPERADMIN')) " +
+            "AND u.email LIKE :email " +
+            "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
+    Page<BeanUser> findAllByEmailLikeIgnoreCase(@Param("email") String email, Pageable pageable);
+
+    @Query("SELECT u FROM BeanUser u JOIN u.roles ur WHERE ur.role.roleName = 'ROLE_ADMIN'" +
+            "AND u.email LIKE :email " +
+            "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
+    Page<BeanUser> findAllAdminsByEmailLikeIgnoreCase(@Param("email") String email, Pageable pageable);
+
 }

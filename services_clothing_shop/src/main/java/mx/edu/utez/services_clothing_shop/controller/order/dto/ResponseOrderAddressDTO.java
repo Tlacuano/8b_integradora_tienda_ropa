@@ -1,11 +1,13 @@
 package mx.edu.utez.services_clothing_shop.controller.order.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class ResponseOrderAddressDTO {
     private UUID idAddress;
     private String state;
@@ -15,9 +17,6 @@ public class ResponseOrderAddressDTO {
     private String postalCode;
     private String references;
     private String status;
-
-    public ResponseOrderAddressDTO() {
-    }
 
     public ResponseOrderAddressDTO toOrderAddressDTO(BeanAddress address) {
         ResponseOrderAddressDTO dto = new ResponseOrderAddressDTO();

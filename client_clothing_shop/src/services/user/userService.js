@@ -23,6 +23,28 @@ const getPageUsersByEmailService = async (pagination, payload) => {
     }
 }
 
+const getPageAdminsService = async (pagination) => {
+    try {
+        const { page, size } = pagination;
+        const response = await axios.doGet(`/venta-ropa/api/users/get-page-admins?size=${size}&page=${page - 1}`);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+
+}
+
+const getPageAdminsByEmailService = async (pagination, payload) => {
+    try {
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/users/get-page-admins-by-email?size=${size}&page=${page - 1}`, payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+
+}
+
 const putStatusUserService = async (payload) => {
     try{
         const response = await axios.doPost("/venta-ropa/api/users/put-status", payload);
@@ -54,6 +76,15 @@ const existUserByEmailService = async (email) => {
 const postUserService = async (payload) => {
     try {
         const response = await axios.doPost("/venta-ropa/api/users/post-account", payload);
+        return response.data
+    }catch (e){
+        showWarningToast('', error)
+    }
+}
+
+const postAdminService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/users/post-admin-account", payload);
         return response.data
     }catch (e){
         showWarningToast('', error)
@@ -137,5 +168,8 @@ export default {
     getPageUsersByEmailService,
     restorePasswordService,
     changePasswordService,
-    deleteAccountService
+    deleteAccountService,
+    getPageAdminsService,
+    getPageAdminsByEmailService,
+    postAdminService
 };

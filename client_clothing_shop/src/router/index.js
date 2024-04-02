@@ -29,20 +29,26 @@ const router = new VueRouter({
                     path: "store",
                     name: "UserProducts",
                     component: () => import("../views/product/GuestProducts.vue"),
-                    meta: { title: "K&I | Tienda" },
+                    meta: { title: "Klein & Iversen | Tienda" },
                 },
                 {
                     path: "user-management",
                     name: "ADMINUserManagement",
                     component: () => import("../views/user/UserManagement.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                 },
                 {
                     path: "user-details/:email",
                     name: "UserDetails",
                     component: () => import("../views/user/UserDetails.vue"),
-                    meta: { requiresAuth: true, roles: ["ADMIN"] },
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
                     props: true,
+                },
+                {
+                    path: "admin-management",
+                    name: "AdminManagement",
+                    component: () => import("../views/user/AdminManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["SUPERADMIN"] },
                 },
                 {
                     path: "profile",
@@ -61,21 +67,21 @@ const router = new VueRouter({
                     name: "UserProductsCategory",
                     component: () => import("../views/product/GuestProducts.vue"),
                     props: true,
-                    meta: { title: "K&I | Tienda" },
+                    meta: { title: "Klein & Iversen | Tienda" },
                 },
                 {
                     path: "store/:category/:subcategory",
                     name: "UserProductsSubcategory",
                     component: () => import("../views/product/GuestProducts.vue"),
                     props: true,
-                    meta: { title: "K&I | Tienda" },
+                    meta: { title: "Klein & IversenK&I | Tienda" },
                 },
                 {
                     path: "product-details/:id",
                     name: "UserProductDetails",
                     component: () => import("../views/product/ProductDetails.vue"),
                     props: true,
-                    meta: { title: "K&I | Detalles del producto" },
+                    meta: { title: "Klein & Iversen | Detalles del producto" },
                 },
                 {
                     path: "product-sale-request",
@@ -92,7 +98,7 @@ const router = new VueRouter({
                 {
                     path: "request-become-seller-management",
                     name: "ADMINRequestBecomeSellerManagement",
-                    component: () => import("../views/requests-become-seller/RequestBecomeSellerManagement.vue"),
+                    component: () => import("../views/request-become-seller/RequestBecomeSellerManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 },
                 {
@@ -153,6 +159,12 @@ const router = new VueRouter({
                     name:"ADMINRequestsReturnProductManagement",
                     component: () => import("../views/requests-return-product/RequestsReturnProductManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN"] },
+                },
+                {
+                    path: "order-management",
+                    name: "ADMINOrderManagement",
+                    component: () => import("../views/order/OrderManagement.vue"),
+                    meta: { requiresAuth: true, roles: ["ADMIN", "SUPER_ADMIN"] },
                 }
             ]
         },
@@ -187,13 +199,25 @@ router.beforeEach((to, from, next) => {
     }
 
 
-    if (!requiresAuth) {
+    if (requiresAuth && isAuthenticated && roles.includes(role)) {
         next();
-    } else if (requiresAuth && !isAuthenticated) {
-        next("/");
-    } else if (roles && !roles.includes(role)) {
-        next("/");
-    } else {
+    }else if(requiresAuth && isAuthenticated && !roles.includes(role)) {
+        if(role === "SUPERADMIN" || role === "ADMIN") {
+            next("/product-sale-request");
+        }else if(role === "SELLER") {
+            next("/product-management");
+        }else if(role === "BUYER") {
+            next("/store");
+        }
+    }else if(requiresAuth && !isAuthenticated) {
+        next("/store");
+    }else if(!requiresAuth && isAuthenticated && role !== "BUYER") {
+        if(role === "SUPERADMIN" || role === "ADMIN") {
+            next("/product-sale-request");
+        }else if(role === "SELLER") {
+            next("/product-management");
+        }
+    }else {
         next();
     }
 

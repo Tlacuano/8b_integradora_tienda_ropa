@@ -3,11 +3,15 @@ package mx.edu.utez.services_clothing_shop.controller.payment_card.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestPaymentCardDTO {
     private UUID idPaymentCard;
     @NotBlank(message = "payment.cardholderName.notnull")
@@ -25,16 +29,4 @@ public class RequestPaymentCardDTO {
     private String cvv;
     private UUID idUser;
     private UUID idStatus;
-
-    public RequestPaymentCardDTO() {
-    }
-
-    public RequestPaymentCardDTO(String cardholderName, String cardNumber, String expirationDate, String cvv, UUID idUser, UUID idStatus) {
-        this.cardholderName = cardholderName;
-        this.cardNumber = cardNumber;
-        this.expirationDate = expirationDate;
-        this.cvv = cvv;
-        this.idUser = idUser;
-        this.idStatus = idStatus;
-    }
 }
