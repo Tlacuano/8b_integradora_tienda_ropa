@@ -29,7 +29,7 @@
               </b-card>
             </b-col>
           </b-row>
-          <b-row class="mt-2 mb-3">
+          <b-row class="mt-2 mb-3" v-if="this.$store.getters.getRole !== 'SUPERADMIN'">
             <b-col>
               <b-card no-body class="selectable highlight-on-hover" @click="deleteAccountMenu">
                 <b-row align-h="between" class="p-2 mx-1">
@@ -202,7 +202,8 @@ export default {
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: 'var(--black-base)',
-            confirmButtonText: 'Sí, cambiar'
+            confirmButtonText: 'Sí, cambiar',
+            cancelButtonText: 'Cancelar',
           }).then(async (result) => {
             if (result.isConfirmed) {
               this.changeStatusOverlay()
@@ -236,7 +237,8 @@ export default {
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: 'var(--black-base)',
-            confirmButtonText: 'Sí, eliminar'
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
           }).then(async (result) => {
             if (result.isConfirmed) {
               this.changeStatusOverlay()

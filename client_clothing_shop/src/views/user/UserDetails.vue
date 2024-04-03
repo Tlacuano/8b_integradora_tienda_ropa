@@ -10,7 +10,7 @@
                 @mouseleave="showEditPicture = false"
             >
               <b-avatar
-                  :src="user.picture || null"
+                  :src="user.person.picture || null"
                   alt="Image"
                   size="180px"
                   fluid
@@ -48,11 +48,11 @@
 
         <b-row class="mt-1">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" @click="changeStatusUser(user.email)">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
-                    {{ user.status ? 'Deshabilitar cuenta' : 'Habilitar cuenta' }}
+                    {{ user.status === true ? 'Deshabilitar cuenta' : 'Habilitar cuenta' }}
                   </b>
                 </b-col>
                 <b-col cols="auto" class="text-right">
@@ -65,7 +65,7 @@
 
         <b-row class="mt-1">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" v-b-modal:delete-account-admin-modal>
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -141,66 +141,75 @@
                           <h4>Datos personales</h4>
                         </b-col>
                       </b-row>
+                      <section v-if="user.person.name !== null">
+                        <b-row class="mt-2">
+                          <b-col md="4">
+                            <b-form-group label="Nombre completo">
+                              <b-form-input
+                                  v-model="user.person.name"
+                                  disabled
+                              ></b-form-input>
+                            </b-form-group>
+                          </b-col>
 
-                      <b-row class="mt-2">
-                        <b-col md="4">
-                          <b-form-group label="Nombre completo">
-                            <b-form-input
-                                v-model="user.person.name"
-                                disabled
-                            ></b-form-input>
-                          </b-form-group>
-                        </b-col>
+                          <b-col md="4">
+                            <b-form-group label="Primer apellido">
+                              <b-form-input
+                                  v-model="user.person.lastName"
+                                  disabled
+                              ></b-form-input>
+                            </b-form-group>
+                          </b-col>
 
-                        <b-col md="4">
-                          <b-form-group label="Primer apellido">
-                            <b-form-input
-                                v-model="user.person.lastName"
-                                disabled
-                            ></b-form-input>
-                          </b-form-group>
-                        </b-col>
+                          <b-col md="4">
+                            <b-form-group label="Segundo apellido">
+                              <b-form-input
+                                  v-model="user.person.secondLastName"
+                                  disabled
+                              ></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-row>
 
-                        <b-col md="4">
-                          <b-form-group label="Segundo apellido">
-                            <b-form-input
-                                v-model="user.person.secondLastName"
-                                disabled
-                            ></b-form-input>
-                          </b-form-group>
-                        </b-col>
-                      </b-row>
+                        <b-row>
+                          <b-col md="4">
+                            <b-form-group label="Género">
+                              <b-form-select v-model="user.person.gender" disabled>
+                                <b-form-select-option value="masculino">Hombre</b-form-select-option>
+                                <b-form-select-option value="femenino">Mujer</b-form-select-option>
+                                <b-form-select-option value="otros">Otro</b-form-select-option>
+                              </b-form-select>
+                            </b-form-group>
+                          </b-col>
 
-                      <b-row>
-                        <b-col md="4">
-                          <b-form-group label="Género">
-                            <b-form-select v-model="user.person.gender" disabled>
-                              <b-form-select-option value="masculino">Hombre</b-form-select-option>
-                              <b-form-select-option value="femenino">Mujer</b-form-select-option>
-                              <b-form-select-option value="otros">Otro</b-form-select-option>
-                            </b-form-select>
-                          </b-form-group>
-                        </b-col>
+                          <b-col md="4">
+                            <b-form-group label="Fecha de nacimiento">
+                              <b-form-input
+                                  v-model="user.person.birthday"
+                                  type="date"
+                                  disabled
+                              ></b-form-input>
+                            </b-form-group>
+                          </b-col>
 
-                        <b-col md="4">
-                          <b-form-group label="Fecha de nacimiento">
-                            <b-form-input
-                                v-model="user.person.birthday"
-                                type="date"
-                                disabled
-                            ></b-form-input>
-                          </b-form-group>
-                        </b-col>
+                          <b-col md="4">
+                            <b-form-group label="Teléfono">
+                              <b-form-input
+                                  v-model="user.person.phoneNumber"
+                                  disabled
+                              ></b-form-input>
+                            </b-form-group>
+                          </b-col>
+                        </b-row>
+                      </section>
+                      <section v-else>
+                        <b-row>
+                          <b-col class="text-center">
+                            <span class="text-black-50">No hay información personal registrada</span>
+                          </b-col>
+                        </b-row>
+                      </section>
 
-                        <b-col md="4">
-                          <b-form-group label="Teléfono">
-                            <b-form-input
-                                v-model="user.person.phoneNumber"
-                                disabled
-                            ></b-form-input>
-                          </b-form-group>
-                        </b-col>
-                      </b-row>
                     </b-col>
                   </b-row>
                 </b-card>
@@ -334,22 +343,26 @@
         </b-row>
       </b-col>
     </b-row>
-  </section>
 
+    <DeleteAccountAdminModal :email="decodeCrypto(email)"/>
+  </section>
 </template>
 
 <script>
 import PeopleService from "@/services/user/userService";
 import {decodeCrypto} from "@/utils/security/cryptoJs";
 import OrderService from "@/services/order/OrderService";
+import {showInfoAlert} from "@/components/alerts/alerts";
 export default {
   name: "UserDetails",
+  components: {
+    DeleteAccountAdminModal : () => import('@/views/user/DeleteAccountAdminModal.vue'),
+  },
   props: {
     email: {
       type: String,
       required: true
     },
-    showEditPicture: false
   },
   data() {
     return {
@@ -381,10 +394,12 @@ export default {
           elements: 0
         },
         elements: []
-      }
+      },
+      showEditPicture: false
     };
   },
   methods: {
+    decodeCrypto,
     async getUserDetails(){
       this.showOverlay()
 
@@ -423,14 +438,27 @@ export default {
         page: this.orders.pagination.page - 1,
         size: this.orders.pagination.size
       }
-      console.log(payload);
+
       const response = await OrderService.getOrdersByEmailService(payload, pagination);
 
       this.orders.pagination.elements = response.data.totalElements;
       this.orders.elements = response.data.content;
       this.showOverlay()
-      console.log(response);
 
+    },
+
+    async changeStatusUser(dato){
+      const payoad = {
+        email:dato
+      }
+      showInfoAlert(
+          "¿Estás seguro?",
+          "¿Deseas cambiar el estado de la cuenta?",
+          "Sí, cambiar",
+          async () => {
+            await PeopleService.putStatusUserService(payoad);
+          }
+      )
     },
 
 
