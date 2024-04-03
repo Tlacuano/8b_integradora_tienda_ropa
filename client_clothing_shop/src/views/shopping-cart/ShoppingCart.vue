@@ -15,6 +15,8 @@
                 <b-card
                   tag="article"
                   no-body
+                  draggable="true"
+                  @dragstart="dragStar($event, product)"
                 >
                   <b-row>
                     <b-col cols="auto" class="pr-0 my-auto ml-sm-1">
@@ -87,47 +89,63 @@
           </b-col>
 
           <b-col lg="4">
-            <b-list-group>
-              <b-list-group-item>
-                <b-row>
-                  <b-col>
-                    <h3 class="pt-2">Resumen de compra</h3>
-                  </b-col>
-                </b-row>
-              </b-list-group-item>
-              <b-list-group-item>
-                <b-row class="mt-3">
-                  <b-col>
-                    <span>Productos ({{products}})</span>
-                  </b-col>
-                  <b-col class="text-right">
-                    <span>${{total}}</span>
-                  </b-col>
-                </b-row>
-                <b-row class="mt-1 mb-3">
-                  <b-col>
-                    <span class="small">Envío</span>
-                  </b-col>
-                  <b-col class="text-right">
-                    <span class="text-secondary underline small">Gratis</span>
-                  </b-col>
-                </b-row>
-                <hr>
-                <b-row class="mt-2">
-                  <b-col>
-                    <h5>Total</h5>
-                  </b-col>
-                  <b-col class="text-right">
-                    <span><b>${{total}}</b></span>
-                  </b-col>
-                </b-row>
-                <b-row class="mt-3">
-                  <b-col>
-                    <b-button class="mt-3 main-button">Continuar compra</b-button>
-                  </b-col>
-                </b-row>
-              </b-list-group-item>
-            </b-list-group>
+            <b-row>
+              <b-col>
+                <b-list-group>
+                  <b-list-group-item>
+                    <b-row>
+                      <b-col>
+                        <h3 class="pt-2">Resumen de compra</h3>
+                      </b-col>
+                    </b-row>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <b-row class="mt-3">
+                      <b-col>
+                        <span>Productos ({{products}})</span>
+                      </b-col>
+                      <b-col class="text-right">
+                        <span>${{total}}</span>
+                      </b-col>
+                    </b-row>
+                    <b-row class="mt-1 mb-3">
+                      <b-col>
+                        <span class="small">Envío</span>
+                      </b-col>
+                      <b-col class="text-right">
+                        <span class="text-secondary underline small">Gratis</span>
+                      </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row class="mt-2">
+                      <b-col>
+                        <h5>Total</h5>
+                      </b-col>
+                      <b-col class="text-right">
+                        <span><b>${{total}}</b></span>
+                      </b-col>
+                    </b-row>
+                    <b-row class="mt-3">
+                      <b-col>
+                        <b-button class="mt-3 main-button">Continuar compra</b-button>
+                      </b-col>
+                    </b-row>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-col>
+            </b-row>
+            <b-row class="mt-2">
+              <b-col>
+                <b-card
+                  class="text-center"
+                  @drop="drop($event)"
+                  @dragover.prevent
+                  @dragenter.prevent
+                >
+                  <span class="text-secondary">Arrastra aqui para eliminar del carrito</span>
+                </b-card>
+              </b-col>
+            </b-row>
           </b-col>
         </b-row>
       </b-col>
@@ -187,29 +205,10 @@ export default {
         const response = await ShoppingCartService.putShoppingCartService(payload);
         this.showOverlay()
         if(response.status === 200){
-          this.getCart();
+          await this.getCart();
         }
       }else{
-        Vue.swal({
-          title: '¿Estás seguro?',
-          text: "¿Deseas eliminar el producto del carrito?",
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: 'var( --black-base)',
-          confirmButtonText: 'Sí, eliminar'
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            this.showOverlay()
-            const payload = {
-              idShoppingCart: product.idShoppingCart,
-            }
-            const response = await ShoppingCartService.deleteShoppingCartService(payload);
-            this.showOverlay()
-            if(response.status === 200){
-              this.getCart();
-            }
-          }
-        })
+        await this.deleteProductInCart(product.idShoppingCart)
       }
     },
 
@@ -218,7 +217,45 @@ export default {
       this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
     },
 
+    async deleteProductInCart(id){
+      Vue.swal({
+        title: '¿Estás seguro?',
+        text: "¿Deseas eliminar el producto del carrito?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: 'var( --black-base)',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          this.showOverlay()
+          const payload = {
+            idShoppingCart: id,
+          }
+          const response = await ShoppingCartService.deleteShoppingCartService(payload);
+          this.showOverlay()
+          if(response.status === 200){
+            await this.getCart();
+          }
+        }
+      })
+    },
 
+
+
+    dragStar(event, item){
+      event.dataTransfer.dropEffect = "move";
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("itemID", item.idShoppingCart);
+    },
+
+    async drop(event){
+      event.preventDefault();
+      const id = event.dataTransfer.getData("itemID");
+
+      await this.deleteProductInCart(id);
+
+    },
 
 
     showOverlay(){
