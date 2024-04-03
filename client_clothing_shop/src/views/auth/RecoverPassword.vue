@@ -225,10 +225,14 @@ export default {
           const payload = {
             email: this.email
           };
-          await UserService.resendEmailCode(payload);
-          this.changeStatusOverlay();
+
+          await UserService.resendEmailCode(payload)
 
           this.increaseRegisterPage();
+
+          this.changeStatusOverlay();
+
+
         }
       });
     },

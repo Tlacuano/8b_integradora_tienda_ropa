@@ -28,9 +28,11 @@
                   </b-row>
                   <b-row>
                     <b-col>
-                      <div class="text-ellipsis text-secondary small"> {{ order.orderNumber }}</div>
+                      <div class="text-ellipsis text-secondary small"> Orden #{{ order.orderNumber }}</div>
                     </b-col>
                   </b-row>
+                </b-col>
+                <b-col>
                   <b-row>
                     <b-col>
                       <b-badge :variant="getVariant(order.status)" class="text-ellipsis text-white small">{{ order.status }}</b-badge>

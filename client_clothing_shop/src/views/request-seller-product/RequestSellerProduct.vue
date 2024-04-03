@@ -140,7 +140,7 @@ export default {
 </script>
 <style>
 .container-products {
-  height: 65vh !important;
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 

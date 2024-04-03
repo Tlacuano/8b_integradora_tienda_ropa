@@ -16,7 +16,6 @@ public class ResponseOrderHasProductsDTO {
     private ResponseProductDTO product;
     private int amount;
     private String status;
-    private List<BeanProductGallery> gallery;
 
     public static ResponseOrderHasProductsDTO toOrderHasProductsDTO(BeanOrderHasProducts orderHasProducts) {
         ResponseOrderHasProductsDTO dto = new ResponseOrderHasProductsDTO();
