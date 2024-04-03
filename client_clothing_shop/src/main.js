@@ -42,7 +42,8 @@ const dictionary = {
             digits: () => 'Debe contener exactamente 5 dígitos',
             min: () => 'Debe contener al menos 5 caracteres',
             max: () => 'Debe contener máximo 100 caracteres',
-            name_max: () => "Debe contener máximo 15 caracteres",
+            name_max: () => "El nombre debe contener máximo 15 caracteres",
+            image: () => 'El archivo debe ser una imagen',
         }
     }
 };
@@ -64,7 +65,7 @@ Validator.extend('image_size', {
 // for password strength
 Validator.extend('password_strength', {
     validate: value => {
-        var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
         return strongRegex.test(value);
     }
 });
