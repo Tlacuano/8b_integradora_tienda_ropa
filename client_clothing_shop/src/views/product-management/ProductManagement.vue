@@ -84,13 +84,16 @@
   </section>
 </template>
 <script>
+
+  import ProductManagementService from "@/services/product-management/ProductManagementService";
+
   export default {
     name: "ProductManagement",
     data() {
       return {
         objectPagination:{
-          page: 1,
-          size: 24,
+          pageNumber: 1,
+          pageSize: 24,
           elements: 0,
         },
         items:[
@@ -101,9 +104,16 @@
       };
     },
     methods:{
-
+      async getProductByUser(){
+        const email = this.$store.getters.getEmail
+        const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
+        this.objectPagination.elements = response.elements
+        this.items = response.content
+        console.log(response)
+      }
     },
     mounted() {
+      this.getProductByUser()
     }
   }
 </script>
@@ -115,9 +125,7 @@
 .body-card{
   height: 100%;
 }
-.badge{
 
-}
 .image-container {
   position: relative;
   width: 100%;
