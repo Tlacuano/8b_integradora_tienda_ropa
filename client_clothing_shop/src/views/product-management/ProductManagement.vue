@@ -22,13 +22,13 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col class="container-card" md="6" lg="4" v-for="item in items" :key="item">
+      <b-col class="container-card mb-4" md="6" lg="4" sm="12" v-for="item in items" :key="item">
         <b-card no-body class="card highlight-on-hover">
           <b-row no-gutters class="body-card">
-            <b-col sm="4" md="4" lg="4" class="image-container">
+            <b-col cols="12" sm="4" md="4" lg="4" class="image-container">
               <b-img :src="item.img"  class="img-fluid"></b-img>
             </b-col>
-            <b-col sm="6" md="6" lg="6" class="body-text">
+            <b-col cols="11" sm="6" md="6" lg="6" class="body-text">
               <b-row>
                 <b-col>
                   <h4>{{item.title}}</h4>
@@ -45,15 +45,15 @@
                 </b-col>
               </b-row>
               <b-row class="mt-5">
-                <b-col sm="9" md="9" lg="10" >
+                <b-col cols="9" sm="10" md="10" lg="10" >
                   <p>{{item.price}}: <strong style="display: inline">${{item.price}}</strong></p>
                 </b-col>
-                <b-col sm="3" md="3" lg="2" >
+                <b-col cols="3" sm="2" md="2" lg="2">
                   <b-badge variant="success">{{item.status}}</b-badge>
                 </b-col>
               </b-row>
             </b-col>
-            <b-col sm="1" md="1" lg="1" class="mt-2">
+            <b-col cols="1" sm="1" md="1" lg="1" class="mt-2 dropdown">
               <b-dropdown
                   variant="link-dark"
                   toggle-class="text-decoration-none"
@@ -115,6 +115,9 @@
 .body-card{
   height: 100%;
 }
+.badge{
+
+}
 .image-container {
   position: relative;
   width: 100%;
@@ -135,6 +138,28 @@
   margin-left: 20px;
   margin-top: 10px;
 }
+@media (max-width: 576px) { /* Estilo para pantallas pequeñas */
+  .image-container {
+    height: 50%;
+  }
 
+  .image-container img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .body-text {
+    margin-left: 10px;
+    margin-top: 20px;
+  }
+  .card{
+    height: 450px;
+  }
+  .dropdown{
+    margin-left:-10px
+  }
+}
 
 </style>
