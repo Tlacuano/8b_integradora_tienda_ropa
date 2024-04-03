@@ -143,7 +143,7 @@ export default Vue.extend({
 
 <style>
 .container-subcategories {
-  height: calc(100vh - 300px);
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 </style>

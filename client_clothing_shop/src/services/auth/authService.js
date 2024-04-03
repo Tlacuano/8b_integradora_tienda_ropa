@@ -6,8 +6,6 @@ const loginService = async (payload) => {
     try {
         return await axios.doPost("/login", payload)
     } catch (e) {
-        showWarningToast('','Email o contraseña incorrectos')
-        return e.data
     }
 }
 
