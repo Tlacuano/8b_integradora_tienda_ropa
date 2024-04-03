@@ -174,4 +174,13 @@ public class UserController {
         );
     }
 
+    @PostMapping("/delete-account-admin")
+    public ResponseEntity<Object> deleteAccountAdmin(@Validated @RequestBody RequestRestorePasswordDTO payload){
+        userService.deleteAccountAdmin(payload);
+        return new ResponseEntity<>(
+                new CustomResponse<>(true, "Cuenta eliminada correctamente", false, 200),
+                HttpStatus.OK
+        );
+    }
+
 }

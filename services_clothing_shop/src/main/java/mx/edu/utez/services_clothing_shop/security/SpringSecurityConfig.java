@@ -73,6 +73,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/change-password").hasAnyRole(ADMIN, BUYER, SELLER, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/resend-email-code").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/restore-password").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account-admin").hasAnyRole(ADMIN, SUPERADMIN)
 
 
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-page-admins").hasRole(SUPERADMIN)
@@ -188,8 +189,8 @@ public class SpringSecurityConfig {
 
                                 //Modulo orders
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/orders/get-orders").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/orders/get-orders-by-user-email").hasAnyRole("BUYER", "SELLER", "ADMIN", "SUPERADMIN")
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/order/get-order-details").hasAnyRole("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/orders/get-orders-by-user-email").hasAnyRole(BUYER, SELLER, ADMIN, SUPERADMIN)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/order/get-order-details").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order/get-orders-by-user-email").hasAnyRole(BUYER, SELLER, ADMIN, SUPERADMIN)
 
                                 //Modulo order-has-products

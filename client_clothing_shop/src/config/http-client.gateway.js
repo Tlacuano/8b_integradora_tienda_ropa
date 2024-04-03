@@ -70,16 +70,17 @@ instance.interceptors.response.use(
         if(error.response.status === 401){
             store.dispatch("logout");
         }
-        console.log(decrypt(error.response.data));
         const {data, message} = decrypt(error.response.data);
 
         if(data) {
             if(!data.error){
-                showWarningToast(data);
+                showWarningToast('',data);
+            }else{
+                showWarningToast('',data.error);
             }
 
         }else{
-            showWarningToast(message);
+            showWarningToast('',message);
         }
 
         return Promise.reject(error.response);

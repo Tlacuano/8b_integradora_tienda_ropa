@@ -36,9 +36,9 @@
                           </div>
                         </b-col>
                       </b-row>
-                      <b-row>
-                        <b-col>
-                          <div class="text-truncate d-none d-lg-block">
+                      <b-row class="d-none d-lg-block">
+                        <b-col cols="12" class="mr-1 pr-1">
+                          <div class="text-truncate">
                             {{product.product.description}}
                           </div>
                         </b-col>
@@ -190,7 +190,7 @@ export default {
       this.showOverlay()
       const response = await ShoppingCartService.putShoppingCartService(payload);
       this.showOverlay()
-      if(response.status === 200){
+      if(response){
         this.getCart();
       }
     },
@@ -204,7 +204,7 @@ export default {
         this.showOverlay()
         const response = await ShoppingCartService.putShoppingCartService(payload);
         this.showOverlay()
-        if(response.status === 200){
+        if(response){
           await this.getCart();
         }
       }else{
