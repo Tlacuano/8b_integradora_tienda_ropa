@@ -21,35 +21,37 @@
         <b-button variant="dark">Registrar</b-button>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col class="container-card mb-4" md="6" lg="4" sm="12" v-for="item in items" :key="item">
+    <b-row class="container-products">
+      <b-col class="container-card mt-3" md="6" lg="4" sm="12" v-for="item in items" :key="item">
         <b-card no-body class="card highlight-on-hover">
           <b-row no-gutters class="body-card">
             <b-col cols="12" sm="4" md="4" lg="4" class="image-container">
-              <b-img :src="item.img"  class="img-fluid"></b-img>
+              <b-img :src="item.productGallery[0].image"  class="img-fluid"></b-img>
             </b-col>
             <b-col cols="11" sm="6" md="6" lg="6" class="body-text">
               <b-row>
                 <b-col>
-                  <h4>{{item.title}}</h4>
+                  <h4>{{item.productName}}</h4>
                 </b-col>
               </b-row>
               <b-row class="mt-3">
                 <b-col >
-                  <strong>{{item.category}}: <p style="display: inline">{{item.category}}</p></strong>
+                  <strong>Categoria: <p style="display: inline">{{item.category}}</p></strong>
                 </b-col>
               </b-row>
               <b-row>
                 <b-col>
-                  <strong>{{item.subcategory}}: <p style="display: inline">{{item.subcategory}}</p></strong>
+                  <strong>Subcategoria: <p style="display: inline">{{item.subcategory}}</p></strong>
                 </b-col>
               </b-row>
               <b-row class="mt-5">
-                <b-col cols="9" sm="10" md="10" lg="10" >
-                  <p>{{item.price}}: <strong style="display: inline">${{item.price}}</strong></p>
+                <b-col cols="9" sm="10" md="10" lg="9" >
+                  <p>Precio <strong style="display: inline">${{item.price}}</strong></p>
                 </b-col>
-                <b-col cols="3" sm="2" md="2" lg="2">
-                  <b-badge variant="success">{{item.status}}</b-badge>
+                <b-col cols="3" sm="2" md="2" lg="3">
+                  <b-badge :variant="item.status ? 'success' : 'danger'">
+                    {{ item.status ? 'Habilitado' : 'Deshabilitado' }}
+                  </b-badge>
                 </b-col>
               </b-row>
             </b-col>
@@ -92,24 +94,19 @@
     data() {
       return {
         objectPagination:{
-          pageNumber: 1,
-          pageSize: 24,
+          page: 1,
+          size: 10,
           elements: 0,
         },
-        items:[
-          {id:1, title:"productname", category:"categoria", subcategory:"subcategoria",price:"precio",status:"estado",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnFBG_0oT9hDXEXoGwi5JAlMn_cREKdYAb9sJ0bGgfYQ&s"},
-          {id:2, title:"productname", category:"categoria", subcategory:"subcategoria",price:"precio",status:"estado",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnFBG_0oT9hDXEXoGwi5JAlMn_cREKdYAb9sJ0bGgfYQ&s"},
-          {id:3, title:"productname", category:"categoria", subcategory:"subcategoria",price:"precio",status:"estado",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnFBG_0oT9hDXEXoGwi5JAlMn_cREKdYAb9sJ0bGgfYQ&s"},
-        ]
+        items:[]
       };
     },
     methods:{
       async getProductByUser(){
         const email = this.$store.getters.getEmail
         const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
-        this.objectPagination.elements = response.elements
-        this.items = response.content
-        console.log(response)
+        this.items = response.data.content
+        this.objectPagination.elements = response.totalElements
       }
     },
     mounted() {
@@ -119,6 +116,10 @@
 </script>
 
 <style>
+.container-products {
+  height: calc(100vh - 270px);
+  overflow-x: hidden;
+}
 .card{
   height: 195px;
 }
