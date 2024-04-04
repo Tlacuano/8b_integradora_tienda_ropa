@@ -1,13 +1,13 @@
 import axios from "../../config/http-client.gateway";
-
+import {showWarningToast} from "@/components/alerts/alerts";
+const error = 'Ocurrió un error inesperado, por favor inténtelo más tarde';
 const getProductByUser = async (pagination,email) => {
     try {
         const {page,size}=pagination
         const response = await axios.doPost(`/venta-ropa/api/products/get-products-by-user?size=${size}&page=${page - 1}`,{email:email})
-        console.log(response.data)
         return response.data
     } catch (e) {
-        console.log(e)
+        showWarningToast('', error)
     }
 }
 export default {
