@@ -150,11 +150,11 @@
 
         <b-row v-if="user.buyer" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToMyOrders()">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
-                    Historial de compras
+                    Mis compras
                   </b>
                 </b-col>
                 <b-col class="text-right">
@@ -249,6 +249,9 @@ export default {
     },
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
+    },
+    redirectToMyOrders() {
+      this.$router.push({ name: 'MyOrders' });
     },
     redirectToAddresses() {
       this.$router.push({ name: 'BuyerAddressManagement' });
