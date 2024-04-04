@@ -50,6 +50,7 @@ public class EncryptionAdvice implements ResponseBodyAdvice<Object>{
 
                 return encryptedJson;
             } catch (Exception e) {
+                System.out.println("Error encriptando respuesta" + e.getMessage());
                 Logger.getLogger("Error encriptando respuesta" + e.getMessage());
                 throw new CustomException("controller.advice.encrypter");
             }
