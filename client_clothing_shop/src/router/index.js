@@ -118,6 +118,7 @@ const router = new VueRouter({
                     name: "ProductDetails",
                     component: () => import("../views/product-management/ViewProductDetails.vue"),
                     meta: { requiresAuth: true, roles: ["SELLER"] },
+                    props:true
                 },
                 {
                     path:"product-sale",
@@ -136,11 +137,13 @@ const router = new VueRouter({
                     name:"RegisterProductEditionRequest",
                     component: () => import("../views/product-management/RegisterProductEditionRequest.vue"),
                     meta: { requiresAuth: true, roles: ["SELLER"] },
+                    props:true
                 },
                 {
                     path:"register-product-request",
                     name:"RegisterProductRequest",
                     component: () => import("../views/product-management/RegisterProductRequest.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
                 },
                 {
                     path:"request-data-change-management",
