@@ -159,6 +159,7 @@ export default {
           showCancelButton: true,
           confirmButtonText: "Sí, estoy seguro",
           confirmButtonColor: "#212529",
+          cancelButtonText: 'Cancelar',
         }).then(async (result) => {
           if (result.isConfirmed) {
             this.changeStatusOverlay()

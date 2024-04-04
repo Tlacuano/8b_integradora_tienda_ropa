@@ -19,6 +19,7 @@ public class ErrorDictionary {
         errorMessages.put("user.privacy.policy.accepted", "Esta cuenta no puede eliminarse por este metodo.");
         errorMessages.put("user.code.incorrect", "No se pudo completar el cambío de contraseña.");
         errorMessages.put("user.password.incorrect", "Contraseña incorrecta.");
+        errorMessages.put("user.admin.not.delete", "Acción imposible de realizar.");
 
         //error messages person
         errorMessages.put("person.name.notnull", "El nombre es obligatorio.");

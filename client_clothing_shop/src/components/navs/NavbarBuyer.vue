@@ -45,7 +45,7 @@
             </template>
             <b-dropdown-item v-if="isLoggedIn" @click="prepareToNavigate('/profile')">{{ getEmail || "Perfil" }}
             </b-dropdown-item>
-            <b-dropdown-item v-if="isLoggedIn" @click="prepareToNavigate('/orders')">Pedidos</b-dropdown-item>
+            <b-dropdown-item v-if="isLoggedIn" @click="prepareToNavigate('/my-orders')">Mis compras</b-dropdown-item>
             <b-dropdown-item v-if="isLoggedIn" @click="logout()">Cerrar sesión</b-dropdown-item>
 
             <b-dropdown-item v-if="!isLoggedIn" v-b-modal:login-modal>Iniciar sesión</b-dropdown-item>
@@ -120,7 +120,7 @@ export default {
 }
 
 .categoria {
-  width: 125px;
+  width: 120px;
 }
 
 
