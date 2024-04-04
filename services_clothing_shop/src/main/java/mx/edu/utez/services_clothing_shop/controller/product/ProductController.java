@@ -68,9 +68,9 @@ public class ProductController {
     }
 
     @PostMapping("/get-products-by-user")
-    public ResponseEntity<Object> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
+    public ResponseEntity<Object> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO,Pageable page) {
         try {
-            Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
+            Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), page);
             return getCustomResponseResponseEntity(beanProductPage);
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);

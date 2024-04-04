@@ -1,11 +1,26 @@
-<script setup>
 
-</script>
 
 <template>
-
+<h1>Detalles</h1>
 </template>
-
-<style scoped>
+<script>
+export default{
+  props:{
+    idProduct: {
+      type: String,
+      required: true
+    }
+  },
+  methods:{
+    method(){
+      console.log(this.idProduct)
+    }
+  },
+  mounted() {
+    this.method()
+  }
+}
+</script>
+<style>
 
 </style>

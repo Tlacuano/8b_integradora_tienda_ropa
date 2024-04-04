@@ -1,11 +1,9 @@
-<script setup>
+<template>
+  <h1>Registro</h1>
+</template>
+<script>
 
 </script>
-
-<template>
-
-</template>
-
-<style scoped>
+<style >
 
 </style>
