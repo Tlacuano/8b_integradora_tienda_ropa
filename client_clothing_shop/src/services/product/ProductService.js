@@ -1,9 +1,10 @@
 import axios from "../../config/http-client.gateway"
 import {decodeCrypto} from "@/utils/security/cryptoJs";
 
-const getProductsByCategory = async (payload) => {
+const getProductsByCategory = async (payload, pagination) => {
     try {
-        const response = await axios.doPost("/venta-ropa/api/products/get-by-category", payload)
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/products/get-by-category?size=${size}&page=${page - 1}`, payload)
         return response.data;
     } catch (e) {
         console.error(e)
@@ -20,9 +21,10 @@ const getProductById = async (productId) => {
     }
 }
 
-const getProductsBySubcategory = async (payload) => {
+const getProductsBySubcategory = async (payload, pagination) => {
     try {
-        const response = await axios.doPost("/venta-ropa/api/products/get-by-subcategory", payload)
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/products/get-by-subcategory?size=${size}&page=${page - 1}`, payload)
         return response.data;
     } catch (e) {
         console.error(e)

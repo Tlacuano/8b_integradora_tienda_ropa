@@ -2,12 +2,14 @@
   <div class="interface">
     <div v-if="!selectedCategory">
       <b-row class="full-page" no-gutters>
-        <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="p-4">
+        <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="">
           <b-card
               :img-src="category.image"
-              class="mb-2 selectable zoom-on-hover category-card"
+              class="mb-2 selectable zoom-on-hover"
               :title="category.category"
+              header-class="text-center"
               @click="selectCategory(category.category)"
+              overlay
           >
           </b-card>
         </b-col>
@@ -18,7 +20,7 @@
         <b-col cols="12" lg="4">
           <b-form-group>
             <div class="position-relative">
-              <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+              <b-form-input v-model="searchQuery" id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
               <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
             </div>
           </b-form-group>
@@ -64,6 +66,16 @@
           <h3>No existen productos con los datos que especificaste</h3>
         </b-col>
       </b-row>
+      <b-row>
+        <b-col>
+          <b-pagination
+              v-model="objectPagination.page"
+              :total-rows="objectPagination.elements"
+              :per-page="objectPagination.size"
+              aria-controls="my-table"
+          ></b-pagination>
+        </b-col>
+      </b-row>
     </div>
 
     <LoginModal/>
@@ -88,7 +100,13 @@ export default {
       selectedCategory: this.$route.params.category || "",
       selectedSubcategory: this.$route.params.subcategory || "",
       products: [],
-      categories: []
+      categories: [],
+      objectPagination: {
+        page: 1,
+        size: 32,
+        elements: 0
+      },
+      searchQuery: ""
     };
   },
 
@@ -112,12 +130,13 @@ export default {
         return;
       }
       const payload = {
-        category: this.selectedCategory
+        category: this.selectedCategory,
       };
       this.showOverlay();
-      const response = await ProductService.getProductsByCategory(payload);
+      const response = await ProductService.getProductsByCategory(payload, this.objectPagination);
       if (response.status === 200) {
-        this.products = response.data;
+        this.products = response.data.content;
+        this.objectPagination.elements = response.data.totalElements;
       }
       this.showOverlay();
     },
@@ -132,9 +151,10 @@ export default {
         subcategory: this.selectedSubcategory
       };
       this.showOverlay();
-      const response = await ProductService.getProductsBySubcategory(payload);
+      const response = await ProductService.getProductsBySubcategory(payload, this.objectPagination);
       if (response.status === 200) {
-        this.products = response.data;
+        this.products = response.data.content;
+        this.objectPagination.elements = response.data.totalElements;
       }
       this.showOverlay();
     },
@@ -170,7 +190,19 @@ export default {
     '$route.params.subcategory'(newSubcategory) {
       this.selectedSubcategory = newSubcategory;
       this.getSubcategoryProducts();
-    }
+    },
+
+    // watch for page change
+    objectPagination: {
+      handler: function() {
+        if (this.selectedCategory && this.selectedSubcategory) {
+          this.getSubcategoryProducts();
+        } else if (this.selectedCategory) {
+          this.getCategoryProducts();
+        }
+      },
+      deep: true
+    },
   },
 
   created() {
@@ -193,10 +225,28 @@ export default {
   padding-bottom: calc(100px);
 }
 
+.category-card {
+  height: 100%;
+}
+
+.full-page {
+  height: calc(100vh - 100px);
+}
+
 .wishlist-btn {
   background-color: transparent;
   border: none;
   font-size: 1.2rem;
+}
+
+.card-title {
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.card-body {
+  height: 100%;
 }
 
 .icon-container {

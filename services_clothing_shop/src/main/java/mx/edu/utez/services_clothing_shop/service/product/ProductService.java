@@ -32,13 +32,13 @@ public class ProductService {
     }
 
     @Transactional
-    public List<BeanProduct> getProductsByCategory(String category) {
-        return iProduct.findAllByCategory(category);
+    public Page<BeanProduct> getProductsByCategory(String category, Pageable page) {
+        return iProduct.findAllByCategory(category, page);
     }
 
     @Transactional
-    public List<BeanProduct> getProductsBySubcategory(String category, String subcategory) {
-        return iProduct.findAllBySubcategory(category, subcategory);
+    public Page<BeanProduct> getProductsBySubcategory(String category, String subcategory, Pageable page) {
+        return iProduct.findAllBySubcategory(category, subcategory, page);
     }
 
     @Transactional
