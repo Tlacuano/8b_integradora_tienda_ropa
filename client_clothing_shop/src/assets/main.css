@@ -117,13 +117,13 @@ input.form-control:disabled {
 
 .page-item.active .page-link {
   z-index: 3;
-  color: #fff;
+  color: #fff !important;
   background-color: var(--black-base) !important;
   border-color: #000000 !important;
 }
 
 .page-link {
-  color: #fff;
+  color: var(--black-base) !important;
 }
 
 

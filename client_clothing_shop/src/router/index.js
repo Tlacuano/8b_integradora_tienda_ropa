@@ -63,7 +63,7 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["BUYER"] },
                 },
                 {
-                    name:"shopping-cart",
+                    name:"ShoppingCart",
                     path:"shopping-cart",
                     component: () => import("../views/shopping-cart/ShoppingCart.vue"),
                     meta: { requiresAuth: true, roles: ["BUYER"] },

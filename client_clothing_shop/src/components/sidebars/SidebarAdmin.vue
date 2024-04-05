@@ -24,7 +24,7 @@
         </b-nav-item>
       </b-nav>
 
-      <template #footer>
+      <template #footer v-if="$store.getters.isLoggedIn">
         <b-button class="main-button" @click="logout">
           Cerrar sesión
         </b-button>
