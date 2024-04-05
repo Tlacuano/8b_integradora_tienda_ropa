@@ -60,7 +60,7 @@
                             <template v-slot:button-content>
                               <font-awesome-icon icon="ellipsis-v"/>
                             </template>
-                            <b-dropdown-item @click="seeDetails(product, order.orderDate, order.address)">
+                            <b-dropdown-item @click="seeDetails(order, product)">
                               Ver detalles
                             </b-dropdown-item>
                           </b-dropdown>
@@ -84,7 +84,7 @@
 
       </b-col>
     </b-row>
-    <MyOrderDetailsModal :Order="OrderSelected" :fecha="dateSelected" :address="addressSelected"/>
+    <MyOrderDetailsModal :Order="OrderSelected" :Product="ProductSelected"/>
   </b-container>
 </template>
 
@@ -107,8 +107,7 @@ export default {
         elements: 0
       },
       OrderSelected: {},
-      dateSelected: '',
-      addressSelected: {}
+      ProductSelected: {},
     }
   },
   methods: {
@@ -128,7 +127,6 @@ export default {
 
       this.pagination.elements = response.data.totalElements;
       this.orders = response.data.content;
-      console.log(this.orders)
       this.showOverlay()
 
     },
@@ -138,11 +136,11 @@ export default {
       this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
     },
 
-    seeDetails(product, date, address){
-      console.log(address);
-      this.OrderSelected = product;
-      this.dateSelected = date;
-      this.addressSelected = address;
+    seeDetails(order, product){
+      this.OrderSelected = order
+      this.ProductSelected = product
+      console.log(this.OrderSelected)
+      console.log(this.ProductSelected)
       this.$root.$emit('bv::show::modal', 'my-order-details-modal');
     },
 
