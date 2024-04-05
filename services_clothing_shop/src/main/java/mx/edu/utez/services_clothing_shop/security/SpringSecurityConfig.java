@@ -170,6 +170,7 @@ public class SpringSecurityConfig {
                                 //Modulo products
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-category").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-subcategory").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-search-query").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-product").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products-by-user").hasAnyRole(SELLER, ADMIN, SUPERADMIN)
