@@ -40,28 +40,22 @@ public class ProductController {
     }
 
     @PostMapping("/get-by-category")
-    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload) {
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload, Pageable page) {
         try {
-            List<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory());
-            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
-            for (BeanProduct product : beanProductList) {
-                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
-            }
-            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+            Page<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory(), page);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por categoria encontrados", false, 200));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/get-by-subcategory")
-    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload) {
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload, Pageable page) {
         try {
-            List<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory());
-            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
-            for (BeanProduct product : beanProductList) {
-                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
-            }
-            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+            Page<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory(), page);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por subcategoria encontrados", false, 200));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }

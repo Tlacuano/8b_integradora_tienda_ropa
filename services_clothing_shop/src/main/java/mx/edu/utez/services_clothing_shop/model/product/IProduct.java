@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -22,8 +21,8 @@ public interface IProduct extends JpaRepository<BeanProduct, UUID> {
     boolean existsByProductName(String productName);
 
     @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
-    List<BeanProduct> findAllByCategory(String category);
+    Page<BeanProduct> findAllByCategory(String category, Pageable page);
 
     @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.subcategory = :subcategory AND p.status = true AND p.subcategory.category.category = :category AND p.amount > 0")
-    List<BeanProduct> findAllBySubcategory(String category, String subcategory);
+    Page<BeanProduct> findAllBySubcategory(String category, String subcategory, Pageable page);
 }
