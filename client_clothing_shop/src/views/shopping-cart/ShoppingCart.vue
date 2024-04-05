@@ -13,39 +13,42 @@
             <b-row v-if="cart.length >0">
               <b-col class="mb-3" cols="12" v-for="product in cart" :id="product.idShoppingCart">
                 <b-card
-                  tag="article"
                   no-body
                   draggable="true"
                   @dragstart="dragStar($event, product)"
                 >
                   <b-row>
-                    <b-col cols="auto" class="pr-0 my-auto ml-sm-1">
-                      <img @click="getProductDetails(product)" :src="findMainImage(product.product.gallery)" class="d-lg-none ml-3 selectable" style="width: 100px; height: auto;">
-                      <img @click="getProductDetails(product)"  :src="findMainImage(product.product.gallery)" class="d-none d-lg-block selectable" style="width: 240px; height: auto;">
+                    <b-col cols="4 my-auto">
+                      <b-img :src="findMainImage(product.product.gallery)" class="img-fluid"/>
                     </b-col>
-                    <b-col class="mr-5">
+                    <b-col cols="7">
                       <b-row class="mt-3">
                         <b-col>
-                          <h5 class="text-truncate m-0">{{product.product.productName}}</h5>
+                          <h5 class="mb-1 d-none d-lg-block">
+                            {{product.product.productName}}
+                          </h5>
+                          <b class="d-lg-none">
+                            {{product.product.productName}}
+                          </b>
                         </b-col>
                       </b-row>
-                      <b-row class="mt-3">
+                      <b-row>
                         <b-col>
-                          <div class="text-truncate d-none d-lg-block">
-                            <span><span><b>{{product.product.category}}</b> / </span><span class="text-black-50">{{product.product.subcategory}}</span></span>
+                          <div class="text-black-50 text-truncate">
+                            {{product.product.category}}
                           </div>
                         </b-col>
                       </b-row>
-                      <b-row class="d-none d-lg-block">
-                        <b-col cols="12" class="mr-1 pr-1">
-                          <div class="text-truncate">
+                      <b-row class="mt-3 d-none d-lg-block">
+                        <b-col cols="12">
+                          <div class="text-truncate text-secondary small">
                             {{product.product.description}}
                           </div>
+                          <hr/>
                         </b-col>
                       </b-row>
-                      <hr class="d-none d-lg-block">
-                      <b-row class="mt-lg-4 mb-2 mb-lg-0">
-                        <b-col lg="6">
+                      <b-row>
+                        <b-col>
                           <b-row>
                             <b-col cols="auto my-auto">
                               <span class="pr-4">Cantidad</span>
@@ -53,25 +56,25 @@
                               <span class="mx-2">{{product.amount}}</span>
                               <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"  @click="increaseAmount(product)"/>
                             </b-col>
-                          </b-row>
-                        </b-col>
-                        <b-col lg="6">
-                          <b-row>
                             <b-col>
-                              <p class="d-lg-none p-0 m-0"><small>Envío</small></p>
-                              <p class="d-none d-lg-block">Envío</p>
-                            </b-col>
-                            <b-col class="text-right">
-                              <span class="text-secondary underline small">Gratis</span>
-                            </b-col>
-                          </b-row>
-                          <b-row>
-                            <b-col>
-                              <b class="d-lg-none">Total</b>
-                              <h5 class="d-none d-lg-block">Total</h5>
-                            </b-col>
-                            <b-col class="text-right">
-                              <span><b>${{calculateProductPrice(product)}}</b></span>
+                              <b-row>
+                                <b-col>
+                                  <p class="d-lg-none p-0 m-0"><small>Envío</small></p>
+                                  <p class="d-none d-lg-block">Envío</p>
+                                </b-col>
+                                <b-col class="text-right">
+                                  <span class="text-secondary underline small">Gratis</span>
+                                </b-col>
+                              </b-row>
+                              <b-row>
+                                <b-col>
+                                  <b class="d-lg-none">Total</b>
+                                  <h5 class="d-none d-lg-block">Total</h5>
+                                </b-col>
+                                <b-col class="text-right">
+                                  <span><b>${{calculateProductPrice(product)}}</b></span>
+                                </b-col>
+                              </b-row>
                             </b-col>
                           </b-row>
                         </b-col>
@@ -178,6 +181,7 @@ export default {
       this.showOverlay()
       this.cart = response.data;
       this.products = response.data.reduce((acumulado, producto) => acumulado + producto.amount, 0);
+      console.log(this.cart)
       this.total = this.calcTotal(response.data);
     },
 
