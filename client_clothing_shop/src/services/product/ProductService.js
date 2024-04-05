@@ -31,8 +31,20 @@ const getProductsBySubcategory = async (payload, pagination) => {
     }
 }
 
+const getProductsByQuery = async (payload, pagination) => {
+    try {
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/products/get-by-search-query?size=${size}&page=${page - 1}`, payload)
+        return response.data;
+    } catch (e) {
+        console.error(e)
+    }
+
+}
+
 export default {
     getProductsByCategory,
     getProductsBySubcategory,
-    getProductById
+    getProductById,
+    getProductsByQuery
 }

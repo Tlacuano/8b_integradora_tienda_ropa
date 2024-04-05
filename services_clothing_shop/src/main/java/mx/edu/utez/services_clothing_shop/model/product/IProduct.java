@@ -25,4 +25,10 @@ public interface IProduct extends JpaRepository<BeanProduct, UUID> {
 
     @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.subcategory = :subcategory AND p.status = true AND p.subcategory.category.category = :category AND p.amount > 0")
     Page<BeanProduct> findAllBySubcategory(String category, String subcategory, Pageable page);
+
+    @Query("SELECT p FROM BeanProduct p WHERE p.productName LIKE %:query% AND p.subcategory.subcategory = :subcategory AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
+    Page<BeanProduct> findAllByProductNameAndSubcategory(String query, String category, String subcategory, Pageable page);
+
+    @Query("SELECT p FROM BeanProduct p WHERE p.productName LIKE %:query% AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
+    Page<BeanProduct> findAllByProductNameContainingIgnoreCase(String query, String category, Pageable page);
 }

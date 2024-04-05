@@ -20,7 +20,8 @@
         <b-col cols="12" lg="4">
           <b-form-group>
             <div class="position-relative">
-              <b-form-input v-model="searchQuery" id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+              <b-form-input @keyup.enter="getProducts()" v-model="searchQuery" id="search" type="text"
+                            placeholder="Buscar..." class="pr-5"></b-form-input>
               <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
             </div>
           </b-form-group>
@@ -103,7 +104,7 @@ export default {
       categories: [],
       objectPagination: {
         page: 1,
-        size: 32,
+        size: 1,
         elements: 0
       },
       searchQuery: ""
@@ -124,34 +125,29 @@ export default {
       this.showOverlay();
     },
 
-    async getCategoryProducts() {
-      if (!this.selectedCategory) {
-        await this.getCategories();
-        return;
-      }
-      const payload = {
-        category: this.selectedCategory,
-      };
+    async getProducts() {
       this.showOverlay();
-      const response = await ProductService.getProductsByCategory(payload, this.objectPagination);
-      if (response.status === 200) {
-        this.products = response.data.content;
-        this.objectPagination.elements = response.data.totalElements;
+      let response;
+      let payload;
+      if (this.searchQuery) {
+        payload = {
+          query: this.searchQuery,
+          category: this.selectedCategory,
+          subcategory: this.selectedSubcategory
+        };
+        response = await ProductService.getProductsByQuery(payload, this.objectPagination);
+      } else if (this.selectedSubcategory) {
+        payload = {
+          category: this.selectedCategory,
+          subcategory: this.selectedSubcategory
+        };
+        response = await ProductService.getProductsBySubcategory(payload, this.objectPagination);
+      } else {
+        payload = {
+          category: this.selectedCategory,
+        };
+        response = await ProductService.getProductsByCategory(payload, this.objectPagination);
       }
-      this.showOverlay();
-    },
-
-    async getSubcategoryProducts() {
-      if (!this.selectedCategory || !this.selectedSubcategory) {
-        await this.getCategoryProducts();
-        return;
-      }
-      const payload = {
-        category: this.selectedCategory,
-        subcategory: this.selectedSubcategory
-      };
-      this.showOverlay();
-      const response = await ProductService.getProductsBySubcategory(payload, this.objectPagination);
       if (response.status === 200) {
         this.products = response.data.content;
         this.objectPagination.elements = response.data.totalElements;
@@ -177,42 +173,54 @@ export default {
     selectCategory(category) {
       this.selectedCategory = category;
       this.$router.push({name: 'UserProductsCategory', params: {category: category}});
-    }
+    },
+
+    resetFilters() {
+      this.selectedSubcategory = "";
+      this.searchQuery = "";
+    },
+
+    updateCategory(newCategory) {
+      this.selectedCategory = newCategory || "";
+      this.resetFilters();
+      if (newCategory) {
+        this.getProducts();
+      } else {
+        this.getCategories();
+      }
+    },
+
+    updateSubcategory(newSubcategory) {
+      this.selectedSubcategory = newSubcategory || "";
+      this.searchQuery = "";
+      if (newSubcategory) {
+        this.getProducts();
+      } else {
+        this.getCategories();
+      }
+    },
   },
 
   watch: {
     '$route.params.category'(newCategory) {
-      this.selectedCategory = newCategory;
-      this.selectedSubcategory = "";
-      this.getCategoryProducts();
+      this.updateCategory(newCategory);
     },
 
     '$route.params.subcategory'(newSubcategory) {
-      this.selectedSubcategory = newSubcategory;
-      this.getSubcategoryProducts();
+      this.updateSubcategory(newSubcategory);
     },
 
-    // watch for page change
     objectPagination: {
-      handler: function() {
-        if (this.selectedCategory && this.selectedSubcategory) {
-          this.getSubcategoryProducts();
-        } else if (this.selectedCategory) {
-          this.getCategoryProducts();
-        }
+      handler() {
+        this.getProducts();
       },
       deep: true
-    },
+    }
   },
 
   created() {
-    // if there is a selected category and subcategory, get the products
-    if (this.selectedCategory && this.selectedSubcategory) {
-      this.getSubcategoryProducts();
-      // if there is a selected category, get the products
-    } else if (this.selectedCategory) {
-      this.getCategoryProducts();
-      // if there is no selected category, get the categories
+    if (this.selectedCategory) {
+      this.getProducts();
     } else {
       this.getCategories();
     }

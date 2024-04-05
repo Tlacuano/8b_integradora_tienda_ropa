@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.product;
 
+import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductBySearchQueryDTO;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.IImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -34,6 +35,15 @@ public class ProductService {
     @Transactional
     public Page<BeanProduct> getProductsByCategory(String category, Pageable page) {
         return iProduct.findAllByCategory(category, page);
+    }
+
+    @Transactional
+    public Page<BeanProduct> getProductsBySearchQuery(RequestProductBySearchQueryDTO payload, Pageable page) {
+        if (!payload.getSubcategory().isEmpty()) {
+            return iProduct.findAllByProductNameAndSubcategory(payload.getQuery(), payload.getCategory(), payload.getSubcategory(), page);
+        } else {
+            return iProduct.findAllByProductNameContainingIgnoreCase(payload.getQuery(), payload.getCategory(), page);
+        }
     }
 
     @Transactional
