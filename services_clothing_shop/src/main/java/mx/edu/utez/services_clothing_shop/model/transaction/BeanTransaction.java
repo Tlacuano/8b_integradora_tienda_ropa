@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.transaction_status.BeanTransactionStatus;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,8 +25,10 @@ public class BeanTransaction {
     @Column(name = "total")
     private double total;
 
-    @Column(name = "fk_id_order")
-    private UUID idOrder;
+    //relacion muchos a uno con la tabla de orders
+    @ManyToOne
+    @JoinColumn(name = "fk_id_order")
+    private BeanOrder order;
 
     //relacion muchos a uno con la tabla de status
     @ManyToOne

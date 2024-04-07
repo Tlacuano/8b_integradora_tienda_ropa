@@ -123,7 +123,7 @@
                   <h4>${{ total }}</h4>
                 </b-col>
                 <b-col cols="12">
-                  <b-button variant="dark" block>Finalizar compra</b-button>
+                  <b-button @click="createCheckoutSession" variant="dark" block>Finalizar compra</b-button>
                 </b-col>
               </b-row>
             </b-list-group-item>
@@ -168,6 +168,7 @@ import ShoppingCartService from "@/services/shopping-cart/ShoppingCartService";
 import Big from "big.js";
 import AddressesManagement from "@/services/adressess-management/AddressesManagement";
 import PaymentCardService from "@/services/payment-card/PaymentCardService";
+import TransactionService from "@/services/transaction/TransactionService";
 
 export default {
   name: 'TransactionDetails',
@@ -235,6 +236,18 @@ export default {
     censorCardNumber(cardNumber) {
       if (!cardNumber) return '';
       return cardNumber.replace(/\d(?=\d{4})/g, "*");
+    },
+
+    async createCheckoutSession() {
+      const payload = {
+        token: "pk_test_51J0JQvJ9",
+        amount: this.total,
+        description: "Compra de productos",
+      };
+      const response = await TransactionService.createCheckoutSession(payload);
+      if (response.status === 200) {
+        window.open(response.data.transactionUrl)
+      }
     },
 
     calculateTotal(products) {
