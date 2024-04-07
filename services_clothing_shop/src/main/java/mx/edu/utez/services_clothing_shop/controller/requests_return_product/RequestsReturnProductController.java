@@ -5,6 +5,7 @@ import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
 import mx.edu.utez.services_clothing_shop.service.requests_return_product.RequestsReturnProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,14 +28,14 @@ public class RequestsReturnProductController {
     @PostMapping("/get-by-id-request-return-product")
     public ResponseEntity<CustomResponse<RequestsReturnProductGetByIdResponseDTO>> getRequestReturnProductById(@RequestBody RequestsReturnProductGetByIdRequestDTO requestDTO) {
         UUID idRequest = requestDTO.getIdRequestReturnProduct();
-        RequestsReturnProductGetByIdResponseDTO requestData = requestsReturnProductService.getRequestReturnProductInfoById(idRequest);
-
-       if (requestData == null) {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Request not found", true, 404), HttpStatus.NOT_FOUND);
+        try {
+            RequestsReturnProductGetByIdResponseDTO requestData = requestsReturnProductService.getRequestReturnProductInfoById(idRequest);
+            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
+        } catch (CustomException e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 404), HttpStatus.NOT_FOUND);
         }
-
-        return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
     }
+
 
     @PostMapping("/post-request-return-product")
     public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequestReturnProduct(@RequestBody RequestsReturnProductPostDTO requestDTO) {
