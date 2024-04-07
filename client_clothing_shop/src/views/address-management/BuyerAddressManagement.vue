@@ -18,16 +18,19 @@
       <b-col>
         <b-row>
           <b-col v-for="address in addresses" :key="address.idAddress" cols="12" sm="6" lg="3">
-            <div class="address-card" :class="address.status.toLowerCase()">
-              <div class="address-info">
-                <div class="address-title"><strong>Dirección:</strong> {{ address.address }}</div>
+            <b-card class="address-card highlight-on-hover" :class="address.status.toLowerCase()">
+              <div class="d-flex flex-column flex-md-row justify-content-between">
+                <div class="address-info">
+                  <div><strong>Dirección:</strong> {{ address.address }}</div>
                 <div><strong>Colonia:</strong> {{ address.neighborhood }}</div>
                 <div><strong>Calle:</strong> {{ address.street }}</div>
                 <div><strong>Referencias:</strong> {{ address.referencesAddress }}</div>
                 <div><strong>Código Postal:</strong> {{ address.postalCode }}</div>
                 <div><strong>Estado:</strong> {{ address.state }}</div>
-              </div>
-              <div class="status-badge">{{ address.status }}</div>
+                </div>
+                <div class="mt-2 mt-md-0">
+                  <div class="status-badge">{{ address.status }}</div>
+                </div>
               <b-dropdown variant="link" no-caret class="card-dropdown">
                 <template #button-content>
                   <font-awesome-icon icon="ellipsis-v" class="text-dark" />
@@ -37,7 +40,8 @@
                 <b-dropdown-item @click="setAsDefault(address)">Marcar como predeterminada</b-dropdown-item>
                 <b-dropdown-item @click="openEditModal(address)">Modificar</b-dropdown-item>
               </b-dropdown>
-            </div>
+                </div>
+            </b-card>
           </b-col>
         </b-row>
       </b-col>
@@ -161,28 +165,33 @@ export default {
   border-radius: 8px;
   padding: 15px;
   position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: calc(100% - 1rem);
+  width: calc(105% - 1rem);
   box-sizing: border-box;
   margin-bottom: 20px;
 
 
 }
 
-.address-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
 
 .status-badge {
   font-size: 0.9em;
   font-weight: bold;
   padding: 4px 8px;
-  position: absolute;
-  bottom: 10px;
+  bottom: -5px;
   right: 10px;
   border-radius: 8px;
   color: #fff;
+  margin-right: 10px;
+  position: absolute;
+}
+
+@media (max-width: 767.98px) {
+  .address-card .status-badge {
+    position: static;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .habilitada .status-badge { background-color: #4CAF50; }
@@ -192,10 +201,6 @@ export default {
 
 
 
-.address-title {
-  font-size: 1.5em;
-  margin-bottom: 15px;
-}
 
 .card-dropdown {
   position: absolute;
@@ -227,6 +232,11 @@ export default {
   margin-right: 0;
 
 }
+
+.highlight-on-hover:hover {
+  background-color: #f0f0f0;
+}
+
 
 .tittle{
   margin-bottom: 50px;
