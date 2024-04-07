@@ -8,15 +8,15 @@ INSERT IGNORE INTO categories (id_category,
                                status)
 VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd6'),
         'Hombres',
-        'https://via.placeholder.com/300.png?text=hombres',
+        'https://via.placeholder.com/300x400.png?text=hombres',
         true),
        (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd7'),
         'Mujeres',
-        'https://via.placeholder.com/300.png?text=mujeres',
+        'https://via.placeholder.com/300x400.png?text=mujeres',
         true),
        (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bd8'),
         'Niños',
-        'https://via.placeholder.com/300.png?text=niños',
+        'https://via.placeholder.com/300x400.png?text=niños',
         true);
 
 -- SUBCATEGORIES
