@@ -33,11 +33,15 @@ public interface IRequestsSellProduct extends JpaRepository<BeanRequestSellProdu
     }
 
 
-    @Query("SELECT r.idRequestSellProduct as idRequestSellProduct, pg.image as image, p.productName as productName, r.status as status " +
+    @Query("SELECT r.idRequestSellProduct as idRequestSellProduct, " +
+            "(SELECT pg.image FROM BeanProductGallery pg WHERE pg.product = p AND pg.status.status = 'Principal') as image, " +
+            "p.productName as productName, " +
+            "r.status as status " +
             "FROM BeanRequestSellProduct r " +
-            "INNER JOIN r.product p " +
-            "INNER JOIN p.productGallery pg")
+            "JOIN r.product p")
     Page<RequestSellStatusProjection> findAllStatuses(Pageable pageable);
+
+
 
 
     @Query("SELECT r.idRequestSellProduct as idRequestSellProduct, u.email as userEmail, p.price as price, p.description as description, p.productName as productName, pg.image as image, p.idProduct as productId " +
