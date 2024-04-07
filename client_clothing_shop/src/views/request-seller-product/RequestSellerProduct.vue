@@ -9,7 +9,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input @input="getPageProductSalesRequests" v-model="search" id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -85,14 +85,30 @@ export default {
         elements: 0,
       },
       products:[],
-      selectProductId:null
+      selectProductId:null,
+      search: null
     };
   },
   methods: {
     async getPageProductSalesRequests() {
-      const response = await ProductSalesRequestsService.getPageProductSalesRequests(this.objectPagination)
-      this.objectPagination.elements = response.totalElements
-      this.products = response.content;
+      if(this.search ===null || this.search === ""){
+        this.showOverlay()
+        const response = await ProductSalesRequestsService.getPageProductSalesRequests(this.objectPagination)
+        this.showOverlay()
+        console.log(response)
+        this.objectPagination.elements = response.totalElements
+        this.products = response.content;
+      }else{
+        const payload = {
+          productName: this.search
+        }
+        const response = await ProductSalesRequestsService.getPageProductSalesRequestsByProductName(this.objectPagination, payload)
+        this.objectPagination.elements = response.totalElements
+        this.products = response.content;
+      }
+    },
+    showOverlay(){
+      this.$store.dispatch('changeStatusOverlay');
     },
     openModal(productId) {
       this.selectProductId = productId.idRequestSellProduct;

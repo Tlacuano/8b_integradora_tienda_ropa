@@ -9,6 +9,7 @@ const getPageProductSalesRequests = async (pagination) => {
         console.log(e)
     }
 }
+
 const getByIdProductSalesRequest = async (id) => {
     try {
         const response = await axios.doPost('/venta-ropa/api/requests-sell-product/get-by-id-request-sell-product', {idRequestSellProduct: id})
