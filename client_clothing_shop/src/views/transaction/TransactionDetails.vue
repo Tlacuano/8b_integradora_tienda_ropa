@@ -240,9 +240,9 @@ export default {
 
     async createCheckoutSession() {
       const payload = {
-        token: "pk_test_51J0JQvJ9",
-        amount: this.total,
-        description: "Compra de productos",
+        total: this.total,
+        description: `Orden de ${this.totalProducts} artículos`,
+        email: this.$store.getters.getEmail
       };
       const response = await TransactionService.createCheckoutSession(payload);
       if (response.status === 200) {

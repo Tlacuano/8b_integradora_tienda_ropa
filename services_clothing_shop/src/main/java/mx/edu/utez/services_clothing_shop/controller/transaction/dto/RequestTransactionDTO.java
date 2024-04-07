@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestTransactionDTO {
-    private String token;
-    private double amount;
+    private double total;
     private String description;
+    private String email;
 }
