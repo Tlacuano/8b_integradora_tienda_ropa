@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -58,9 +60,11 @@ public class RequestsReturnProductService {
     }
 
     public RequestsReturnProductGetByIdResponseDTO getRequestReturnProductInfoById(UUID idRequestReturnProduct) {
-        return IRequestsReturnProduct.findReturnProductInfoById(idRequestReturnProduct)
-                .map(this::convertToReturnProductInfoDTO)
-                .orElseThrow(() -> new CustomException("requestReturnProduct.id.notFound"));
+        List<IRequestsReturnProduct.ReturnProductInfoProjection> results = IRequestsReturnProduct.findReturnProductInfoById(idRequestReturnProduct);
+        if (results.isEmpty()) {
+            throw new CustomException("requestReturnProduct.id.notFound");
+        }
+        return convertToReturnProductInfoDTO(results.get(0));
     }
 
     private RequestsReturnProductGetByIdResponseDTO convertToReturnProductInfoDTO(IRequestsReturnProduct.ReturnProductInfoProjection request) {

@@ -10,6 +10,19 @@ const getPageRequestsReturnProductService = async (pagination, searchTerm = '') 
     }
 }
 
+const getRequestReturnProductByIdService = async (requestId) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/requests-return-product/get-by-id-request-return-product`,{
+            idRequestReturnProduct: requestId
+        });
+        return response.data;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+
 export default {
-    getPageRequestsReturnProductService
+    getPageRequestsReturnProductService,
+    getRequestReturnProductByIdService
 }

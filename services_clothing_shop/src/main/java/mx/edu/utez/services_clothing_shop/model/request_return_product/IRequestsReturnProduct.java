@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,5 +67,5 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
             "WHERE r.idRequestReturnProduct = :idRequestReturnProduct " +
             "AND rp.image IS NOT NULL " +
             "GROUP BY rp.image")
-    Optional<ReturnProductInfoProjection> findReturnProductInfoById(@Param("idRequestReturnProduct") UUID idRequestReturnProduct);
+    List<ReturnProductInfoProjection> findReturnProductInfoById(@Param("idRequestReturnProduct") UUID idRequestReturnProduct);
 }
