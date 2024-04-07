@@ -14,5 +14,4 @@ public class RequestPaymentCardByUserEmailDTO {
     @NotBlank(message = "user.email.notnull")
     @Email(message = "user.email.invalid")
     private String email;
-    private Pageable page;
 }
