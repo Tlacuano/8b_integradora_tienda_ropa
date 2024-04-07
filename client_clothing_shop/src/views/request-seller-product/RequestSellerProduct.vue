@@ -70,7 +70,7 @@
 </template>
 <script>
 import ProductSalesRequestsService from '@/services/request-seller-product/RequestSellerProduct';
-import swal from "sweetalert2";
+import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 export default {
   name:"RequestSellerProduct",
   components: {
@@ -101,23 +101,12 @@ export default {
       });
     },
 
-    handleRequestSuccess(response) {
-      swal.fire({
-        title: 'Petición exitosa',
-        text: 'La petición se completó con éxito',
-        icon: 'success',
-        button: 'Aceptar'
-      });
+    handleRequestSuccess() {
+      showSuccessToast("Solicitud actualizada")
       this.getPageProductSalesRequests();
-      // Realiza otras acciones necesarias con la respuesta recibida
     },
-    handleRequestError(error) {
-      swal.fire({
-        title: 'Error en la petición',
-        text: 'Hubo un error al procesar la petición: ' + error.message, // Puedes personalizar el mensaje de error según el tipo de error
-        icon: 'error',
-        button: 'Aceptar'
-      });
+    handleRequestError() {
+      showWarningToast("Error al actualizar la solicitud")
     },
     getVariant(status) {
       switch (status) {
