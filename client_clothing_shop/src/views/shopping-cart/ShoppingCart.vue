@@ -13,9 +13,9 @@
             <b-row v-if="cart.length >0">
               <b-col class="mb-3" cols="12" v-for="product in cart" :id="product.idShoppingCart">
                 <b-card
-                  no-body
-                  draggable="true"
-                  @dragstart="dragStar($event, product)"
+                    no-body
+                    draggable="true"
+                    @dragstart="dragStar($event, product)"
                 >
                   <b-row>
                     <b-col cols="4 my-auto">
@@ -25,24 +25,24 @@
                       <b-row class="mt-3">
                         <b-col>
                           <h5 class="mb-1 d-none d-lg-block">
-                            {{product.product.productName}}
+                            {{ product.product.productName }}
                           </h5>
                           <b class="d-lg-none">
-                            {{product.product.productName}}
+                            {{ product.product.productName }}
                           </b>
                         </b-col>
                       </b-row>
                       <b-row>
                         <b-col>
                           <div class="text-black-50 text-truncate">
-                            {{product.product.category}}
+                            {{ product.product.category }}
                           </div>
                         </b-col>
                       </b-row>
                       <b-row class="mt-3 d-none d-lg-block">
                         <b-col cols="12">
                           <div class="text-truncate text-secondary small">
-                            {{product.product.description}}
+                            {{ product.product.description }}
                           </div>
                           <hr/>
                         </b-col>
@@ -52,9 +52,11 @@
                           <b-row>
                             <b-col cols="auto my-auto">
                               <span class="pr-4">Cantidad</span>
-                              <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable" @click="decreaseAmount(product)"/>
-                              <span class="mx-2">{{product.amount}}</span>
-                              <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"  @click="increaseAmount(product)"/>
+                              <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
+                                                 @click="decreaseAmount(product)"/>
+                              <span class="mx-2">{{ product.amount }}</span>
+                              <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
+                                                 @click="increaseAmount(product)"/>
                             </b-col>
                             <b-col>
                               <b-row>
@@ -72,7 +74,7 @@
                                   <h5 class="d-none d-lg-block">Total</h5>
                                 </b-col>
                                 <b-col class="text-right">
-                                  <span><b>${{calculateProductPrice(product)}}</b></span>
+                                  <span><b>${{ calculateProductPrice(product) }}</b></span>
                                 </b-col>
                               </b-row>
                             </b-col>
@@ -105,10 +107,10 @@
                   <b-list-group-item>
                     <b-row class="mt-3">
                       <b-col>
-                        <span>Productos ({{products}})</span>
+                        <span>Productos ({{ products }})</span>
                       </b-col>
                       <b-col class="text-right">
-                        <span>${{total}}</span>
+                        <span>${{ total }}</span>
                       </b-col>
                     </b-row>
                     <b-row class="mt-1 mb-3">
@@ -125,12 +127,12 @@
                         <h5>Total</h5>
                       </b-col>
                       <b-col class="text-right">
-                        <span><b>${{total}}</b></span>
+                        <span><b>${{ total }}</b></span>
                       </b-col>
                     </b-row>
                     <b-row class="mt-3">
                       <b-col>
-                        <b-button class="mt-3 main-button">Continuar compra</b-button>
+                        <b-button @click="finishOrder" class="mt-3 main-button">Continuar compra</b-button>
                       </b-col>
                     </b-row>
                   </b-list-group-item>
@@ -140,10 +142,10 @@
             <b-row class="mt-2">
               <b-col>
                 <b-card
-                  class="text-center"
-                  @drop="drop($event)"
-                  @dragover.prevent
-                  @dragenter.prevent
+                    class="text-center"
+                    @drop="drop($event)"
+                    @dragover.prevent
+                    @dragenter.prevent
                 >
                   <span class="text-secondary">Arrastra aqui para eliminar del carrito</span>
                 </b-card>
@@ -167,8 +169,8 @@ export default {
   data() {
     return {
       cart: [],
-      products:null,
-      total:null
+      products: null,
+      total: null
     };
   },
   methods: {
@@ -181,11 +183,10 @@ export default {
       this.showOverlay()
       this.cart = response.data;
       this.products = response.data.reduce((acumulado, producto) => acumulado + producto.amount, 0);
-      console.log(this.cart)
       this.total = this.calcTotal(response.data);
     },
 
-    async increaseAmount(product){
+    async increaseAmount(product) {
       const payload = {
         idShoppingCart: product.idShoppingCart,
         amount: product.amount + 1,
@@ -194,13 +195,13 @@ export default {
       this.showOverlay()
       const response = await ShoppingCartService.putShoppingCartService(payload);
       this.showOverlay()
-      if(response){
+      if (response) {
         this.getCart();
       }
     },
 
-    async decreaseAmount(product){
-      if(product.amount > 1){
+    async decreaseAmount(product) {
+      if (product.amount > 1) {
         const payload = {
           idShoppingCart: product.idShoppingCart,
           amount: product.amount - 1,
@@ -208,20 +209,20 @@ export default {
         this.showOverlay()
         const response = await ShoppingCartService.putShoppingCartService(payload);
         this.showOverlay()
-        if(response){
+        if (response) {
           await this.getCart();
         }
-      }else{
+      } else {
         await this.deleteProductInCart(product.idShoppingCart)
       }
     },
 
-    getProductDetails(product){
+    getProductDetails(product) {
       const encodedId = codeCrypto(product.product.idProduct);
       this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
     },
 
-    async deleteProductInCart(id){
+    async deleteProductInCart(id) {
       Vue.swal({
         title: '¿Estás seguro?',
         text: "¿Deseas eliminar el producto del carrito?",
@@ -238,22 +239,24 @@ export default {
           }
           const response = await ShoppingCartService.deleteShoppingCartService(payload);
           this.showOverlay()
-          if(response.status === 200){
+          if (response.status === 200) {
             await this.getCart();
           }
         }
       })
     },
 
+    finishOrder() {
+      this.$router.push({name: 'TransactionDetails'});
+    },
 
-
-    dragStar(event, item){
+    dragStar(event, item) {
       event.dataTransfer.dropEffect = "move";
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setData("itemID", item.idShoppingCart);
     },
 
-    async drop(event){
+    async drop(event) {
       event.preventDefault();
       const id = event.dataTransfer.getData("itemID");
 
@@ -261,15 +264,16 @@ export default {
 
     },
 
-
-    showOverlay(){
+    showOverlay() {
       this.$store.dispatch('changeStatusOverlay');
     },
+
     findMainImage(gallery) {
       const mainImage = gallery.find(image => image.status.status === 'Principal');
       return mainImage ? mainImage.image : 'url_de_imagen_por_defecto_si_no_hay_principal';
     },
-    calcTotal(products){
+
+    calcTotal(products) {
       let total = new Big(0);
       products.forEach(producto => {
         const price = new Big(producto.product.price);
@@ -278,12 +282,14 @@ export default {
       });
       return total
     },
+
     calculateProductPrice(product) {
       const price = new Big(product.product.price);
       const quantity = new Big(product.amount);
       return price.times(quantity);
     }
   },
+
   mounted() {
     this.getCart();
   }
@@ -291,7 +297,7 @@ export default {
 </script>
 
 <style>
-.container-products{
+.container-products {
   max-height: calc(100vh - 175px);
   overflow-y: auto;
   overflow-x: hidden;

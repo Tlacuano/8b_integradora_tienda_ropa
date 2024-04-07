@@ -80,7 +80,7 @@ const router = new VueRouter({
                     name: "UserProductsSubcategory",
                     component: () => import("../views/product/GuestProducts.vue"),
                     props: true,
-                    meta: { title: "Klein & IversenK&I | Tienda" },
+                    meta: { title: "Klein & Iversen | Tienda" },
                 },
                 {
                     path: "product-details/:id",
@@ -174,6 +174,12 @@ const router = new VueRouter({
                     name: "ADMINOrderManagement",
                     component: () => import("../views/order/OrderManagement.vue"),
                     meta: { requiresAuth: true, roles: ["ADMIN", "SUPERADMIN"] },
+                },
+                {
+                    path: "transaction",
+                    name: "TransactionDetails",
+                    component: () => import("../views/transaction/TransactionDetails.vue"),
+                    meta: { title: "Klein & Iversen | Finaliza tu compra", requiresAuth: true, roles: ["BUYER"] },
                 }
             ]
         },

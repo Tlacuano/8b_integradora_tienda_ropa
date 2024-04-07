@@ -18,7 +18,7 @@ public interface IAddress extends JpaRepository<BeanAddress, UUID> {
 
     Optional<BeanAddress> findByIdAddress(UUID idAddress);
 
-    @Query("SELECT a FROM BeanAddress a WHERE a.person.user.email = :email")
+    @Query("SELECT a FROM BeanAddress a LEFT JOIN a.status s WHERE a.person.user.email = :email ORDER BY CASE WHEN s.status = 'Predeterminada' THEN 0 ELSE 1 END")
     List<BeanAddress> findAllByUserEmail(@Param("email") String email);
 
     @Query("SELECT p FROM BeanPerson p WHERE p.user.email = :email")

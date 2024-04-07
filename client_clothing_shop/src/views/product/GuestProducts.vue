@@ -104,7 +104,7 @@ export default {
       categories: [],
       objectPagination: {
         page: 1,
-        size: 1,
+        size: 32,
         elements: 0
       },
       searchQuery: ""
