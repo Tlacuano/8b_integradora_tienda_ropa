@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="rejectionReason" ok-only hide-header hide-footer  >
+  <b-modal id="rejectionReason" ok-only hide-header hide-footer centered >
     <b-container>
       <b-row>
         <b-col class="text-right">
