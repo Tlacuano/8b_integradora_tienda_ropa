@@ -40,37 +40,42 @@ public class ProductController {
     }
 
     @PostMapping("/get-by-category")
-    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload) {
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload, Pageable page) {
         try {
-            List<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory());
-            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
-            for (BeanProduct product : beanProductList) {
-                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
-            }
-            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+            Page<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory(), page);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por categoria encontrados", false, 200));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por categoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/get-by-subcategory")
-    public ResponseEntity<CustomResponse<List<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload) {
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload, Pageable page) {
         try {
-            List<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory());
-            List<ResponseProductDTO> responseProductDTOList = new ArrayList<>();
-            for (BeanProduct product : beanProductList) {
-                responseProductDTOList.add(ResponseProductDTO.toProductDTO(product));
-            }
-            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+            Page<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory(), page);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por subcategoria encontrados", false, 200));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping("/get-products-by-user")
-    public ResponseEntity<Object> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO) {
+    @PostMapping("/get-by-search-query")
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsBySearchQuery(@Valid @RequestBody RequestProductBySearchQueryDTO payload, Pageable page) {
         try {
-            Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), requestDTO.getPage());
+            Page<BeanProduct> beanProductList = productService.getProductsBySearchQuery(payload, page);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por búsqueda encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por búsqueda: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/get-products-by-user")
+    public ResponseEntity<Object> getProductsByUserEmail(@Valid @RequestBody RequestProductByUserEmailDTO requestDTO, Pageable page) {
+        try {
+            Page<BeanProduct> beanProductPage = productService.getProductsByUserEmail(requestDTO.getEmail(), page);
             return getCustomResponseResponseEntity(beanProductPage);
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -131,9 +136,7 @@ public class ProductController {
     }
 
     private ResponseEntity<Object> getCustomResponseResponseEntity(Page<BeanProduct> beanProductPage) {
-        return beanProductPage != null ?
-                ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));
+        return beanProductPage != null ? ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));
     }
 
     private void parseToBeanProduct(BeanProduct newProduct, String productName, String description, double price, int amount, UUID subcategory2) {

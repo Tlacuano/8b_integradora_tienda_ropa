@@ -10,13 +10,11 @@ public class RequestProductByUserEmailDTO {
     @NotBlank(message = "user.email.notnull")
     @Email(message = "user.email.invalid")
     private String email;
-    private Pageable page;
 
     public RequestProductByUserEmailDTO() {
     }
 
-    public RequestProductByUserEmailDTO(String email, Pageable page) {
+    public RequestProductByUserEmailDTO(String email) {
         this.email = email;
-        this.page = page;
     }
 }

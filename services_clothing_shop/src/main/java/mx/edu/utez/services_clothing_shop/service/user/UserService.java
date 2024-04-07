@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional
 @Service
 public class UserService {
@@ -262,6 +264,30 @@ public class UserService {
                 "Cambios en tu cuenta",
                 "Tu contraseña ha sido cambiada exitosamente",
                 "");
+        return true;
+    }
+
+    @Transactional
+    public boolean deleteAccountAdmin(RequestRestorePasswordDTO payload) {
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+        if(user == null){
+            throw new CustomException("user.email.not.found");
+        }
+
+        List<String> roles = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();
+
+        if(roles.contains("ROLE_SUPERADMIN")){
+            throw new CustomException("user.admin.not.delete");
+        }
+
+
+        userRepository.deleteAccount(payload.getEmail());
+
+        emailService.sendEmail(user.getEmail(),
+                "Cuenta eliminada",
+                "Tu cuenta ha sido eliminada por un administrador",
+                payload.getReazon(),
+                "Atentamente, "+payload.getAdmin());
         return true;
     }
 }

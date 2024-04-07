@@ -2,12 +2,14 @@
   <div class="interface">
     <div v-if="!selectedCategory">
       <b-row class="full-page" no-gutters>
-        <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="p-4">
+        <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="">
           <b-card
               :img-src="category.image"
-              class="mb-2 selectable zoom-on-hover category-card"
+              class="mb-2 selectable zoom-on-hover"
               :title="category.category"
+              header-class="text-center"
               @click="selectCategory(category.category)"
+              overlay
           >
           </b-card>
         </b-col>
@@ -18,7 +20,8 @@
         <b-col cols="12" lg="4">
           <b-form-group>
             <div class="position-relative">
-              <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+              <b-form-input @keyup.enter="getProducts()" v-model="searchQuery" id="search" type="text"
+                            placeholder="Buscar..." class="pr-5"></b-form-input>
               <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
             </div>
           </b-form-group>
@@ -64,6 +67,16 @@
           <h3>No existen productos con los datos que especificaste</h3>
         </b-col>
       </b-row>
+      <b-row>
+        <b-col>
+          <b-pagination
+              v-model="objectPagination.page"
+              :total-rows="objectPagination.elements"
+              :per-page="objectPagination.size"
+              aria-controls="my-table"
+          ></b-pagination>
+        </b-col>
+      </b-row>
     </div>
 
     <LoginModal/>
@@ -88,7 +101,13 @@ export default {
       selectedCategory: this.$route.params.category || "",
       selectedSubcategory: this.$route.params.subcategory || "",
       products: [],
-      categories: []
+      categories: [],
+      objectPagination: {
+        page: 1,
+        size: 32,
+        elements: 0
+      },
+      searchQuery: ""
     };
   },
 
@@ -106,35 +125,32 @@ export default {
       this.showOverlay();
     },
 
-    async getCategoryProducts() {
-      if (!this.selectedCategory) {
-        await this.getCategories();
-        return;
-      }
-      const payload = {
-        category: this.selectedCategory
-      };
+    async getProducts() {
       this.showOverlay();
-      const response = await ProductService.getProductsByCategory(payload);
+      let response;
+      let payload;
+      if (this.searchQuery) {
+        payload = {
+          query: this.searchQuery,
+          category: this.selectedCategory,
+          subcategory: this.selectedSubcategory
+        };
+        response = await ProductService.getProductsByQuery(payload, this.objectPagination);
+      } else if (this.selectedSubcategory) {
+        payload = {
+          category: this.selectedCategory,
+          subcategory: this.selectedSubcategory
+        };
+        response = await ProductService.getProductsBySubcategory(payload, this.objectPagination);
+      } else {
+        payload = {
+          category: this.selectedCategory,
+        };
+        response = await ProductService.getProductsByCategory(payload, this.objectPagination);
+      }
       if (response.status === 200) {
-        this.products = response.data;
-      }
-      this.showOverlay();
-    },
-
-    async getSubcategoryProducts() {
-      if (!this.selectedCategory || !this.selectedSubcategory) {
-        await this.getCategoryProducts();
-        return;
-      }
-      const payload = {
-        category: this.selectedCategory,
-        subcategory: this.selectedSubcategory
-      };
-      this.showOverlay();
-      const response = await ProductService.getProductsBySubcategory(payload);
-      if (response.status === 200) {
-        this.products = response.data;
+        this.products = response.data.content;
+        this.objectPagination.elements = response.data.totalElements;
       }
       this.showOverlay();
     },
@@ -157,30 +173,50 @@ export default {
     selectCategory(category) {
       this.selectedCategory = category;
       this.$router.push({name: 'UserProductsCategory', params: {category: category}});
-    }
+    },
+
+    resetFilters() {
+      this.selectedSubcategory = "";
+      this.searchQuery = "";
+    },
+
+    updateCategory(newCategory) {
+      this.selectedCategory = newCategory || "";
+      this.resetFilters();
+      if (newCategory) {
+        this.getProducts();
+      } else {
+        this.getCategories();
+      }
+    },
+
+    updateSubcategory(newSubcategory) {
+      this.selectedSubcategory = newSubcategory || "";
+      this.searchQuery = "";
+      this.getProducts();
+    },
   },
 
   watch: {
     '$route.params.category'(newCategory) {
-      this.selectedCategory = newCategory;
-      this.selectedSubcategory = "";
-      this.getCategoryProducts();
+      this.updateCategory(newCategory);
     },
 
     '$route.params.subcategory'(newSubcategory) {
-      this.selectedSubcategory = newSubcategory;
-      this.getSubcategoryProducts();
+      this.updateSubcategory(newSubcategory);
+    },
+
+    objectPagination: {
+      handler() {
+        this.getProducts();
+      },
+      deep: true
     }
   },
 
   created() {
-    // if there is a selected category and subcategory, get the products
-    if (this.selectedCategory && this.selectedSubcategory) {
-      this.getSubcategoryProducts();
-      // if there is a selected category, get the products
-    } else if (this.selectedCategory) {
-      this.getCategoryProducts();
-      // if there is no selected category, get the categories
+    if (this.selectedCategory) {
+      this.getProducts();
     } else {
       this.getCategories();
     }
@@ -193,10 +229,28 @@ export default {
   padding-bottom: calc(100px);
 }
 
+.category-card {
+  height: 100%;
+}
+
+.full-page {
+  height: calc(100vh - 100px);
+}
+
 .wishlist-btn {
   background-color: transparent;
   border: none;
   font-size: 1.2rem;
+}
+
+.card-title {
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.card-body {
+  height: 100%;
 }
 
 .icon-container {

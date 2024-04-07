@@ -15,8 +15,9 @@
             {{item.title}}
           </b>
         </b-nav-item>
+
       </b-nav>
-      <template #footer>
+      <template #footer v-if="$store.getters.isLoggedIn">
         <b-button class="main-button" @click="logout">
           Cerrar sesión
         </b-button>
@@ -29,11 +30,15 @@
 export default {
   name: "SidebarSeller",
   components: {
-    ProfileComponent : () => import('@/components/sidebars/component/ProfileComponent.vue')
+    ProfileComponent : () => import('@/components/sidebars/component/ProfileComponent.vue'),
+    ProductManagement : () => import('@/views/product-management/ProductManagement.vue')
+
   },
   data() {
     return {
-      items:[]
+      items:[
+        {id:1, title:"Gestión de Productos", icon:"fa-solid fa-box", to:"ProductManagement"},
+      ]
     };
   },
   methods: {

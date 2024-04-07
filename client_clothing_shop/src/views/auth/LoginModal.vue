@@ -92,7 +92,7 @@ export default {
           this.showOverlay();
           const response = await AuthService.loginService(payload);
 
-          if (response.status === 200) {
+          if (response) {
             this.$bvModal.hide('login-modal');
 
             this.$store.dispatch('login', {

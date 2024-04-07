@@ -33,6 +33,7 @@ public class BeanOrderHasProducts {
     //relacion muchos a uno con la tabla de orders
     @ManyToOne
     @JoinColumn(name = "fk_id_order")
+    @JsonIgnore
     private BeanOrder order;
 
     //relacion muchos a uno con la tabla de products
@@ -52,5 +53,8 @@ public class BeanOrderHasProducts {
 
     //relacion uno a muchos con la tabla de requests_return_product
     @OneToMany(mappedBy = "orderHasProduct")
+    @JsonIgnore
     private List<BeanRequestReturnProduct> requestReturnProduct;
+
+
 }

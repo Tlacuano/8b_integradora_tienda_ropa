@@ -12,4 +12,6 @@ public class RequestRestorePasswordDTO {
     private String password;
     private String oldPassword;
     private String code;
+    private String reazon;
+    private String admin;
 }

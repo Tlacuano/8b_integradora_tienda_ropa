@@ -92,7 +92,7 @@ export default {
         this.$bvModal.show("requestReturnProductModal");
       });
     },
-    handleRequestSuccess(response) {
+    handleRequestSuccess() {
       swal.fire({
         title: 'Petición exitosa',
         text: 'La petición se completó con éxito',
@@ -101,12 +101,12 @@ export default {
       });
       this.getPageRequestReturnProduct(this.searchQuery);
     },
-    handleRequestError(error) {
+    handleRequestError() {
       swal.fire({
-        title: 'Error',
-        text: 'Ocurrió un error al procesar la petición',
+        button: 'Aceptar',
         icon: 'error',
-        button: 'Aceptar'
+        text: 'Ocurrió un error al procesar la petición',
+        title: 'Error'
       });
     },
     getVariant(status) {
@@ -132,9 +132,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container-requests {
-  height: 65vh !important;
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 .status {
@@ -155,6 +155,7 @@ export default {
 .request-order-number {
   font-size: 1.2em;
   font-weight: bold;
+  margin-right: 10px;
 }
 
 .status-badge {
@@ -162,5 +163,7 @@ export default {
   font-weight: normal;
   padding: 5px 10px;
   border-radius: 8px;
+  margin-right: 10px;
+
 }
 </style>
