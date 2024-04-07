@@ -193,11 +193,8 @@ export default {
     updateSubcategory(newSubcategory) {
       this.selectedSubcategory = newSubcategory || "";
       this.searchQuery = "";
-      if (newSubcategory) {
-        this.getProducts();
-      } else {
-        this.getCategories();
-      }
+      this.resetFilters();
+      this.getProducts();
     },
   },
 
