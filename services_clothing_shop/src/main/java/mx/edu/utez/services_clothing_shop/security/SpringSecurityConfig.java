@@ -183,10 +183,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/images/upload-image").hasAnyRole(BUYER, SELLER, ADMIN, SUPERADMIN)
 
                                 //Modulo payment-cards
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/payment-cards/get-payment-cards").permitAll()
-                                .requestMatchers(HttpMethod.GET, "venta-ropa/api/payment-cards/get-payment-cards/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/payment-cards/post-payment-cards").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/payment-cards/put-payment-cards").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/payment-cards/get-payment-card-by-user-email").hasAnyRole(BUYER)
 
                                 //Modulo orders
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/orders/get-orders").permitAll()

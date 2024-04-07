@@ -9,6 +9,7 @@ import mx.edu.utez.services_clothing_shop.service.payment_card.PaymentCardServic
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("venta-ropa/api/payment-card")
+@RequestMapping("venta-ropa/api/payment-cards")
 @CrossOrigin(origins = "*")
 public class PaymentCardController {
     private final PaymentCardService paymentCardService;
@@ -26,10 +27,14 @@ public class PaymentCardController {
     }
 
     @PostMapping("/get-payment-card-by-user-email")
-    public ResponseEntity<CustomResponse<Page<ResponsePaymentCardDTO>>> getPaymentCardByUserEmail(@Valid @RequestBody RequestPaymentCardByUserEmailDTO requestBody) {
-        Page<BeanPaymentCard> paymentCards = paymentCardService.getPaymentCardByUserEmail(requestBody.getEmail(), requestBody.getPage());
-        Page<ResponsePaymentCardDTO> dtoPage = paymentCards.map(paymentCard -> new ResponsePaymentCardDTO().toPaymentCardDTO(paymentCard));
-        return new ResponseEntity<>(new CustomResponse<>(dtoPage, "success", false, 200), HttpStatus.OK);
+    public ResponseEntity<CustomResponse<Page<ResponsePaymentCardDTO>>> getPaymentCardByUserEmail(@Valid @RequestBody RequestPaymentCardByUserEmailDTO requestBody, Pageable page) {
+        try {
+            Page<BeanPaymentCard> paymentCardPage = paymentCardService.getPaymentCardByUserEmail(requestBody.getEmail(), page);
+            Page<ResponsePaymentCardDTO> responsePaymentCardPage = paymentCardPage.map(ResponsePaymentCardDTO::toPaymentCardDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responsePaymentCardPage, "Tarjetas de crédito encontradas", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/post-payment-card")

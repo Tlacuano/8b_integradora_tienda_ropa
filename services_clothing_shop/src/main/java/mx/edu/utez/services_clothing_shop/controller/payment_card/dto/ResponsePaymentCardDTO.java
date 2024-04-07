@@ -15,7 +15,7 @@ public class ResponsePaymentCardDTO {
     private String expirationDate;
     private String status;
 
-    public ResponsePaymentCardDTO toPaymentCardDTO(BeanPaymentCard paymentCard) {
+    public static ResponsePaymentCardDTO toPaymentCardDTO(BeanPaymentCard paymentCard) {
         ResponsePaymentCardDTO dto = new ResponsePaymentCardDTO();
         dto.setIdPaymentCard(paymentCard.getIdPaymentCard());
         dto.setCardholderName(paymentCard.getCardholderName());
