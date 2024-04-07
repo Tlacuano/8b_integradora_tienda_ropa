@@ -62,6 +62,13 @@ const router = new VueRouter({
                     component: () => import("../views/shopping-cart/ShoppingCart.vue"),
                     meta: { requiresAuth: true, roles: ["BUYER"] },
                 },
+                
+                {
+                    name: "wish-list",
+                    path: "wish-list",
+                    component: () => import("../views/wish-list/WishList.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
+                },
                 {
                     path: "store/:category",
                     name: "UserProductsCategory",
