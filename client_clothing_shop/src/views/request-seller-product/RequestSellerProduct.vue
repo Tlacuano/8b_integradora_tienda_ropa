@@ -45,6 +45,11 @@
                   </b-row>
                   <b-row>
                     <b-col>
+                      <div class="text-truncate  small"><b>Usuario:</b> {{ product.email }}</div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
                       <b-badge :variant="getVariant(product.status.status)" class="text-ellipsis text-white small">{{ product.status.status }}</b-badge>
                     </b-col>
                   </b-row>
