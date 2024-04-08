@@ -14,11 +14,7 @@ public interface IProduct extends JpaRepository<BeanProduct, UUID> {
 
     BeanProduct findByIdProduct(UUID idProduct);
 
-    boolean existsByIdProduct(UUID idProduct);
-
-    boolean deleteByIdProduct(UUID idProduct);
-
-    boolean existsByProductName(String productName);
+    void deleteByIdProduct(UUID idProduct);
 
     @Query("SELECT p FROM BeanProduct p JOIN p.requestSellProduct s WHERE p.subcategory.category.category = :category AND p.status = true AND p.amount > 0 AND s.status.status = 'Aprobado'")
     Page<BeanProduct> findAllByCategory(String category, Pageable page);

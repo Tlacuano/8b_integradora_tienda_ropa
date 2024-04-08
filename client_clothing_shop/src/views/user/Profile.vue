@@ -201,7 +201,7 @@
 
         <b-row class="mt-5">
           <b-col class="text-center">
-            <b-button v-if="user.buyer && !user.seller" class="main-button" style="width: 60%">
+            <b-button v-if="user.buyer && !user.seller" class="main-button" @click="openFormBecomeSeller" style="width: 60%">
               Comenzar a vender!!
             </b-button>
           </b-col>
@@ -213,6 +213,7 @@
     <PutPersonalInformationProfileModal/>
     <PutPictureProfileModal/>
     <PutUserInformationModal/>
+    <FormBecomeSellerModal />
   </section>
 </template>
 
@@ -225,6 +226,7 @@ export default {
     PutPersonalInformationProfileModal: () => import("@/views/user/PutPersonalInformationProfileModal.vue"),
     PutPictureProfileModal: () => import("@/views/user/PutPictureProfileModal.vue"),
     PutUserInformationModal: () => import("@/views/user/PutUserInformationModal.vue"),
+    FormBecomeSellerModal: () => import("@/views/user/FormBecomeSellerModal.vue"),
   },
   data() {
     return {
@@ -256,6 +258,9 @@ export default {
     redirectToAddresses() {
       this.$router.push({ name: 'BuyerAddressManagement' });
     },
+    openFormBecomeSeller() {
+      this.$bvModal.show('formBecomeSellerModal');
+    }
   },
   mounted() {
     this.getProfile();

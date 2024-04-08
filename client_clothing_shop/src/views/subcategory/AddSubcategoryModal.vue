@@ -66,7 +66,7 @@
         </b-col>
       </b-row>
       <b-row class="justify-content-center">
-        <b-button variant="dark" @click="addSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem">Registrar</b-button>
+        <b-button variant="dark" @click="addSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem;">Registrar</b-button>
         <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
       </b-row>
     </b-modal>
