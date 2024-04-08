@@ -1,6 +1,6 @@
 <template>
   <section>
-    <b-modal id="editSubcategoryModal" hide-header hide-footer centered size="lg">
+    <b-modal id="editSubcategoryModal" hide-header hide-footer centered size="lg" @show="chargeData">
       <b-row>
         <b-col class="text-center">
           <h3>Editar subcategoría</h3>
@@ -50,7 +50,6 @@
                   :options="categories"
                   value-field="idCategory"
                   text-field="category"
-                  :placeholder="subcategory.category"
                   name="category"
                   v-validate="'required'"
               />
@@ -166,6 +165,16 @@ export default Vue.extend({
     clean() {
       this.newImage = null;
       this.imgPreview = null;
+    },
+
+    chargeData() {
+      this.form.subcategory = this.subcategory.subcategory;
+      for (let i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].category === this.subcategory.category) {
+          this.form.category = this.categories[i].idCategory;
+          break;
+        }
+      }
     }
   },
   mounted() {

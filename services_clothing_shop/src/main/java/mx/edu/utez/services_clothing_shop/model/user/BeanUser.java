@@ -10,6 +10,7 @@ import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
+import mx.edu.utez.services_clothing_shop.model.transaction.BeanTransaction;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
@@ -57,7 +58,7 @@ public class BeanUser {
     private BeanPerson person;
 
     //relacion muchos a uno con la tabla status
-        @Column(name = "status", columnDefinition = "TINYINT(1)")
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
     private boolean status;
 
     //relacion uno a muchos con la tabla de products
@@ -76,9 +77,9 @@ public class BeanUser {
     private List<BeanShoppingCart> shoppingCart;
 
     //relacion uno a muchos con la tabla de request data change
-        @OneToMany(mappedBy = "user")
-        @JsonIgnore
-        private List<BeanRequestDataChange> requestDataChange;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<BeanRequestDataChange> requestDataChange;
 
     //relacion uno a muchos con la tabla de request becom seller
     @OneToMany(mappedBy = "user")
@@ -88,4 +89,9 @@ public class BeanUser {
     //relacion uno a muchos con la tabla de payment_cards
     @OneToMany(mappedBy = "user")
     private List<BeanPaymentCard> paymentCards;
+
+    //relacion uno a muchos con la tabla de transactions
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<BeanTransaction> transactions;
 }

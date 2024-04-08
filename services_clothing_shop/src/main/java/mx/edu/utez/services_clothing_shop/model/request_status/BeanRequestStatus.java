@@ -9,6 +9,7 @@ import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanReques
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "request_status")
+@EntityListeners(AuditEntityListener.class)
 public class BeanRequestStatus {
     @Id
     @GeneratedValue(generator = "UUID")

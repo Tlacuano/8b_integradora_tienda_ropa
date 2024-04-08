@@ -444,7 +444,8 @@ INSERT IGNORE INTO sellers_information
  image_identification,
  privacy_policy_agreement,
  secondary_phone_number,
- tax_identification_number)
+ tax_identification_number,
+       block_sell)
 VALUES
     -- SELLER 1
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
@@ -452,14 +453,16 @@ VALUES
      'https://via.placeholder.com/500x300.png?text=identificacion1',
      true,
      '1234567891',
-     'IRMUEA680101HDFLNS09'),
+     'IRMUEA680101HDFLNS09',
+       false),
     -- SELLER 2
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
      'MUEA960501HDFLNS09',
      'https://via.placeholder.com/500x300.png?text=identificacion2',
      true,
      '1234567892',
-     'IRMUEA960501HDFLNS09');
+     'IRMUEA960501HDFLNS09',
+       false);
 
 -- CARD STATUS
 INSERT IGNORE INTO card_status
@@ -1132,3 +1135,13 @@ VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c64'),
        (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c66'),
         'https://via.placeholder.com/500.png?text=devolucion3',
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c63'));
+
+INSERT IGNORE INTO transaction_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c67'),
+        'Pendiente'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c68'),
+        'Pagado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c69'),
+        'Cancelado');

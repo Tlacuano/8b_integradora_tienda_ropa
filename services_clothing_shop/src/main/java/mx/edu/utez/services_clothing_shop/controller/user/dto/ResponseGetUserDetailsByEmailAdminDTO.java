@@ -28,6 +28,7 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
     private String secondaryPhoneNumber;
     private String imageIdentification;
     private String curp;
+    private boolean blockSell;
 
     private List<String> roles;
 
@@ -61,6 +62,7 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
         UserDetails.setSecondaryPhoneNumber(user.getPerson().getSellerInformation().getSecondaryPhoneNumber());
         UserDetails.setImageIdentification(user.getPerson().getSellerInformation().getImageIdentification());
         UserDetails.setCurp(user.getPerson().getSellerInformation().getCurp());
+        UserDetails.setBlockSell(user.getPerson().getSellerInformation().isBlockSell());
 
 
         return UserDetails;

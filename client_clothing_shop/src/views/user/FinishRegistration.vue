@@ -52,6 +52,17 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
+
+                <b-row class="mb-4">
+                  <b-col>
+                    <span v-if="!timerActive" class="text-secondary">¿No recibiste el código? </span>
+                    <b-link v-if="!timerActive" @click.prevent="resentEmailCode(true)" class="pr-3">
+                      <span class="text-secondary small underline">Reenviar código</span>
+                    </b-link>
+                    <span v-else class="text-secondary">{{ Math.floor(timerSeconds / 60) }}:{{ ('0' + timerSeconds % 60).slice(-2) }}... Espera antes de poder volver a mandar el código</span>
+                  </b-col>
+                </b-row>
+
                 <b-row class="mt-4">
                   <b-col class="text-right">
                     <b-button class="small-main-button px-4" @click="validateCode()">
@@ -219,6 +230,17 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
+
+                <b-row class="mb-4">
+                  <b-col>
+                    <span v-if="!timerActive" class="text-secondary">¿No recibiste el código? </span>
+                    <b-link v-if="!timerActive" @click.prevent="resendPhoneCode(true)" class="pr-3">
+                      <span class="text-secondary small underline">Reenviar código</span>
+                    </b-link>
+                    <span v-else class="text-secondary">{{ Math.floor(timerSeconds / 60) }}:{{ ('0' + timerSeconds % 60).slice(-2) }}... Espera antes de poder volver a mandar el código</span>
+                  </b-col>
+                </b-row>
+
                 <b-row class="mt-4">
                   <b-col class="text-right
                   ">
@@ -268,14 +290,19 @@ export default {
           gender: '',
           privacyPolicy: false,
         },
-        code: ''
+        code: '',
       },
+
+      timerActive: false,
+      timerSeconds: 60,
     }
   },
   methods: {
 
     async validateCode(){
-      this.$validator.validate('codeEmail').then(async (result) => {
+      Promise.all([
+        this.$validator.validate('codeEmail')
+      ]).then(async (result) => {
         if (result) {
           const payload = {
             email: this.form.user.email,
@@ -286,13 +313,14 @@ export default {
           const response = await UserService.verifyCodeService(payload);
           this.changeStatusOverlay();
 
-          if(response.data){
+          if(response){
             this.form.code = '';
             this.errors.clear();
             this.increaseRegisterPage();
 
             this.verified.emailVerified = true;
             this.newProgress();
+            this.clearTimer();
           }else{
             this.errors.add({
               field: 'codeEmail',
@@ -339,7 +367,9 @@ export default {
     },
 
     async validateCodePhone(){
-      this.$validator.validate('codePhone').then(async (result) => {
+      Promise.all([
+        this.$validator.validate('codePhone')
+      ]).then(async (result) => {
         if (result) {
           const payload = {
             email: this.form.user.email,
@@ -366,7 +396,6 @@ export default {
     },
 
 
-
     async backPage2(){
       this.changeStatusOverlay()
       const payload = {
@@ -375,28 +404,88 @@ export default {
       await PersonService.deletePersonalInformationIncompleteService(payload);
       this.changeStatusOverlay();
       this.registerPage = 2;
+      this.clearTimer();
     },
 
 
-    async resentEmailCode() {
-      this.changeStatusOverlay();
-      const payload = {
-        email: this.form.user.email
-      };
-      await UserService.resendEmailCode(payload);
-      this.changeStatusOverlay();
+    startTimer() {
+      this.timerActive = true;
+      const now = Date.now();
+      const expirationTime = now + 60000;
+      localStorage.setItem('timerExpiration', expirationTime.toString());
+
+      this.updateTimer();
     },
 
-    async resendPhoneCode(){
-      this.changeStatusOverlay();
-      const payload = {
-        email: this.form.user.email
-      };
-      await PersonService.resendPhoneCodeService(payload);
-      this.changeStatusOverlay();
+    updateTimer() {
+      const interval = setInterval(() => {
+        const now = Date.now();
+        const expirationTime = parseInt(localStorage.getItem('timerExpiration'), 10);
+        const timeLeft = expirationTime - now;
+
+        if (timeLeft > 0) {
+          this.timerSeconds = Math.round(timeLeft / 1000);
+        } else {
+          clearInterval(interval);
+          this.timerActive = false;
+          localStorage.removeItem('timerExpiration'); // Limpia el localStorage
+        }
+      }, 1000);
     },
+
+    clearTimer() {
+      this.timerActive = false;
+      this.timerSeconds = 60;
+
+      localStorage.removeItem('timerExpiration');
+    },
+
+    checkTimerActive() {
+      const expirationTime = parseInt(localStorage.getItem('timerExpiration'), 10);
+      const now = Date.now();
+      this.timerActive = expirationTime && expirationTime > now;
+      if (this.timerActive) {
+        this.updateTimer();
+      }
+    },
+
+
+
+    async resentEmailCode(resendByClick) {
+      this.checkTimerActive();
+      if (!this.timerActive) {
+        this.changeStatusOverlay();
+        const payload = {
+          email: this.form.user.email,
+        };
+        await UserService.resendEmailCode(payload);
+        this.changeStatusOverlay();
+
+        if (resendByClick) {
+          this.startTimer();
+        }
+      }
+    },
+
+    async resendPhoneCode(resendByClick) {
+      this.checkTimerActive();
+      if (!this.timerActive) {
+        this.changeStatusOverlay();
+        const payload = {
+          email: this.form.user.email,
+        };
+        await PersonService.resendPhoneCodeService(payload);
+        this.changeStatusOverlay();
+
+        if (resendByClick) {
+          this.startTimer();
+        }
+      }
+    },
+
 
     logout() {
+      localStorage.removeItem('timerExpiration');
       this.$store.dispatch('logout');
       window.location.reload();
     },
@@ -408,10 +497,12 @@ export default {
       if(this.verified.emailVerified === false){
         this.registerPage = 1;
         this.resentEmailCode();
+        this.startTimer();
       }else if(this.verified.privacyPolicy === false){
         this.registerPage = 2;
       }else if(this.verified.verificationPhone === false){
         this.registerPage = 3;
+        this.startTimer();
         this.resendPhoneCode();
       }
     },
@@ -429,13 +520,20 @@ export default {
     increaseRegisterPage(){
       this.registerPage++;
     },
-
     changeStatusOverlay(){
       this.$store.dispatch('changeStatusOverlay');
     },
   },
   mounted() {
     this.onMounted();
+
+    const expirationTime = parseInt(localStorage.getItem('timerExpiration'), 10);
+    const now = Date.now();
+
+    if (expirationTime && expirationTime > now) {
+      this.timerActive = true;
+      this.updateTimer();
+    }
   },
   computed: {
     ...mapGetters(['showOverlay']),

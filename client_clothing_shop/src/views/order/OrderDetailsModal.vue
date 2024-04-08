@@ -10,8 +10,6 @@
             <p>{{ orderDetails.address + ", " + orderDetails.street  + ", " + orderDetails.neighborhood + ", " + orderDetails.state + ", " + orderDetails.postalCode}}</p>
             <p>Metodo de pago:</p>
             <p>Tarjeta {{ orderDetails.cardNumber }}</p>
-            <p>Fecha estimada de entrega</p>
-            <p>????</p>
             <hr>
             <b-row>
               <b-col>
@@ -26,7 +24,7 @@
                 <p>Gastos de envio:</p>
               </b-col>
               <b-col>
-                <p>??????</p>
+                <p>Gratis</p>
               </b-col>
             </b-row>
             <b-row>
@@ -49,21 +47,19 @@
                 </b-carousel>
                 <b-card-body>
                   <b-card-text>
-                    <p style="margin: 1px;">{{ product.product.productName }}</p>
-                    <p style="margin: 1px;">{{ product.product.category }}</p>
-                    <p style="margin: 1px;">{{ product.product.subcategory }}</p>
-                    <p style="margin: 1px;">Cantidad: {{ product.amount }}</p>
-                    <p style="margin: 1px;">MXN ${{ product.product.price }}</p>
+                    <p style="margin-bottom: 0.5rem;">{{ product.product.productName }}</p>
+                    <p style="margin-bottom: 0.5rem;">Categoría: {{ product.product.category }}</p>
+                    <p style="margin-bottom: 0.5rem;">Subcategoría: {{ product.product.subcategory }}</p>
+                    <p style="margin-bottom: 0.5rem;">Cantidad: {{ product.amount }}</p>
+                    <p>MXN ${{ product.product.price }}</p>
                   </b-card-text>
                 </b-card-body>
               </b-card>
             </div>
-            <div class="mt-auto"> <!-- Agrega un contenedor con mt-auto -->
-              <hr/>
-              <b-row class="justify-content-center m-2">
-                <b-button style="background-color: red; border-color: red;" block>Cancelar compra</b-button>
-              </b-row>
-            </div>
+            <hr/>
+            <b-row class="m-2" v-if="order.status !== 'Entregado' & order.status !== 'Reembolsado'">
+              <b-button style="background-color: red; border-color: red;" block>Cancelar compra</b-button>
+            </b-row>
           </b-col>
         </b-row>
       </b-container>
@@ -77,10 +73,10 @@ import OrderService from "@/services/order/OrderService";
 
 export default Vue.extend({
   props: {
-    idOrder: {
-      type: String,
+    order: {
+      type: Object,
       required: true
-    }
+    },
   },
   data() {
     return {
@@ -95,12 +91,16 @@ export default Vue.extend({
   methods: {
     async getOrderHasProducts() {
       const payload = {
-        idOrder: this.idOrder,
+        idOrder: this.order.idOrder,
       }
       this.orderDetails = await OrderService.getOrderDetailsByIdOrderService(payload);
       this.products = await OrderService.getOrderHasProductsService(payload);
+      this.subtotal = 0;
+      this.total = 0;
       for (let i = 0; i < this.products.length; i++) {
-        this.subtotal += this.products[i].product.price;
+        this.subtotal += (this.products[i].product.price * this.products[i].amount);
+        this.subtotal = parseFloat(this.subtotal.toFixed(2));
+        this.total = this.subtotal;
       }
     },
 

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Data
 @Table(name = "categories")
 @Entity
+@EntityListeners(AuditEntityListener.class)
 public class BeanCategory {
     @Id
     @GeneratedValue(generator = "UUID")

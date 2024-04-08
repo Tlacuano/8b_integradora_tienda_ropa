@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "orders")
+@EntityListeners(AuditEntityListener.class)
 public class BeanOrder {
     @Id
     @GeneratedValue(generator = "UUID")
