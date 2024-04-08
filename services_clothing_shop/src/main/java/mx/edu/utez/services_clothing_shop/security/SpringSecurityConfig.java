@@ -147,8 +147,8 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-reviews-by-order-product-id").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-reviews-by-product-id").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/post-review").hasRole(BUYER)
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/reviews/put-review").hasRole(BUYER)
-                                .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/reviews/delete-review").hasRole(BUYER)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/put-review").hasRole(BUYER)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/delete-review").hasRole(BUYER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-comprobant-to-review").hasRole(BUYER)
 
                                 //Modulo seller-information
