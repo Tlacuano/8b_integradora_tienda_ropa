@@ -127,13 +127,6 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["SELLER"] },
                 },
                 {
-                    path: "product-details",
-                    name: "ProductDetails",
-                    component: () => import("../views/product-management/ViewProductDetails.vue"),
-                    meta: { requiresAuth: true, roles: ["SELLER"] },
-                    props:true
-                },
-                {
                     path:"product-sale",
                     name:"ProductSale",
                     component: () => import("../views/product-management/ViewProductSales.vue"),

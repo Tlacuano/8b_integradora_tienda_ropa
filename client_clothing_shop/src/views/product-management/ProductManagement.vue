@@ -87,6 +87,7 @@
         ></b-pagination>
       </b-col>
     </b-row>
+    <ViewProductDetails  :id-product="selectProductId"/>
   </section>
 </template>
 <script>
@@ -94,9 +95,11 @@
   import ProductManagementService from "@/services/product-management/ProductManagementService";
   import ProductDetails from "@/views/product/ProductDetails.vue";
   import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
+  import ViewProductDetails from "@/views/product-management/ViewProductDetails.vue";
 
   export default {
     name: "ProductManagement",
+    components: {ViewProductDetails},
     computed: {
       ProductDetails() {
         return ProductDetails
@@ -109,7 +112,8 @@
           size: 10,
           elements: 0,
         },
-        items:[]
+        items:[],
+        selectProductId:null
       };
     },
     methods:{
@@ -135,7 +139,10 @@
         }
       },
       viewProductDetail(idProduct){
-        this.$router.push({name:'ProductDetails',params:{idProduct:idProduct}})
+        this.selectProductId = idProduct
+        this.$nextTick(() => {
+          this.$bvModal.show("product-detail");
+        });
       },
       registerProductEditionRequest(idProduct){
         this.$router.push({name:'RegisterProductEditionRequest',params:{idProduct:idProduct}})
