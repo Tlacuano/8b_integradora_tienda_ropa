@@ -158,17 +158,7 @@
                 </b-col>
               </b-row>
             </b-list-group-item>
-
-            <b-list-group-item :class="Product.status.status === 'Entregado' || Product.status.status === 'Reembolsado' ? 'highlight-on-hover selectable' : ''">
-              <b-row>
-                <b-col>
-                  Opinar sobre el producto
-                </b-col>
-                <b-col class="text-right" v-if="Product.status.status !== 'Entregado' && Product.status.status !== 'Reembolsado' ">
-                  <font-awesome-icon icon="lock" />
-                </b-col>
-              </b-row>
-            </b-list-group-item>
+            
           </b-list-group>
         </b-col>
       </b-row>
@@ -218,6 +208,7 @@ export default {
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
     },
+
   },
 }
 </script>

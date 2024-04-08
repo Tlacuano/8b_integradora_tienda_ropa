@@ -129,16 +129,20 @@
       </b-row>
     </b-col>
     <WriteReviewModal :idProduct="idProduct"/>
+    <PutReviewModal :review="reviewSelected"/>
   </b-row>
 </template>
 
 <script>
 import ReviewService from "@/services/reviews/ReviewService";
+import Vue from "vue";
+import {showSuccessToast} from "@/components/alerts/alerts";
 
 export default {
   name: "ReviewsProduct",
   components: {
-    WriteReviewModal: () => import("@/views/reviews/WriteReviewModal.vue")
+    WriteReviewModal: () => import("@/views/reviews/WriteReviewModal.vue"),
+    PutReviewModal: () => import("@/views/reviews/PutReviewModal.vue"),
   },
   props: {
     idProduct: String
@@ -150,6 +154,7 @@ export default {
         countByRating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
         averageRating: 0,
       },
+      reviewSelected: {},
     };
   },
   methods: {
@@ -162,7 +167,6 @@ export default {
       this.reviews = response.data;
 
       this.calculateReviewStats();
-      console.log(response);
     },
 
     calculateReviewStats() {
@@ -201,6 +205,36 @@ export default {
         this.$bvModal.show("write-review-modal");
       }
 
+    },
+
+    async deleteReview(review){
+      Vue.swal({
+        title: '¿Deseas eliminar tu reseña?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: 'var(--black-base)',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const payload = {
+            idReview: review.idReview
+          }
+
+          const response = await ReviewService.deleteReviewService(payload)
+
+          if(response) {
+            showSuccessToast('Reseña eliminada')
+            this.getReviews();
+          }
+        }
+      });
+    },
+
+    editReview(review){
+      this.reviewSelected = review;
+      this.$bvModal.show("put-review-modal");
     }
   },
   mounted() {
