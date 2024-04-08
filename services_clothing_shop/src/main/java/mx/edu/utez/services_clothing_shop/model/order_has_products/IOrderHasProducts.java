@@ -15,4 +15,10 @@ public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, S
     @Query("SELECT ohp FROM BeanOrderHasProducts  ohp JOIN BeanProduct p ON ohp.product.idProduct = p.idProduct " +
             "JOIN BeanUser u ON p.user.idUser = u.idUser WHERE u.email = :email")
     List<BeanOrderHasProducts> findBySeller (String email);
+
+    @Query("select ohp from BeanOrderHasProducts ohp " +
+            " join BeanProduct p on ohp.product.idProduct = p.idProduct " +
+            " where p.idProduct = :idProduct " +
+            " and ohp.order.address.person.user.idUser = :idBuyer")
+    BeanOrderHasProducts findOrderHasProductByBuyerAndProduct(UUID idBuyer, UUID idProduct);
 }

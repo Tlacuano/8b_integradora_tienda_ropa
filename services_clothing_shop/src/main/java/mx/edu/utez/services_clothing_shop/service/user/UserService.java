@@ -109,7 +109,7 @@ public class UserService {
     public boolean changeStatusAccount(RequestActionByEmailDTO payload){
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         List<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySeller(payload.getEmail());
@@ -149,7 +149,7 @@ public class UserService {
     public void deleteAccount(RequestRestorePasswordDTO payload){
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(!passwordEncoder.matches(payload.getPassword(), user.getPassword())){
@@ -191,7 +191,7 @@ public class UserService {
     public boolean verifyCode(RequestCodeDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         boolean result = user.getVerificationCode().equals(payload.getCode());
@@ -208,7 +208,7 @@ public class UserService {
     public ResponseGetProfileDTO getProfile(String email) {
         BeanUser user = userRepository.findByEmail(email);
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         return ResponseGetProfileDTO.fromUser(user);
@@ -219,7 +219,7 @@ public class UserService {
         BeanUser user = userRepository.findByEmail(email);
 
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         String code = SecurityCode.generateCode();
@@ -235,7 +235,7 @@ public class UserService {
     public boolean deleteIncompleteAccount(String email) {
         BeanUser user = userRepository.findByEmail(email);
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(user.isPrivacyPolicy()){
@@ -264,7 +264,7 @@ public class UserService {
     public boolean restorePassword(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(!user.getVerificationCode().equals(payload.getCode())){
@@ -287,7 +287,7 @@ public class UserService {
     public boolean changePassword(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(!passwordEncoder.matches(payload.getOldPassword(), user.getPassword())){
@@ -309,7 +309,7 @@ public class UserService {
     public boolean deleteAccountAdmin(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         List<String> roles = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();

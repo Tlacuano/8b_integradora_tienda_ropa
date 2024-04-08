@@ -10,6 +10,7 @@ import VueSweetalert2 from "vue-sweetalert2";
 import 'sweetalert2/dist/sweetalert2.min.css';
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {fas} from "@fortawesome/free-solid-svg-icons";
+import {far} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import VeeValidate, {Validator} from 'vee-validate'
 import es from 'vee-validate/dist/locale/es';
@@ -24,6 +25,7 @@ Vue.use(VueSweetalert2);
 
 // fontawesome
 library.add(fas);
+library.add(far);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 // veeValidate
