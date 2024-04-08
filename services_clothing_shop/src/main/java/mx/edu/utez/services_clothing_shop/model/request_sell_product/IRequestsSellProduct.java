@@ -55,6 +55,15 @@ public interface IRequestsSellProduct extends JpaRepository<BeanRequestSellProdu
             "WHERE r.idRequestSellProduct = :id")
     RequestDetailsProjection findRequestDetailsById(@Param("id") UUID id);
 
-
+    @Query("SELECT r.idRequestSellProduct as idRequestSellProduct, " +
+            "(SELECT pg.image FROM BeanProductGallery pg WHERE pg.product = p AND pg.status.status = 'Principal') as image, " +
+            "p.productName as productName, " +
+            "u.email as email, " +
+            "r.status as status " +
+            "FROM BeanRequestSellProduct r " +
+            "JOIN r.product p " +
+            "JOIN p.user u " +
+            "WHERE u.email LIKE :email")
+    Page<RequestSellStatusProjection> findAllByEmailLikeIgnoreCase(@Param("email") String email,Pageable pageable);
 }
 

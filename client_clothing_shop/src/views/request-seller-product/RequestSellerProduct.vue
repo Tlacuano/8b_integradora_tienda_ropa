@@ -105,9 +105,9 @@ export default {
         this.products = response.content;
       }else{
         const payload = {
-          productName: this.search
+          email: this.search
         }
-        const response = await ProductSalesRequestsService.getPageProductSalesRequestsByProductName(this.objectPagination, payload)
+        const response = await ProductSalesRequestsService.getPageProductSalesRequestsByUserEmail(this.objectPagination, payload)
         this.objectPagination.elements = response.totalElements
         this.products = response.content;
       }

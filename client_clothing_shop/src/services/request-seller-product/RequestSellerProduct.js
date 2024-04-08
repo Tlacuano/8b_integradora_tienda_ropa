@@ -10,6 +10,16 @@ const getPageProductSalesRequests = async (pagination) => {
     }
 }
 
+const getPageProductSalesRequestsByUserEmail = async (pagination, email) => {
+    try {
+        const {page, size} = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/requests-sell-product/get-page-by-user-email?size=${size}&page=${page - 1}`, email);
+        return response.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 const getByIdProductSalesRequest = async (id) => {
     try {
         const response = await axios.doPost('/venta-ropa/api/requests-sell-product/get-by-id-request-sell-product', {idRequestSellProduct: id})
@@ -30,4 +40,5 @@ export default {
     getPageProductSalesRequests,
     getByIdProductSalesRequest,
     putProductSalesRequestStatus,
+    getPageProductSalesRequestsByUserEmail
 };
