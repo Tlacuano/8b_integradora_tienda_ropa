@@ -44,6 +44,6 @@ public interface IUser extends JpaRepository<BeanUser, UUID> {
     @Query("SELECT u FROM BeanUser u JOIN u.roles ur WHERE ur.role.roleName = 'ROLE_ADMIN'" +
             "AND u.email LIKE :email " +
             "ORDER BY u.status DESC, u.emailVerified DESC, u.privacyPolicy DESC")
-    Page<BeanUser> findAllAdminsByEmailLikeIgnoreCase(@Param("email") String email, Pageable pageable);
+        Page<BeanUser> findAllAdminsByEmailLikeIgnoreCase(@Param("email") String email, Pageable pageable);
 
 }

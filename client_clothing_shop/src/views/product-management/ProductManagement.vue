@@ -123,7 +123,7 @@
       async putStatusProduct(idProduct){
         const response = await ProductManagementService.putStatusProduct(idProduct)
         if(response){
-          showSuccessToast("Realizado con éxito", "El estado del product se actualizo correctamente")
+          showSuccessToast("Estado del producto actualizado")
           this.getProductByUser()
               .then(product => {
                 console.log("Éxito");
@@ -131,7 +131,7 @@
               .catch(error => {
               });
         }else{
-          showWarningToast("Ocurrio un error", "La actualización del estado fallo")
+          showWarningToast("Ocurrio un error inesperado", "La actualización del estado fallo")
         }
       },
       viewProductDetail(idProduct){
