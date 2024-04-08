@@ -158,7 +158,7 @@
                 </b-col>
               </b-row>
             </b-list-group-item>
-            
+
           </b-list-group>
         </b-col>
       </b-row>
