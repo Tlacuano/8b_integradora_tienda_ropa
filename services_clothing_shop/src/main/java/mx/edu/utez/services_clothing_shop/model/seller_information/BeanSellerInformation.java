@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Data
 @Table(name = "sellers_information")
 @Entity
+@EntityListeners(AuditEntityListener.class)
 public class BeanSellerInformation {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -34,6 +36,9 @@ public class BeanSellerInformation {
 
     @Column(name = "curp", length = 18)
     private String curp;
+
+    @Column(name = "block_sell", columnDefinition = "TINYINT(0)")
+    private boolean blockSell;
 
     //relacion uno a uno con la tabla people
     @OneToOne

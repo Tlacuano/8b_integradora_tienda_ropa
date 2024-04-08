@@ -32,9 +32,10 @@ const putProductSalesRequestStatus = async (id,status,rejectionReason) => {
     }
 }
 
+
 export default {
     getPageProductSalesRequests,
     getByIdProductSalesRequest,
     putProductSalesRequestStatus,
-    getPageProductSalesRequestsByUserEmail
+    getPageProductSalesRequestsByUserEmail,
 };

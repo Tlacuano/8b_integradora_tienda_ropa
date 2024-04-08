@@ -70,6 +70,9 @@ public class RequestsBecomeSellerService {
                             sellerInformation.setImageIdentification(userSellerInformation.getImageIdentification());
                             sellerInformation.setCurp(userSellerInformation.getCurp());
                             sellerInformation.setPerson(person);
+                            sellerInformation.setBlockSell(false);
+
+
                         } else {
                             throw new CustomException("Todos los campos de UserSellerInformation deben estar llenos");
                         }

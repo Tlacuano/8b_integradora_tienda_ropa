@@ -31,11 +31,28 @@
 
         <b-row class="mt-4">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" v-b-modal:put-personal-information-user-modal>
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
                     Cambiar información personal
+                  </b>
+                </b-col>
+                <b-col cols="auto" class="text-right">
+                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+
+        <b-row class="mt-1">
+          <b-col>
+            <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)">
+              <b-row align-h="between" class="p-2 mx-1">
+                <b-col>
+                  <b>
+                    {{ user.sellerInformation.blockSell === true ? 'Desbloquear venta' : 'Bloquear venta' }}
                   </b>
                 </b-col>
                 <b-col cols="auto" class="text-right">
@@ -345,6 +362,8 @@
     </b-row>
 
     <DeleteAccountAdminModal :email="decodeCrypto(email)"/>
+    <PutPersonalInformationUserModal :email="decodeCrypto(email)"/>
+    <BlockSellModal :email="decodeCrypto(email)"/>
   </section>
 </template>
 
@@ -353,10 +372,14 @@ import PeopleService from "@/services/user/userService";
 import {decodeCrypto} from "@/utils/security/cryptoJs";
 import OrderService from "@/services/order/OrderService";
 import {showInfoAlert} from "@/components/alerts/alerts";
+import UserService from "@/services/user/userService";
+
 export default {
   name: "UserDetails",
   components: {
     DeleteAccountAdminModal : () => import('@/views/user/DeleteAccountAdminModal.vue'),
+    PutPersonalInformationUserModal : () => import('@/views/user/PutPersonalInformationUserModal.vue'),
+    BlockSellModal : () => import('@/views/user/BlockSellAccountModal.vue')
   },
   props: {
     email: {
@@ -385,6 +408,7 @@ export default {
           secondaryPhoneNumber: null,
           privacyPolicyAgreement: null,
           taxIdentificationNumber: null,
+          blockSell: null
         }
       },
       orders:{
@@ -395,7 +419,8 @@ export default {
         },
         elements: []
       },
-      showEditPicture: false
+      showEditPicture: false,
+      admin: ''
     };
   },
   methods: {
@@ -425,7 +450,9 @@ export default {
       this.user.sellerInformation.secondaryPhoneNumber = response.data.secondaryPhoneNumber;
       this.user.sellerInformation.privacyPolicyAgreement = response.data.privacyPolicyAgreement;
       this.user.sellerInformation.taxIdentificationNumber = response.data.taxIdentificationNumber;
+      this.user.sellerInformation.blockSell = response.data.blockSell;
 
+      console.log(this.user)
       this.showOverlay()
     },
 
@@ -461,6 +488,34 @@ export default {
       )
     },
 
+    async blockSell(){
+      if(!this.user.sellerInformation.blockSell) {
+        this.$bvModal.show('block-sell-modal');
+      }else {
+        const payload = {
+          email: this.user.email,
+          admin: this.admin
+        }
+        showInfoAlert(
+            "¿Estás seguro?",
+            "¿Deseas desbloquear la venta de este usuario?",
+            "Sí, desbloquear",
+            async () => {
+              await UserService.unblockSellService(payload)
+            }
+        );
+      }
+    },
+
+    async getProfile() {
+      const payload = {
+        email: this.$store.getters.getEmail
+      }
+
+      const response = await UserService.getProfileService(payload);
+      this.admin = response.data.fullName;
+    },
+
 
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
@@ -469,6 +524,7 @@ export default {
   mounted() {
     this.getUserDetails();
     this.getOrders();
+    this.getProfile();
   },
   watch:{
     'orders.pagination.page': function(){
