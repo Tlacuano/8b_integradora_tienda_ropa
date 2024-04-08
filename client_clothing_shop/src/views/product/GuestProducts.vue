@@ -230,7 +230,7 @@ export default {
 
 <style scoped>
 .interface {
-  padding-bottom: calc(100px);
+  padding-bottom: calc(8vh);
 }
 
 .category-card {

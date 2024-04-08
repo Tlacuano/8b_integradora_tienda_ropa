@@ -59,7 +59,7 @@ public class ErrorDictionary {
         errorMessages.put("wishList.id.notnull", "El id de la lista de deseos es obligatorio.");
         errorMessages.put("wishList.id.notfound", "La lista de deseos no fue encontrada.");
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria y no negativa.");
-        errorMessages.put("wishList.amount.error", "La cantidad es mayor a la disponible.");
+        errorMessages.put("wishList.amount.error", "No hay suficientes disponibles.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
         errorMessages.put("wishList.user.notnull", "El usuario es obligatorio.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
@@ -74,7 +74,7 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.product.exists", "El producto ya está en el carrito de compras.");
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
-        errorMessages.put("shoppingCart.amount.error", "La cantidad es mayor a la disponible.");
+        errorMessages.put("shoppingCart.amount.error", "No hay suficientes disponibles.");
         errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
         errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
         errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");

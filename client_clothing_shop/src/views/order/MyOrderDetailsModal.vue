@@ -137,12 +137,12 @@
       <b-row class="mt-5">
         <b-col>
           <b-list-group>
-            <b-list-group-item :class="Product.status.status === 'Pendiente' ? 'highlight-on-hover selectable' : ''">
+            <b-list-group-item :class="Product.status.status === 'Preparación' ? 'highlight-on-hover selectable' : ''">
               <b-row>
                 <b-col>
                   Cancelar compra
                 </b-col>
-                <b-col class="text-right" v-if="Product.status.status !== 'Pendiente'">
+                <b-col class="text-right" v-if="Product.status.status !== 'Preparación'">
                   <font-awesome-icon icon="lock" />
                 </b-col>
               </b-row>
