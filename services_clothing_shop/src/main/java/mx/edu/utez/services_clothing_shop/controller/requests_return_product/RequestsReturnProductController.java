@@ -38,8 +38,8 @@ public class RequestsReturnProductController {
 
 
     @PostMapping("/post-request-return-product")
-    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequestReturnProduct(@RequestBody RequestsReturnProductPostDTO requestDTO) {
-        RequestsReturnProductDTO requestData = requestsReturnProductService.postRequestReturnProduct(requestDTO.getOrderHasProductId());
+    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequestReturnProduct(@RequestBody RequestsReturnProductPostRequestDTO requestDTO) {
+        RequestsReturnProductDTO requestData = requestsReturnProductService.postRequestReturnProduct(requestDTO.getOrderNumber());
         return ResponseEntity.ok(new CustomResponse<>(requestData, "Request created", false, 200));
     }
 

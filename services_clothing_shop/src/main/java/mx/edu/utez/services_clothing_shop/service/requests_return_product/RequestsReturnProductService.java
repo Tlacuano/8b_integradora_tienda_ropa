@@ -89,12 +89,12 @@ public class RequestsReturnProductService {
     }
 
     @Transactional
-    public RequestsReturnProductDTO postRequestReturnProduct(UUID orderHasProductId) {
-        BeanOrderHasProducts orderHasProduct = new BeanOrderHasProducts();
-        orderHasProduct.setIdOrderProduct(orderHasProductId);
+    public RequestsReturnProductDTO postRequestReturnProduct(String orderNumber) {
+        BeanOrderHasProducts orderHasProduct = IRequestsReturnProduct.findFirstByOrderNumber(orderNumber)
+                .orElseThrow(() -> new CustomException("OrderHasProducts not found"));
 
         BeanRequestStatus requestStatus = IRequestStatus.findByStatus("Pendiente")
-                .orElseThrow(() -> new CustomException("requestsReturnProduct.status.notFound"));
+                .orElseThrow(() -> new CustomException("Request status not found"));
 
         BeanRequestReturnProduct request = new BeanRequestReturnProduct();
         request.setOrderHasProduct(orderHasProduct);
@@ -103,6 +103,8 @@ public class RequestsReturnProductService {
         BeanRequestReturnProduct savedRequest = IRequestsReturnProduct.save(request);
         return convertToDTO(savedRequest);
     }
+
+
 
     public Page<ReturnRequestProjection> findRequestsByPageAndSearchTerm(Pageable pageable, String searchTerm) {
         return IRequestsReturnProduct.findRequestsWithOrderInfo(pageable, searchTerm);

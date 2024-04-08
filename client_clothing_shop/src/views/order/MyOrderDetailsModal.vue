@@ -1,4 +1,5 @@
 <template>
+  <div>
   <b-modal id="my-order-details-modal" hide-header hide-footer centered size="md">
     <section v-if="Order && Product && Product.status">
       <b-row>
@@ -148,7 +149,7 @@
               </b-row>
             </b-list-group-item>
 
-            <b-list-group-item :class="Product.status.status === 'Entregado' ? 'highlight-on-hover selectable' : ''">
+            <b-list-group-item :class="Product.status.status === 'Entregado' ? 'highlight-on-hover selectable' : ''" @click="openReturnRequestModal">
               <b-row>
                 <b-col>
                   Solicitar devolución
@@ -180,19 +181,20 @@
           </b-link>
         </b-col>
       </b-row>
-
-
-
-
-
     </section>
   </b-modal>
+    <return-request-modal :order-number="Order.orderNumber" ref="returnRequestModal"/>
+  </div>
 </template>
 
 <script >
 import Big from "big.js";
+import ReturnRequestModal from "../order/PostRequestReturnProduct.vue";
 
 export default {
+  components: {
+    ReturnRequestModal
+  },
   props: {
     Order: {},
     Product:{}
@@ -200,7 +202,7 @@ export default {
   name: "MyOrderDetailsModal",
   data() {
     return {
-
+      orderNumber: this.Order.orderNumber
     }
   },
   methods: {
@@ -218,8 +220,13 @@ export default {
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
     },
-  },
-}
+    openReturnRequestModal() {
+      if (this.Order && this.Product && this.Product.status.status === 'Entregado') {
+        this.$refs.returnRequestModal.openModal();
+      }
+    }
+  }
+  }
 </script>
 
 
