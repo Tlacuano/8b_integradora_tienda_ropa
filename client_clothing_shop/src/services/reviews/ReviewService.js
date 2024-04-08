@@ -15,11 +15,19 @@ const getComprobatToReviewService = async (payload) => {
         return response.data
     }catch (e){
     }
+}
 
+const postReviewService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/reviews/post-review`, payload);
+        return response.data
+    } catch (e) {
+    }
 }
 
 
 export default {
     getReviewsByProductIdService,
-    getComprobatToReviewService
+    getComprobatToReviewService,
+    postReviewService
 }

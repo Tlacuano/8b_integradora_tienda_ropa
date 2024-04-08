@@ -17,6 +17,7 @@ public class ResponseReviewsByProductIdDTO {
     private Integer assessment;
     private String fullName;
     private String picture;
+    private String email;
 
     public static ResponseReviewsByProductIdDTO fromReview(BeanReview reviews){
         ResponseReviewsByProductIdDTO responseReviewsByProductIdDTO = new ResponseReviewsByProductIdDTO();
@@ -29,6 +30,7 @@ public class ResponseReviewsByProductIdDTO {
                 + " " + reviews.getOrderHasProduct().getOrder().getAddress().getPerson().getLastName()
                 + " " + reviews.getOrderHasProduct().getOrder().getAddress().getPerson().getSecondLastName());
         responseReviewsByProductIdDTO.setPicture(reviews.getOrderHasProduct().getOrder().getAddress().getPerson().getPicture());
+        responseReviewsByProductIdDTO.setEmail(reviews.getOrderHasProduct().getOrder().getAddress().getPerson().getUser().getEmail());
 
         return responseReviewsByProductIdDTO;
     }
