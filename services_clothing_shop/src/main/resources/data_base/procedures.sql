@@ -25,42 +25,37 @@ BEGIN
     SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
 
     UPDATE users
-    SET
-        password = '',
-        email = CONCAT(p_email, '_deleted_', UUID()),
-        status = 0
+    SET password = '',
+        email    = CONCAT(p_email, '_deleted_', UUID()),
+        status   = 0
     WHERE id_user = v_user_id;
 
     UPDATE people
-    SET
-        name = 'Cuenta no disponible',
-        last_name = '',
+    SET name             = 'Cuenta no disponible',
+        last_name        = '',
         second_last_name = '',
-        picture = '',
-        gender = 'otros',
-        phone_number = ''
+        picture          = '',
+        gender           = 'otros',
+        phone_number     = ''
     WHERE fk_id_user = v_user_id;
 
     UPDATE sellers_information
-    SET
-        curp = '',
+    SET curp                      = '',
         tax_identification_number = '',
-        secondary_phone_number = '',
-        image_identification = '',
-        privacy_policy_agreement = 0
+        secondary_phone_number    = '',
+        image_identification      = '',
+        privacy_policy_agreement  = 0
     WHERE fk_id_user = v_user_id;
 
     UPDATE payment_cards
-    SET
-        cvv = '',
-        card_number = '',
+    SET cvv             = '',
+        card_number     = '',
         cardholder_name = '',
         expiration_date = ''
     WHERE fk_id_user = v_user_id;
 
     UPDATE products
-    SET
-        status = 0
+    SET status = 0
     WHERE fk_id_user = v_user_id;
 
     SET result = 'Usuario eliminado';
@@ -68,7 +63,6 @@ BEGIN
 
 END$$
 DELIMITER ;
-
 
 
 -- Procedure to change the status of a payment card
@@ -163,6 +157,7 @@ BEGIN
     DECLARE total_products_in_shopping_cart INT;
     DECLARE total_products_inserted INT;
     DECLARE products_from_same_user INT;
+    DECLARE pending_status_id BINARY(16);
 
     START TRANSACTION;
     -- 1. Verify if the user has at least one product in the shopping cart
@@ -189,8 +184,9 @@ BEGIN
             VALUES (UUID_TO_BIN(UUID()), p_order_date, p_order_number, UUID_TO_BIN(p_order_id_address),
                     UUID_TO_BIN(p_order_id_payment_card));
 
-            -- 4. Get the id of the new order
+            -- 4. Get the id of the new order and the pending status id
             SELECT id_order FROM orders WHERE order_number = p_order_number INTO v_order_id;
+            SELECT id_status INTO pending_status_id FROM order_status WHERE status = 'Preparación';
             IF v_order_id IS NOT NULL THEN
                 -- 5. Insert the products from the shopping cart into the orders_has_products table
                 INSERT INTO orders_has_products (id_order_product, amount, fk_id_order, fk_id_product, fk_id_status)
@@ -198,7 +194,7 @@ BEGIN
                        amount,
                        v_order_id,
                        fk_id_product,
-                       UUID_TO_BIN('9b8c35d0-7870-41c6-8719-745eaaae1a13')
+                       pending_status_id
                 FROM shopping_cart
                 WHERE fk_id_user = UUID_TO_BIN(p_user_id);
 
@@ -207,27 +203,6 @@ BEGIN
                 IF total_products_inserted = total_products_in_shopping_cart THEN
                     -- 7. Delete the products from the shopping cart
                     DELETE FROM shopping_cart WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-                    -- 8. Get the address and payment card information
-                    SELECT BIN_TO_UUID(v_order_id)         AS id_order,
-                           BIN_TO_UUID(a.id_address)       AS id_address,
-                           a.address                       AS address,
-                           a.references_address            AS references_address,
-                           a.postal_code                   AS postal_code,
-                           a.state                         AS state,
-                           a.street                        AS street,
-                           a.neighborhood                  AS neighborhood,
-                           ast.status                      AS address_status,
-                           BIN_TO_UUID(pc.id_payment_card) AS id_payment_card,
-                           pc.cardholder_name              AS cardholder_name,
-                           pc.card_number                  AS card_number,
-                           pc.expiration_date              AS expiration_date,
-                           pcs.status                      AS card_status
-                    FROM address a
-                             JOIN payment_cards pc ON a.fk_id_user = pc.fk_id_user
-                             JOIN address_status as ast ON a.fk_id_status = ast.id_status
-                             JOIN card_status pcs ON pc.fk_id_status = pcs.id_status
-                    WHERE a.id_address = UUID_TO_BIN(p_order_id_address)
-                      AND pc.id_payment_card = UUID_TO_BIN(p_order_id_payment_card);
                     COMMIT;
                 ELSE
                     SELECT 'Products were not inserted into the order' AS message;
@@ -263,10 +238,10 @@ BEGIN
 
     -- Declare handler for SQL exceptions
     DECLARE exit handler for sqlexception
-    BEGIN
-        ROLLBACK;
-        RESIGNAL;
-    END;
+        BEGIN
+            ROLLBACK;
+            RESIGNAL;
+        END;
 
     -- Start the transaction
     START TRANSACTION;
@@ -276,7 +251,8 @@ BEGIN
     INTO v_total_products
     FROM products
     WHERE id_product = UUID_TO_BIN(p_product_id)
-    FOR UPDATE;
+        FOR
+    UPDATE;
 
     IF v_total_products = 0 THEN
         SELECT 'Product does not exist' AS message;
@@ -325,7 +301,7 @@ BEGIN
 
 
     INSERT INTO requests_data_change (id_request_data_change, fk_id_user, new_user_information, fk_id_status)
-    VALUES (UUID_TO_BIN(UUID()) , v_user_id, p_new_user_information, v_pending_status_id);
+    VALUES (UUID_TO_BIN(UUID()), v_user_id, p_new_user_information, v_pending_status_id);
     SELECT TRUE as messagge;
 END $$
 DELIMITER ;
@@ -341,7 +317,8 @@ BEGIN
     DECLARE v_status_id BINARY(16);
 
     -- Buscar el ID del estado basado en el texto proporcionado
-    SELECT id_status INTO v_status_id
+    SELECT id_status
+    INTO v_status_id
     FROM request_status
     WHERE status = p_status;
 
@@ -353,7 +330,7 @@ BEGIN
         IF EXISTS (SELECT 1 FROM requests_data_change WHERE id_request_data_change = p_request_id) THEN
             -- Actualizar la solicitud
             UPDATE requests_data_change
-            SET fk_id_status = v_status_id,
+            SET fk_id_status     = v_status_id,
                 rejection_reason = p_rejection_reason
             WHERE id_request_data_change = p_request_id;
         ELSE
@@ -376,7 +353,7 @@ BEGIN
     SELECT id_status INTO v_pending_status_id FROM request_status WHERE status = 'Pendiente';
 
     INSERT INTO requests_become_seller (id_request_become_seller, fk_id_user, user_seller_information, fk_id_status)
-    VALUES (UUID_TO_BIN(UUID()) , v_user_id, p_user_seller_information, v_pending_status_id);
+    VALUES (UUID_TO_BIN(UUID()), v_user_id, p_user_seller_information, v_pending_status_id);
     SELECT TRUE as message;
 END $$
 DELIMITER ;
@@ -398,7 +375,7 @@ BEGIN
     ELSE
         IF EXISTS (SELECT 1 FROM requests_become_seller WHERE id_request_become_seller = p_request_id) THEN
             UPDATE requests_become_seller
-            SET fk_id_status = v_status_id,
+            SET fk_id_status     = v_status_id,
                 rejection_reason = p_rejection_reason
             WHERE id_request_become_seller = p_request_id;
         ELSE

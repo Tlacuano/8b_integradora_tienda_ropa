@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.UUID;
 
 public interface IOrder extends JpaRepository<BeanOrder, UUID> {
@@ -16,7 +15,7 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
     Page<BeanOrder> findAllByAddress_Person_User_Email(String email, Pageable page);
 
     @Query(value = "CALL sp_post_order(:p_user_id, :p_order_date, :p_order_id_address, :p_order_id_payment_card, :p_order_number);", nativeQuery = true)
-    Map<String, Object> postOrder(
+    void postOrder(
             @Param("p_user_id") String userId,
             @Param("p_order_date") LocalDate orderDate,
             @Param("p_order_id_address") String orderIdAddress,
@@ -54,4 +53,6 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
             "o.address.referencesAddress as referencesAdrress, o.address.postalCode as postalCode, o.address.state as state," +
             "o.paymentCard.cardNumber as cardNumber FROM BeanOrder o WHERE o.idOrder = :idOrder")
     OrderDetailsProjection findOrderDetailsByIdOrder(@Param("idOrder") UUID idOrder);
+
+    BeanOrder findByOrderNumber(String orderNumber);
 }
