@@ -237,9 +237,6 @@ BEGIN
     IF total_products_inserted != total_products_in_shopping_cart THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Products were not inserted into the order';
     END IF;
-
-    -- 7. Delete the products from the shopping cart
-    DELETE FROM shopping_cart WHERE fk_id_user = UUID_TO_BIN(p_user_id);
     COMMIT;
 END $$
 DELIMITER ;
