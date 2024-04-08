@@ -57,15 +57,18 @@
           </b-form>
         </b-col>
         <b-col class="text-center">
-          <b-img
-              v-if="imgPreview"
-              :src="imgPreview"
-              thumbnail
-              style="max-width: 50%; max-height: 95%;"
-          />
+          <div class="image-container">
+            <b-img
+                v-if="imgPreview"
+                :src="imgPreview"
+                thumbnail
+                style="max-width: 50%; max-height: 95%;"
+            />
+            <div v-else class="no-image-message">No se ha seleccionado ninguna imagen</div>
+          </div>
         </b-col>
       </b-row>
-      <b-row class="justify-content-center">
+      <b-row class="mt-3 justify-content-center">
         <b-button variant="dark" @click="addSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem;">Registrar</b-button>
         <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
       </b-row>
@@ -165,3 +168,15 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style scoped>
+.no-image-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 30%;
+}
+</style>
