@@ -10,6 +10,14 @@ const getProductByUser = async (pagination,email) => {
         showWarningToast('', error)
     }
 }
+
+const getProduct = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/products/get-product?`,payload)
+        return response.data
+    }catch(e){
+    }
+}
 const putStatusProduct = async (productId)=>{
     try {
         const response = await axios.doPut(`/venta-ropa/api/products/put-status-product?`,{idProduct:productId})
@@ -20,5 +28,6 @@ const putStatusProduct = async (productId)=>{
 }
 export default {
     getProductByUser,
-    putStatusProduct
+    putStatusProduct,
+    getProduct
 }
