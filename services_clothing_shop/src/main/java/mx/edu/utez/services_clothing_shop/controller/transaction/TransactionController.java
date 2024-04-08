@@ -8,7 +8,6 @@ import mx.edu.utez.services_clothing_shop.service.shopping_cart.ShoppingCartServ
 import mx.edu.utez.services_clothing_shop.service.transaction.TransactionService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,9 +38,6 @@ public class TransactionController {
     @PostMapping("/webhook")
     public ResponseEntity<CustomResponse<Object>> fulfillOrder(@RequestHeader("Stripe-Signature") String stripeSignature, @RequestBody String payload) {
         try {
-            System.out.println("Webhook received");
-            System.out.println("Signature: " + stripeSignature);
-            System.out.println("Payload: " + payload);
             transactionService.fulfillOrder(stripeSignature, payload);
         } catch (StripeException e) {
             return ResponseEntity.ok(new CustomResponse<>(null, "Error al procesar el webhook: " + e.getMessage(), true, 500));
