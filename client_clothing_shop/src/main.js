@@ -44,9 +44,68 @@ const dictionary = {
             max: () => 'Debe contener máximo 100 caracteres',
             name_max: () => "El nombre debe contener máximo 15 caracteres",
             image: () => 'El archivo debe ser una imagen',
+            curp: () => 'Verifica el formato de tu CURP.',
+            curp_length: () => 'La longitud debe ser 18 caracteres.',
+            rfc: () => 'Verifica el formato de tu RFC.',
+            rfc_length: () => 'La longitud debe ser 13 caracteres.',
+            rfc_length_moral: () => 'La longitud debe ser 12 caracteres.',
+            phone: () => 'El número de teléfono no es válido',
         }
     }
 };
+
+//for curp length
+Validator.extend('curp_length', {
+    validate: value => {
+        return value.length === 18;
+    }
+});
+
+//for curp
+Validator.extend('curp', {
+    validate: value => {
+        const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$/;
+        return curpRegex.test(value);
+    }
+});
+
+//for rfc length fisica
+Validator.extend('rfc_length', {
+    validate: value => {
+        return value.length === 13;
+    }
+});
+
+//for rfc length moral
+Validator.extend('rfc_length_moral', {
+    validate: value => {
+        return value.length === 12;
+    }
+});
+
+//for rfc fisica
+Validator.extend('rfc', {
+    validate: value => {
+        const rfcRegex = /^[A-Z]{4}\d{6}[A-Z\d]{3}$/;
+        return rfcRegex.test(value);
+    }
+});
+
+//for rfc moral
+Validator.extend('rfc_moral', {
+    validate: value => {
+        const rfcRegex = /^[A-Z]{3}\d{6}[A-Z\d]{3}$/;
+        return rfcRegex.test(value);
+    }
+});
+
+//for phone number
+Validator.extend('phone', {
+    validate: value => {
+        const phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(value);
+    }
+});
 
 //for subcategory name lenght
 Validator.extend("name_max", {

@@ -40,22 +40,3 @@ export const decrypt = (data) => {
 
     return JSON.parse(decryptedString);
 };
-
-export const decryptData = (data) => {
-    const decodedEncryptedData = forge.util.decode64(data);
-
-    const iv = decodedEncryptedData.slice(0, 16);
-    const encryptedBytes = decodedEncryptedData.slice(16);
-
-    const encryptedBuffer = forge.util.createBuffer(encryptedBytes, "raw");
-
-    const decipher = forge.cipher.createDecipher("AES-CBC", key);
-
-    decipher.start({ iv: iv });
-
-    decipher.update(encryptedBuffer);
-
-    decipher.finish();
-
-    return decipher.output.toString("utf8");
-}
