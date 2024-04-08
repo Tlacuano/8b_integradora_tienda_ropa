@@ -167,58 +167,80 @@ BEGIN
     WHERE fk_id_user = UUID_TO_BIN(p_user_id);
 
     IF total_products_in_shopping_cart = 0 THEN
-        SELECT 'User does not have products in the shopping cart' AS message;
-        ROLLBACK;
-    ELSE
-        -- 2. Verify if a product from the shopping cart is from the same user to prevent fraud
-        SELECT COUNT(*)
-        INTO products_from_same_user
-        FROM shopping_cart sc
-                 JOIN products p ON sc.fk_id_product = p.id_product
-        WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
-          AND p.fk_id_user = UUID_TO_BIN(p_user_id);
-
-        IF products_from_same_user = 0 THEN
-            -- 3. Insert a new record into the orders table
-            INSERT INTO orders(id_order, order_date, order_number, fk_id_address, fk_id_payment_card)
-            VALUES (UUID_TO_BIN(UUID()), p_order_date, p_order_number, UUID_TO_BIN(p_order_id_address),
-                    UUID_TO_BIN(p_order_id_payment_card));
-
-            -- 4. Get the id of the new order and the pending status id
-            SELECT id_order FROM orders WHERE order_number = p_order_number INTO v_order_id;
-            SELECT id_status INTO pending_status_id FROM order_status WHERE status = 'Preparación';
-            IF v_order_id IS NOT NULL THEN
-                -- 5. Insert the products from the shopping cart into the orders_has_products table
-                INSERT INTO orders_has_products (id_order_product, amount, fk_id_order, fk_id_product, fk_id_status)
-                SELECT UUID_TO_BIN(UUID()),
-                       amount,
-                       v_order_id,
-                       fk_id_product,
-                       pending_status_id
-                FROM shopping_cart
-                WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-
-                -- 6. Verify if the products were inserted into the orders_has_products table
-                SELECT COUNT(*) INTO total_products_inserted FROM orders_has_products WHERE fk_id_order = v_order_id;
-                IF total_products_inserted = total_products_in_shopping_cart THEN
-                    -- 7. Delete the products from the shopping cart
-                    DELETE FROM shopping_cart WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-                    COMMIT;
-                ELSE
-                    SELECT 'Products were not inserted into the order' AS message;
-                    ROLLBACK;
-                END IF;
-
-            ELSE
-                SELECT 'Order was not created' AS message;
-                ROLLBACK;
-            END IF;
-        ELSE
-            SELECT 'User can not buy its own products' AS message;
-            ROLLBACK;
-        END IF;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The user does not have products in the shopping cart';
     END IF;
 
+    -- 2. Verify if a product from the shopping cart is from the same user to prevent fraud
+    SELECT COUNT(*)
+    INTO products_from_same_user
+    FROM shopping_cart sc
+             JOIN products p ON sc.fk_id_product = p.id_product
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
+      AND p.fk_id_user = UUID_TO_BIN(p_user_id);
+
+    IF products_from_same_user != 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The user can not buy his own products';
+    END IF;
+
+    -- 3. Insert a new record into the orders table
+    INSERT INTO orders(id_order, order_date, order_number, fk_id_address, fk_id_payment_card)
+    VALUES (UUID_TO_BIN(UUID()), p_order_date, p_order_number, UUID_TO_BIN(p_order_id_address),
+            UUID_TO_BIN(p_order_id_payment_card));
+
+    -- 4. Get the id of the new order and the pending status id
+    SELECT id_order FROM orders WHERE order_number = p_order_number INTO v_order_id;
+    SELECT id_status INTO pending_status_id FROM order_status WHERE status = 'Sin pagar';
+    IF v_order_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The order was not inserted';
+    END IF;
+
+    -- 4.5 Verify that there's enough stock for the products in the shopping cart
+    SELECT COUNT(*)
+    INTO total_products_in_shopping_cart
+    FROM shopping_cart sc
+             JOIN products p ON sc.fk_id_product = p.id_product
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
+      AND sc.amount > p.amount;
+
+    IF total_products_in_shopping_cart != 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the shopping cart';
+    END IF;
+
+    -- 4.6 Lock the products to prevent other users from buying them
+    UPDATE products p
+        JOIN shopping_cart sc ON p.id_product = sc.fk_id_product
+    SET p.amount = p.amount - sc.amount
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id);
+
+    -- 4.7 Verify theres no negative stock
+    SELECT COUNT(*)
+    INTO total_products_in_shopping_cart
+    FROM products
+    WHERE amount < 0;
+
+    IF total_products_in_shopping_cart != 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the shopping cart';
+    END IF;
+
+    -- 5. Insert the products from the shopping cart into the orders_has_products table
+    INSERT INTO orders_has_products (id_order_product, amount, fk_id_order, fk_id_product, fk_id_status)
+    SELECT UUID_TO_BIN(UUID()),
+           amount,
+           v_order_id,
+           fk_id_product,
+           pending_status_id
+    FROM shopping_cart
+    WHERE fk_id_user = UUID_TO_BIN(p_user_id);
+
+    -- 6. Verify if the products were inserted into the orders_has_products table
+    SELECT COUNT(*) INTO total_products_inserted FROM orders_has_products WHERE fk_id_order = v_order_id;
+    IF total_products_inserted != total_products_in_shopping_cart THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Products were not inserted into the order';
+    END IF;
+
+    -- 7. Delete the products from the shopping cart
+    DELETE FROM shopping_cart WHERE fk_id_user = UUID_TO_BIN(p_user_id);
+    COMMIT;
 END $$
 DELIMITER ;
 

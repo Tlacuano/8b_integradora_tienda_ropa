@@ -57,65 +57,49 @@ public class TransactionService {
 
     @Transactional
     public String createCheckoutSession(List<ResponseShoppingCartDTO> shoppingCart, String email, UUID idAddress, UUID idPaymentCard) throws StripeException {
-        List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
-        for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
-            ProductCreateParams productParams = ProductCreateParams.builder()
-                    .setName(shoppingCartProduct.getProduct().getProductName())
-                    .setDescription(shoppingCartProduct.getProduct().getDescription())
-                    .addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage())
+        try {
+            List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
+            for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
+                ProductCreateParams productParams = ProductCreateParams.builder().setName(shoppingCartProduct.getProduct().getProductName()).setDescription(shoppingCartProduct.getProduct().getDescription()).addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
+                Product product = Product.create(productParams);
+                lineItems.add(SessionCreateParams.LineItem.builder().setQuantity((long) shoppingCartProduct.getAmount()).setPriceData(SessionCreateParams.LineItem.PriceData.builder().setCurrency("MXN").setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100)).setProduct(product.getId()).build()).build());
+            }
+            SessionCreateParams sessionParams = SessionCreateParams.builder().addAllLineItem(lineItems).setMode(SessionCreateParams.Mode.PAYMENT).addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD).setSuccessUrl("http://localhost:5173/").setCancelUrl("http://localhost:5173/cancel").setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
                     .build();
-            Product product = Product.create(productParams);
-            lineItems.add(SessionCreateParams.LineItem.builder()
-                    .setQuantity((long) shoppingCartProduct.getAmount())
-                    .setPriceData(
-                            SessionCreateParams.LineItem.PriceData.builder()
-                                    .setCurrency("MXN")
-                                    .setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100))
-                                    .setProduct(product.getId())
-                                    .build()
-                    )
-                    .build()
-            );
+            Session session = Session.create(sessionParams);
+
+            if (session.getUrl().isEmpty()) {
+                session.expire();
+                throw new RuntimeException("Error al crear la sesión de pago");
+            }
+
+            BeanUser user = userRepository.findByEmail(email);
+            BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
+
+            RequestPostOrderDTO order = new RequestPostOrderDTO();
+            order.setIdUser(user.getIdUser());
+            order.setOrderDate(LocalDate.now());
+            order.setIdAddress(idAddress);
+            order.setIdPaymentCard(idPaymentCard);
+            order.setOrderNumber(orderService.orderNumberGenerator());
+            orderService.postOrder(order);
+
+            BeanOrder savedOrder = orderService.getOrderByOrderNumber(order.getOrderNumber());
+
+            BeanTransaction transaction = new BeanTransaction();
+            transaction.setIdSession(session.getId());
+            transaction.setTotal(shoppingCart.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getAmount()).sum());
+            transaction.setUser(user);
+            transaction.setStatus(status);
+            transaction.setPaymentStatus(session.getPaymentStatus());
+            transaction.setCheckoutStatus(session.getStatus());
+            transaction.setOrder(savedOrder);
+            transactionRepository.save(transaction);
+
+            return session.getUrl();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear la sesión de pago: " + e.getMessage());
         }
-        SessionCreateParams sessionParams = SessionCreateParams.builder()
-                .addAllLineItem(lineItems)
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                .setSuccessUrl("http://localhost:5173/")
-                .setCancelUrl("http://localhost:5173/cancel")
-                .setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
-                .build();
-        Session session = Session.create(sessionParams);
-
-        if (session.getUrl().isEmpty()) {
-            session.expire();
-            throw new RuntimeException("Error al crear la sesión de pago");
-        }
-
-        BeanUser user = userRepository.findByEmail(email);
-        BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
-
-        RequestPostOrderDTO order = new RequestPostOrderDTO();
-        order.setIdUser(user.getIdUser());
-        order.setOrderDate(LocalDate.now());
-        order.setIdAddress(idAddress);
-        order.setIdPaymentCard(idPaymentCard);
-        order.setOrderNumber(orderService.orderNumberGenerator());
-        orderService.postOrder(order);
-
-        BeanOrder savedOrder = orderService.getOrderByOrderNumber(order.getOrderNumber());
-
-        BeanTransaction transaction = new BeanTransaction();
-        transaction.setIdSession(session.getId());
-        transaction.setTotal(shoppingCart.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getAmount()).sum());
-        transaction.setUser(user);
-        transaction.setStatus(status);
-        transaction.setPaymentStatus(session.getPaymentStatus());
-        transaction.setCheckoutStatus(session.getStatus());
-        transaction.setOrder(savedOrder);
-        transactionRepository.save(transaction);
-
-        return session.getUrl();
     }
 
     public void fulfillOrder(String stripeSignature, String payload) throws StripeException {
@@ -126,9 +110,7 @@ public class TransactionService {
         Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
         if ("checkout.session.completed".equals(event.getType())) {
             Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
-            SessionRetrieveParams params = SessionRetrieveParams.builder()
-                    .addExpand("line_items")
-                    .build();
+            SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
             Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
 
             BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");

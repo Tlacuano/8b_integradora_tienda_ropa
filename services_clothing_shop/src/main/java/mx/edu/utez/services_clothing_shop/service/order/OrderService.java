@@ -37,8 +37,7 @@ public class OrderService {
 
     @Transactional(rollbackOn = Exception.class)
     public void postOrder(RequestPostOrderDTO order) {
-        order.setOrderNumber(orderNumberGenerator());
-        orderRepository.postOrder(order.getIdUser().toString(), order.getOrderDate(), order.getIdAddress().toString(), order.getIdPaymentCard().toString(), order.getOrderNumber());
+        orderRepository.sp_post_order(order.getIdUser().toString(), order.getOrderDate(), order.getIdAddress().toString(), order.getIdPaymentCard().toString(), order.getOrderNumber());
     }
 
     @Transactional
