@@ -26,8 +26,17 @@ const putStatusProduct = async (productId)=>{
         showWarningToast('', error)
     }
 }
+const getReviews = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/reviews/get-reviews-by-product-id`, payload)
+        return response.data
+    }catch (e){
+
+    }
+}
 export default {
     getProductByUser,
     putStatusProduct,
-    getProduct
+    getProduct,
+    getReviews
 }

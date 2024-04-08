@@ -87,7 +87,7 @@
         ></b-pagination>
       </b-col>
     </b-row>
-    <ViewProductDetails  :id-product="selectProductId"/>
+    <ViewProductDetails @close="handleRequestSuccess" :id-product="selectProductId"/>
   </section>
 </template>
 <script>
@@ -149,7 +149,10 @@
       },
       registerProductRequest(){
         this.$router.push({name:'RegisterProductRequest'})
-      }
+      },
+      handleRequestSuccess() {
+        this.getProductByUser();
+      },
     },
     mounted() {
       this.getProductByUser()
