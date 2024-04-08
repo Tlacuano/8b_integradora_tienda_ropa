@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.address_status.BeanAddressStatus;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "address")
+@EntityListeners(AuditEntityListener.class)
 public class BeanAddress {
     @Id
     @GeneratedValue(generator = "UUID")

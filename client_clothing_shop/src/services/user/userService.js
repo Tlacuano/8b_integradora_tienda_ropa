@@ -1,8 +1,6 @@
 import axios from "../../config/http-client.gateway"
 import {showWarningToast} from "@/components/alerts/alerts";
 
-const error = 'Ocurrió un error inesperado, por favor inténtelo más tarde';
-
 const getPageUsersService = async (pagination) => {
     try {
         const { page, size } = pagination;
@@ -147,6 +145,22 @@ const deleteAccountAdminService = async (payload) => {
     }
 }
 
+const blockSellService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/sellers-information/block-sell", payload);
+        return response.data
+    } catch (e) {
+    }
+}
+
+const unblockSellService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/sellers-information/unblock-sell", payload);
+        return response.data
+    } catch (e) {
+    }
+}
+
 
 export default {
     getPageUsersService,
@@ -165,5 +179,7 @@ export default {
     getPageAdminsService,
     getPageAdminsByEmailService,
     postAdminService,
-    deleteAccountAdminService
+    deleteAccountAdminService,
+    blockSellService,
+    unblockSellService
 };

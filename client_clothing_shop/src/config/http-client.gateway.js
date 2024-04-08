@@ -97,6 +97,7 @@ export default {
             }
         });
     },
+
     async doGet(url) {
         return await instance.get(SERVER_URL+url);
     },

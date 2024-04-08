@@ -1,5 +1,5 @@
 <template>
-  <section class="interface">
+  <section class="">
     <b-row>
       <b-col>
         <b-row>

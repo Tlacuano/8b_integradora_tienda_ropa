@@ -12,6 +12,7 @@ import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "products")
+@EntityListeners(AuditEntityListener.class)
 public class BeanProduct {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -29,7 +31,7 @@ public class BeanProduct {
     @Column(name = "id_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idProduct;
 
-    @Column(name = "product_name", length = 30)
+    @Column(name = "product_name")
     private String productName;
 
     @Column(name = "description")

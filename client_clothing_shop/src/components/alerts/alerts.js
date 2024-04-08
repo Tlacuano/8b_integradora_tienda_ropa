@@ -9,28 +9,29 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
       showCancelButton: true,
       confirmButtonText: confirmButtonText,
       confirmButtonColor: "#212529",
+      cancelButtonText: "Cancelar",
 
   }).then(async (result) => {
       if (result.isConfirmed) {
           try {
               await store.dispatch('changeStatusOverlay');
-              await onConfirm();
+              const response = await onConfirm();
               await store.dispatch('changeStatusOverlay');
 
-              Vue.swal({
-                  toast: true,
-                  position: "top-end",
-                  showConfirmButton: false,
-                  title: 'Realizado exitosamente!',
-                  icon: 'success',
-                  timer: 3000,
-              }).then(()=>{
-                  window.location.reload()
-              });
+              if(response) {
+                  Vue.swal({
+                      toast: true,
+                      position: "top-end",
+                      showConfirmButton: false,
+                      title: 'Realizado exitosamente!',
+                      icon: 'success',
+                      timer: 3000,
+                  }).then(()=>{
+                      window.location.reload()
+                  });
+              }
 
           } catch (error) {
-              console.error(error);
-              await store.dispatch('changeStatusOverlay');
           }
       }
   });

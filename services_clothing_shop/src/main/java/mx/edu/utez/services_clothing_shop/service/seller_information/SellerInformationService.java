@@ -1,6 +1,14 @@
 package mx.edu.utez.services_clothing_shop.service.seller_information;
 
 import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.ResponseAllSellerInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
+import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
+import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
+import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
+import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.model.user.IUser;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.seller_information.ISellerInformation;
@@ -16,9 +24,17 @@ import java.util.stream.Collectors;
 @Service
 public class SellerInformationService {
     private final ISellerInformation iSellerInformation;
+    private final IUser iUser;
+    private final IRequestsSellProduct iRequestsSellProduct;
+    private final IRequestStatus iRequestStatus;
+    private final EmailService emailService;
     private ErrorDictionary errorDictionary;
-    public SellerInformationService(ISellerInformation iSellerInformation, ErrorDictionary errorDictionary) {
+    public SellerInformationService(ISellerInformation iSellerInformation, IUser iUser, IRequestsSellProduct iRequestsSellProduct, IRequestStatus iRequestStatus, EmailService emailService, ErrorDictionary errorDictionary) {
         this.iSellerInformation = iSellerInformation;
+        this.iUser = iUser;
+        this.iRequestsSellProduct = iRequestsSellProduct;
+        this.iRequestStatus = iRequestStatus;
+        this.emailService = emailService;
         this.errorDictionary = errorDictionary;
     }
 
@@ -82,12 +98,63 @@ public class SellerInformationService {
         }
     }
 
+    @Transactional
     public ResponseAllSellerInformationDTO mapToResponseAllSellerInformationDTO(Object[] row){
         ResponseAllSellerInformationDTO responseDTO = new ResponseAllSellerInformationDTO();
         responseDTO.setFullName((String) row[0]);
         responseDTO.setCurp((String) row[1]);
         responseDTO.setPrivacy((boolean) row[2]);
         return responseDTO;
+    }
+
+    @Transactional
+    public boolean blockSell(RequestActionByEmailDTO payload){
+        BeanUser user = iUser.findByEmail(payload.getEmail());
+
+        if(user == null){
+            throw new CustomException(errorDictionary.getErrorMessage("user.notfound"));
+        }
+
+        user.getPerson().getSellerInformation().setBlockSell(true);
+        iSellerInformation.save(user.getPerson().getSellerInformation());
+
+
+        List<BeanRequestSellProduct> requests = iRequestsSellProduct.findAllByUser(payload.getEmail());
+        BeanRequestStatus status = iRequestStatus.findByStatus("Rechazado").get();
+
+        requests.forEach(request -> {
+            request.setStatus(status);
+            iRequestsSellProduct.save(request);
+        });
+
+        emailService.sendEmail(user.getEmail(),
+                "Sanción en tu cuenta",
+                "Recibiste un bloqueo de venta en tu cuenta",
+                payload.getReason(),
+                "Atentamente, "+payload.getAdmin());
+
+        return true;
+    }
+
+
+    @Transactional
+    public boolean unblockSell(RequestActionByEmailDTO payload){
+        BeanUser user = iUser.findByEmail(payload.getEmail());
+
+        if(user == null){
+            throw new CustomException(errorDictionary.getErrorMessage("user.notfound"));
+        }
+
+        user.getPerson().getSellerInformation().setBlockSell(false);
+        iSellerInformation.save(user.getPerson().getSellerInformation());
+
+        emailService.sendEmail(user.getEmail(),
+                "Desbloqueo en tu cuenta",
+                "Tu cuenta ya puede vender nuevamente",
+                "",
+                "Atentamente, "+payload.getAdmin());
+
+        return true;
     }
 
 }

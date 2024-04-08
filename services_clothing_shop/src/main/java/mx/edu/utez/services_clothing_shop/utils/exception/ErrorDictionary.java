@@ -20,6 +20,8 @@ public class ErrorDictionary {
         errorMessages.put("user.code.incorrect", "No se pudo completar el cambío de contraseña.");
         errorMessages.put("user.password.incorrect", "Contraseña incorrecta.");
         errorMessages.put("user.admin.not.delete", "Acción imposible de realizar.");
+        errorMessages.put("user.order.pending", "La cuenta tiene ordenes pendientes.");
+        errorMessages.put("user.own.order.pending", "Tu cuenta no puede ser eliminada por tener ordenes pendientes.");
 
         //error messages person
         errorMessages.put("person.name.notnull", "El nombre es obligatorio.");
