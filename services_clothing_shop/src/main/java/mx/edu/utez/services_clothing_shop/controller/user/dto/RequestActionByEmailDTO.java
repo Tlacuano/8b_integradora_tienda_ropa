@@ -7,4 +7,6 @@ import lombok.Data;
 public class RequestActionByEmailDTO {
     @NotBlank(message = "user.email.notnull")
     private String email;
+    private String reason;
+    private String admin;
 }

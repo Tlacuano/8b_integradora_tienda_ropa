@@ -1,12 +1,24 @@
 package mx.edu.utez.services_clothing_shop.model.order_has_products;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, String>{
     List<BeanOrderHasProducts> findAllByOrder_IdOrder(UUID idOrder);
+
+
+    @Query("SELECT ohp FROM BeanOrderHasProducts  ohp JOIN BeanProduct p ON ohp.product.idProduct = p.idProduct " +
+            "JOIN BeanUser u ON p.user.idUser = u.idUser WHERE u.email = :email")
+    List<BeanOrderHasProducts> findBySeller (String email);
+
+    @Query("select ohp from BeanOrderHasProducts ohp " +
+            " join BeanProduct p on ohp.product.idProduct = p.idProduct " +
+            " where p.idProduct = :idProduct " +
+            " and ohp.order.address.person.user.idUser = :idBuyer")
+    BeanOrderHasProducts findOrderHasProductByBuyerAndProduct(UUID idBuyer, UUID idProduct);
 }

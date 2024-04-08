@@ -9,6 +9,7 @@ import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Data
 @Table(name = "people")
 @Entity
+@EntityListeners(AuditEntityListener.class)
 public class BeanPerson {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -33,22 +35,22 @@ public class BeanPerson {
     @JsonIgnore
     private BeanUser user;
 
-    @Column(name = "name", length = 30)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "last_name", length = 30)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "second_last_name", length = 30)
+    @Column(name = "second_last_name")
     private String secondLastName;
 
-    @Column(name = "picture", length = 100)
+    @Column(name = "picture")
     private String picture;
 
     @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Column(name = "phone_number", length = 30)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)

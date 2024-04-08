@@ -20,6 +20,8 @@ public class ErrorDictionary {
         errorMessages.put("user.code.incorrect", "No se pudo completar el cambío de contraseña.");
         errorMessages.put("user.password.incorrect", "Contraseña incorrecta.");
         errorMessages.put("user.admin.not.delete", "Acción imposible de realizar.");
+        errorMessages.put("user.order.pending", "La cuenta tiene ordenes pendientes.");
+        errorMessages.put("user.own.order.pending", "Tu cuenta no puede ser eliminada por tener ordenes pendientes.");
 
         //error messages person
         errorMessages.put("person.name.notnull", "El nombre es obligatorio.");
@@ -50,6 +52,8 @@ public class ErrorDictionary {
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
+        errorMessages.put("order.bybuyer.notfound", "Necesitas adquirir el producto para poder dar una reseña.");
+        errorMessages.put("order.status.notallowed", "Necesitas haber recibido primero el producto para poder dar una reseña.");
 
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
@@ -59,7 +63,7 @@ public class ErrorDictionary {
         errorMessages.put("wishList.id.notnull", "El id de la lista de deseos es obligatorio.");
         errorMessages.put("wishList.id.notfound", "La lista de deseos no fue encontrada.");
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria y no negativa.");
-        errorMessages.put("wishList.amount.error", "La cantidad es mayor a la disponible.");
+        errorMessages.put("wishList.amount.error", "No hay suficientes disponibles.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
         errorMessages.put("wishList.user.notnull", "El usuario es obligatorio.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
@@ -74,7 +78,7 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.product.exists", "El producto ya está en el carrito de compras.");
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
-        errorMessages.put("shoppingCart.amount.error", "La cantidad es mayor a la disponible.");
+        errorMessages.put("shoppingCart.amount.error", "No hay suficientes disponibles.");
         errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
         errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
         errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
@@ -155,6 +159,7 @@ public class ErrorDictionary {
         errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
         errorMessages.put("review.assessment.max", "La calificación debe ser menor a 6.");
         errorMessages.put("review.reviewDate.notnull", "La fecha de la reseña es obligatoria.");
+        errorMessages.put("review.exists", "Ya haz dado una reseña del producto.");
 
         //error messages data change
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");

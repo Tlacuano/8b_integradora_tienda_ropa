@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "return_product_gallery")
+@EntityListeners(AuditEntityListener.class)
 public class BeanReturnProductGallery {
     @Id
     @GeneratedValue(generator = "UUID")

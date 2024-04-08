@@ -58,4 +58,21 @@ public class ReviewController {
             );
     }
 
+    @PostMapping("/get-reviews-by-product-id")
+    public ResponseEntity<Object> getReviewsByProductId(@Validated @RequestBody RequestGetByProductIDDTO payload) {
+            return new ResponseEntity<>(
+                    new CustomResponse<>(reviewService.findByProductId(payload.getIdProduct()), "Reviews retrieved successfully", false, 200),
+                    HttpStatus.OK
+            );
+    }
+
+    @PostMapping("/get-comprobant-to-review")
+    public ResponseEntity<Object> getComprobantToReview(@Validated @RequestBody RequestComprobationToReviewDTO payload) {
+            return new ResponseEntity<>(
+                    new CustomResponse<>(reviewService.getComprobantToReview(payload), "Comprobant retrieved successfully", false, 200),
+                    HttpStatus.OK
+            );
+    }
+
+
 }

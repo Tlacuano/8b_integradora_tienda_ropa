@@ -41,11 +41,19 @@ const getOrderHasProductsService = async (payload) => {
     }
 }
 
+const getByProductAndBuyerService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/order-has-products/get-orders-has-products-by-buyer", payload);
+        return response.data;
+    } catch (e) {
+    }
+}
 
 
 export default {
     getPageOrdersService,
     getOrdersByEmailService,
     getOrderDetailsByIdOrderService,
-    getOrderHasProductsService
+    getOrderHasProductsService,
+    getByProductAndBuyerService
 }

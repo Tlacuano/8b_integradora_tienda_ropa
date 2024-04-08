@@ -1,5 +1,5 @@
 <template>
-  <section class="interface">
+  <section class="">
     <b-row>
       <b-col>
         <b-row>
@@ -48,37 +48,32 @@
                         </b-col>
                       </b-row>
                       <b-row>
-                        <b-col>
-                          <b-row>
-                            <b-col cols="auto my-auto">
-                              <span class="pr-4">Cantidad</span>
-                              <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
+                        <b-col cols="auto my-auto">
+                          <span class="pr-4">Cantidad</span>
+                            <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
                                                  @click="decreaseAmount(product)"/>
                               <span class="mx-2">{{ product.amount }}</span>
-                              <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
+                            <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
                                                  @click="increaseAmount(product)"/>
-                            </b-col>
-                            <b-col>
-                              <b-row>
-                                <b-col>
-                                  <p class="d-lg-none p-0 m-0"><small>Envío</small></p>
-                                  <p class="d-none d-lg-block">Envío</p>
-                                </b-col>
-                                <b-col class="text-right">
-                                  <span class="text-secondary underline small">Gratis</span>
-                                </b-col>
-                              </b-row>
-                              <b-row>
-                                <b-col>
-                                  <b class="d-lg-none">Total</b>
-                                  <h5 class="d-none d-lg-block">Total</h5>
-                                </b-col>
-                                <b-col class="text-right">
-                                  <span><b>${{ calculateProductPrice(product) }}</b></span>
-                                </b-col>
-                              </b-row>
-                            </b-col>
-                          </b-row>
+                        </b-col>
+                      </b-row>
+
+                      <b-row class="mt-lg-5">
+                        <b-col>
+                          <p class="d-lg-none p-0 m-0"><small>Envío</small></p>
+                          <p class="d-none d-lg-block">Envío</p>
+                        </b-col>
+                        <b-col class="text-right">
+                          <span class="text-secondary underline small">Gratis</span>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <b class="d-lg-none">Total</b>
+                          <h5 class="d-none d-lg-block">Total</h5>
+                        </b-col>
+                        <b-col class="text-right">
+                          <span><b>${{ calculateProductPrice(product) }}</b></span>
                         </b-col>
                       </b-row>
                     </b-col>

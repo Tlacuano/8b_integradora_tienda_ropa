@@ -2,6 +2,10 @@ package mx.edu.utez.services_clothing_shop.service.user;
 
 
 import mx.edu.utez.services_clothing_shop.controller.user.dto.*;
+import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_status.IOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.user_roles.IUserRoles;
 import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
@@ -26,13 +30,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final IUserRoles userRolesRepository;
+    private final IOrderHasProducts orderHasProductsRepository;
 
-    public UserService(IUser userRepository, IRole roleRepository, PasswordEncoder passwordEncoder, EmailService emailService, IUserRoles userRolesRepository) {
+    public UserService(IUser userRepository, IRole roleRepository, PasswordEncoder passwordEncoder, EmailService emailService, IUserRoles userRolesRepository, IOrderHasProducts orderHasProductsRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.userRolesRepository = userRolesRepository;
+        this.orderHasProductsRepository = orderHasProductsRepository;
     }
 
 
@@ -103,8 +109,24 @@ public class UserService {
     public boolean changeStatusAccount(RequestActionByEmailDTO payload){
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
+
+        List<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySeller(payload.getEmail());
+        boolean hasOrderPending = false;
+
+        for (BeanOrderHasProducts order : orders) {
+            if(order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")){
+                hasOrderPending = true;
+                break;
+            }
+        }
+
+        if(hasOrderPending){
+            throw new CustomException("user.order.pending");
+        }
+
+
         user.setStatus(!user.isStatus());
 
         userRepository.saveAndFlush(user);
@@ -127,12 +149,28 @@ public class UserService {
     public void deleteAccount(RequestRestorePasswordDTO payload){
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(!passwordEncoder.matches(payload.getPassword(), user.getPassword())){
             throw new CustomException("user.password.incorrect");
         }
+
+        List<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySeller(payload.getEmail());
+        boolean hasOrderPending = false;
+
+        for (BeanOrderHasProducts order : orders) {
+            if(order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")){
+                hasOrderPending = true;
+                break;
+            }
+        }
+
+        if(hasOrderPending){
+            throw new CustomException("user.own.order.pending");
+        }
+
+
 
         userRepository.deleteAccount(payload.getEmail());
 
@@ -153,7 +191,7 @@ public class UserService {
     public boolean verifyCode(RequestCodeDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         boolean result = user.getVerificationCode().equals(payload.getCode());
@@ -170,7 +208,7 @@ public class UserService {
     public ResponseGetProfileDTO getProfile(String email) {
         BeanUser user = userRepository.findByEmail(email);
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         return ResponseGetProfileDTO.fromUser(user);
@@ -181,7 +219,7 @@ public class UserService {
         BeanUser user = userRepository.findByEmail(email);
 
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         String code = SecurityCode.generateCode();
@@ -197,7 +235,7 @@ public class UserService {
     public boolean deleteIncompleteAccount(String email) {
         BeanUser user = userRepository.findByEmail(email);
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(user.isPrivacyPolicy()){
@@ -226,7 +264,7 @@ public class UserService {
     public boolean restorePassword(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(!user.getVerificationCode().equals(payload.getCode())){
@@ -249,7 +287,7 @@ public class UserService {
     public boolean changePassword(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         if(!passwordEncoder.matches(payload.getOldPassword(), user.getPassword())){
@@ -271,13 +309,28 @@ public class UserService {
     public boolean deleteAccountAdmin(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if(user == null){
-            throw new CustomException("user.email.not.found");
+            throw new CustomException("user.email.exists");
         }
 
         List<String> roles = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();
 
         if(roles.contains("ROLE_SUPERADMIN")){
             throw new CustomException("user.admin.not.delete");
+        }
+
+
+        List<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySeller(payload.getEmail());
+        boolean hasOrderPending = false;
+
+        for (BeanOrderHasProducts order : orders) {
+            if(order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")){
+                hasOrderPending = true;
+                break;
+            }
+        }
+
+        if(hasOrderPending){
+            throw new CustomException("user.order.pending");
         }
 
 
@@ -288,6 +341,7 @@ public class UserService {
                 "Tu cuenta ha sido eliminada por un administrador",
                 payload.getReazon(),
                 "Atentamente, "+payload.getAdmin());
+
         return true;
     }
 }

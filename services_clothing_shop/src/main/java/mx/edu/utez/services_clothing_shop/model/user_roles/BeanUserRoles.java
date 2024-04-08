@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_roles")
+@EntityListeners(AuditEntityListener.class)
 @Entity
 public class BeanUserRoles {
     @Id
