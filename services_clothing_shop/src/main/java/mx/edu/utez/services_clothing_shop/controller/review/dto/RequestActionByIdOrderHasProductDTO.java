@@ -9,4 +9,6 @@ import java.util.UUID;
 public class RequestActionByIdOrderHasProductDTO {
     @NotNull(message = "review.idOrderHasProduct.notnull")
     private UUID idOrderHasProduct;
+
+
 }

@@ -1,9 +1,10 @@
 package mx.edu.utez.services_clothing_shop.service.review;
 
-import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPostReviewDTO;
-import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestPutReviewDTO;
-import mx.edu.utez.services_clothing_shop.controller.review.dto.ResponseAllReviewDTO;
-import mx.edu.utez.services_clothing_shop.utils.exception.ErrorDictionary;
+import mx.edu.utez.services_clothing_shop.controller.review.dto.*;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.model.user.IUser;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.model.review.IReview;
@@ -20,8 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewService {
     private final IReview iReview;
-    public ReviewService(IReview iReview) {
+    private final IUser iUser;
+    private final IOrderHasProducts iOrderHasProducts;
+    public ReviewService(IReview iReview, IUser iUser, IOrderHasProducts iOrderHasProducts) {
         this.iReview = iReview;
+        this.iUser = iUser;
+        this.iOrderHasProducts = iOrderHasProducts;
     }
 
     @Transactional
@@ -87,4 +92,42 @@ public class ReviewService {
         iReview.deleteById(idReview);
     }
 
+
+    @Transactional
+    public List<ResponseReviewsByProductIdDTO> findByProductId(UUID idProduct){
+        List<BeanReview> reviews = iReview.findByProductId(idProduct);
+
+        return reviews
+                .stream()
+                .map(ResponseReviewsByProductIdDTO::fromReview)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public boolean getComprobantToReview(RequestComprobationToReviewDTO payload){
+        BeanUser user = iUser.findByEmail(payload.getEmail());
+
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+
+        BeanOrderHasProducts order = iOrderHasProducts.findOrderHasProductByBuyerAndProduct(user.getIdUser(), payload.getIdProduct());
+
+        if(order == null){
+            throw new CustomException("order.bybuyer.notfound");
+        }
+
+        System.out.println(order.getStatus().getStatus());
+        if(order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")){
+            throw new CustomException("order.status.notallowed");
+        }
+
+        BeanReview review = iReview.findByOrderId(order.getOrder().getIdOrder());
+
+        if(review != null){
+            throw new CustomException("review.exists");
+        }
+
+        return true;
+    }
 }

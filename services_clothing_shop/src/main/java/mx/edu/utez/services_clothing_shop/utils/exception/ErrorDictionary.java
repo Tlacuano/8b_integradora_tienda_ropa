@@ -52,6 +52,8 @@ public class ErrorDictionary {
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
+        errorMessages.put("order.bybuyer.notfound", "Necesitas adquirir el producto para poder dar una reseña.");
+        errorMessages.put("order.status.notallowed", "Necesitas haber recibido primero el producto para poder dar una reseña.");
 
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
@@ -157,6 +159,7 @@ public class ErrorDictionary {
         errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
         errorMessages.put("review.assessment.max", "La calificación debe ser menor a 6.");
         errorMessages.put("review.reviewDate.notnull", "La fecha de la reseña es obligatoria.");
+        errorMessages.put("review.exists", "Ya haz dado una reseña del producto.");
 
         //error messages data change
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
