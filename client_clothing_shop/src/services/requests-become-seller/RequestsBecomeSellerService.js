@@ -10,7 +10,6 @@ const getPageRequestsService = async (pagination) => {
         })
         return response.data
     } catch (e) {
-        console.log(e)
     }
 }
 
@@ -21,7 +20,17 @@ const getRequestByIdService = async (request) => {
         });
         return response.data.data;
     } catch (e) {
-        console.log(e)
+    }
+}
+
+const postRequestBecomeSellerService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/requests-become-seller/post-request-become-seller", {
+            email: payload.email,
+            userSellerInformation: payload.userSellerInformation
+        })
+        return response.data.data;
+    } catch (e) {
     }
 }
 
@@ -36,12 +45,12 @@ const putStatusRequestService = async (payload) => {
             rejectionReason: payload.rejectionReason
         });
     } catch (e) {
-        console.log(e)
     }
 }
 
 export default {
     getPageRequestsService,
     getRequestByIdService,
+    postRequestBecomeSellerService,
     putStatusRequestService
 }

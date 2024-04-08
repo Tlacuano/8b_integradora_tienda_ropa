@@ -195,6 +195,10 @@ public class SpringSecurityConfig {
                                 //Modulo order-has-products
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-order-id").permitAll()
 
+                                //Modulo transactions
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/transactions/create-checkout-session").hasRole(BUYER)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/transactions/webhook").permitAll()
+
                                 .anyRequest().authenticated())
 
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))

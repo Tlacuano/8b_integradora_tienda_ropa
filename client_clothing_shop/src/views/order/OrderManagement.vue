@@ -10,7 +10,7 @@
       <b-col>
         <b-row>
           <b-col lg="4" v-for="(order, index) in orders" :key="index">
-            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openOrderDetailsModal(order.idOrder)">
+            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openOrderDetailsModal(order)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
                   <b-avatar
@@ -20,7 +20,7 @@
                   />
                 </b-col>
 
-                <b-col cols="8" class="ml-2">
+                <b-col cols="auto" class="ml-2">
                   <b-row>
                     <b-col>
                       <div class="text-truncate font-weight-bold small"> {{ order.personName + ' ' + order.personLastName + ' ' + order.personSecondLastName }}</div>
@@ -32,7 +32,7 @@
                     </b-col>
                   </b-row>
                 </b-col>
-                <b-col>
+                <b-col cols="auto" class="justify-content-center">
                   <b-row>
                     <b-col>
                       <b-badge :variant="getVariant(order.status)" class="text-ellipsis text-white small">{{ order.status }}</b-badge>
@@ -57,7 +57,7 @@
       </b-col>
     </b-row>
 
-    <OrderDetailsModal :idOrder="selectedOrder" @updateOrder="getPageOrders"/>
+    <OrderDetailsModal :order="selectedOrder" @updateOrder="getPageOrders"/>
   </section>
 </template>
 
@@ -78,7 +78,7 @@ export default Vue.extend({
         elements: 0,
       },
       orders: [],
-      selectedOrder: "",
+      selectedOrder: {},
     }
   },
   methods: {
@@ -105,7 +105,10 @@ export default Vue.extend({
     },
 
     openOrderDetailsModal(order) {
-      this.selectedOrder = order;
+      this.selectedOrder = {
+        idOrder: order.idOrder,
+        status: order.status
+      };
       this.$nextTick(() => {
         this.$bvModal.show('orderDetailsModal');
       });
@@ -119,7 +122,7 @@ export default Vue.extend({
 
 <style scoped>
 .container-orders {
-  height: 65vh !important;
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 </style>

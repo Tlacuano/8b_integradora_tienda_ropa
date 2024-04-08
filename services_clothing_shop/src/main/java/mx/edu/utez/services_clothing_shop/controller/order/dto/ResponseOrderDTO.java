@@ -40,4 +40,15 @@ public class ResponseOrderDTO {
 
         return dto;
     }
+
+    public BeanOrder toOrderEntity() {
+        BeanOrder order = new BeanOrder();
+        order.setIdOrder(this.idOrder);
+        order.setOrderDate(java.time.LocalDate.parse(this.orderDate));
+        order.setOrderNumber(this.orderNumber);
+        order.setAddress(this.address);
+        order.setOrderHasProducts(this.orderHasProducts);
+
+        return order;
+    }
 }

@@ -157,8 +157,6 @@ public class ErrorDictionary {
         errorMessages.put("review.reviewDate.notnull", "La fecha de la reseña es obligatoria.");
 
         //error messages data change
-        errorMessages.put("dataChange.email.notnull", "El email es obligatorio.");
-        errorMessages.put("dataChange.email.invalid", "El email no es válido.");
         errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
         errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
         errorMessages.put("dataChange.request.notFound", "La solicitud no fue encontrada.");
