@@ -1,9 +1,12 @@
 package mx.edu.utez.services_clothing_shop.controller.address.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ResponsePostAddressDTO {
     private UUID idAddress;
@@ -16,7 +19,5 @@ public class ResponsePostAddressDTO {
     private UUID personId;
     private ResponseStatusDTO status;
 
-    public ResponsePostAddressDTO() {
-    }
 
 }
