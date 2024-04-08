@@ -20,15 +20,15 @@ public interface IProduct extends JpaRepository<BeanProduct, UUID> {
 
     boolean existsByProductName(String productName);
 
-    @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
+    @Query("SELECT p FROM BeanProduct p JOIN p.requestSellProduct s WHERE p.subcategory.category.category = :category AND p.status = true AND p.amount > 0 AND s.status.status = 'Aprobado'")
     Page<BeanProduct> findAllByCategory(String category, Pageable page);
 
-    @Query("SELECT p FROM BeanProduct p WHERE p.subcategory.subcategory = :subcategory AND p.status = true AND p.subcategory.category.category = :category AND p.amount > 0")
+    @Query("SELECT p FROM BeanProduct p JOIN p.requestSellProduct s WHERE p.subcategory.subcategory = :subcategory AND p.status = true AND p.subcategory.category.category = :category AND p.amount > 0 AND s.status.status = 'Aprobado'")
     Page<BeanProduct> findAllBySubcategory(String category, String subcategory, Pageable page);
 
-    @Query("SELECT p FROM BeanProduct p WHERE p.productName LIKE %:query% AND p.subcategory.subcategory = :subcategory AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
+    @Query("SELECT p FROM BeanProduct p JOIN p.requestSellProduct s WHERE p.productName LIKE %:query% AND p.subcategory.subcategory = :subcategory AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0 AND s.status.status = 'Aprobado'")
     Page<BeanProduct> findAllByProductNameAndSubcategory(String query, String category, String subcategory, Pageable page);
 
-    @Query("SELECT p FROM BeanProduct p WHERE p.productName LIKE %:query% AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0")
+    @Query("SELECT p FROM BeanProduct p JOIN p.requestSellProduct s WHERE p.productName LIKE %:query% AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0 AND s.status.status = 'Aprobado'")
     Page<BeanProduct> findAllByProductNameContainingIgnoreCase(String query, String category, Pageable page);
 }

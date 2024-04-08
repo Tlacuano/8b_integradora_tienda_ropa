@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.service.wish_list;
 
 
 
+import com.cloudinary.utils.StringUtils;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
 
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,25 +38,25 @@ public class WishListService {
     }
 
 
-    @Transactional
     public List<ResponseInformationWishListDTO> findWishListByUserEmail(String userEmail) {
-        if (userEmail == null || userEmail.isEmpty()) {
+        if (StringUtils.isEmpty(userEmail)) {
             throw new CustomException("user.email.notnull");
         } else if (!userEmail.matches(EMAIL_REGEX)) {
             throw new CustomException("user.email.invalid");
         } else {
             List<BeanWishList> wishList = wishListRepository.findAllByUser_email(userEmail);
-            if (wishList != null) {
+            if (wishList != null && !wishList.isEmpty()) {
                 List<ResponseInformationWishListDTO> wishListDTOS = new ArrayList<>();
                 for (BeanWishList wish : wishList) {
                     wishListDTOS.add(ResponseInformationWishListDTO.fromWish(wish));
                 }
                 return wishListDTOS;
             } else {
-                throw new CustomException("wishList.notfound");
+                return Collections.emptyList();
             }
         }
     }
+
 
     @Transactional
     public ResponseWishListDTO saveWishList(BeanWishList wishList) {
