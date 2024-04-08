@@ -51,6 +51,7 @@ public class RequestsBecomeSellerService {
                 BeanRequestsBecomeSeller request = requestOptional.get();
                 BeanPerson person = IRequestsBecomeSeller.findPersonByRequestId(requestId);
                 if (person != null) {
+                    IRequestsBecomeSeller.insertSellerRole(requestId);
                     BeanSellerInformation sellerInformation = new BeanSellerInformation();
                     String userSellerInformationJSON = request.getUserSellerInformation();
                     ObjectMapper objectMapper = new ObjectMapper();

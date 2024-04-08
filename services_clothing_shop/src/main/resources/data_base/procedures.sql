@@ -385,3 +385,20 @@ BEGIN
     SELECT TRUE as message;
 END $$
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `insert_seller_role`;
+DELIMITER $$
+CREATE PROCEDURE insert_seller_role(IN p_request_id BINARY(16))
+BEGIN
+    DECLARE v_user_id BINARY(16);
+    DECLARE v_seller_role_id BINARY(16);
+
+    SELECT fk_id_user INTO v_user_id FROM requests_become_seller WHERE id_request_become_seller = p_request_id;
+
+    SELECT id_role INTO v_seller_role_id FROM roles WHERE role_name = 'ROLE_SELLER';
+
+    INSERT INTO user_roles (id_user_role, fk_id_role, fk_id_user)
+    VALUES (UUID_TO_BIN(UUID()), v_seller_role_id, v_user_id);
+    SELECT TRUE as message;
+END $$
+DELIMITER ;
