@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.transaction_status.BeanTransactionStatus;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -24,6 +25,20 @@ public class BeanTransaction {
 
     @Column(name = "total")
     private double total;
+
+    @Column(name = "id_session")
+    private String idSession;
+
+    @Column(name = "payment_status")
+    private String paymentStatus;
+
+    @Column(name = "checkout_status")
+    private String checkoutStatus;
+
+    //relacion muchos a uno con la tabla de users
+    @ManyToOne
+    @JoinColumn(name = "fk_id_user")
+    private BeanUser user;
 
     //relacion muchos a uno con la tabla de orders
     @ManyToOne

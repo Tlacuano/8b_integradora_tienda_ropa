@@ -242,7 +242,9 @@ export default {
       const payload = {
         total: this.total,
         description: `Orden de ${this.totalProducts} artículos`,
-        email: this.$store.getters.getEmail
+        email: this.$store.getters.getEmail,
+        idAddress: this.selectedAddress.idAddress,
+        idPaymentCard: this.selectedPaymentCard.idPaymentCard
       };
       const response = await TransactionService.createCheckoutSession(payload);
       if (response.status === 200) {

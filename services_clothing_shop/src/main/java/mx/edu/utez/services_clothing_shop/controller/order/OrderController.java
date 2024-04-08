@@ -13,21 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.SecureRandom;
-import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
-
 
 @RestController
 @RequestMapping("venta-ropa/api/orders")
 @CrossOrigin(origins = "*")
 public class OrderController {
     private final OrderService orderService;
-    private static final SecureRandom random = new SecureRandom();
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
@@ -44,7 +36,7 @@ public class OrderController {
         IOrder.OrderDetailsProjection orderDetails = orderService.getOrderDetailsByIdOrder(payload.getIdOrder());
         return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(orderDetails, "Order details found", false, HttpStatus.OK.value()));
     }
-    
+
     @PostMapping("/get-orders-by-user-email")
     public ResponseEntity<Object> getOrdersByUserEmail(@Valid @RequestBody RequestActionByEmailDTO payload, Pageable pageable) {
         Page<BeanOrder> orders = orderService.getOrdersByUserEmail(payload.getEmail(), pageable);
@@ -53,34 +45,13 @@ public class OrderController {
     }
 
     @PostMapping("/post-order")
-    public ResponseEntity<CustomResponse<ResponseOrderDTO>> postOrder(@Valid @RequestBody RequestPostOrderDTO order) {
+    public ResponseEntity<CustomResponse<Boolean>> postOrder(@Valid @RequestBody RequestPostOrderDTO order) {
         try {
-            order.setOrderNumber(orderNumberGenerator());
-            Map<String, Object> response = orderService.postOrder(order);
-
-            if (response.containsKey("message")) {
-                String errorMessage = (String) response.get("message");
-                throw new RuntimeException(errorMessage);
-            }
-
-            if (!response.isEmpty() && response.containsKey("id_order")) {
-                ResponseOrderDTO orderDTO = new ResponseOrderDTO();
-                orderDTO.setIdOrder(UUID.fromString((String) response.get("id_order")));
-                orderDTO.setOrderDate(String.valueOf(order.getOrderDate()));
-                orderDTO.setOrderNumber(order.getOrderNumber());
-
-                return ResponseEntity.status(HttpStatus.CREATED).body(new CustomResponse<>(orderDTO, "Order created successfully", false, HttpStatus.CREATED.value()));
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        } catch (Exception e) {
+            orderService.postOrder(order);
+            return ResponseEntity.ok(new CustomResponse<>(true, "Order created", false, HttpStatus.OK.value()));
+        } catch (
+                Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    public String orderNumberGenerator() {
-        String timestampPart = Long.toString(Instant.now().toEpochMilli());
-        String randomPart = Long.toString(random.nextLong()).replace("-", "0");
-        return (timestampPart + randomPart).substring(0, 16);
     }
 }

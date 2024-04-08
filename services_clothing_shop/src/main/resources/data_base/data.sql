@@ -1132,3 +1132,13 @@ VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c64'),
        (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c66'),
         'https://via.placeholder.com/500.png?text=devolucion3',
         UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c63'));
+
+INSERT IGNORE INTO transaction_status
+(id_status,
+ status)
+VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c67'),
+        'Pendiente'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c68'),
+        'Pagado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c69'),
+        'Cancelado');
