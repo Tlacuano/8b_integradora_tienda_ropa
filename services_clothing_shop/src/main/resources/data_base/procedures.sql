@@ -155,7 +155,6 @@ CREATE PROCEDURE `sp_post_order`(
 BEGIN
     DECLARE v_order_id BINARY(16);
     DECLARE total_products_in_shopping_cart INT;
-    DECLARE total_products_inserted INT;
     DECLARE products_from_same_user INT;
     DECLARE pending_status_id BINARY(16);
 
@@ -206,22 +205,6 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the shopping cart';
     END IF;
 
-    -- 4.6 Lock the products to prevent other users from buying them
-    UPDATE products p
-        JOIN shopping_cart sc ON p.id_product = sc.fk_id_product
-    SET p.amount = p.amount - sc.amount
-    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id);
-
-    -- 4.7 Verify theres no negative stock
-    SELECT COUNT(*)
-    INTO total_products_in_shopping_cart
-    FROM products
-    WHERE amount < 0;
-
-    IF total_products_in_shopping_cart != 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the shopping cart';
-    END IF;
-
     -- 5. Insert the products from the shopping cart into the orders_has_products table
     INSERT INTO orders_has_products (id_order_product, amount, fk_id_order, fk_id_product, fk_id_status)
     SELECT UUID_TO_BIN(UUID()),
@@ -231,12 +214,6 @@ BEGIN
            pending_status_id
     FROM shopping_cart
     WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-
-    -- 6. Verify if the products were inserted into the orders_has_products table
-    SELECT COUNT(*) INTO total_products_inserted FROM orders_has_products WHERE fk_id_order = v_order_id;
-    IF total_products_inserted != total_products_in_shopping_cart THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Products were not inserted into the order';
-    END IF;
     COMMIT;
 END $$
 DELIMITER ;

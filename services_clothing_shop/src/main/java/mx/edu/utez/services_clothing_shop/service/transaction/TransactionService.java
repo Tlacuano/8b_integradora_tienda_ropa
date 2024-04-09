@@ -60,11 +60,25 @@ public class TransactionService {
         try {
             List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
             for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
-                ProductCreateParams productParams = ProductCreateParams.builder().setName(shoppingCartProduct.getProduct().getProductName()).setDescription(shoppingCartProduct.getProduct().getDescription()).addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
+                ProductCreateParams productParams = ProductCreateParams.builder()
+                        .setName(shoppingCartProduct.getProduct().getProductName())
+                        .setDescription(shoppingCartProduct.getProduct().getDescription())
+                        .addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
                 Product product = Product.create(productParams);
-                lineItems.add(SessionCreateParams.LineItem.builder().setQuantity((long) shoppingCartProduct.getAmount()).setPriceData(SessionCreateParams.LineItem.PriceData.builder().setCurrency("MXN").setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100)).setProduct(product.getId()).build()).build());
+                lineItems.add(SessionCreateParams.LineItem.builder()
+                        .setQuantity((long) shoppingCartProduct.getAmount())
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("MXN")
+                                .setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100))
+                                .setProduct(product.getId()).build()).build());
             }
-            SessionCreateParams sessionParams = SessionCreateParams.builder().addAllLineItem(lineItems).setMode(SessionCreateParams.Mode.PAYMENT).addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD).setSuccessUrl("http://localhost:5173/").setCancelUrl("http://localhost:5173/cancel").setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
+            SessionCreateParams sessionParams = SessionCreateParams.builder()
+                    .addAllLineItem(lineItems)
+                    .setMode(SessionCreateParams.Mode.PAYMENT)
+                    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                    .setSuccessUrl("http://localhost:5173/my-orders")
+                    .setCancelUrl("http://localhost:5173/cancel")
+                    .setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
                     .build();
             Session session = Session.create(sessionParams);
 
@@ -82,6 +96,7 @@ public class TransactionService {
             order.setIdAddress(idAddress);
             order.setIdPaymentCard(idPaymentCard);
             order.setOrderNumber(orderService.orderNumberGenerator());
+            System.out.println(order.getOrderNumber());
             orderService.postOrder(order);
 
             BeanOrder savedOrder = orderService.getOrderByOrderNumber(order.getOrderNumber());
@@ -108,13 +123,21 @@ public class TransactionService {
         }
 
         Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
-        if ("checkout.session.completed".equals(event.getType())) {
-            Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
-            SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
-            Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
+        Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
+        SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
+        Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
+        BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
 
+        if ("checkout.session.completed".equals(event.getType())) {
             BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");
-            BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
+            transaction.setPaymentStatus(sessionData.getPaymentStatus());
+            transaction.setCheckoutStatus(sessionData.getStatus());
+            transaction.setStatus(transactionStatus);
+            transactionRepository.save(transaction);
+        }
+
+        if ("checkout.session.expired".equals(event.getType())) {
+            BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Cancelado");
             transaction.setPaymentStatus(sessionData.getPaymentStatus());
             transaction.setCheckoutStatus(sessionData.getStatus());
             transaction.setStatus(transactionStatus);
