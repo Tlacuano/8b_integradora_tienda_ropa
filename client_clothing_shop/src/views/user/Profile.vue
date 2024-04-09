@@ -201,7 +201,7 @@
 
         <b-row class="mt-5">
           <b-col class="text-center">
-            <b-button v-if="user.buyer && !user.seller" class="main-button" @click="openFormBecomeSeller" style="width: 60%">
+            <b-button v-if="user.buyer && !user.seller" class="main-button" @click="validIfUserHasRequest" style="width: 60%">
               Comenzar a vender!!
             </b-button>
           </b-col>
@@ -219,6 +219,8 @@
 
 <script>
 import UserService from "@/services/user/userService";
+import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
+import {showWarningToast} from "@/components/alerts/alerts";
 
 export default {
   name: 'UserDetails',
@@ -263,7 +265,18 @@ export default {
     },
     openFormBecomeSeller() {
       this.$bvModal.show('formBecomeSellerModal');
-    }
+    },
+    async validIfUserHasRequest() {
+      const email = this.$store.getters.getEmail;
+
+      const response = await RequestsBecomeSellerService.getRequestByUserEmailService(email);
+
+      if (response) {
+        showWarningToast("Ya has enviado una solicitud. Por favor espera a que sea revisada.");
+      } else {
+        this.$bvModal.show('formBecomeSellerModal');
+      }
+    },
   },
   mounted() {
     this.getProfile();

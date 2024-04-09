@@ -38,6 +38,12 @@ public class RequestsBecomeSellerService {
     }
 
     @Transactional
+    public Boolean existsRequestBecomeSellerByUserEmail(String email) {
+        Long exists = IRequestsBecomeSeller.existsRequestBecomeSellerByUserEmail(email);
+        return exists == 1;
+    }
+
+    @Transactional
     public void putRequestBecomeSeller(UUID requestId, String status, String rejectionReason){
         if(!rejectionReason.isEmpty() && !rejectionReason.matches(RegexPatterns.REJECTION_REASON_REGEX)) {
             throw new CustomException("requestBecomeSeller.rejectionReason.invalid");
