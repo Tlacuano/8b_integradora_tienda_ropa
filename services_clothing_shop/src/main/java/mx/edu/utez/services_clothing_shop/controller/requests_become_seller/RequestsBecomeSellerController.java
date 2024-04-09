@@ -63,4 +63,15 @@ public class RequestsBecomeSellerController {
                     .body(new CustomResponse<>(null, "Request not found", true, 404));
         }
     }
+
+    @PostMapping("/get-by-user-email")
+    public ResponseEntity<CustomResponse<Object>> getRequestBecomeSellerByUserEmail(@RequestBody RequestBecomeSellerGetByUserEmailDTO getByUserEmailDTO) {
+        String email = getByUserEmailDTO.getEmail();
+        Boolean exists = requestsBecomeSellerService.existsRequestBecomeSellerByUserEmail(email);
+        if (exists) {
+            return ResponseEntity.ok(new CustomResponse<>(true, "Request found", false, 200));
+        } else {
+            return ResponseEntity.ok(new CustomResponse<>(false, "Request not found", false, 200));
+        }
+    }
 }

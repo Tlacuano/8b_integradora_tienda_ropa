@@ -23,13 +23,23 @@ const getRequestByIdService = async (request) => {
     }
 }
 
+const getRequestByUserEmailService = async (email) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/requests-become-seller/get-by-user-email", {
+            email: email
+        })
+        return response.data.data;
+    } catch (e) {
+    }
+}
+
 const postRequestBecomeSellerService = async (payload) => {
     try {
         const response = await axios.doPost("/venta-ropa/api/requests-become-seller/post-request-become-seller", {
             email: payload.email,
             userSellerInformation: payload.userSellerInformation
         })
-        return response.data.data;
+        return response.data.status;
     } catch (e) {
     }
 }
@@ -51,6 +61,7 @@ const putStatusRequestService = async (payload) => {
 export default {
     getPageRequestsService,
     getRequestByIdService,
+    getRequestByUserEmailService,
     postRequestBecomeSellerService,
     putStatusRequestService
 }
