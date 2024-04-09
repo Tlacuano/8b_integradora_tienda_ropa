@@ -225,7 +225,7 @@ export default {
       this.$router.push({name:'RegisterProductEditionRequest',params:{idProduct:idProduct}})
     },
     modalClosed() {
-      this.$emit('modal-closed')
+      this.$emit('modalClosed')
     },
     goToSlide(index) {
       this.slide = index;

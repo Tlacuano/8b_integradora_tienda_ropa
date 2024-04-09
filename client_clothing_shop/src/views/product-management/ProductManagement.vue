@@ -87,7 +87,7 @@
         ></b-pagination>
       </b-col>
     </b-row>
-    <ViewProductDetails @close="handleRequestSuccess" :id-product="selectProductId"/>
+    <ViewProductDetails @modalClosed="handleRequestSuccess" :id-product="selectProductId"/>
   </section>
 </template>
 <script>
