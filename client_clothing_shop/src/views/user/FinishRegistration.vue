@@ -32,11 +32,11 @@
                       <template #label>
                         <span class="pr-3">Codigo de verificación</span>
                         <b-tooltip target="input-code-email-tooltip" placement="right">
-                <span >
-                  <small>
-                    El codigo fue enviado a su correo electrónico.
-                  </small>
-                </span>
+                          <span >
+                            <small>
+                              El codigo fue enviado a su correo electrónico.
+                            </small>
+                          </span>
                         </b-tooltip>
                         <font-awesome-icon id="input-code-email-tooltip" icon="question-circle" />
                       </template>
@@ -47,6 +47,7 @@
                           required
                           name="codeEmail"
                           v-validate="'required'"
+
                       />
                       <span v-show="errors.has('codeEmail')" class="text-danger">{{ errors.first('codeEmail') }}</span>
                     </b-form-group>
@@ -221,7 +222,7 @@
                       <b-form-input
                           id="input-code-phone"
                           type="text"
-                          v-model="form.code"
+                          v-model="form.codePhone"
                           required
                           name="codePhone"
                           v-validate="'required'"
@@ -291,6 +292,7 @@ export default {
           privacyPolicy: false,
         },
         code: '',
+        codePhone: '',
       },
 
       timerActive: false,
@@ -303,7 +305,7 @@ export default {
       Promise.all([
         this.$validator.validate('codeEmail')
       ]).then(async (result) => {
-        if (result) {
+        if (result.every(e => e)) {
           const payload = {
             email: this.form.user.email,
             code: this.form.code
@@ -361,6 +363,7 @@ export default {
             this.verified.privacyPolicy = true;
             this.increaseRegisterPage();
             this.newProgress();
+            window.location.reload();
           }
         }
       });
@@ -368,12 +371,14 @@ export default {
 
     async validateCodePhone(){
       Promise.all([
+
         this.$validator.validate('codePhone')
       ]).then(async (result) => {
-        if (result) {
+        console.log(result)
+        if (result.every(e => e)) {
           const payload = {
             email: this.form.user.email,
-            code: this.form.code
+            code: this.form.codePhone
           };
 
           this.changeStatusOverlay();
@@ -381,7 +386,7 @@ export default {
           this.changeStatusOverlay();
 
           if(response.data){
-            this.form.code = '';
+            this.form.codePhone = '';
             showSuccessToast('', 'Registro finalizado');
             localStorage.removeItem('verified');
             window.location.reload();
