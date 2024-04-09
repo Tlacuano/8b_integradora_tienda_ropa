@@ -25,8 +25,8 @@ public interface IRequestsBecomeSeller extends JpaRepository<BeanRequestsBecomeS
     @Query(nativeQuery = true, value = "CALL insert_seller_role(:requestId)")
     void insertSellerRole(@Param("requestId") UUID requestId);
 
-
-    Optional<BeanRequestsBecomeSeller> findByUserEmail(String email);
+    @Query(nativeQuery = true, value = "CALL find_request_become_seller_by_email(:email)")
+    Long existsRequestBecomeSellerByUserEmail(@Param("email") String email);
 
     public interface StatusProjection {
         BeanRequestStatus getStatus();
