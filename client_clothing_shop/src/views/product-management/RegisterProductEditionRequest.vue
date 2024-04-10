@@ -10,7 +10,7 @@
         <b-col class="" lg="6">
           <b-col>
             <b-form-group label="Imagen Principal:" label-for="principal-image">
-              <b-form-file id="principal-image" v-model="file" @input="handleImageUpload"
+              <b-form-file id="principal-image" v-model="formData.productGallery[0]" @input="handleImageUpload"
                            accept="image/*"></b-form-file>
             </b-form-group>
             <b-col class="preview-container">
@@ -56,6 +56,7 @@
             <b-col>
               <b-form-group label="Nombre" label-for="name">
                 <b-form-input
+                    v-model="formData.productName"
                     id="name"
                 ></b-form-input>
               </b-form-group>
@@ -64,38 +65,46 @@
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
-                <b-form-select id="category-select"></b-form-select>
+                <b-form-select v-model="formData.category" id="category-select">
+                  <option v-for="(category, index) in categories" :key="index" :value="category.category">
+                    {{ category.category }}
+                  </option>
+                </b-form-select>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group label="Subcategoria" label-for="subcategory-select">
-                <b-form-select id="subcategory-select"></b-form-select>
+                <b-form-select v-model="formData.subcategory" id="subcategory-select">
+                  <option v-for="(subcategory, index) in subcategories" :key="index" :value="subcategory.subcategory">
+                    {{ subcategory.subcategory }}
+                  </option>
+                </b-form-select>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Descripción: " label-for="description">
-                <b-form-textarea id="description"></b-form-textarea>
+                <b-form-textarea v-model="formData.description" id="description"></b-form-textarea>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Precio: " label-for="price">
-                <b-form-input id="price" type="number"></b-form-input>
+                <b-form-input id="price" v-model="formData.price" type="number"></b-form-input>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input id="stock" type="number"></b-form-input>
+                <b-form-input id="stock" v-model="formData.amount" type="number"></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Estado del producto" label-for="status">
-                <b-form-select id="status"></b-form-select>
+                <b-form-select id="status" v-model="formData.status" :options="optionsStatus"></b-form-select>
               </b-form-group>
             </b-col>
           </b-row>
@@ -112,6 +121,9 @@
 </template>
 <script>
 import {showWarningToast} from "@/components/alerts/alerts";
+import ProductManagementService from "@/services/product-management/ProductManagementService";
+import CategoryService from "@/services/category/CategoryService";
+import SubcategoryService from "@/services/subcategory/SubcategoryService";
 
 export default {
   props: {
@@ -124,7 +136,14 @@ export default {
     return {
       imageUrl: null,
       selectedImages: [],
-      imagePreviews: []
+      imagePreviews: [],
+      formData:null,
+      optionsStatus:[
+        {value:true,text:"Habilitado"},
+        {value:false,text:"Deshabilitado"}
+      ],
+      categories:null,
+      subcategories:null
     }
   },
   methods: {
@@ -160,11 +179,34 @@ export default {
         };
         reader.readAsDataURL(files[i]);
       }
-    }
-
+    },
+    async getDetailProduct() {
+      this.showOverlay()
+      const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
+      this.productGallery = response.data.productGallery
+      this.formData = response.data
+      console.log(this.formData)
+      this.imageUrl= this.formData.productGallery[0].image
+      this.imagePreviews = this.formData.productGallery[1].image
+      this.showOverlay()
+    },
+    async getCategories(){
+      const response = await CategoryService.getCategories()
+      this.categories = response.data.content
+      console.log(this.categories)
+    },
+    async getSubcategories(){
+      const response = await SubcategoryService.getPageSubcategoriesService(5)
+      this.subcategories = response.data.content
+    },
+    showOverlay(){
+      this.$store.dispatch('changeStatusOverlay');
+    },
   },
   mounted() {
-    this.method()
+    this.getDetailProduct()
+    this.getCategories()
+    this.getSubcategories()
   }
 }
 </script>
