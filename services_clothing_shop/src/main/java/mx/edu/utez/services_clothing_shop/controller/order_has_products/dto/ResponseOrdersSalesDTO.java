@@ -32,7 +32,7 @@ public class ResponseOrdersSalesDTO {
         dto.setAddress(orderHasProducts.getOrder().getAddress().getAddress()
                 + ", " + orderHasProducts.getOrder().getAddress().getStreet()
                 + ", " + orderHasProducts.getOrder().getAddress().getNeighborhood()
-                + ", CP: " + orderHasProducts.getOrder().getAddress().getState() + " "
+                + ", " + orderHasProducts.getOrder().getAddress().getState() + ", CP: "
                 + orderHasProducts.getOrder().getAddress().getPostalCode());
 
         dto.setOrderNumber(orderHasProducts.getOrder().getOrderNumber());

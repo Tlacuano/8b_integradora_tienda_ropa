@@ -1,20 +1,23 @@
 package mx.edu.utez.services_clothing_shop.service.order_has_products;
 
+import com.sun.tools.jconsole.JConsoleContext;
 import jakarta.transaction.Transactional;
+import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestCancelSellBySeller;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestGetPageSalesDTO;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.ResponseOrdersSalesDTO;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestComprobationToReviewDTO;
-import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
-import mx.edu.utez.services_clothing_shop.model.order.IOrder;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.order_status.IOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
+import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +29,18 @@ public class OrderHasProductsService {
     private final IOrderHasProducts orderHasProductsRepository;
     private final IUser userRepository;
     private final IOrderStatus orderStatusRepository;
-    private final IOrder orderRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public OrderHasProductsService(IOrderHasProducts orderHasProductsRepository, IUser userRepository, IOrderStatus orderStatusRepository, IOrder orderRepository) {
+    private final EmailService emailService;
+
+
+
+    public OrderHasProductsService(IOrderHasProducts orderHasProductsRepository, IUser userRepository, IOrderStatus orderStatusRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.orderHasProductsRepository = orderHasProductsRepository;
         this.userRepository = userRepository;
         this.orderStatusRepository = orderStatusRepository;
-        this.orderRepository = orderRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Transactional(rollbackOn = {Exception.class})
@@ -74,5 +82,52 @@ public class OrderHasProductsService {
         Page<BeanOrderHasProducts> orders = orderHasProductsRepository.findAllBySellerAndStatus(user.getEmail(), status, pageable);
 
         return orders.map(ResponseOrdersSalesDTO::toOrderSalesDTO);
+    }
+
+    @Transactional
+    public boolean cancelSellBySeller(RequestCancelSellBySeller requestBody) {
+        BeanUser user = userRepository.findByEmail(requestBody.getEmail());
+
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+        if(requestBody.getPassword() == null || !passwordEncoder.matches(requestBody.getPassword(), user.getPassword())){
+            throw new CustomException("user.password.incorrect");
+        }
+
+
+        BeanOrderHasProducts order = orderHasProductsRepository.findById( requestBody.getIdOrderProduct()).orElse(null);
+
+        if(order == null){
+            throw new CustomException("order.notfound");
+        }
+        if(!order.getProduct().getUser().getEmail().equals(user.getEmail())){
+            throw new CustomException("order.notfound");
+        }
+
+
+        BeanOrderStatus status = orderStatusRepository.findByStatus("Cancelado");
+
+        if(status == null){
+            throw new CustomException("status.notFound");
+        }
+
+        order.setStatus(status);
+        orderHasProductsRepository.save(order);
+
+        order.getProduct().setAmount(order.getProduct().getAmount() + order.getAmount());
+        order.getProduct().setStatus(false);
+
+        String cardNumber = EncryptionFunctions.decryptString(order.getOrder().getPaymentCard().getCardNumber());
+        String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
+
+        emailService.sendEmail(order.getOrder().getAddress().getPerson().getUser().getEmail(),
+                "Compra cancelada",
+                "Compra cancelada",
+                "El vendedor ha cancelado la compra de tu producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas." +
+                        "<br><br>Tu dinero será devuelto en un plazo de 3 a 5 días hábiles a tu tarjeta con número: " + "**** **** **** " + lastFourDigits,
+                "");
+
+        return true;
     }
 }
