@@ -190,12 +190,12 @@
               Cancelaciones
             </h5>
             <p>
-              Una vez que una orden de compra ha entrado en estado de "Envío", no podrá ser cancelada por el comprador. Esto asegura el compromiso y
+              Una vez que una orden de compra ha entrado en estado de "Envidado", no podrá ser cancelada por el comprador. Esto asegura el compromiso y
               seriedad de las transacciones dentro de nuestra plataforma.
             </p>
             <p>
-              Si el comprador desea cancelar una orden de compra antes de que entre en estado de "Envío", deberá comunicarse con el vendedor
-              directamente para solicitar la cancelación. El vendedor tendrá la opción de aceptar o rechazar la solicitud de cancelación.
+              Si el comprador desea cancelar una orden de compra deberá hacerlo antes de que el vendedor haya marcado la orden como "Enviado". En caso de
+              que el vendedor ya haya marcado la orden como "Enviado", el comprador deberá esperar a recibir el producto y proceder con la devolución del mismo.
             </p>
             <br/>
             <h5>

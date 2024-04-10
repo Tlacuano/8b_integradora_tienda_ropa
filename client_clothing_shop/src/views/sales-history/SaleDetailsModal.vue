@@ -45,7 +45,7 @@
               <b-row>
                 <b-col>
                   <b>
-                    Numero de orden
+                    Número de orden
                   </b>
                 </b-col>
                 <b-col class="text-right">
@@ -90,7 +90,7 @@
                       Cantidad: {{order.amount}}
                   </span>
                   <p class="mt-4">
-                    ${{order.price}}
+                    ${{order.price}} <small>c/u</small>
                   </p>
                 </b-card-text>
 
@@ -120,37 +120,61 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-4">
-        <b-col>
-          <b-card no-body class="selectable highlight-on-hover" >
-            <b-row align-h="between" class="p-2 mx-1">
-              <b-col>
-                <b>
-                  Marcar como enviado
-                </b>
-              </b-col>
-              <b-col class="text-right">
-                <font-awesome-icon icon="fa-solid fa-angle-right"/>
-              </b-col>
-            </b-row>
-          </b-card>
-        </b-col>
-      </b-row>
+      <section v-if="order.status === 'Preparación'">
+        <b-row class="mt-4">
+          <b-col>
+            <b-card no-body class="selectable highlight-on-hover" >
+              <b-row align-h="between" class="p-2 mx-1">
+                <b-col>
+                  <b>
+                    Marcar como enviado
+                  </b>
+                </b-col>
+                <b-col class="text-right">
+                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
 
-      <b-row class="my-2">
-        <b-col>
-          <b-card no-body class="selectable highlight-on-hover" >
-            <b-row align-h="between" class="p-2 mx-1 text-danger">
-              <b-col>
-                Cancelar compra
-              </b-col>
-              <b-col class="text-right">
-                <font-awesome-icon icon="fa-solid fa-angle-right"/>
-              </b-col>
-            </b-row>
-          </b-card>
-        </b-col>
-      </b-row>
+        <b-row class="my-2">
+          <b-col>
+            <b-card no-body class="selectable highlight-on-hover" @click="cancelSell">
+              <b-row align-h="between" class="p-2 mx-1 text-danger">
+                <b-col>
+                  Cancelar compra
+                </b-col>
+                <b-col class="text-right">
+                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </section>
+
+      <section v-if="order.status === 'Enviado'">
+        <b-row class="my-4">
+          <b-col class="px-4 text-secondary small">
+            <span>
+              Solo se puede cancelar la compra si el estado del a orden es "Preparación"
+            </span>
+          </b-col>
+        </b-row>
+      </section>
+
+      <section v-if="order.status === 'Entregado'">
+        <b-row class="my-4">
+          <b-col class="px-4 text-secondary small">
+            <span>
+              La compra ya fue entregada
+            </span>
+          </b-col>
+        </b-row>
+      </section>
+
+
     </section>
   </b-modal>
 </template>
@@ -167,9 +191,6 @@ export default {
     }
   },
   methods: {
-
-
-
     calculateProductPrice() {
       const price = new Big(this.order.price);
       const quantity = new Big(this.order.amount);
@@ -179,13 +200,14 @@ export default {
       const mainImage = gallery.find(image => image.status.status === 'Principal');
       return mainImage.image;
     },
+
+    cancelSell() {
+      if(this.order.status === 'Preparación') {
+        this.$bvModal.hide('sale-details-modal');
+        this.$bvModal.show('cancel-sell-by-seller-modal');
+      }
+    }
   },
-  //watcher para que
-  watch: {
-
-
-
-  }
 }
 </script>
 
