@@ -28,7 +28,7 @@
         </b-col>
       </b-row>
 
-      <b-row class="mt-2">
+      <b-row class="mt-2 mb-3">
         <b-col>
           <b-button class="main-button" @click="cancelSell()" >
             Cancelar venta
