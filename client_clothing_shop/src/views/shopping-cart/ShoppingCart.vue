@@ -142,7 +142,7 @@
                     @dragover.prevent
                     @dragenter.prevent
                 >
-                  <span class="text-secondary">Arrastra aqui para eliminar del carrito</span>
+                  <span class="text-secondary">Arrastra el producto aqui para eliminar del carrito</span>
                 </b-card>
               </b-col>
             </b-row>
