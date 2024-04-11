@@ -13,10 +13,7 @@ import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestPostOrderDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
-import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
-import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
-import mx.edu.utez.services_clothing_shop.model.order_status.IOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.transaction.BeanTransaction;
 import mx.edu.utez.services_clothing_shop.model.transaction.ITransaction;
 import mx.edu.utez.services_clothing_shop.model.transaction_status.BeanTransactionStatus;
@@ -46,15 +43,13 @@ public class TransactionService {
     private final IUser userRepository;
     private final IOrderHasProducts orderHasProductsRepository;
     private final OrderService orderService;
-    private final IOrderStatus orderStatusRepository;
 
 
-    public TransactionService(ITransaction transactionRepository, ITransactionStatus transactionStatusRepository, IUser userRepository, OrderService orderService, IOrderStatus orderStatusRepository, IOrderHasProducts orderHasProductsRepository) {
+    public TransactionService(ITransaction transactionRepository, ITransactionStatus transactionStatusRepository, IUser userRepository, OrderService orderService, IOrderHasProducts orderHasProductsRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionStatusRepository = transactionStatusRepository;
         this.userRepository = userRepository;
         this.orderService = orderService;
-        this.orderStatusRepository = orderStatusRepository;
         this.orderHasProductsRepository = orderHasProductsRepository;
     }
 
@@ -68,40 +63,30 @@ public class TransactionService {
         try {
             for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
                 if (shoppingCartProduct.getAmount() > shoppingCartProduct.getProduct().getAmount()) {
-                    throw new RuntimeException("No hay suficiente stock para el producto: " + shoppingCartProduct.getProduct().getProductName());
+                    throw new RuntimeException("transaction.product.stock");
                 }
             }
 
             List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
             for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
-                ProductCreateParams productParams = ProductCreateParams.builder()
-                        .setName(shoppingCartProduct.getProduct().getProductName())
-                        .setDescription(shoppingCartProduct.getProduct().getDescription())
-                        .addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
+                ProductCreateParams productParams = ProductCreateParams.builder().setName(shoppingCartProduct.getProduct().getProductName()).setDescription(shoppingCartProduct.getProduct().getDescription()).addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
                 Product product = Product.create(productParams);
-                lineItems.add(SessionCreateParams.LineItem.builder()
-                        .setQuantity((long) shoppingCartProduct.getAmount())
-                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                                .setCurrency("MXN")
-                                .setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100))
-                                .setProduct(product.getId()).build()).build());
+                lineItems.add(SessionCreateParams.LineItem.builder().setQuantity((long) shoppingCartProduct.getAmount()).setPriceData(SessionCreateParams.LineItem.PriceData.builder().setCurrency("MXN").setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100)).setProduct(product.getId()).build()).build());
             }
-            SessionCreateParams sessionParams = SessionCreateParams.builder()
-                    .addAllLineItem(lineItems)
-                    .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                    .setSuccessUrl("http://localhost:5173/my-orders")
-                    .setCancelUrl("http://localhost:5173/cancel")
-                    .setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
+            SessionCreateParams sessionParams = SessionCreateParams.builder().addAllLineItem(lineItems).setMode(SessionCreateParams.Mode.PAYMENT).addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD).setSuccessUrl("http://localhost:5173/my-orders").setCancelUrl("http://localhost:5173/cancel").setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
                     .build();
             Session session = Session.create(sessionParams);
 
             if (session.getUrl().isEmpty()) {
                 session.expire();
-                throw new RuntimeException("Error al crear la sesión de pago");
+                throw new RuntimeException("transaction.session.failed");
             }
 
             BeanUser user = userRepository.findByEmail(email);
+            if (user == null) {
+                throw new RuntimeException("transaction.user.notfound");
+            }
+
             BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
 
             RequestPostOrderDTO order = new RequestPostOrderDTO();
@@ -127,7 +112,7 @@ public class TransactionService {
 
             return session.getUrl();
         } catch (Exception e) {
-            throw new RuntimeException("Error al crear la sesión de pago: " + e.getMessage());
+            throw new RuntimeException("transaction.session.failed");
         }
     }
 
@@ -135,7 +120,7 @@ public class TransactionService {
         try {
 
             if (stripeSignature == null || payload == null) {
-                throw new RuntimeException("No se recibio la sesión de pago");
+                throw new RuntimeException("transaction.session.notfound");
             }
 
             Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
@@ -143,6 +128,10 @@ public class TransactionService {
             SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
             Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
             BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
+
+            if (transaction == null) {
+                throw new RuntimeException("transaction.notfound");
+            }
 
             if ("checkout.session.completed".equals(event.getType())) {
                 BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");
@@ -163,7 +152,7 @@ public class TransactionService {
                 transactionRepository.save(transaction);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error al procesar el webhook: " + e.getMessage());
+            throw new RuntimeException("transaction.webhook.error");
         }
     }
 }
