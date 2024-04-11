@@ -5,6 +5,7 @@ import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductGetByIdResponseDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductPostRequestDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.IReturnProductGallery;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,12 +32,14 @@ public class RequestsReturnProductService {
     private final IRequestStatus IRequestStatus;
     private final IReturnProductGallery IReturnProductGallery;
     private final EmailService emailService;
+    private final IOrderHasProducts IOrderHasProducts;
 
-    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, IReturnProductGallery IReturnProductGallery, EmailService emailService) {
+    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, IReturnProductGallery IReturnProductGallery, EmailService emailService, IOrderHasProducts IOrderHasProducts) {
         this.IRequestsReturnProduct = IRequestsReturnProduct;
         this.IRequestStatus = IRequestStatus;
         this.IReturnProductGallery = IReturnProductGallery;
         this.emailService = emailService;
+        this.IOrderHasProducts = IOrderHasProducts;
     }
 
     @Transactional
@@ -45,7 +47,7 @@ public class RequestsReturnProductService {
         BeanRequestReturnProduct request = IRequestsReturnProduct.findById(requestId)
                 .orElseThrow(() -> new CustomException("Request not found"));
 
-        BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
+        BeanRequestStatus requestStatus = IRequestsReturnProduct.findRequestStatusByName(status)
                 .orElseThrow(() -> new CustomException("Status not found"));
 
         request.setStatus(requestStatus);
@@ -53,6 +55,12 @@ public class RequestsReturnProductService {
         IRequestsReturnProduct.save(request);
 
         if (status.equals("Aprobado")) {
+            BeanOrderStatus orderStatus = IRequestsReturnProduct.findOrderStatusByName("Reembolsado")
+                    .orElseThrow(() -> new CustomException("Order status not found"));
+            BeanOrderHasProducts orderHasProduct = request.getOrderHasProduct();
+            orderHasProduct.setStatus(orderStatus);
+            IOrderHasProducts.save(orderHasProduct);
+
             emailService.sendEmail(
                     email,
                     "Solicitud de devolución aprobada",

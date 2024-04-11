@@ -66,6 +66,8 @@ ok-only
       @request-success="handleRequestSuccess"
       @request-error="handleRequestError"
       :selected-request-id="selectedRequestId"
+      :request-id="request.idRequestReturnProduct"
+      :user-email="request.email"
       @rejection-submitted="handleRejection"
       @close-main-modal="closeMainModal"
   />
@@ -134,6 +136,45 @@ export default{
     },
 closeMainModal() {
       this.$bvModal.hide('requestReturnProductModal');
+    },
+
+    async acceptRequestReturnProduct() {
+      showInfoAlert(
+          'Confirmación',
+          '¿Estás seguro de que quieres aprobar esta solicitud?',
+          'Aceptar',
+          async () => {
+            try {
+              const requestData = {
+                requestId: this.request.idRequestReturnProduct,
+                status: 'Aprobado',
+                rejectionReason: '',
+                email: this.request.email
+              };
+              const response = await RequestsReturnProductService.putRequestReturnProductStatusService(requestData);
+              if (response && response.data && response.data.status === 'Aprobado') {
+                showSuccessToast('La solicitud de devolución ha sido aprobada');
+                this.request.status = 'Aprobado';
+                this.$bvModal.hide('requestReturnProductModal');
+              } else {
+                console.error("La respuesta no contiene datos válidos o la propiedad esperada:", response);
+              }
+            } catch (error) {
+              console.error("Error al aprobar la solicitud de devolución:", error);
+              swal.fire({
+                button: 'Aceptar',
+                icon: 'error',
+                text: 'Ocurrió un error al procesar la petición',
+                title: 'Error'
+              });
+            }
+          }
+      );
+    },
+
+    openRejectionModal(requestId) {
+      this.selectedRequestId = requestId;
+      this.$bvModal.show('rejectionReasonModal');
     },
     }
 }
