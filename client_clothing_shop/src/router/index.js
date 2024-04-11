@@ -159,6 +159,12 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["SELLER"] },
                 },
                 {
+                    path:"sales-history",
+                    name:"SalesHistory",
+                    component: () => import("../views/sales-history/SalesHistory.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
                     path:"request-data-change-management",
                     name:"ADMINRequestDataChangeManagement",
                     component: () => import("../views/requests-data-change/RequestsDataChangeManagement.vue"),

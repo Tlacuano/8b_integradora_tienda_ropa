@@ -94,6 +94,18 @@
                 </b-form-group>
               </b-col>
             </b-row>
+
+            <b-row class="mb-4">
+              <b-col>
+                <span v-if="!timerActive" class="text-secondary">¿No recibiste el código? </span>
+                <b-link v-if="!timerActive" @click.prevent="resentEmailCode()" class="pr-3">
+                  <span class="text-secondary small underline">Reenviar código</span>
+                </b-link>
+                <span v-else class="text-secondary">{{ Math.floor(timerSeconds / 60) }}:{{ ('0' + timerSeconds % 60).slice(-2) }}... Espera antes de poder volver a mandar el código</span>
+              </b-col>
+            </b-row>
+
+
             <b-row class="mt-4">
               <b-col>
                 <b-button class="main-button" @click="validateCode()">
@@ -201,6 +213,9 @@ export default {
         password: '',
         confirmPassword: ''
       },
+
+      timerActive: false,
+      timerSeconds: 60,
     }
   },
   methods: {
@@ -289,6 +304,32 @@ export default {
     },
 
 
+    async resentEmailCode() {
+      if (!this.timerActive) {
+        this.changeStatusOverlay();
+        const payload = {
+          email: this.form.user.email
+        };
+        await UserService.resendEmailCode(payload);
+        this.changeStatusOverlay();
+
+        this.startTimer();
+      }
+    },
+
+    startTimer() {
+      this.timerActive = true;
+      this.timerSeconds = 60;
+
+      const interval = setInterval(() => {
+        this.timerSeconds--;
+
+        if (this.timerSeconds <= 0) {
+          clearInterval(interval);
+          this.timerActive = false;
+        }
+      }, 1000);
+    },
 
 
     doneCapcha(solution){
@@ -313,6 +354,8 @@ export default {
     changeStatusOverlay(){
       this.$store.dispatch('changeStatusOverlay');
     },
+
+
     initModal(){
       if (this.$refs.container) {
         this.widget = new WidgetInstance(

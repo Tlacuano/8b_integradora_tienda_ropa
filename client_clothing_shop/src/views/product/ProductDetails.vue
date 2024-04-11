@@ -54,6 +54,10 @@
           </b-col>
         </b-row>
       </b-col>
+
+      <b-col cols="12">
+        <ReviewsProduct :idProduct="product.idProduct"/>
+      </b-col>
     </b-row>
     <b-row v-else class="p-4" no-gutters>
       <b-col cols="12" class="text-center">
@@ -71,6 +75,9 @@ import {showSuccessToast} from "@/components/alerts/alerts";
 
 export default {
   name: "ProductDetails",
+  components:{
+    ReviewsProduct: () => import("@/views/reviews/ReviewsProduct.vue")
+  },
   data() {
     return {
       // Product details

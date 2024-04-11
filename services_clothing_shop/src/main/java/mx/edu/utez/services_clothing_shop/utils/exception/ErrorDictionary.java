@@ -20,6 +20,8 @@ public class ErrorDictionary {
         errorMessages.put("user.code.incorrect", "No se pudo completar el cambío de contraseña.");
         errorMessages.put("user.password.incorrect", "Contraseña incorrecta.");
         errorMessages.put("user.admin.not.delete", "Acción imposible de realizar.");
+        errorMessages.put("user.order.pending", "La cuenta tiene ordenes pendientes.");
+        errorMessages.put("user.own.order.pending", "Tu cuenta no puede ser eliminada por tener ordenes pendientes.");
 
         //error messages person
         errorMessages.put("person.name.notnull", "El nombre es obligatorio.");
@@ -50,6 +52,9 @@ public class ErrorDictionary {
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
+        errorMessages.put("order.bybuyer.notfound", "Necesitas adquirir el producto para poder dar una reseña.");
+        errorMessages.put("order.status.notallowed", "Necesitas haber recibido primero el producto para poder dar una reseña.");
+        errorMessages.put("order.notfound", "La orden no fue encontrada.");
 
         //error messages wish list
         errorMessages.put("wishList.notFound", "La lista de deseos no fue encontrada.");
@@ -59,7 +64,7 @@ public class ErrorDictionary {
         errorMessages.put("wishList.id.notnull", "El id de la lista de deseos es obligatorio.");
         errorMessages.put("wishList.id.notfound", "La lista de deseos no fue encontrada.");
         errorMessages.put("wishList.amount.notnull", "La cantidad es obligatoria y no negativa.");
-        errorMessages.put("wishList.amount.error", "La cantidad es mayor a la disponible.");
+        errorMessages.put("wishList.amount.error", "No hay suficientes disponibles.");
         errorMessages.put("wishList.user.notFound", "La lista de deseos del usuario no fue encontrada.");
         errorMessages.put("wishList.user.notnull", "El usuario es obligatorio.");
         errorMessages.put("wishList.product.notFound", "La lista de deseos del producto no fue encontrada.");
@@ -74,7 +79,7 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.product.exists", "El producto ya está en el carrito de compras.");
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
-        errorMessages.put("shoppingCart.amount.error", "La cantidad es mayor a la disponible.");
+        errorMessages.put("shoppingCart.amount.error", "No hay suficientes disponibles.");
         errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
         errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
         errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
@@ -155,19 +160,20 @@ public class ErrorDictionary {
         errorMessages.put("review.assessment.min", "La calificación debe ser mayor a 0.");
         errorMessages.put("review.assessment.max", "La calificación debe ser menor a 6.");
         errorMessages.put("review.reviewDate.notnull", "La fecha de la reseña es obligatoria.");
+        errorMessages.put("review.exists", "Ya haz dado una reseña del producto.");
 
         //error messages data change
-        errorMessages.put("dataChange.status.notnull", "El status es obligatorio.");
+        errorMessages.put("dataChange.status.notnull", "El estado es obligatorio.");
         errorMessages.put("dataChange.idRequestDataChange.notnull", "El id de la solicitud de cambio de datos es obligatorio.");
         errorMessages.put("dataChange.request.notFound", "La solicitud no fue encontrada.");
         errorMessages.put("dataChange.JSON.invalid", "El JSON no es válido.");
 
         //error messages request return product
         errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
-        errorMessages.put("requestsReturnProduct.status.notnull", "El status de la solicitud de devolución es obligatorio.");
+        errorMessages.put("requestsReturnProduct.status.notnull", "El estado de la solicitud de devolución es obligatorio.");
         errorMessages.put("requestsReturnProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
-        errorMessages.put("requestsReturnProduct.status.invalid", "El status no es válido.");
-        errorMessages.put("requestsReturnProduct.status.notFound", "El status no fue encontrado.");
+        errorMessages.put("requestsReturnProduct.status.invalid", "El estado no es válido.");
+        errorMessages.put("requestsReturnProduct.status.notFound", "El estado no fue encontrado.");
 
         //error de configuracion
         errorMessages.put("controller.advice.encrypter", "Algo salió mal al encriptar la información.");
@@ -176,8 +182,8 @@ public class ErrorDictionary {
         //error messages request become seller
         errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
         errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
-        errorMessages.put("requestBecomeSeller.status.notnull", "El status es obligatorio.");
-        errorMessages.put("requestBecomeSeller.status.invalid", "El status no es válido.");
+        errorMessages.put("requestBecomeSeller.status.notnull", "El estado es obligatorio.");
+        errorMessages.put("requestBecomeSeller.status.invalid", "El estado no es válido.");
         errorMessages.put("requestBecomeSeller.request.notFound", "La solicitud no fue encontrada.");
 
         errorMessages.put("requestBecomeSeller.userSellerInformation.empty", "La información del usuario vendedor es obligatoria.");
@@ -185,11 +191,14 @@ public class ErrorDictionary {
 
 
         //error messages request sell product
-        errorMessages.put("requestSellProduct.status.invalid", "El status no es válido.");
+        errorMessages.put("requestSellProduct.status.invalid", "El estado no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
 
         //twilio
         errorMessages.put("twilio.service.error", "Error al enviar el codigo.");
+
+        //status
+        errorMessages.put("status.notFound", "El estado no fue encontrado.");
 
     }
 

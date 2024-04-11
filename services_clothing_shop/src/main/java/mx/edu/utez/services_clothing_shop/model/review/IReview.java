@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.review;
 
+import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +17,12 @@ public interface IReview extends JpaRepository<BeanReview, UUID> {
     boolean existsByIdReview(UUID idReview);
     boolean existsByOrderHasProduct_IdOrderProduct(UUID idOrderProduct);
     BeanReview findByIdReview(UUID idReview);
+
+    @Query("SELECT r FROM BeanReview r WHERE r.orderHasProduct.product.idProduct = :idProduct")
+    List<BeanReview> findByProductId(UUID idProduct);
+
+    @Query("SELECT r FROM BeanReview r WHERE r.orderHasProduct.order.idOrder = :idOrder")
+    BeanReview findByOrderId(UUID idOrder);
+
 
 }

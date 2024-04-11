@@ -75,7 +75,7 @@
 <script>
 import Vue from 'vue';
 import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
-import {showInfoAlert} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "DetailsRequestModal",
@@ -110,6 +110,7 @@ export default Vue.extend({
             await RequestsBecomeSellerService.putStatusRequestService(payload);
 
             this.$emit('request-updated');
+            showSuccessToast("Estado de la solicitud actualizado correctamente")
             this.$bvModal.hide('detailsRequestModal');
             if (status === "Rechazado") {
               this.rejectionReason = null;

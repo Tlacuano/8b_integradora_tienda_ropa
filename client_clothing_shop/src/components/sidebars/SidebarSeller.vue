@@ -38,6 +38,7 @@ export default {
     return {
       items:[
         {id:1, title:"Gestión de Productos", icon:"fa-solid fa-box", to:"ProductManagement"},
+        {id:2, title:"Ventas", icon:"fa-solid fa-shopping-cart", to:"SalesHistory"},
       ]
     };
   },

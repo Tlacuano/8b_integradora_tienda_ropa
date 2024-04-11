@@ -1,7 +1,7 @@
 <template>
   <section>
-    <b-modal id="formBecomeSellerModal" centered hide-footer hide-header>
-      <b-card>
+    <b-modal id="formBecomeSellerModal" centered hide-footer hide-header size="lg">
+      <b-card class="custom-card">
         <b-row>
           <b-col>
             <h3 class="text-center">Solicitar ser vendedor</h3>
@@ -67,12 +67,15 @@
             </b-form>
           </b-col>
           <b-col class="text-center">
-            <b-img v-if="imgPreview" :src="imgPreview" thumbnail />
+            <div class="image-container">
+              <b-img v-if="imgPreview" :src="imgPreview" thumbnail class="image-preview" />
+              <div v-else class="no-image-message">No se ha seleccionado ninguna imagen</div>
+            </div>
           </b-col>
         </b-row>
         <b-row class="mt-3 justify-content-center">
-          <b-button variant="dark" @click="postRequestBecomeSeller" class="mx-2" style="border-radius: 0.5rem;">Enviar solicitud</b-button>
-          <b-button variant="dark" @click="closeModal" class="mx-2" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
+          <b-button variant="dark" @click="postRequestBecomeSeller" class="w-25 mx-5" style="border-radius: 0.5rem;">Enviar solicitud</b-button>
+          <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
         </b-row>
       </b-card>
     </b-modal>
@@ -83,7 +86,7 @@
 import Vue from "vue";
 import CloudinaryService from "@/services/cloudinary/CloudinaryService";
 import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
-import {showInfoAlert, showWarningToast} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "FormBecomeSellerModal",
@@ -97,7 +100,7 @@ export default Vue.extend({
         privacyPolicyAgreement: true,
       },
       imgPreview: null,
-      personType: null,
+      personType: "physical",
     }
   },
   methods: {
@@ -127,12 +130,9 @@ export default Vue.extend({
 
                   const response = await RequestsBecomeSellerService.postRequestBecomeSellerService(payload);
 
-                  if (response.status === 200) {
-                    this.clean()
-                    this.$emit("request-sent");
-                    this.$bvModal.hide("formBecomeSellerModal");
-                    showWarningToast("Solicitud enviada correctamente");
+                  if (response === 200) {
                     this.closeModal();
+                    showSuccessToast("Solicitud enviada correctamente");
                   } else {
                     showWarningToast("Error al enviar la solicitud");
                   }
@@ -176,5 +176,30 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.custom-card {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 10px;
+}
 
+.image-preview {
+  border: 2px solid #ced4da;
+  border-radius: 5px;
+  max-height: 25rem;
+  margin-top: 30%;
+}
+
+.image-container {
+  position: relative;
+}
+
+.no-image-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 50%;
+}
 </style>

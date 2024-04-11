@@ -444,7 +444,8 @@ INSERT IGNORE INTO sellers_information
  image_identification,
  privacy_policy_agreement,
  secondary_phone_number,
- tax_identification_number)
+ tax_identification_number,
+       block_sell)
 VALUES
     -- SELLER 1
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
@@ -452,14 +453,16 @@ VALUES
      'https://via.placeholder.com/500x300.png?text=identificacion1',
      true,
      '1234567891',
-     'IRMUEA680101HDFLNS09'),
+     'IRMUEA680101HDFLNS09',
+       false),
     -- SELLER 2
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
      'MUEA960501HDFLNS09',
      'https://via.placeholder.com/500x300.png?text=identificacion2',
      true,
      '1234567892',
-     'IRMUEA960501HDFLNS09');
+     'IRMUEA960501HDFLNS09',
+       false);
 
 -- CARD STATUS
 INSERT IGNORE INTO card_status
@@ -484,32 +487,32 @@ INSERT IGNORE INTO payment_cards
 VALUES
     -- SELLERS
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0e'),
-     '1234567890123456',
+     'XMU4tEUBEgIfFcYfB13QY9OUiiZHIi8Qrerfrs+xscpE0G/ZL0+bE4lJdlg7tlwz',
      'Elon Musk',
-     '123',
-     '12/25',
+     'vW5uEowUwjChSrDZDp0hjohECBuK3pOazAiPHkOWLa8=',
+     'LhZkrXbs92m2NBWLazv2r55KKfGg2Js7f/YlUKFpP3E=',
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bea')),
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0f'),
-     '6543210987654321',
+     'XMU4tEUBEgIfFcYfB13QY9OUiiZHIi8Qrerfrs+xscpE0G/ZL0+bE4lJdlg7tlwz',
      'Maye Musk',
-     '321',
-     '06/27',
+     'vW5uEowUwjChSrDZDp0hjohECBuK3pOazAiPHkOWLa8=',
+     'LhZkrXbs92m2NBWLazv2r55KKfGg2Js7f/YlUKFpP3E=',
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
     -- BUYERS
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c10'),
-     '1234567890123457',
+     'XMU4tEUBEgIfFcYfB13QY9OUiiZHIi8Qrerfrs+xscpE0G/ZL0+bE4lJdlg7tlwz',
      'Steve Jobs',
-     '456',
-     '04/26',
+     'vW5uEowUwjChSrDZDp0hjohECBuK3pOazAiPHkOWLa8=',
+     'LhZkrXbs92m2NBWLazv2r55KKfGg2Js7f/YlUKFpP3E=',
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c11'),
-     '6543210987654322',
+     'XMU4tEUBEgIfFcYfB13QY9OUiiZHIi8Qrerfrs+xscpE0G/ZL0+bE4lJdlg7tlwz',
      'Eve Jobs',
-     '654',
-     '03/23',
+     'vW5uEowUwjChSrDZDp0hjohECBuK3pOazAiPHkOWLa8=',
+     'LhZkrXbs92m2NBWLazv2r55KKfGg2Js7f/YlUKFpP3E=',
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c0d'),
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bed'));
 

@@ -46,7 +46,7 @@
 <script>
 import WishListService from "@/services/wish-list/WishListService";
 import { codeCrypto } from "@/utils/security/cryptoJs";
-import Vue from 'vue';
+import { showInfoAlert } from '../../components/alerts/alerts';
 
 export default {
     name: "WishList",
@@ -60,8 +60,8 @@ export default {
             this.showOverlay();
             const userEmail = this.$store.getters.getEmail;
             const response = await WishListService.getWishList(userEmail);
-            this.showOverlay();
             this.wishlists = response.data;
+            this.showOverlay();
         },
         selectProduct(idProduct) {
             const encodedId = codeCrypto(idProduct);
@@ -75,30 +75,13 @@ export default {
             }
         },
         async removeFromWishlist(wishlistItem) {
-            const confirmation = await Vue.swal({
-                title: '¿Estás seguro?',
-                text: '¿Quieres quitar este producto de tus favoritos?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, quitar',
-                cancelButtonText: 'Cancelar'
-            });
-
-            if (confirmation.value) { 
-                if (confirmation.value === true) { 
-                    try {
-                        const response = await WishListService.deleteWishList(wishlistItem.idWish);
-                        this.getWishList();
-                        Vue.swal('Producto eliminado', '', 'success');
-                    } catch (error) {
-                        Vue.swal('Error', 'Hubo un problema al eliminar el producto de la lista de deseos', 'error');
-                    }
-                } else { 
-                    Vue.swal('Cancelado', 'No se eliminó el producto de la lista de deseos', 'info');
+            await showInfoAlert(
+                '¿Estás seguro?', 
+                '¿Quieres quitar este producto de tus favoritos?', 'Sí, quitar',
+                async () => {
+                    await WishListService.deleteWishList(wishlistItem.idWish);
                 }
-            }
+            );
         },
 
         showOverlay() {

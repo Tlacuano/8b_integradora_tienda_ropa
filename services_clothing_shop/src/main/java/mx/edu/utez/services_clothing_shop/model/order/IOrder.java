@@ -1,5 +1,7 @@
 package mx.edu.utez.services_clothing_shop.model.order;
 
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public interface IOrder extends JpaRepository<BeanOrder, UUID> {
@@ -55,4 +58,9 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
     OrderDetailsProjection findOrderDetailsByIdOrder(@Param("idOrder") UUID idOrder);
 
     BeanOrder findByOrderNumber(String orderNumber);
+
+    @Query("SELECT o FROM BeanOrder o JOIN BeanOrderHasProducts " +
+            "ohp ON o.idOrder = ohp.order.idOrder WHERE ohp.idOrderProduct = :idOrderHasProducts")
+    BeanOrder findByOrderHasProducts (UUID idOrderHasProducts);
+
 }

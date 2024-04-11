@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.controller.seller_information;
 
 import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.ResponseAllSellerInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.service.seller_information.SellerInformationService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
@@ -48,6 +49,23 @@ public class SellerInformationController {
     @DeleteMapping("delete-seller-information")
     public ResponseEntity<BeanSellerInformation> deleteSellerInformation(@RequestBody BeanSellerInformation sellerInformation){
         return sellerInformationService.deleteSellerInformation(sellerInformation);
+    }
+
+
+    @PostMapping("/block-sell")
+    public ResponseEntity<Object> blockSell(@RequestBody RequestActionByEmailDTO requestActionByEmailDTO){
+        return new ResponseEntity<>(
+                new CustomResponse<>(sellerInformationService.blockSell(requestActionByEmailDTO), "Block sell successfully", false, HttpStatus.OK.value()),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/unblock-sell")
+    public ResponseEntity<Object> unblockSell(@RequestBody RequestActionByEmailDTO requestActionByEmailDTO){
+        return new ResponseEntity<>(
+                new CustomResponse<>(sellerInformationService.unblockSell(requestActionByEmailDTO), "Unblock sell successfully", false, HttpStatus.OK.value()),
+                HttpStatus.OK
+        );
     }
 
 }

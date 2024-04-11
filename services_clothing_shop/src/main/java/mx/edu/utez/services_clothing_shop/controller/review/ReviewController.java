@@ -40,7 +40,7 @@ public class ReviewController {
             );
     }
 
-    @PutMapping("/put-review")
+    @PostMapping("/put-review")
     public ResponseEntity<Object> putReview(@Validated @RequestBody RequestPutReviewDTO payload){
             BeanReview updatedReview = reviewService.putReview(payload);
             return new ResponseEntity<>(
@@ -49,13 +49,30 @@ public class ReviewController {
             );
     }
 
-    @DeleteMapping("/delete-review")
+    @PostMapping("/delete-review")
     public ResponseEntity<Object> deleteReview(@Validated @RequestBody RequestDeleteReview payload){
             reviewService.deleteReview(payload.getIdReview());
             return new ResponseEntity<>(
-                    new CustomResponse<>(null, "Review deleted successfully", false, 204),
-                    HttpStatus.NO_CONTENT
+                    new CustomResponse<>(true, "Review deleted successfully", false, 204),
+                    HttpStatus.OK
             );
     }
+
+    @PostMapping("/get-reviews-by-product-id")
+    public ResponseEntity<Object> getReviewsByProductId(@Validated @RequestBody RequestGetByProductIDDTO payload) {
+            return new ResponseEntity<>(
+                    new CustomResponse<>(reviewService.findByProductId(payload.getIdProduct()), "Reviews retrieved successfully", false, 200),
+                    HttpStatus.OK
+            );
+    }
+
+    @PostMapping("/get-comprobant-to-review")
+    public ResponseEntity<Object> getComprobantToReview(@Validated @RequestBody RequestComprobationToReviewDTO payload) {
+            return new ResponseEntity<>(
+                    new CustomResponse<>(reviewService.getComprobantToReview(payload), "Comprobant retrieved successfully", false, 200),
+                    HttpStatus.OK
+            );
+    }
+
 
 }

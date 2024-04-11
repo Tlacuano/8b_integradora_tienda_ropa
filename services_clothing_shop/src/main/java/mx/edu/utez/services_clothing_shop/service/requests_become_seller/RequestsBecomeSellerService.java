@@ -38,6 +38,12 @@ public class RequestsBecomeSellerService {
     }
 
     @Transactional
+    public Boolean existsRequestBecomeSellerByUserEmail(String email) {
+        Long exists = IRequestsBecomeSeller.existsRequestBecomeSellerByUserEmail(email);
+        return exists == 1;
+    }
+
+    @Transactional
     public void putRequestBecomeSeller(UUID requestId, String status, String rejectionReason){
         if(!rejectionReason.isEmpty() && !rejectionReason.matches(RegexPatterns.REJECTION_REASON_REGEX)) {
             throw new CustomException("requestBecomeSeller.rejectionReason.invalid");
@@ -51,6 +57,7 @@ public class RequestsBecomeSellerService {
                 BeanRequestsBecomeSeller request = requestOptional.get();
                 BeanPerson person = IRequestsBecomeSeller.findPersonByRequestId(requestId);
                 if (person != null) {
+                    IRequestsBecomeSeller.insertSellerRole(requestId);
                     BeanSellerInformation sellerInformation = new BeanSellerInformation();
                     String userSellerInformationJSON = request.getUserSellerInformation();
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -70,6 +77,9 @@ public class RequestsBecomeSellerService {
                             sellerInformation.setImageIdentification(userSellerInformation.getImageIdentification());
                             sellerInformation.setCurp(userSellerInformation.getCurp());
                             sellerInformation.setPerson(person);
+                            sellerInformation.setBlockSell(false);
+
+
                         } else {
                             throw new CustomException("Todos los campos de UserSellerInformation deben estar llenos");
                         }
