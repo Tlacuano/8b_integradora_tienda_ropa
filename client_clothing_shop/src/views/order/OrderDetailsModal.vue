@@ -55,7 +55,7 @@
                     <p>Estado: <b-badge :variant="getVariant(product.status)" class="text-ellipsis text-white small">{{ product.status }}</b-badge></p>
                     <hr/>
                     <b-button v-if="product.status !== 'Entregado' && product.status !== 'Cancelado' && product.status !== 'Reembolsado'"
-                              style="background-color: red; border-color: red;" block @click="cancelOrder(product)">Cancelar compra</b-button>
+                              style="background-color: red; border-color: red;" block @click="openReasonModal(product)">Cancelar compra</b-button>
                   </b-card-text>
                 </b-card-body>
               </b-card>
@@ -63,6 +63,32 @@
           </b-col>
         </b-row>
       </b-container>
+    </b-modal>
+
+    <b-modal id="rejectionReasonModal" hide-header hide-footer centered>
+      <b-row>
+        <b-col class="text-center">
+          <h3>Indica la razón de la cancelación</h3>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col class="ml-4" >
+          <b-form-textarea
+              id="textarea-rejection-reason"
+              v-model="rejectionReason"
+              placeholder="Escribe aquí la razón de rechazo"
+              rows="3"
+              max-rows="6"
+              v-validate="'required|max:255'"
+              name="rejectionReason"
+          />
+          <span v-show="errors.has('rejectionReason')" class="text-danger">{{ errors.first('rejectionReason') }}</span>
+        </b-col>
+      </b-row>
+      <b-row class="justify-content-center mt-2 mb-2">
+        <b-button :disabled="rejectionReason !== null" variant="dark" @click="cancelOrder" class="w-25 mx-5" style="border-radius: 0.5rem">Aceptar</b-button>
+        <b-button @click="closeReasonModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
+      </b-row>
     </b-modal>
   </section>
 </template>
@@ -87,6 +113,8 @@ export default Vue.extend({
       total: 0,
       slide: 0,
       sliding: null,
+      rejectionReason: null,
+      orderProduct: null,
     }
   },
   methods: {
@@ -105,24 +133,29 @@ export default Vue.extend({
       }
     },
 
-    async cancelOrder(orderProduct) {
-      await showInfoAlert(
-          "¿Estás seguro de cancelar la compra?",
-          "Esta acción no se puede deshacer",
-          "Sí, cancelar compra",
-          async () => {
-            const payload = {
-              idOrderProduct: orderProduct.idOrderProduct,
-            }
-            const response = await OrderService.putStatusOrderHasProductService(payload);
-            if (response === 200) {
-              showSuccessToast("Compra cancelada correctamente")
-              orderProduct.status = "Cancelado";
-            } else {
-              showWarningToast("No se pudo cancelar la compra")
-            }
-          }
-      )
+    async cancelOrder() {
+      await this.$validator.validateAll().then(async result => {
+        if (result) {
+          await showInfoAlert(
+              "¿Estás seguro de cancelar la compra?",
+              "Esta acción no se puede deshacer",
+              "Sí, cancelar compra",
+              async () => {
+                const payload = {
+                  idOrderProduct: this.orderProduct.idOrderProduct,
+                }
+                const response = await OrderService.putStatusOrderHasProductService(payload);
+                if (response === 200) {
+                  showSuccessToast("Compra cancelada correctamente")
+                  this.orderProduct.status = "Cancelado";
+                  this.$bvModal.hide("rejectionReasonModal");
+                } else {
+                  showWarningToast("No se pudo cancelar la compra")
+                }
+              }
+          )
+        }
+      });
     },
 
     onSlideStar(slide) {
@@ -157,6 +190,17 @@ export default Vue.extend({
           return 'secondary';
       }
     },
+
+    openReasonModal(orderProduct) {
+      this.orderProduct = orderProduct;
+      this.$nextTick(() => {
+        this.$bvModal.show("rejectionReasonModal");
+      })
+    },
+
+    closeReasonModal() {
+      this.$bvModal.hide("rejectionReasonModal");
+    }
   },
 });
 </script>

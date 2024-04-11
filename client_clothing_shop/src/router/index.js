@@ -63,6 +63,12 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["BUYER"] },
                 },
                 {
+                  path: "my-payment-cards",
+                  name: "MyPaymentCards",
+                  component: () => import("../views/payment-card/MyPaymentCards.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
+                },
+                {
                     name:"ShoppingCart",
                     path:"shopping-cart",
                     component: () => import("../views/shopping-cart/ShoppingCart.vue"),
@@ -214,7 +220,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     const {requiresAuth, roles} = to.meta;
-    const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
+    const isAuthenticated = !!(store.getters.isLoggedIn || localStorage.getItem("token"));
     const role = store.getters.getRole || localStorage.getItem("role");
 
     const verifiedIncomplete = localStorage.getItem("verified");

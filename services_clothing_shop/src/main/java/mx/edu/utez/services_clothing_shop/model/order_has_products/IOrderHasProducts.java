@@ -47,4 +47,6 @@ public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, U
     @Modifying
     @Query(nativeQuery = true, value = "CALL update_order_has_product_status(:idOrderProduct)")
     void updateOrderHasProductStatus(UUID idOrderProduct);
+
+    BeanOrderHasProducts findByIdOrderProduct(UUID idOrderProduct);
 }

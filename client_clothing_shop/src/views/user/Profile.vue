@@ -82,7 +82,7 @@
 
         <b-row v-if="user.buyer || user.seller" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToMyPaymentCards">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -184,7 +184,7 @@
 
         <b-row v-if="user.seller" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover" @click="reditectToMySell">
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToMySell">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -260,11 +260,11 @@ export default {
     redirectToAddresses() {
       this.$router.push({ name: 'BuyerAddressManagement' });
     },
-    reditectToMySell(){
+    redirectToMySell(){
       this.$router.push({name: 'SalesHistory'});
     },
-    openFormBecomeSeller() {
-      this.$bvModal.show('formBecomeSellerModal');
+    redirectToMyPaymentCards() {
+      this.$router.push({ name: 'MyPaymentCards' });
     },
     async validIfUserHasRequest() {
       const email = this.$store.getters.getEmail;
