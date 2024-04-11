@@ -403,79 +403,32 @@ DROP PROCEDURE IF EXISTS `find_request_become_seller_by_email`;
 DELIMITER $$
 CREATE PROCEDURE find_request_become_seller_by_email(IN p_email VARCHAR(100))
 BEGIN
-    DECLARE v_user_id BINARY(16);
-    DECLARE v_status_id BINARY(16);
-    DECLARE v_status VARCHAR(255);
-    DECLARE v_exists_request INT;
+    DECLARE v_pending_request INT;
 
-    -- Verificar si existe una solicitud para el email proporcionado
-    SELECT COUNT(*)
-    INTO v_exists_request
-    FROM users u
-             INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
-    WHERE u.email = p_email;
+    -- Verificar si existe una solicitud pendiente para el email proporcionado
+    SELECT COUNT(*) INTO v_pending_request FROM request_status rs
+    INNER JOIN requests_become_seller r ON rs.id_status = r.fk_id_status
+    INNER JOIN users u ON r.fk_id_user = u.id_user
+    WHERE u.email = p_email AND rs.status = 'PENDIENTE';
 
-    IF v_exists_request = 0 THEN
-        -- No se encontró ninguna solicitud para ese email, retornar false
-        SELECT 0 AS result;
+    -- Si hay alguna solicitud pendiente, retornar 1, de lo contrario, retornar 0
+    IF v_pending_request = 1 THEN
+        SELECT 1 AS result;
     ELSE
-        -- Obtener el ID de usuario
-        SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
-
-        -- Obtener el ID de estado de la solicitud
-        SELECT fk_id_status INTO v_status_id FROM requests_become_seller WHERE fk_id_user = v_user_id;
-
-        -- Obtener el estado de la solicitud
-        SELECT status INTO v_status FROM request_status WHERE id_status = v_status_id;
-
-        IF v_status = 'Pendiente' THEN
-            -- El estado es pendiente, retornar true
-            SELECT 1 AS result;
-        ELSE
-            -- El estado es rechazado o cualquier otro, retornar false
-            SELECT 0 AS result;
-        END IF;
+        SELECT 0 AS result;
     END IF;
-END $$
+END$$
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `find_request_become_seller_by_email`;
+DROP PROCEDURE IF EXISTS `update_order_has_product_status`;
 DELIMITER $$
-CREATE PROCEDURE find_request_become_seller_by_email(IN p_email VARCHAR(100))
+CREATE PROCEDURE `update_order_has_product_status`(IN p_order_product_id BINARY(16))
 BEGIN
-    DECLARE v_user_id BINARY(16);
-    DECLARE v_status_id BINARY(16);
-    DECLARE v_status VARCHAR(255);
-    DECLARE v_exists_request INT;
+    DECLARE v_order_status_id BINARY(16);
 
-    -- Verificar si existe una solicitud para el email proporcionado
-    SELECT COUNT(*)
-    INTO v_exists_request
-    FROM users u
-             INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
-    WHERE u.email = p_email;
+    SELECT id_status INTO v_order_status_id FROM order_status WHERE status = 'Cancelado';
 
-    IF v_exists_request = 0 THEN
-        -- No se encontró ninguna solicitud para ese email, retornar false
-        SELECT 0 AS result;
-    ELSE
-        -- Obtener el ID de usuario
-        SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
-
-        -- Obtener el ID de estado de la solicitud
-        SELECT fk_id_status INTO v_status_id FROM requests_become_seller WHERE fk_id_user = v_user_id;
-
-        -- Obtener el estado de la solicitud
-        SELECT status INTO v_status FROM request_status WHERE id_status = v_status_id;
-
-        IF v_status = 'Pendiente' THEN
-            -- El estado es pendiente, retornar true
-            SELECT 1 AS result;
-        ELSE
-            -- El estado es rechazado o cualquier otro, retornar false
-            SELECT 0 AS result;
-        END IF;
-    END IF;
+    UPDATE orders_has_products SET fk_id_status = v_order_status_id WHERE id_order_product = p_order_product_id;
 END $$
 DELIMITER ;
 

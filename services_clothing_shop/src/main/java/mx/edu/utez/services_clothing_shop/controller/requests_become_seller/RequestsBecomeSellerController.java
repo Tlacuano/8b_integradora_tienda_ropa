@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_become_seller;
 
+import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.*;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.service.requests_become_seller.RequestsBecomeSellerService;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -65,7 +67,10 @@ public class RequestsBecomeSellerController {
     }
 
     @PostMapping("/get-by-user-email")
-    public ResponseEntity<CustomResponse<Object>> getRequestBecomeSellerByUserEmail(@RequestBody RequestBecomeSellerGetByUserEmailDTO getByUserEmailDTO) {
+    public ResponseEntity<CustomResponse<Object>> getRequestBecomeSellerByUserEmail(@Valid @RequestBody RequestBecomeSellerGetByUserEmailDTO getByUserEmailDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(result.getAllErrors(), "Bad request", true, 400));
+        }
         String email = getByUserEmailDTO.getEmail();
         Boolean exists = requestsBecomeSellerService.existsRequestBecomeSellerByUserEmail(email);
         if (exists) {
@@ -73,5 +78,15 @@ public class RequestsBecomeSellerController {
         } else {
             return ResponseEntity.ok(new CustomResponse<>(false, "Request not found", false, 200));
         }
+    }
+
+    @PostMapping("/get-page-by-user-email")
+    public ResponseEntity<CustomResponse<Object>> getPageRequestBecomeSellerByUserEmail(Pageable page, @Valid @RequestBody RequestBecomeSellerGetByUserEmailDTO getByUserEmailDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(new CustomResponse<>(result.getAllErrors(), "Bad request", true, 400));
+        }
+        String email = getByUserEmailDTO.getEmail();
+        Page<IRequestsBecomeSeller.RequestBecomeSellerProjection> requestData = requestsBecomeSellerService.getPageRequestBecomeSellerByUserEmail(email, page);
+        return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
     }
 }

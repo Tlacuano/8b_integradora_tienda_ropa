@@ -6,6 +6,17 @@
       </b-col>
     </b-row>
 
+    <b-row class="mt-4" align-h="between">
+      <b-col cols="12" lg="4">
+        <b-form-group>
+          <div class="position-relative">
+            <b-form-input @input="getPageRequests" v-model="search" id="search" type="text" placeholder="Buscar..."  class="pr-5"/>
+            <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
+          </div>
+        </b-form-group>
+      </b-col>
+    </b-row>
+
     <b-row class="mt-3 container-orders">
       <b-col>
         <b-row>
@@ -23,19 +34,12 @@
                 <b-col cols="auto" class="ml-2">
                   <b-row>
                     <b-col>
-                      <div class="text-truncate font-weight-bold small"> {{ order.personName + ' ' + order.personLastName + ' ' + order.personSecondLastName }}</div>
+                      <div class="text-truncate font-weight-bold small">Orden #{{ order.orderNumber }}</div>
                     </b-col>
                   </b-row>
                   <b-row>
                     <b-col>
-                      <div class="text-ellipsis text-secondary small"> Orden #{{ order.orderNumber }}</div>
-                    </b-col>
-                  </b-row>
-                </b-col>
-                <b-col cols="auto" class="justify-content-center">
-                  <b-row>
-                    <b-col>
-                      <b-badge :variant="getVariant(order.status)" class="text-ellipsis text-white small">{{ order.status }}</b-badge>
+                      <div class="text-ellipsis text-secondary small">{{ order.personName + ' ' + order.personLastName + ' ' + order.personSecondLastName }}</div>
                     </b-col>
                   </b-row>
                 </b-col>
@@ -87,21 +91,6 @@ export default Vue.extend({
 
       this.objectPagination.elements = response.totalElements;
       this.orders = response.content;
-    },
-
-    getVariant(status) {
-      switch (status) {
-        case 'Pendiente':
-          return 'warning';
-        case 'Enviado':
-          return 'primary';
-        case 'Entregado':
-          return 'success';
-        case 'Cancelado':
-          return 'danger';
-        default:
-          return 'secondary';
-      }
     },
 
     openOrderDetailsModal(order) {

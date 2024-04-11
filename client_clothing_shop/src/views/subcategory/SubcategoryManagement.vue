@@ -10,7 +10,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input id="search" type="text" placeholder="Buscar..."  class="pr-5"/>
+            <b-form-input @input="getPageSubcategories" v-model="search" id="search" type="text" placeholder="Buscar..."  class="pr-5"/>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -20,14 +20,14 @@
       </b-col>
     </b-row>
 
-    <b-row class="container-subcategories align-content-center">
-        <b-row class="justify-content-center">
-          <b-col cols="2" v-for="(subcategory, index) in subcategories" :key="index">
+    <b-row class="container-subcategories align-content-center justify-content-center">
+        <b-row class="">
+          <b-col cols="auto" v-for="(subcategory, index) in subcategories" :key="index">
             <b-card
                 class="highlight-on-hover mb-2"
                 :img-src="subcategory.image"
                 img-bottom
-                style="max-width: 18rem;"
+                style="max-width: 100%;"
             >
               <b-card-text class="d-flex justify-content-between align-items-center" style="max-height: 0.1rem;">
                 <h5>{{subcategory.subcategory}}</h5>
@@ -63,6 +63,7 @@
           :total-rows="objectPagination.elements"
           :per-page="objectPagination.size"
           aria-controls="my-table"
+          @change="getPageSubcategories"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -86,20 +87,31 @@ export default Vue.extend({
     return {
       objectPagination: {
         page: 1,
-        size: 5,
+        size: 4,
         elements: 0
       },
       subcategories: [],
       selectedSubcategory: {},
+      search: null,
     }
   },
   methods: {
-    async getPageSubcategories() {
-      this.showOverlay()
-      const response = await SubcategoriesService.getPageSubcategoriesService(this.objectPagination);
-      this.showOverlay()
-      this.objectPagination.elements = response.data.totalElements;
-      this.subcategories = response.data.content;
+    async getPageSubcategories(page) {
+      this.objectPagination.page = page;
+      if (this.search === null || this.search === "") {
+        this.showOverlay()
+        const response = await SubcategoriesService.getPageSubcategoriesService(this.objectPagination);
+        this.showOverlay()
+        this.objectPagination.elements = response.data.totalElements;
+        this.subcategories = response.data.content;
+      } else {
+        const payload = {
+          subcategory: this.search
+        }
+        const response = await SubcategoriesService.getPageSubcategoriesBySubcategoryService(payload, this.objectPagination);
+        this.objectPagination.elements = response.data.totalElements;
+        this.subcategories = response.data.content;
+      }
     },
 
     async changeStatusSubcategory(subcategory) {
@@ -133,7 +145,7 @@ export default Vue.extend({
 
     refreshSubcategories() {
       this.getPageSubcategories();
-    }
+    },
   },
   mounted() {
     this.getPageSubcategories();
