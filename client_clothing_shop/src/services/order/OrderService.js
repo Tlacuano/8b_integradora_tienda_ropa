@@ -64,14 +64,32 @@ const getOrdersBySellerAndStatusService = async (payload, pagination) => {
     }
 }
 
+const getOrdersBySellerAndNumberService = async (payload, pagination) => {
+    try {
+        const { page, size } = pagination;
+        console.log(payload)
+        const response = await axios.doPost(`/venta-ropa/api/order-has-products/get-orders-has-products-by-seller-and-order-number?size=${size}&page=${page - 1}`, payload);
+        return response.data;
+    } catch (e) {
+    }
+}
+
 const cancelSellBySellerService = async (payload) => {
     try {
         const response = await axios.doPost("/venta-ropa/api/order-has-products/cancel-sell-by-seller", payload);
         return response.data;
     } catch (e) {
     }
-
 }
+
+const markAsSentBySellerService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/order-has-products/mark-as-sent-by-seller", payload);
+        return response.data;
+    } catch (e) {
+    }
+}
+
 
 
 export default {
@@ -82,5 +100,7 @@ export default {
     getByProductAndBuyerService,
     getOrderStatusService,
     getOrdersBySellerAndStatusService,
-    cancelSellBySellerService
+    cancelSellBySellerService,
+    markAsSentBySellerService,
+    getOrdersBySellerAndNumberService
 }

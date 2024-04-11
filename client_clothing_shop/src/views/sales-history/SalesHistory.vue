@@ -10,7 +10,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input  id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input @input="getOrders" v-model="search" id="search" type="text" placeholder="Buscar por número de orden..." class="pr-5"></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -18,28 +18,30 @@
       <b-col cols="2" class="text-right">
         <b-form-group>
           <b-select v-model="statusSelected" @change="getOrders">
+            <option value="" disabled>Selecciona un estado de orden</option>
             <option v-for="status in orderStatus" :key="status.id" :value="status.status">{{status.status}}</option>
           </b-select>
         </b-form-group>
       </b-col>
     </b-row>
 
-    <b-row class="mt-3 container-sales">
-      <b-col>
-        <b-row>
-          <b-col cols="12" md="6" lg="3" v-for="order in orders" :key="order.idOrderProduct" >
-            <b-card class="highlight-on-hover">
-              <b-row>
-                <b-col cols="8" class="text-truncate">
-                  <b-row>
-                    <b-col>
-                      <b>
-                        {{order.productName}}
-                      </b>
-                    </b-col>
-                  </b-row>
-                  <b-row>
-                    <b-col>
+    <section v-if="orders.length > 0">
+      <b-row class="mt-3 container-sales">
+        <b-col>
+          <b-row>
+            <b-col cols="12" md="6" lg="3" v-for="order in orders" :key="order.idOrderProduct" >
+              <b-card class="highlight-on-hover">
+                <b-row>
+                  <b-col cols="8" class="text-truncate">
+                    <b-row>
+                      <b-col>
+                        <b>
+                          {{order.productName}}
+                        </b>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
                   <span class="small">
                     <small>
                       No. orden:
@@ -48,48 +50,59 @@
                       </b>
                     </small>
                   </span>
-                    </b-col>
-                  </b-row>
-                </b-col>
-                <b-col cols="2" class="my-auto">
+                      </b-col>
+                    </b-row>
+                  </b-col>
+                  <b-col cols="2" class="my-auto">
                   <span class="text-right text-secondary">
                     ({{order.amount}})
                   </span>
-                </b-col>
-                <b-col cols="2" class="text-right">
-                  <b-dropdown
-                      variant="link-dark"
-                      toggle-class="text-decoration-none"
-                      no-caret
-                  >
-                    <template v-slot:button-content>
-                      <font-awesome-icon icon="ellipsis-v"/>
-                    </template>
-                    <b-dropdown-item @click="seeDetails(order)" >
-                      <span class="ml-2">Ver detalles</span>
-                    </b-dropdown-item>
-                  </b-dropdown>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
-      </b-col>
-    </b-row>
+                  </b-col>
+                  <b-col cols="2" class="text-right">
+                    <b-dropdown
+                        variant="link-dark"
+                        toggle-class="text-decoration-none"
+                        no-caret
+                    >
+                      <template v-slot:button-content>
+                        <font-awesome-icon icon="ellipsis-v"/>
+                      </template>
+                      <b-dropdown-item @click="seeDetails(order)" >
+                        <span class="ml-2">Ver detalles</span>
+                      </b-dropdown-item>
+                    </b-dropdown>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
 
-    <b-row>
-      <b-col>
-        <b-pagination
-            v-model="objetPagination.page"
-            :total-rows="objetPagination.elements"
-            :per-page="objetPagination.size"
-            aria-controls="my-table"
-        ></b-pagination>
-      </b-col>
-    </b-row>
+      <b-row>
+        <b-col>
+          <b-pagination
+              v-model="objetPagination.page"
+              :total-rows="objetPagination.elements"
+              :per-page="objetPagination.size"
+              aria-controls="my-table"
+          ></b-pagination>
+        </b-col>
+      </b-row>
+    </section>
+
+    <section v-else>
+      <b-row class="mt-5">
+        <b-col>
+          <h3 class="text-center">No hay ordenes por mostrar</h3>
+        </b-col>
+      </b-row>
+    </section>
+
 
     <SaleDetailsModal :order="orderSelcted"/>
     <CancelSellBySellerModal :order="orderSelcted"/>
+    <markAsSentBySellerModal :order="orderSelcted"/>
   </section>
 </template>
 
@@ -100,7 +113,8 @@ export default {
   name: 'SalesHistory',
   components: {
     SaleDetailsModal: () => import('@/views/sales-history/SaleDetailsModal.vue'),
-    CancelSellBySellerModal : () => import('@/views/sales-history/CancelSellBySellerModal.vue')
+    CancelSellBySellerModal : () => import('@/views/sales-history/CancelSellBySellerModal.vue'),
+    markAsSentBySellerModal: () => import('@/views/sales-history/MarkAsSentBySellerModal.vue')
   },
   data() {
     return {
@@ -109,6 +123,8 @@ export default {
 
       statusSelected: 'Preparación',
       orders: [],
+
+      search:'',
       objetPagination:{
         page: 1,
         size: 24,
@@ -118,7 +134,6 @@ export default {
   },
   methods: {
     seeDetails(order){
-      console.log(order)
       this.orderSelcted = order;
       this.$bvModal.show('sale-details-modal');
 
@@ -126,22 +141,38 @@ export default {
 
     async getOrders(){
       this.showOverlay();
+      if(this.search.length === ''){
+        const payload ={
+          email: this.$store.getters.getEmail,
+          status: this.statusSelected
+        }
+        const pagination = {
+          page: this.objetPagination.page,
+          size: this.objetPagination.size
+        }
 
-      const payload ={
-        email: this.$store.getters.getEmail,
-        status: this.statusSelected
+        const response = await OrderService.getOrdersBySellerAndStatusService(payload, pagination);
+
+        this.orders = response.data.content;
+        this.objetPagination.elements = response.data.totalElements;
+      }else{
+        console.log("debio entrar aqui", this.search);
+        const payload ={
+          email: this.$store.getters.getEmail,
+          orderNumber: this.search
+        }
+        const pagination = {
+          page: this.objetPagination.page,
+          size: this.objetPagination.size
+        }
+
+        console.log(payload);
+
+        const response = await OrderService.getOrdersBySellerAndNumberService(payload, pagination);
+
+        this.orders = response.data.content;
+        this.objetPagination.elements = response.data.totalElements;
       }
-      const pagination = {
-        page: this.objetPagination.page,
-        size: this.objetPagination.size
-      }
-
-      const response = await OrderService.getOrdersBySellerAndStatusService(payload, pagination);
-
-      console.log(response.data);
-      this.orders = response.data.content;
-
-      this.objetPagination.elements = response.data.totalElements;
 
       this.showOverlay();
     },
