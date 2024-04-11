@@ -40,6 +40,11 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
             "FROM BeanOrder o")
     Page<OrderProjection> findAllOrdersForAdmin(Pageable pageable);
 
+    @Query("SELECT o.idOrder as idOrder,  o.orderNumber as orderNumber, o.address.person.picture as picture, " +
+            "o.address.person.name as personName, o.address.person.lastName as personLastName, o.address.person.secondLastName as personSecondLastName " +
+            "FROM BeanOrder o WHERE o.orderNumber LIKE %:orderNumber%")
+    Page<OrderProjection> findAllOrdersForAdminByOrderNumber(String orderNumber, Pageable pageable);
+
     interface OrderDetailsProjection {
         String getOrderNumber();
         String getAddress();

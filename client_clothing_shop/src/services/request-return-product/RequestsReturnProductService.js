@@ -19,10 +19,38 @@ const getRequestReturnProductByIdService = async (requestId) => {
     } catch (e) {
         console.log(e);
     }
+}
+
+const postRequestReturnProductService = async (requestData) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/requests-return-product/post-request-return-product`, requestData);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response;
+        }
+        throw new Error("Error desconocido al enviar la solicitud de devolución");
+    }
 };
+
+const putRequestReturnProductStatusService = async (requestData) => {
+    try {
+        const response = await axios.doPut(`/venta-ropa/api/requests-return-product/put-request-return-product-status`, requestData);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response;
+        }
+        throw new Error("Error desconocido al actualizar el estado de la solicitud de devolución");
+    }
+};
+
+
 
 
 export default {
     getPageRequestsReturnProductService,
-    getRequestReturnProductByIdService
+    getRequestReturnProductByIdService,
+    postRequestReturnProductService,
+    putRequestReturnProductStatusService
 }

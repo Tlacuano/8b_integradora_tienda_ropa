@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.order_has_products;
 
+import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.*;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestComprobationToReviewDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
@@ -8,6 +9,7 @@ import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,9 +66,15 @@ public class OrderHasProductsController {
     }
 
     @PostMapping("/put-status-order-has-products")
-    public ResponseEntity<Object> putStatusOrderHasProducts(@RequestBody RequestOrderHasProductByIdDTO requestBody) {
+    public ResponseEntity<Object> putStatusOrderHasProducts(@Valid @RequestBody RequestOrderHasProductByIdDTO requestBody, BindingResult result) {
         try {
-            orderHasProductsService.putStatusOrderHasProducts(requestBody.getIdOrderProduct());
+            if (result.hasErrors()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponse<>(
+                    "Invalid data",
+                    "Invalid data",
+                    true,
+                    HttpStatus.BAD_REQUEST.value()
+            ));
+            orderHasProductsService.putStatusOrderHasProducts(requestBody.getIdOrderProduct(), requestBody.getRejectReason());
             return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(
                     "Order has products status updated",
                     "Order has products status updated",

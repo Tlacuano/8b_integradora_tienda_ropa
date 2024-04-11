@@ -169,7 +169,16 @@ public class OrderHasProductsService {
         return order;
     }
 
-    public void putStatusOrderHasProducts(UUID idOrderProduct) {
+    public void putStatusOrderHasProducts(UUID idOrderProduct, String rejectReason) {
        orderHasProductsRepository.updateOrderHasProductStatus(idOrderProduct);
+
+       BeanOrderHasProducts order = orderHasProductsRepository.findByIdOrderProduct(idOrderProduct);
+
+       emailService.sendEmail(order.getOrder().getAddress().getPerson().getUser().getEmail(),
+               "Compra cancelada",
+               "Compra cancelada",
+               "Un administrador ha cancelado la compra de tu producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas." +
+                       "<br><br>El motivo de la cancelación es: " + rejectReason + ".",
+               "");
     }
 }

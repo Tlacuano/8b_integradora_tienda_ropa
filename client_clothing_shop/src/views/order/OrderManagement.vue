@@ -10,7 +10,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input @input="getPageRequests" v-model="search" id="search" type="text" placeholder="Buscar..."  class="pr-5"/>
+            <b-form-input @input="getPageOrders" v-model="search" id="search" type="text" placeholder="Buscar..."  class="pr-5"/>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -57,6 +57,7 @@
             :total-rows="objectPagination.elements"
             :per-page="objectPagination.size"
             aria-controls="my-table"
+            @change="getPageOrders"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -83,14 +84,23 @@ export default Vue.extend({
       },
       orders: [],
       selectedOrder: {},
+      search: null,
     }
   },
   methods: {
-    async getPageOrders() {
-      const response = await OrderService.getPageOrdersService(this.objectPagination);
-
-      this.objectPagination.elements = response.totalElements;
-      this.orders = response.content;
+    async getPageOrders(page) {
+      this.objectPagination.page = page;
+      if (this.search === null || this.search === "") {
+        this.showOverlay();
+        const response = await OrderService.getPageOrdersService(this.objectPagination);
+        this.showOverlay();
+        this.objectPagination.elements = response.totalElements;
+        this.orders = response.content;
+      } else {
+        const response = await OrderService.getPageOrderByOrderNumberService(this.objectPagination, this.search);
+        this.objectPagination.elements = response.totalElements;
+        this.orders = response.content;
+      }
     },
 
     openOrderDetailsModal(order) {
@@ -101,7 +111,11 @@ export default Vue.extend({
       this.$nextTick(() => {
         this.$bvModal.show('orderDetailsModal');
       });
-    }
+    },
+
+    showOverlay() {
+      this.$store.dispatch('changeStatusOverlay')
+    },
   },
   mounted() {
     this.getPageOrders()
