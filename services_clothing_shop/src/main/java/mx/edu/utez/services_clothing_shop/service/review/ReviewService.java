@@ -117,7 +117,6 @@ public class ReviewService {
             throw new CustomException("order.bybuyer.notfound");
         }
 
-        System.out.println(order.getStatus().getStatus());
         if(order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")){
             throw new CustomException("order.status.notallowed");
         }

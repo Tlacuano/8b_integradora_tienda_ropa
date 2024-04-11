@@ -29,8 +29,16 @@ public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, U
             " join BeanProduct p on ohp.product.idProduct = p.idProduct " +
             " where p.idProduct = :idProduct " +
             " and ohp.order.address.person.user.idUser = :idBuyer" +
-            " and ohp.status != 'Sin pagar'")
+            " and ohp.status.status != 'Sin pagar'")
     BeanOrderHasProducts findOrderHasProductByBuyerAndProduct(UUID idBuyer, UUID idProduct);
+
+    @Query("SELECT ohp FROM BeanOrderHasProducts  ohp JOIN BeanProduct p ON ohp.product.idProduct = p.idProduct " +
+            "JOIN BeanUser u ON p.user.idUser = u.idUser " +
+            "JOIN BeanOrder o ON o.idOrder = ohp.order.idOrder " +
+            "WHERE u.email = :email " +
+            "AND o.orderNumber LIKE :orderNumber")
+    Page<BeanOrderHasProducts> findBySellerAndOrderNumber(String email, String orderNumber, Pageable pageable);
+
 
     @Procedure("sp_fulfill_order")
     void sp_fulfill_order(UUID idOrder, UUID idUser);

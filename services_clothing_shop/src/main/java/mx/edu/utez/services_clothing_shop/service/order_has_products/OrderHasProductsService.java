@@ -133,6 +133,18 @@ public class OrderHasProductsService {
         return true;
     }
 
+    @Transactional
+    public Object getOrdersHasProductsBySellerAndNumber(RequestGetPageSalesDTO payload, Pageable pageable) {
+        BeanUser user = userRepository.findByEmail(payload.getEmail());
+
+        if(user == null){
+            throw new CustomException("user.email.exists");
+        }
+        Page<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySellerAndOrderNumber(user.getEmail(), "%"+payload.getOrderNumber()+"%", pageable);
+
+        return orders.map(ResponseOrdersSalesDTO::toOrderSalesDTO);
+    }
+
     private BeanOrderHasProducts VerifyAuthorityOnOrder(RequestActionBySeller payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
@@ -156,4 +168,6 @@ public class OrderHasProductsService {
 
         return order;
     }
+
+
 }
