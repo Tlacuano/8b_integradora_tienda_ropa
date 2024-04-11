@@ -2,16 +2,17 @@
   <section class="interface">
     <b-row class="mb-4">
       <b-col class="text-center mt-4">
-        <h1>Registrar solicitud de edición de producto</h1>
+        <h1>Registrar solicitud de producto</h1>
       </b-col>
     </b-row>
-    <b-form @submit="handleSubmit">
+    <b-form @submit.prevent="onSubmit()">
       <b-row>
         <b-col class="" lg="6">
           <b-col>
             <b-form-group label="Imagen Principal:" label-for="principal-image">
-              <b-form-file id="principal-image" v-model="formData.productGallery[0]" @input="handleImageUpload"
-                           accept="image/*"></b-form-file>
+              <b-form-file id="principal-image" @change="handleImageUpload"  name="principal-image"
+                           v-validate="'image:2000000|image|image_size'" accept="image/*"></b-form-file>
+              <span style="color: red;">{{ errors.first('principal-image') }}</span>
             </b-form-group>
             <b-col class="preview-container">
               <div v-if="imageUrl===null" class="text-center d-flex align-items-center mt-4 principal-image">
@@ -21,32 +22,24 @@
               </div>
               <div v-else class="text-center mt-4 principal-image">
                 <img :src="imageUrl" width="250px" height="300px"/>
+
               </div>
             </b-col>
           </b-col>
           <b-col class="mt-4">
-            <b-form-group label="Selecciona hasta 5 imágenes">
-              <b-form-file
-                  v-on:change="handleImageUpload2"
-                  :state="Boolean(selectedImages.length)"
-                  accept="image/*"
-                  multiple
-              ></b-form-file>
+            <b-form-group label="Selecciona hasta 4 imágenes">
+              <b-form-file v-on:change="handleImageUpload2" v-validate="'image:2000000|image|image_size'" name="images"
+                           accept="image/*"></b-form-file>
+              <span style="color: red;">{{ errors.first('images') }}</span>
             </b-form-group>
 
             <b-col class="preview-container">
               <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
-                <div class="placeholder-content">
-                  Preview
-                </div>
+                <div class="placeholder-content">Preview</div>
               </div>
-              <div
-                  v-else
-                  v-for="(imagePreview, index) in imagePreviews"
-                  :key="index"
-                  class="image-preview"
-              >
+              <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
                 <img :src="imagePreview" alt="Preview"/>
+                <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
               </div>
             </b-col>
           </b-col>
@@ -56,61 +49,74 @@
             <b-col>
               <b-form-group label="Nombre" label-for="name">
                 <b-form-input
+                    name="name"
+                    v-validate="'required|alpha_spaces|product_name_max'"
                     v-model="formData.productName"
                     id="name"
                 ></b-form-input>
+                <span style="color: red;">{{ errors.first('name') }}</span>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
-                <b-form-select v-model="formData.category" id="category-select">
+                <b-form-select name="category" v-model="category" v-validate="'required'" id="category-select" @change="updateSubcategories">
                   <option v-for="(category, index) in categories" :key="index" :value="category.category">
                     {{ category.category }}
                   </option>
                 </b-form-select>
+                <span style="color: red;">{{ errors.first('category') }}</span>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group label="Subcategoria" label-for="subcategory-select">
-                <b-form-select v-model="formData.subcategory" id="subcategory-select">
-                  <option v-for="(subcategory, index) in subcategories" :key="index" :value="subcategory.subcategory">
+                <b-form-select name="subcategory" v-model="formData.subcategory" v-validate="'required'" id="subcategory-select">
+                  <option v-for="(subcategory, index) in filteredSubcategories" :key="index" :value="subcategory.idSubcategory">
                     {{ subcategory.subcategory }}
                   </option>
                 </b-form-select>
+                <span style="color: red;">{{ errors.first('subcategory') }}</span>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Descripción: " label-for="description">
-                <b-form-textarea v-model="formData.description" id="description"></b-form-textarea>
+                <b-form-textarea name="description" v-model="formData.description" v-validate="'required|alpha_spaces|description_min|description_max'"
+                                 id="description"></b-form-textarea>
               </b-form-group>
+              <span style="color: red;">{{ errors.first('description') }}</span>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Precio: " label-for="price">
-                <b-form-input id="price" v-model="formData.price" type="number"></b-form-input>
+                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required'"
+                              type="number"></b-form-input>
               </b-form-group>
+              <span style="color: red;">{{ errors.first('price') }}</span>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input id="stock" v-model="formData.amount" type="number"></b-form-input>
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required'"
+                              type="number"></b-form-input>
+                <span style="color: red;">{{ errors.first('stock') }}</span>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col>
               <b-form-group label="Estado del producto" label-for="status">
-                <b-form-select id="status" v-model="formData.status" :options="optionsStatus"></b-form-select>
+                <b-form-select name="status" id="status" v-model="formData.status" v-validate="'required'"
+                               :options="optionsStatus"></b-form-select>
+                <span style="color: red;">{{ errors.first('status') }}</span>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row class="mt-4">
             <b-col class="text-right">
-              <b-button variant="dark" class="btn-success mr-2">Solicitar Edición</b-button>
+              <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
               <b-button variant="outline-dark" class="btn-cancel">Cancelar</b-button>
             </b-col>
           </b-row>
@@ -120,93 +126,140 @@
   </section>
 </template>
 <script>
-import {showWarningToast} from "@/components/alerts/alerts";
+import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 import ProductManagementService from "@/services/product-management/ProductManagementService";
 import CategoryService from "@/services/category/CategoryService";
 import SubcategoryService from "@/services/subcategory/SubcategoryService";
+import {required} from "vee-validate/dist/rules.esm";
+import CloudinaryService from "@/services/cloudinary/CloudinaryService";
+import ProductService from "@/services/product/ProductService";
+import UserService from "@/services/user/userService";
+import RequestSellerProduct from "@/services/request-seller-product/RequestSellerProduct";
 
 export default {
-  props: {
-    idProduct: {
-      type: String,
-      required: true
-    }
-  },
+
   data() {
     return {
       imageUrl: null,
       selectedImages: [],
       imagePreviews: [],
-      formData:null,
-      optionsStatus:[
-        {value:true,text:"Habilitado"},
-        {value:false,text:"Deshabilitado"}
+      formData: {
+        productName: '',
+        user:'',
+        amount: 0,
+        status: false,
+        subcategory:'',
+        description: '',
+        price: 0,
+        productGallery: []
+      },
+      i: 0,
+      filteredSubcategories: [],
+      newImages: null,
+      newPrincipalImage: null,
+      optionsStatus: [
+        {value: true, text: "Habilitado"},
+        {value: false, text: "Deshabilitado"}
       ],
-      categories:null,
-      subcategories:null
+      categories: null,
+      subcategories: [],
+      category:null
     }
   },
   methods: {
-    handleImageUpload() {
-      const file = this.file;
+    onSubmit() {
+      this.$validator.validate().then(async valid => {
+        if (!valid) {
+          showWarningToast("Completar los requisitos")
+        } else {
+          const response = await ProductManagementService.postProduct(this.formData)
+          const idProduct = response.data.idProduct
+          if(response){
+            const request = await RequestSellerProduct.postRequestSell({idProduct:idProduct})
+            showSuccessToast("Producto creado")
+          }
+        }
+      })
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imageUrl = e.target.result;
+        reader.onload = async (e) => {
+          this.imageUrl = e.target.result
+          this.newPrincipalImage = file
+          const response = await CloudinaryService.uploadImage(this.newPrincipalImage)
+          if (response) {
+            this.formData.productGallery.push(response.data.data)
+          }
         };
         reader.readAsDataURL(file);
-      } else {
-        this.imageUrl = null;
       }
     },
     handleImageUpload2(event) {
       const files = event.target.files;
-      const imagePreviews = [];
-      if (files.length < 2) {
-        showWarningToast("Selecciona minimo 2 imagenes")
-        return;
-      } else if (files.length > 4) {
-        showWarningToast("Contenido máximo 4 imagenes")
+      if (files.length + this.imagePreviews.length > 4) {
+        showWarningToast("No puedes cargar más de 4 imágenes");
         return;
       }
-      for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          imagePreviews.push(e.target.result);
-          if (imagePreviews.length === files.length) {
-            this.imagePreviews = imagePreviews;
-          }
-        };
-        reader.readAsDataURL(files[i]);
+      if (files.length === 0 && this.imagePreviews.length === 0) {
+        showWarningToast("Debes cargar al menos una imagen");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        this.imagePreviews.push(e.target.result);
+        const response = await CloudinaryService.uploadImage(files[0])
+        if (response) {
+            this.formData.productGallery.push(response.data.data);
+        }
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    removeImage(index) {
+      this.imagePreviews.splice(index, 1);
+      if (this.formData.productGallery.length > 2) {
+        this.formData.productGallery.splice(index, 1);
+      }
+      if (this.imagePreviews.length === 0) {
+        showWarningToast("Debes cargar al menos una imagen");
       }
     },
-    async getDetailProduct() {
-      this.showOverlay()
-      const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
-      this.productGallery = response.data.productGallery
-      this.formData = response.data
-      console.log(this.formData)
-      this.imageUrl= this.formData.productGallery[0].image
-      this.imagePreviews = this.formData.productGallery[1].image
-      this.showOverlay()
+    async getProfile(){
+      const email = this.$store.getters.getEmail
+      const response = await UserService.getProfileService({email:email})
+      this.formData.user = response.data.idUser
     },
-    async getCategories(){
+    async getCategories() {
       const response = await CategoryService.getCategories()
       this.categories = response.data.content
-      console.log(this.categories)
+      await this.getSubcategories(5)
     },
-    async getSubcategories(){
-      const response = await SubcategoryService.getPageSubcategoriesService(5)
+    async getSubcategories(pagination) {
+      const response = await SubcategoryService.getPageSubcategoriesService(pagination)
       this.subcategories = response.data.content
+      this.updateSubcategories()
     },
-    showOverlay(){
+    showOverlay() {
       this.$store.dispatch('changeStatusOverlay');
+    },
+    updateSubcategories() {
+      this.filteredSubcategories = this.subcategories
+          .filter(subcategory => subcategory.category === this.category)
+          .map(subcategory => ({ idSubcategory: subcategory.idSubcategory, subcategory: subcategory.subcategory }));
+    }
+  },
+  computed: {
+    required() {
+      return required
     },
   },
   mounted() {
     this.getCategories()
-    this.getSubcategories()
-  }
+    this.getProfile()
+  },
+
 }
 </script>
 <style>
@@ -265,5 +318,28 @@ export default {
   margin-right: 10px;
   margin-bottom: 10px;
   justify-content: center;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-radius: 5px;
+  color: red;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.image-preview:hover .delete-button {
+  opacity: 1;
 }
 </style>

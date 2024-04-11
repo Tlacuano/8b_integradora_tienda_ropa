@@ -34,9 +34,29 @@ const getReviews = async (payload) =>{
 
     }
 }
+
+const putProduct = async (payload)=>{
+    try{
+        const response = await axios.doPut(`/venta-ropa/api/products/put-product?`,payload)
+        return response.data
+    }catch (e){
+
+    }
+}
+
+const postProduct = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/products/post-product?`,payload)
+        return response.data
+    }catch(e){
+
+    }
+}
 export default {
     getProductByUser,
     putStatusProduct,
     getProduct,
-    getReviews
+    getReviews,
+    putProduct,
+    postProduct
 }

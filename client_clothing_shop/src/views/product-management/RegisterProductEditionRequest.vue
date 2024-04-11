@@ -126,12 +126,13 @@
   </section>
 </template>
 <script>
-import {showWarningToast} from "@/components/alerts/alerts";
+import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 import ProductManagementService from "@/services/product-management/ProductManagementService";
 import CategoryService from "@/services/category/CategoryService";
 import SubcategoryService from "@/services/subcategory/SubcategoryService";
 import {required} from "vee-validate/dist/rules.esm";
 import CloudinaryService from "@/services/cloudinary/CloudinaryService";
+import ProductService from "@/services/product/ProductService";
 
 export default {
 
@@ -147,11 +148,12 @@ export default {
       selectedImages: [],
       imagePreviews: [],
       formData: {
+        idProduct:'',
         productName: '',
         amount: 0,
         status: false,
         category: '',
-        subcategory: '',
+        subcategory:'',
         description: '',
         price: 0,
         productGallery: []
@@ -170,12 +172,15 @@ export default {
   },
   methods: {
     onSubmit() {
-
       this.$validator.validate().then(async valid => {
         if (!valid) {
           showWarningToast("Completar los requisitos")
         } else {
           console.log(this.formData)
+          const response = await ProductManagementService.putProduct(this.formData)
+          if(response){
+            showSuccessToast("Producto editado")
+          }
         }
       })
     },
@@ -233,6 +238,7 @@ export default {
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
       this.productGallery = response.data.productGallery
       this.formData = response.data
+      console.log(this.formData)
       this.imageUrl = this.formData.productGallery[0].image
       for (let i = 1; i < this.formData.productGallery.length; i++) {
         this.imagePreviews.push(this.formData.productGallery[i].image);
@@ -247,6 +253,7 @@ export default {
     async getSubcategories(pagination) {
       const response = await SubcategoryService.getPageSubcategoriesService(pagination)
       this.subcategories = response.data.content
+      console.log(this.subcategories)
       this.updateSubcategories()
     },
     showOverlay() {
