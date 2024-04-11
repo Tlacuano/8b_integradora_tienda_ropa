@@ -2,11 +2,13 @@ package mx.edu.utez.services_clothing_shop.controller.product.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class RequestProductDTO {
     @NotBlank(message = "product.name.notnull")
     @Size(min = 5, max = 30, message = "product.name.size")
@@ -25,9 +27,6 @@ public class RequestProductDTO {
     private boolean status;
     @NotEmpty(message = "product.productGallery.nonempty")
     private List<String> productGallery;
-
-    public RequestProductDTO() {
-    }
 
     public RequestProductDTO(String productName, String description, double price, int amount, UUID subcategory, UUID user, boolean status, List<String> productGallery) {
         this.productName = productName;

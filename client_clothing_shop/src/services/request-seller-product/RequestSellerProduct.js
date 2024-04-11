@@ -31,6 +31,14 @@ const putProductSalesRequestStatus = async (id,status,rejectionReason) => {
     } catch (e) {
     }
 }
+const postRequestSell = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/requests-sell-product/post-request-sell-product?`,payload)
+
+    }catch (e){
+
+    }
+}
 
 
 export default {
@@ -38,4 +46,5 @@ export default {
     getByIdProductSalesRequest,
     putProductSalesRequestStatus,
     getPageProductSalesRequestsByUserEmail,
+    postRequestSell
 };

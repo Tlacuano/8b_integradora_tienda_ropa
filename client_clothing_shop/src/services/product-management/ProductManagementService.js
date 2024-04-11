@@ -10,6 +10,14 @@ const getProductByUser = async (pagination,email) => {
         showWarningToast('', error)
     }
 }
+
+const getProduct = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/products/get-product?`,payload)
+        return response.data
+    }catch(e){
+    }
+}
 const putStatusProduct = async (productId)=>{
     try {
         const response = await axios.doPut(`/venta-ropa/api/products/put-status-product?`,{idProduct:productId})
@@ -18,7 +26,37 @@ const putStatusProduct = async (productId)=>{
         showWarningToast('', error)
     }
 }
+const getReviews = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/reviews/get-reviews-by-product-id`, payload)
+        return response.data
+    }catch (e){
+
+    }
+}
+
+const putProduct = async (payload)=>{
+    try{
+        const response = await axios.doPut(`/venta-ropa/api/products/put-product?`,payload)
+        return response.data
+    }catch (e){
+
+    }
+}
+
+const postProduct = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/products/post-product?`,payload)
+        return response.data
+    }catch(e){
+
+    }
+}
 export default {
     getProductByUser,
-    putStatusProduct
+    putStatusProduct,
+    getProduct,
+    getReviews,
+    putProduct,
+    postProduct
 }

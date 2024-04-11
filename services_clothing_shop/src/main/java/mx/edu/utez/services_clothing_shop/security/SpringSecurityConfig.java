@@ -64,6 +64,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/verify-email").permitAll()
 
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/post-admin-account").hasAnyRole(SUPERADMIN)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-by-email").hasRole(SELLER)
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/users/get-page").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/get-page-by-email").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/users/delete-account").hasAnyRole(ADMIN, BUYER, SELLER, SUPERADMIN)

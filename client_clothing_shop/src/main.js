@@ -52,6 +52,9 @@ const dictionary = {
             rfc_length: () => 'La longitud debe ser 13 caracteres.',
             rfc_length_moral: () => 'La longitud debe ser 12 caracteres.',
             phone: () => 'El número de teléfono no es válido',
+            product_name_max:()=>'El nombre del producto debe contener máximo 25 caracteres',
+            description_min:()=>'La descripción debe contener minimo 20 caracteres',
+            description_nax:()=> 'La descripción debe contener un máximo de 255 caracteres'
         }
     }
 };
@@ -115,6 +118,12 @@ Validator.extend("name_max", {
         return value.length <= 15;
     }
 })
+//for productName lenght
+Validator.extend("product_name_max",{
+    validate: value => {
+        return value.length <= 25;
+    }
+})
 
 //for image size
 Validator.extend('image_size', {
@@ -171,6 +180,17 @@ Validator.extend('privacy_policy', {
     }
 });
 
+Validator.extend("description_max", {
+    validate: value => {
+        return value.length <= 255;
+    }
+})
+
+Validator.extend("description_min", {
+    validate: value => {
+        return value.length >= 20;
+    }
+})
 Validator.localize('es', es);
 Validator.localize({es: {messages: {...es.messages, ...dictionary.es.messages}}});
 Vue.use(VeeValidate, {
