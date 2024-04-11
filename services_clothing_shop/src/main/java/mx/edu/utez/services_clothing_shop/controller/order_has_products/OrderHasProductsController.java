@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.order_has_products;
 
+import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestCancelSellBySeller;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestGetPageSalesDTO;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestOrderHasProductsByOrderIdDTO;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.ResponseOrderHasProductsDTO;
@@ -47,6 +48,12 @@ public class OrderHasProductsController {
                 new CustomResponse<>(orderHasProductsService.getOrdersHasProductsBySeller(requestBody, pageable), "Order has products found", false, HttpStatus.OK.value()),
                 HttpStatus.OK
         );
+    }
+
+    @PostMapping("/cancel-sell-by-seller")
+    public ResponseEntity<Object> cancelSellBySeller(@RequestBody RequestCancelSellBySeller requestBody) {
+        orderHasProductsService.cancelSellBySeller(requestBody);
+        return new ResponseEntity<>(new CustomResponse<>(null, "Sell canceled", false, HttpStatus.OK.value()), HttpStatus.OK);
     }
 
 }

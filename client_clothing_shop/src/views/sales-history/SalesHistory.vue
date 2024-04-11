@@ -89,6 +89,7 @@
     </b-row>
 
     <SaleDetailsModal :order="orderSelcted"/>
+    <CancelSellBySellerModal :order="orderSelcted"/>
   </section>
 </template>
 
@@ -98,7 +99,8 @@ import OrderService from "@/services/order/OrderService";
 export default {
   name: 'SalesHistory',
   components: {
-    SaleDetailsModal: () => import('@/views/sales-history/SaleDetailsModal.vue')
+    SaleDetailsModal: () => import('@/views/sales-history/SaleDetailsModal.vue'),
+    CancelSellBySellerModal : () => import('@/views/sales-history/CancelSellBySellerModal.vue')
   },
   data() {
     return {

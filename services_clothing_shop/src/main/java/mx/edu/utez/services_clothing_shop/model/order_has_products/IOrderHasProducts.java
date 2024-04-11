@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, String>{
+public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, UUID>{
     List<BeanOrderHasProducts> findAllByOrder_IdOrder(UUID idOrder);
 
 
