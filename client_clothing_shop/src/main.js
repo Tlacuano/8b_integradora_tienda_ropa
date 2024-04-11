@@ -52,6 +52,7 @@ const dictionary = {
             rfc_length: () => 'La longitud debe ser 13 caracteres.',
             rfc_length_moral: () => 'La longitud debe ser 12 caracteres.',
             phone: () => 'El número de teléfono no es válido',
+            product_name_max:()=>'El nombre del producto debe contener máximo 25 caracteres'
         }
     }
 };
@@ -113,6 +114,12 @@ Validator.extend('phone', {
 Validator.extend("name_max", {
     validate: value => {
         return value.length <= 15;
+    }
+})
+//for productName lenght
+Validator.extend("product_name_max",{
+    validate: value => {
+        return value.length <= 25;
     }
 })
 

@@ -28,5 +28,6 @@ const uploadImage = async (file) => {
 }
 
 export default {
-    uploadImage
+    uploadImage,
+    uploadImages
 }
