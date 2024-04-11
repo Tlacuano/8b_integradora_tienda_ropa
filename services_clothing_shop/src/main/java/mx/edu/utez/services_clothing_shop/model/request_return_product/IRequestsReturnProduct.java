@@ -37,6 +37,7 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
         String getProductName();
     }
 
+
     @Query("SELECT r.idRequestReturnProduct as idRequestReturnProduct, " +
             "r.status.status as status, " +
             "r.orderHasProduct.order.orderDate as orderDate, " +
@@ -75,4 +76,7 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
             "WHERE o.orderNumber = :orderNumber " +
             "ORDER BY ohp.idOrderProduct ASC")
     Optional<BeanOrderHasProducts> findFirstByOrderNumber(@Param("orderNumber") String orderNumber);
+
+    boolean existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(String orderNumber, String status);
+
 }

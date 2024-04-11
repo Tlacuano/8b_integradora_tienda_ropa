@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 public class RequestsReturnProductPostRequestDTO {
     private String orderNumber;
-
+    private String returnReason;
+    private String image;
 }
