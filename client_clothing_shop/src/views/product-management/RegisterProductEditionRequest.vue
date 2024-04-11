@@ -10,8 +10,8 @@
         <b-col class="" lg="6">
           <b-col>
             <b-form-group label="Imagen Principal:" label-for="principal-image">
-              <b-form-file id="principal-image" @change="handleImageUpload" name="principal-image"
-                           v-validate="'image_size|required'" accept="image/*"></b-form-file>
+              <b-form-file id="principal-image" @change="handleImageUpload"  name="principal-image"
+                           v-validate="'image:2000000|image|image_size'" accept="image/*"></b-form-file>
               <span style="color: red;">{{ errors.first('principal-image') }}</span>
             </b-form-group>
             <b-col class="preview-container">
@@ -28,7 +28,7 @@
           </b-col>
           <b-col class="mt-4">
             <b-form-group label="Selecciona hasta 4 imágenes">
-              <b-form-file v-on:change="handleImageUpload2" v-validate="'image_size'" name="images"
+              <b-form-file v-on:change="handleImageUpload2" v-validate="'image:2000000|image|image_size'" name="images"
                            accept="image/*"></b-form-file>
               <span style="color: red;">{{ errors.first('images') }}</span>
             </b-form-group>
