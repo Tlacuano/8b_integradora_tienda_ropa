@@ -21,61 +21,80 @@
                     <b-col cols="4 my-auto">
                       <b-img :src="findMainImage(product.product.gallery)" class="img-fluid"/>
                     </b-col>
-                    <b-col cols="7">
-                      <b-row class="mt-3">
-                        <b-col>
-                          <h5 class="mb-1 d-none d-lg-block">
-                            {{ product.product.productName }}
-                          </h5>
-                          <b class="d-lg-none">
-                            {{ product.product.productName }}
-                          </b>
-                        </b-col>
-                      </b-row>
-                      <b-row>
-                        <b-col>
-                          <div class="text-black-50 text-truncate">
-                            {{ product.product.category }}
-                          </div>
-                        </b-col>
-                      </b-row>
-                      <b-row class="mt-3 d-none d-lg-block">
-                        <b-col cols="12">
-                          <div class="text-truncate text-secondary small">
-                            {{ product.product.description }}
-                          </div>
-                          <hr/>
-                        </b-col>
-                      </b-row>
-                      <b-row>
-                        <b-col cols="auto my-auto">
-                          <span class="pr-4">Cantidad</span>
-                          <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
-                                             @click="decreaseAmount(product)"/>
-                          <span class="mx-2">{{ product.amount }}</span>
-                          <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
-                                             @click="increaseAmount(product)"/>
-                        </b-col>
-                      </b-row>
 
-                      <b-row class="mt-lg-5">
-                        <b-col>
-                          <p class="d-lg-none p-0 m-0"><small>Envío</small></p>
-                          <p class="d-none d-lg-block">Envío</p>
-                        </b-col>
-                        <b-col class="text-right">
-                          <span class="text-secondary underline small">Gratis</span>
-                        </b-col>
-                      </b-row>
-                      <b-row>
-                        <b-col>
-                          <b class="d-lg-none">Total</b>
-                          <h5 class="d-none d-lg-block">Total</h5>
-                        </b-col>
-                        <b-col class="text-right">
-                          <span><b>${{ calculateProductPrice(product) }}</b></span>
-                        </b-col>
-                      </b-row>
+                    <b-col cols="7">
+                      <section v-if="product.product.status">
+                        <b-row class="mt-3">
+                          <b-col>
+                            <h5 class="mb-1 d-none d-lg-block">
+                              {{ product.product.productName }}
+                            </h5>
+                            <b class="d-lg-none">
+                              {{ product.product.productName }}
+                            </b>
+                          </b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col>
+                            <div class="text-black-50 text-truncate">
+                              {{ product.product.category }}
+                            </div>
+                          </b-col>
+                        </b-row>
+                        <b-row class="mt-3 d-none d-lg-block">
+                          <b-col cols="12">
+                            <div class="text-truncate text-secondary small">
+                              {{ product.product.description }}
+                            </div>
+                            <hr/>
+                          </b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col cols="auto my-auto">
+                            <span class="pr-4">Cantidad</span>
+                            <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
+                                               @click="decreaseAmount(product)"/>
+                            <span class="mx-2">{{ product.amount }}</span>
+                            <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
+                                               @click="increaseAmount(product)"/>
+                          </b-col>
+                        </b-row>
+
+                        <b-row class="mt-lg-5">
+                          <b-col>
+                            <p class="d-lg-none p-0 m-0"><small>Envío</small></p>
+                            <p class="d-none d-lg-block">Envío</p>
+                          </b-col>
+                          <b-col class="text-right">
+                            <span class="text-secondary underline small">Gratis</span>
+                          </b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col>
+                            <b class="d-lg-none">Total</b>
+                            <h5 class="d-none d-lg-block">Total</h5>
+                          </b-col>
+                          <b-col class="text-right">
+                            <span><b>${{ calculateProductPrice(product) }}</b></span>
+                          </b-col>
+                        </b-row>
+                      </section>
+                      <section v-else style="height: 100%">
+                        <b-row class="mt-3">
+                          <b-col>
+                            <h3>
+                                Producto no disponible
+                            </h3>
+                            <hr/>
+                          </b-col>
+                        </b-row>
+                        <b-row class="mt-auto">
+                          <b-col>
+                            <b-button @click="deleteProductInCart(product.idShoppingCart)" class="main-button">Eliminar</b-button>
+                          </b-col>
+                        </b-row>
+                      </section>
+
                     </b-col>
                   </b-row>
                 </b-card>
@@ -252,6 +271,21 @@ export default {
         })
         return;
       }
+
+      //analizar si hay algun producto no disponible
+      const unavailableProduct = this.cart.find(product => !product.product.status);
+
+      if (unavailableProduct) {
+        Vue.swal({
+          title: 'Producto no disponible',
+          text: "Hay productos en el carrito que no están disponibles",
+          icon: 'warning',
+          confirmButtonColor: 'var( --black-base)',
+          confirmButtonText: 'Aceptar',
+        })
+        return;
+      }
+
       this.$router.push({name: 'TransactionDetails'});
     },
 
