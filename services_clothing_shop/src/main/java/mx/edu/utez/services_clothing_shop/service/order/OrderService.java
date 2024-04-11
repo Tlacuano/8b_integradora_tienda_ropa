@@ -25,6 +25,10 @@ public class OrderService {
         return orderRepository.findAllOrdersForAdmin(page);
     }
 
+    public Page<IOrder.OrderProjection> getOrdersByOrderNumber(String orderNumber, Pageable page) {
+        return orderRepository.findAllOrdersForAdminByOrderNumber(orderNumber, page);
+    }
+
     @Transactional
     public IOrder.OrderDetailsProjection getOrderDetailsByIdOrder(UUID idOrder) {
         return orderRepository.findOrderDetailsByIdOrder(idOrder);

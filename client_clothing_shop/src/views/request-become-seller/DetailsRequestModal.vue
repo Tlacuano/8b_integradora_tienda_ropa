@@ -61,7 +61,10 @@
               placeholder="Escribe aquí la razón de rechazo"
               rows="3"
               max-rows="6"
+              v-validate="'required|max:255'"
+              name="rejectionReason"
           />
+          <span v-show="errors.has('rejectionReason')" class="text-danger">{{ errors.first('rejectionReason') }}</span>
         </b-col>
       </b-row>
       <b-row class="justify-content-center mt-2 mb-2">
@@ -97,27 +100,31 @@ export default Vue.extend({
     },
 
     async putStatusRequest(status) {
-      await showInfoAlert(
-          "¿Estás seguro de cambiar el estado de la solicitud?",
-          "Esta acción no se puede deshacer",
-          "Cambiar",
-          async () => {
-            const payload = {
-              idRequestBecomeSeller: this.idRequest,
-              rejectionReason: this.rejectionReason,
-              status: status
-            }
-            await RequestsBecomeSellerService.putStatusRequestService(payload);
+      await this.$validator.validateAll().then(async result => {
+        if (result) {
+          await showInfoAlert(
+              "¿Estás seguro de cambiar el estado de la solicitud?",
+              "Esta acción no se puede deshacer",
+              "Cambiar",
+              async () => {
+                const payload = {
+                  idRequestBecomeSeller: this.idRequest,
+                  rejectionReason: this.rejectionReason,
+                  status: status
+                }
+                await RequestsBecomeSellerService.putStatusRequestService(payload);
 
-            this.$emit('request-updated');
-            showSuccessToast("Estado de la solicitud actualizado correctamente")
-            this.$bvModal.hide('detailsRequestModal');
-            if (status === "Rechazado") {
-              this.rejectionReason = null;
-              this.$bvModal.hide('rejectionReasonModal');
-            }
-          }
-      )
+                this.$emit('request-updated');
+                showSuccessToast("Estado de la solicitud actualizado correctamente")
+                this.$bvModal.hide('detailsRequestModal');
+                if (status === "Rechazado") {
+                  this.rejectionReason = null;
+                  this.$bvModal.hide('rejectionReasonModal');
+                }
+              }
+          )
+        }
+      });
     },
 
     openReasonModal() {

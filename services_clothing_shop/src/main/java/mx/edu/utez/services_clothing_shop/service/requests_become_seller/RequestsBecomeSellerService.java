@@ -11,6 +11,7 @@ import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsB
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
@@ -28,13 +29,14 @@ public class RequestsBecomeSellerService {
 
     private final IRequestsBecomeSeller IRequestsBecomeSeller;
     private final IRequestStatus IRequestStatus;
-
     private final EntityManager entityManager;
+    private final EmailService emailService;
 
-    public RequestsBecomeSellerService(IRequestsBecomeSeller IRequestsBecomeSeller, IRequestStatus IRequestStatus, EntityManager entityManager) {
+    public RequestsBecomeSellerService(IRequestsBecomeSeller IRequestsBecomeSeller, IRequestStatus IRequestStatus, EntityManager entityManager, EmailService emailService) {
         this.IRequestsBecomeSeller = IRequestsBecomeSeller;
         this.IRequestStatus = IRequestStatus;
         this.entityManager = entityManager;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -55,9 +57,8 @@ public class RequestsBecomeSellerService {
         }
 
         IRequestsBecomeSeller.updateRequestBecomeSeller(requestId, status, rejectionReason);
-
+        Optional<BeanRequestsBecomeSeller> requestOptional = IRequestsBecomeSeller.findById(requestId);
         if (status.equals("Aprobado")) {
-            Optional<BeanRequestsBecomeSeller> requestOptional = IRequestsBecomeSeller.findById(requestId);
             if (requestOptional.isPresent()) {
                 BeanRequestsBecomeSeller request = requestOptional.get();
                 BeanPerson person = IRequestsBecomeSeller.findPersonByRequestId(requestId);
@@ -96,7 +97,18 @@ public class RequestsBecomeSellerService {
                 } else {
                     throw new CustomException("No se encontró la persona asociada a la solicitud");
                 }
+                emailService.sendEmail(request.getUser().getEmail(),
+                        "Solicitud de vendedor aprobada",
+                        "Solicitud de vendedor aprobada",
+                        rejectionReason,
+                        "");
             }
+        } else {
+            requestOptional.ifPresent(beanRequestsBecomeSeller -> emailService.sendEmail(beanRequestsBecomeSeller.getUser().getEmail(),
+                    "Solicitud de vendedor rechazada",
+                    "Solicitud de vendedor rechazada",
+                    "Un administrador ha revisado tu solicitud y ha decidido rechazarla por la siguiente razón: " + rejectionReason,
+                    ""));
         }
     }
 
