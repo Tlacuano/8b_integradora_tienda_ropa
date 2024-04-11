@@ -57,8 +57,8 @@ ok-only
 
   <b-row class="mt-4">
     <b-col class="text-right action-buttons">
-      <b-button class="btn-accept mr-2" @click="acceptRequestReturnProduct" v-if="request.status !== 'Aprobado' && request.status !== 'Rechazado'">Aprobar</b-button>
-      <b-button variant="danger" @click="openRejectionModal(request.requestId)" v-if="request.status !== 'Aprobado' && request.status !== 'Rechazado'">Rechazar</b-button>
+      <b-button class="btn-accept mr-2" @click="acceptRequestReturnProduct" v-if="!isStatusFinal">Aprobar</b-button>
+      <b-button variant="danger" @click="openRejectionModal(request.requestId)" v-if="!isStatusFinal">Rechazar</b-button>
     </b-col>
   </b-row>
 
@@ -70,6 +70,7 @@ ok-only
       :user-email="request.email"
       @rejection-submitted="handleRejection"
       @close-main-modal="closeMainModal"
+      @rejection-completed="closeAllModals"
   />
 </b-container>
 </b-modal>
@@ -85,7 +86,8 @@ export default{
   name: "RequestsReturnProductManagementModal",
   components: {RejectionReason},
   props: {
-    requestId: String
+    requestId: String,
+    requestStatus: String,
   },
   data() {
     return {
@@ -155,6 +157,7 @@ closeMainModal() {
               if (response && response.data && response.data.status === 'Aprobado') {
                 showSuccessToast('La solicitud de devolución ha sido aprobada');
                 this.request.status = 'Aprobado';
+                this.$emit('approval-completed');
                 this.$bvModal.hide('requestReturnProductModal');
               } else {
                 console.error("La respuesta no contiene datos válidos o la propiedad esperada:", response);
@@ -176,7 +179,17 @@ closeMainModal() {
       this.selectedRequestId = requestId;
       this.$bvModal.show('rejectionReasonModal');
     },
+    closeAllModals() {
+      this.$bvModal.hide('rejectionReasonModal');
+      this.$bvModal.hide('requestReturnProductModal');
+      window.location.reload();
+    },
+    },
+  computed: {
+    isStatusFinal() {
+      return this.requestStatus === 'Aprobado' || this.requestStatus === 'Rechazado';
     }
+  }
 }
 </script>
 

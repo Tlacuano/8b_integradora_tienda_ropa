@@ -57,7 +57,7 @@ export default {
                 };
                 await RequestsReturnProductService.putRequestReturnProductStatusService(requestData);
                 showSuccessToast('La solicitud de devolución ha sido rechazada');
-                this.$emit('rejection-submitted', true);
+                this.$emit('rejection-completed');
                 this.closeModal();
               } catch (error) {
                 console.error("Error al rechazar la solicitud de devolución:", error);
@@ -67,12 +67,13 @@ export default {
       }
     },
     closeModal() {
-      this.$bvModal.hide('rejectionModal');
+      this.rejectionReason = '';
+      this.$bvModal.hide('rejectionReasonModal');
     },
   },
   computed: {
     validated() {
-      return !this.errors.any();
+      return this.rejectionReason.trim().length > 0;
     }
   }
 };
