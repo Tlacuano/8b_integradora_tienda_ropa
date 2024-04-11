@@ -109,6 +109,7 @@ public class SpringSecurityConfig {
 
                                 //Modulo requests-become-seller
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-become-seller/get-page").hasAnyRole(ADMIN, SUPERADMIN)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-page-by-user-email").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-id-request-become-seller").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/get-by-user-email").hasAnyRole(BUYER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-become-seller/post-request-become-seller").hasRole(BUYER)
@@ -170,6 +171,7 @@ public class SpringSecurityConfig {
                                 //Modulo subcategories
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-by-category").permitAll()
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/subcategories/get-subcategories").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-subcategories-by-subcategory").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/get-subcategory").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/post-subcategory").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/subcategories/put-subcategory").hasAnyRole(ADMIN, SUPERADMIN)
@@ -206,6 +208,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-seller-and-order-number").hasAnyRole(SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/cancel-sell-by-seller").hasAnyRole(SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/mark-as-sent-by-seller").hasAnyRole(SELLER)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/put-status-order-has-products").hasAnyRole(ADMIN, SUPERADMIN)
 
                                 //Modulo transactions
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/transactions/create-checkout-session").hasRole(BUYER)

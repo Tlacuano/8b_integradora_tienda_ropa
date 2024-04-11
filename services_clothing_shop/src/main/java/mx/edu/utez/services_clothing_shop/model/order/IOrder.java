@@ -29,7 +29,6 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
     interface OrderProjection {
         UUID getIdOrder();
         String getOrderNumber();
-        String getStatus();
         String getPicture();
         String getPersonName();
         String getPersonLastName();
@@ -37,8 +36,8 @@ public interface IOrder extends JpaRepository<BeanOrder, UUID> {
     }
 
     @Query("SELECT o.idOrder as idOrder,  o.orderNumber as orderNumber, o.address.person.picture as picture, " +
-            "o.address.person.name as personName, o.address.person.lastName as personLastName, o.address.person.secondLastName as personSecondLastName, " +
-            "ohp.status.status as status FROM BeanOrder o INNER JOIN o.orderHasProducts ohp")
+            "o.address.person.name as personName, o.address.person.lastName as personLastName, o.address.person.secondLastName as personSecondLastName " +
+            "FROM BeanOrder o")
     Page<OrderProjection> findAllOrdersForAdmin(Pageable pageable);
 
     interface OrderDetailsProjection {

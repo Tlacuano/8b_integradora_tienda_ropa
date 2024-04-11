@@ -9,7 +9,6 @@ const getPageOrdersService = async (pagination) => {
         const response = await axios.doGet(`/venta-ropa/api/orders/get-orders?size=${size}&size=${page}`);
         return response.data.data;
     } catch (e) {
-        console.log(e)
     }
 }
 
@@ -90,7 +89,13 @@ const markAsSentBySellerService = async (payload) => {
     }
 }
 
-
+const putStatusOrderHasProductService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/order-has-products/put-status-order-has-products", payload);
+        return response.data.status;
+    } catch (e) {
+    }
+}
 
 export default {
     getPageOrdersService,
@@ -102,5 +107,6 @@ export default {
     getOrdersBySellerAndStatusService,
     cancelSellBySellerService,
     markAsSentBySellerService,
-    getOrdersBySellerAndNumberService
+    getOrdersBySellerAndNumberService,
+    putStatusOrderHasProductService,
 }

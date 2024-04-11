@@ -34,6 +34,11 @@ public class SubcategoryService {
     }
 
     @Transactional
+    public Page<BeanSubcategory> getSubcategoriesBySubcategory(String subcategory, Pageable pageable) {
+        return iSubCategory.findBySubcategoryStartsWithIgnoreCase(subcategory, pageable);
+    }
+
+    @Transactional
     public BeanSubcategory postSubcategory(BeanSubcategory subcategory) {
         return iSubCategory.saveAndFlush(subcategory);
     }
