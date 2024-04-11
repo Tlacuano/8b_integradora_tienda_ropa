@@ -5,10 +5,12 @@ import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductGetByIdResponseDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductPostRequestDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -29,33 +31,49 @@ public class RequestsReturnProductService {
     private final IRequestsReturnProduct IRequestsReturnProduct;
     private final IRequestStatus IRequestStatus;
     private final IReturnProductGallery IReturnProductGallery;
+    private final EmailService emailService;
 
-    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, IReturnProductGallery IReturnProductGallery) {
+    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, IReturnProductGallery IReturnProductGallery, EmailService emailService) {
         this.IRequestsReturnProduct = IRequestsReturnProduct;
         this.IRequestStatus = IRequestStatus;
         this.IReturnProductGallery = IReturnProductGallery;
+        this.emailService = emailService;
     }
 
     @Transactional
-    public RequestsReturnProductDTO putRequestReturnProduct(UUID requestId, String status, String rejectionReason) {
-        if (!isValidRejectionReason(rejectionReason)) {
-            throw new CustomException("requestsReturnProduct.rejectionReason.invalid");
-        }
-        Optional<BeanRequestReturnProduct> existingRequestOptional = IRequestsReturnProduct.findById(requestId);
-        if (existingRequestOptional.isPresent()) {
-            BeanRequestReturnProduct existingRequest = existingRequestOptional.get();
-            BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
-                    .orElseThrow(() -> new CustomException("requestsReturnProduct.status.invalid"));
+    public RequestsReturnProductDTO putRequestReturnProduct(UUID requestId, String status, String rejectionReason, String email) {
+        BeanRequestReturnProduct request = IRequestsReturnProduct.findById(requestId)
+                .orElseThrow(() -> new CustomException("Request not found"));
 
-            existingRequest.setStatus(requestStatus);
-            existingRequest.setRejectionReason(rejectionReason);
-            BeanRequestReturnProduct updatedRequest = IRequestsReturnProduct.save(existingRequest);
+        BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
+                .orElseThrow(() -> new CustomException("Status not found"));
 
-            return convertToDTO(updatedRequest);
-        } else {
-            throw new CustomException("requestReturnProduct.id.notnull");
+        request.setStatus(requestStatus);
+        request.setRejectionReason(rejectionReason);
+        IRequestsReturnProduct.save(request);
+
+        if (status.equals("Aprobado")) {
+            emailService.sendEmail(
+                    email,
+                    "Solicitud de devolución aprobada",
+                    "Su solicitud de devolución ha sido aprobada",
+                    "Estamos procesando su reembolso. Gracias por su paciencia.",
+                    "Reembolso en proceso"
+            );
+        } else if (status.equals("Rechazado")) {
+            emailService.sendEmail(
+                    email,
+                    "Solicitud de devolución rechazada",
+                    "Su solicitud de devolución ha sido rechazada",
+                    "Motivo del rechazo: " + rejectionReason,
+                    "Puede contactarnos para más detalles"
+            );
         }
+        return convertToDTO(request);
     }
+
+
+
 
     private boolean isValidRejectionReason(String rejectionReason) {
         Pattern pattern = Pattern.compile(RegexPatterns.REJECTION_REASON_REGEX);

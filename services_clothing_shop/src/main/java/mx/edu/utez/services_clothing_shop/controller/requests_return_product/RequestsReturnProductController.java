@@ -54,7 +54,7 @@ public class RequestsReturnProductController {
 
     @PutMapping("/put-request-return-product-status")
     public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> putRequestReturnProduct(@RequestBody RequestsReturnProductPutDTO requestDTO) {
-        RequestsReturnProductDTO updatedRequest = requestsReturnProductService.putRequestReturnProduct(requestDTO.getRequestId(), requestDTO.getStatus(), requestDTO.getRejectionReason());
+        RequestsReturnProductDTO updatedRequest = requestsReturnProductService.putRequestReturnProduct(requestDTO.getRequestId(), requestDTO.getStatus(), requestDTO.getRejectionReason(), requestDTO.getEmail());
         return ResponseEntity.ok(new CustomResponse<>(updatedRequest, "Request status updated", false, 200));
     }
 
