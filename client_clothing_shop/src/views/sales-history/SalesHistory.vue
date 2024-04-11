@@ -90,6 +90,7 @@
 
     <SaleDetailsModal :order="orderSelcted"/>
     <CancelSellBySellerModal :order="orderSelcted"/>
+    <markAsSentBySellerModal :order="orderSelcted"/>
   </section>
 </template>
 
@@ -100,7 +101,8 @@ export default {
   name: 'SalesHistory',
   components: {
     SaleDetailsModal: () => import('@/views/sales-history/SaleDetailsModal.vue'),
-    CancelSellBySellerModal : () => import('@/views/sales-history/CancelSellBySellerModal.vue')
+    CancelSellBySellerModal : () => import('@/views/sales-history/CancelSellBySellerModal.vue'),
+    markAsSentBySellerModal: () => import('@/views/sales-history/MarkAsSentBySellerModal.vue')
   },
   data() {
     return {
@@ -118,7 +120,6 @@ export default {
   },
   methods: {
     seeDetails(order){
-      console.log(order)
       this.orderSelcted = order;
       this.$bvModal.show('sale-details-modal');
 
@@ -138,9 +139,7 @@ export default {
 
       const response = await OrderService.getOrdersBySellerAndStatusService(payload, pagination);
 
-      console.log(response.data);
       this.orders = response.data.content;
-
       this.objetPagination.elements = response.data.totalElements;
 
       this.showOverlay();
