@@ -1,9 +1,12 @@
 package mx.edu.utez.services_clothing_shop.model.request_return_product;
 
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
+import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -79,4 +82,12 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
 
     boolean existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(String orderNumber, String status);
 
+    @Query("SELECT rs FROM BeanRequestStatus rs WHERE rs.status = :status")
+    Optional<BeanRequestStatus> findRequestStatusByName(@Param("status") String status);
+
+    @Query("SELECT os FROM BeanOrderStatus os WHERE os.status = :status")
+    Optional<BeanOrderStatus> findOrderStatusByName(@Param("status") String status);
+    @Modifying
+    @Query("UPDATE BeanOrderHasProducts ohp SET ohp.status = :status WHERE ohp.order.orderNumber = :orderNumber")
+    void updateOrderHasProductsStatus(@Param("status") BeanOrderStatus status, @Param("orderNumber") String orderNumber);
 }

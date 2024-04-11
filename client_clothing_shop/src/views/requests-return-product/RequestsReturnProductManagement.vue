@@ -26,7 +26,7 @@
       <b-col>
         <b-row>
           <b-col lg="3" md="4" sm="6" v-for="request in requests" :key="request.idRequestReturnProduct">
-            <b-card no-body class="request-card highlight-on-hover mb-2" @click="openModal(request.idRequestReturnProduct)">
+            <b-card no-body class="request-card highlight-on-hover mb-2" @click="openModal(request.idRequestReturnProduct, request.status)">
               <b-row no-gutters class="align-items-center">
 
                 <b-col cols="6">
@@ -54,7 +54,9 @@
         ></b-pagination>
       </b-col>
     </b-row>
-    <RequestReturnProductModal @request-success="handleRequestSuccess" @request-error="handleRequestError" :request-id="selectedRequestId"/>
+    <RequestReturnProductModal @request-success="handleRequestSuccess" @request-error="handleRequestError" :request-id="selectedRequestId"   :request-status="selectedRequestStatus"   @approval-completed="handleApprovalCompleted"
+
+    />
   </section>
 </template>
 
@@ -77,7 +79,8 @@ export default {
       },
       requests: [],
       selectedRequestId: null,
-      searchQuery: ''
+      searchQuery: '',
+      selectedRequestStatus: '',
     };
   },
   methods: {
@@ -86,8 +89,9 @@ export default {
       this.objectPagination.elements = response.totalElements;
       this.requests = response.content;
     },
-    openModal(requestId) {
+    openModal(requestId, status) {
       this.selectedRequestId = requestId;
+      this.selectedRequestStatus = status;
       this.$nextTick(() => {
         this.$bvModal.show("requestReturnProductModal");
       });
@@ -125,6 +129,9 @@ export default {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
       return new Date(date).toLocaleDateString('es-ES', options);
     },
+    handleApprovalCompleted() {
+      this.getPageRequestReturnProduct(this.searchQuery);
+    }
   },
   mounted() {
     this.getPageRequestReturnProduct(this.searchQuery);
