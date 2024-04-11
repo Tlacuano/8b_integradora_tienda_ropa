@@ -44,6 +44,11 @@ public class RequestsBecomeSellerService {
     }
 
     @Transactional
+    public Page<IRequestsBecomeSeller.RequestBecomeSellerProjection> getPageRequestBecomeSellerByUserEmail(String email, Pageable pageable) {
+        return IRequestsBecomeSeller.findByUserEmail(email, pageable);
+    }
+
+    @Transactional
     public void putRequestBecomeSeller(UUID requestId, String status, String rejectionReason){
         if(!rejectionReason.isEmpty() && !rejectionReason.matches(RegexPatterns.REJECTION_REASON_REGEX)) {
             throw new CustomException("requestBecomeSeller.rejectionReason.invalid");

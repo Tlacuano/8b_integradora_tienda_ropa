@@ -239,6 +239,7 @@ export default {
     },
 
     async createCheckoutSession() {
+      this.showOverlay();
       const payload = {
         total: this.total,
         description: `Orden de ${this.totalProducts} artículos`,
@@ -248,8 +249,10 @@ export default {
       };
       const response = await TransactionService.createCheckoutSession(payload);
       if (response.status === 200) {
-        window.open(response.data.transactionUrl)
+        await this.$store.dispatch('prepareForReload')
+        window.location.href = response.data.transactionUrl;
       }
+      this.showOverlay();
     },
 
     calculateTotal(products) {
@@ -278,7 +281,13 @@ export default {
   },
 
   mounted() {
+    if (!this.$store.getters.isLoggedIn) {
+      this.$router.push({name: 'Login'});
+    }
     this.getShoppingCartProducts();
+    if (this.shoppingCart.length === 0) {
+      this.$router.push({name: 'Home'});
+    }
     this.getUserAddresses();
     this.getUserPaymentCards();
   }

@@ -273,8 +273,10 @@ export default {
 
       if (response) {
         showWarningToast("Ya has enviado una solicitud. Por favor espera a que sea revisada.");
-      } else {
+      } else if(response !== null){
         this.$bvModal.show('formBecomeSellerModal');
+      } else {
+        showWarningToast("Ha ocurrido un error, por favor intenta más tarde.");
       }
     },
   },

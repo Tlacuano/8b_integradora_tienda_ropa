@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestCancelSellBySeller {
+public class RequestActionBySeller {
     private String email;
     private UUID idOrderProduct;
     private String password;

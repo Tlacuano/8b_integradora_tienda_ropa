@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IRequestsBecomeSeller extends JpaRepository<BeanRequestsBecomeSeller, UUID> {
@@ -58,4 +57,11 @@ public interface IRequestsBecomeSeller extends JpaRepository<BeanRequestsBecomeS
 
     @Query("SELECT r.user.person FROM BeanRequestsBecomeSeller r WHERE r.idRequestBecomeSeller = :requestId")
     BeanPerson findPersonByRequestId(@Param("requestId") UUID requestId);
+
+    @Query("SELECT r.idRequestBecomeSeller as idRequestBecomeSeller, r.status as status, " +
+            "r.user.idUser as userId, r.user.person.idPerson as personId, " +
+            "r.user.person.name as personName, r.user.person.lastName as personLastName, r.user.person.secondLastName as personSecondLastName, r.user.person.picture as picture ,"
+            + "r.user.email as userEmail " +
+            "FROM BeanRequestsBecomeSeller r WHERE r.user.email LIKE %:email%")
+    Page<RequestBecomeSellerProjection> findByUserEmail(String email, Pageable pageable);
 }

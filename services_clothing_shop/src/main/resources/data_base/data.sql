@@ -445,7 +445,7 @@ INSERT IGNORE INTO sellers_information
  privacy_policy_agreement,
  secondary_phone_number,
  tax_identification_number,
-       block_sell)
+ block_sell)
 VALUES
     -- SELLER 1
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf5'),
@@ -454,7 +454,7 @@ VALUES
      true,
      '1234567891',
      'IRMUEA680101HDFLNS09',
-       false),
+     false),
     -- SELLER 2
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bf6'),
      'MUEA960501HDFLNS09',
@@ -462,7 +462,7 @@ VALUES
      true,
      '1234567892',
      'IRMUEA960501HDFLNS09',
-       false);
+     false);
 
 -- CARD STATUS
 INSERT IGNORE INTO card_status
@@ -627,7 +627,7 @@ VALUES
      'Camiseta de dinosaurio',
      true,
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be3'),
-     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
     -- NIÑOS PANTALONES
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1d'),
      5,
@@ -636,7 +636,7 @@ VALUES
      'Pantalón de mezclilla',
      true,
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be4'),
-     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
     -- NIÑOS DISFRACES
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1e'),
      10,
@@ -645,7 +645,7 @@ VALUES
      'Disfraz de superhéroe',
      true,
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be5'),
-     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec')),
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb')),
     -- NIÑOS ACCESORIOS
     (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c1f'),
      15,
@@ -654,7 +654,7 @@ VALUES
      'Mochila de dinosaurios',
      true,
      UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860be6'),
-     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860bec'));
+     UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860beb'));
 
 -- IMAGE PRODUCT STATUS
 INSERT IGNORE INTO image_product_status
@@ -1036,7 +1036,9 @@ VALUES (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c55'),
        (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c58'),
         'Cancelado'),
        (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3860c59'),
-        'Reembolsado');
+        'Reembolsado'),
+       (UUID_TO_BIN('ed08f0eb-ec02-11ee-b34f-d85ed3960c5a'),
+        'Sin pagar');
 
 -- ORDERS HAS PRODUCTS
 INSERT IGNORE INTO orders_has_products
