@@ -155,7 +155,6 @@ CREATE PROCEDURE `sp_post_order`(
 BEGIN
     DECLARE v_order_id BINARY(16);
     DECLARE total_products_in_shopping_cart INT;
-    DECLARE total_products_inserted INT;
     DECLARE products_from_same_user INT;
     DECLARE pending_status_id BINARY(16);
 
@@ -167,58 +166,55 @@ BEGIN
     WHERE fk_id_user = UUID_TO_BIN(p_user_id);
 
     IF total_products_in_shopping_cart = 0 THEN
-        SELECT 'User does not have products in the shopping cart' AS message;
-        ROLLBACK;
-    ELSE
-        -- 2. Verify if a product from the shopping cart is from the same user to prevent fraud
-        SELECT COUNT(*)
-        INTO products_from_same_user
-        FROM shopping_cart sc
-                 JOIN products p ON sc.fk_id_product = p.id_product
-        WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
-          AND p.fk_id_user = UUID_TO_BIN(p_user_id);
-
-        IF products_from_same_user = 0 THEN
-            -- 3. Insert a new record into the orders table
-            INSERT INTO orders(id_order, order_date, order_number, fk_id_address, fk_id_payment_card)
-            VALUES (UUID_TO_BIN(UUID()), p_order_date, p_order_number, UUID_TO_BIN(p_order_id_address),
-                    UUID_TO_BIN(p_order_id_payment_card));
-
-            -- 4. Get the id of the new order and the pending status id
-            SELECT id_order FROM orders WHERE order_number = p_order_number INTO v_order_id;
-            SELECT id_status INTO pending_status_id FROM order_status WHERE status = 'Preparación';
-            IF v_order_id IS NOT NULL THEN
-                -- 5. Insert the products from the shopping cart into the orders_has_products table
-                INSERT INTO orders_has_products (id_order_product, amount, fk_id_order, fk_id_product, fk_id_status)
-                SELECT UUID_TO_BIN(UUID()),
-                       amount,
-                       v_order_id,
-                       fk_id_product,
-                       pending_status_id
-                FROM shopping_cart
-                WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-
-                -- 6. Verify if the products were inserted into the orders_has_products table
-                SELECT COUNT(*) INTO total_products_inserted FROM orders_has_products WHERE fk_id_order = v_order_id;
-                IF total_products_inserted = total_products_in_shopping_cart THEN
-                    -- 7. Delete the products from the shopping cart
-                    DELETE FROM shopping_cart WHERE fk_id_user = UUID_TO_BIN(p_user_id);
-                    COMMIT;
-                ELSE
-                    SELECT 'Products were not inserted into the order' AS message;
-                    ROLLBACK;
-                END IF;
-
-            ELSE
-                SELECT 'Order was not created' AS message;
-                ROLLBACK;
-            END IF;
-        ELSE
-            SELECT 'User can not buy its own products' AS message;
-            ROLLBACK;
-        END IF;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The user does not have products in the shopping cart';
     END IF;
 
+    -- 2. Verify if a product from the shopping cart is from the same user to prevent fraud
+    SELECT COUNT(*)
+    INTO products_from_same_user
+    FROM shopping_cart sc
+             JOIN products p ON sc.fk_id_product = p.id_product
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
+      AND p.fk_id_user = UUID_TO_BIN(p_user_id);
+
+    IF products_from_same_user != 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The user can not buy his own products';
+    END IF;
+
+    -- 3. Insert a new record into the orders table
+    INSERT INTO orders(id_order, order_date, order_number, fk_id_address, fk_id_payment_card)
+    VALUES (UUID_TO_BIN(UUID()), p_order_date, p_order_number, UUID_TO_BIN(p_order_id_address),
+            UUID_TO_BIN(p_order_id_payment_card));
+
+    -- 4. Get the id of the new order and the pending status id
+    SELECT id_order FROM orders WHERE order_number = p_order_number INTO v_order_id;
+    SELECT id_status INTO pending_status_id FROM order_status WHERE status = 'Sin pagar';
+    IF v_order_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The order was not inserted';
+    END IF;
+
+    -- 4.5 Verify that there's enough stock for the products in the shopping cart
+    SELECT COUNT(*)
+    INTO total_products_in_shopping_cart
+    FROM shopping_cart sc
+             JOIN products p ON sc.fk_id_product = p.id_product
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
+      AND sc.amount > p.amount;
+
+    IF total_products_in_shopping_cart != 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the shopping cart';
+    END IF;
+
+    -- 5. Insert the products from the shopping cart into the orders_has_products table
+    INSERT INTO orders_has_products (id_order_product, amount, fk_id_order, fk_id_product, fk_id_status)
+    SELECT UUID_TO_BIN(UUID()),
+           amount,
+           v_order_id,
+           fk_id_product,
+           pending_status_id
+    FROM shopping_cart
+    WHERE fk_id_user = UUID_TO_BIN(p_user_id);
+    COMMIT;
 END $$
 DELIMITER ;
 
@@ -413,8 +409,10 @@ BEGIN
     DECLARE v_exists_request INT;
 
     -- Verificar si existe una solicitud para el email proporcionado
-    SELECT COUNT(*) INTO v_exists_request FROM users u
-                                                   INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
+    SELECT COUNT(*)
+    INTO v_exists_request
+    FROM users u
+             INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
     WHERE u.email = p_email;
 
     IF v_exists_request = 0 THEN
@@ -438,5 +436,82 @@ BEGIN
             SELECT 0 AS result;
         END IF;
     END IF;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `find_request_become_seller_by_email`;
+DELIMITER $$
+CREATE PROCEDURE find_request_become_seller_by_email(IN p_email VARCHAR(100))
+BEGIN
+    DECLARE v_user_id BINARY(16);
+    DECLARE v_status_id BINARY(16);
+    DECLARE v_status VARCHAR(255);
+    DECLARE v_exists_request INT;
+
+    -- Verificar si existe una solicitud para el email proporcionado
+    SELECT COUNT(*)
+    INTO v_exists_request
+    FROM users u
+             INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
+    WHERE u.email = p_email;
+
+    IF v_exists_request = 0 THEN
+        -- No se encontró ninguna solicitud para ese email, retornar false
+        SELECT 0 AS result;
+    ELSE
+        -- Obtener el ID de usuario
+        SELECT id_user INTO v_user_id FROM users WHERE email = p_email;
+
+        -- Obtener el ID de estado de la solicitud
+        SELECT fk_id_status INTO v_status_id FROM requests_become_seller WHERE fk_id_user = v_user_id;
+
+        -- Obtener el estado de la solicitud
+        SELECT status INTO v_status FROM request_status WHERE id_status = v_status_id;
+
+        IF v_status = 'Pendiente' THEN
+            -- El estado es pendiente, retornar true
+            SELECT 1 AS result;
+        ELSE
+            -- El estado es rechazado o cualquier otro, retornar false
+            SELECT 0 AS result;
+        END IF;
+    END IF;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `sp_fulfill_order`;
+DELIMITER $$
+CREATE PROCEDURE `sp_fulfill_order`(
+    IN p_order_id BINARY(16),
+    IN p_user_id BINARY(16)
+)
+BEGIN
+    DECLARE v_has_negative_stock INT;
+    DECLARE v_user_id BINARY(16);
+    -- 1. Modify the stock of the products in the order
+    UPDATE products p
+        JOIN orders_has_products ohp ON p.id_product = ohp.fk_id_product
+    SET p.amount = p.amount - ohp.amount
+    WHERE ohp.fk_id_order = p_order_id;
+
+    -- 2. Validate there is no product with negative stock from the order
+    SELECT COUNT(*)
+    INTO v_has_negative_stock
+    FROM products p
+             JOIN orders_has_products ohp ON p.id_product = ohp.fk_id_product
+    WHERE ohp.fk_id_order = p_order_id
+      AND p.amount < 0;
+
+    IF v_has_negative_stock > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the order';
+    END IF;
+
+    -- 3. Update the products status from order has products
+    UPDATE orders_has_products
+    SET fk_id_status = (SELECT id_status FROM order_status WHERE status = 'Preparación')
+    WHERE fk_id_order = p_order_id;
+
+    -- 4. Delete the user shopping cart
+    DELETE FROM shopping_cart WHERE fk_id_user = p_user_id;
 END $$
 DELIMITER ;

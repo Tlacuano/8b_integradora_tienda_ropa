@@ -21,8 +21,9 @@ public class ResponseShoppingCartProductDTO {
     private String category;
     private String subcategory;
     private List<BeanProductGallery> gallery;
+    private int amount;
 
-    public static ResponseShoppingCartProductDTO fromProduct (BeanProduct product){
+    public static ResponseShoppingCartProductDTO fromProduct(BeanProduct product) {
         ResponseShoppingCartProductDTO productDTO = new ResponseShoppingCartProductDTO();
         productDTO.setIdProduct(product.getIdProduct());
         productDTO.setProductName(product.getProductName());
@@ -31,6 +32,7 @@ public class ResponseShoppingCartProductDTO {
         productDTO.setCategory(product.getSubcategory().getCategory().getCategory());
         productDTO.setSubcategory(product.getSubcategory().getSubcategory());
         productDTO.setGallery(product.getProductGallery());
+        productDTO.setAmount(product.getAmount());
         return productDTO;
     }
 }
