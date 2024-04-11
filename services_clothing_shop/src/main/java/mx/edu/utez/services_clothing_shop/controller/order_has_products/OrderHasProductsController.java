@@ -1,9 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.order_has_products;
 
-import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestActionBySeller;
-import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestGetPageSalesDTO;
-import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestOrderHasProductsByOrderIdDTO;
-import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.ResponseOrderHasProductsDTO;
+import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.*;
 import mx.edu.utez.services_clothing_shop.controller.review.dto.RequestComprobationToReviewDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.service.order_has_products.OrderHasProductsService;
@@ -26,7 +23,7 @@ public class OrderHasProductsController {
     }
 
     @PostMapping("/get-orders-has-products-by-order-id")
-    public ResponseEntity<CustomResponse<List<ResponseOrderHasProductsDTO>>> getOrdersHasProductsByOrderId(@RequestBody RequestOrderHasProductsByOrderIdDTO requestBody) {
+    public ResponseEntity<Object> getOrdersHasProductsByOrderId(@RequestBody RequestOrderHasProductsByOrderIdDTO requestBody) {
         List<BeanOrderHasProducts> ordersHasProducts = orderHasProductsService.getOrdersHasProductsByOrder_IdOrder(requestBody.getIdOrder());
         List<ResponseOrderHasProductsDTO> dtoPage = ordersHasProducts.stream().map(ResponseOrderHasProductsDTO::toOrderHasProductsDTO).toList();
         return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(dtoPage, "Orders has products found", false, HttpStatus.OK.value()));
@@ -66,6 +63,23 @@ public class OrderHasProductsController {
         return new ResponseEntity<>(new CustomResponse<>(orderHasProductsService.markAsSent(requestBody), "Sell marked as sent", false, HttpStatus.OK.value()), HttpStatus.OK);
     }
 
-
-
+    @PostMapping("/put-status-order-has-products")
+    public ResponseEntity<Object> putStatusOrderHasProducts(@RequestBody RequestOrderHasProductByIdDTO requestBody) {
+        try {
+            orderHasProductsService.putStatusOrderHasProducts(requestBody.getIdOrderProduct());
+            return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(
+                    "Order has products status updated",
+                    "Order has products status updated",
+                    false,
+                    HttpStatus.OK.value()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponse<>(
+                    "Order has products status not updated",
+                    "Order has products status not updated",
+                    true,
+                    HttpStatus.BAD_REQUEST.value()
+            ));
+        }
+    }
 }

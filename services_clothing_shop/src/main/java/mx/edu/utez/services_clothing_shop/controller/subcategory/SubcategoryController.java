@@ -63,6 +63,20 @@ public class SubcategoryController {
         }
     }
 
+    @PostMapping("/get-subcategories-by-subcategory")
+    public ResponseEntity<Object> getSubcategoriesBySubcategory(Pageable page, @Valid @RequestBody RequestSubcategoryBySubcategoryDTO subcategory, BindingResult result) {
+        try {
+            if (result.hasFieldErrors()) {
+                return validation(result);
+            }
+            Page<BeanSubcategory> pageSubcategories = subcategoryService.getSubcategoriesBySubcategory(subcategory.getSubcategory(), page);
+            Page<ResponseSubcategoryDTO> responseDTOList = pageSubcategories.map(ResponseSubcategoryDTO::toSubcategoryDTO);
+            return new ResponseEntity<>(new CustomResponse<>(responseDTOList, "Subcategorias encontradas", false, 200), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener las subcategorias por subcategoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/post-subcategory")
     public ResponseEntity<Object> postSubcategory(@Valid @RequestBody RequestSubcategoryDTO subcategory, BindingResult result) {
         try {

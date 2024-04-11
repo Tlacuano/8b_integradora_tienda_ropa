@@ -1,6 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.request_return_product;
 
-import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,6 +37,7 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
         String getProductName();
     }
 
+
     @Query("SELECT r.idRequestReturnProduct as idRequestReturnProduct, " +
             "r.status.status as status, " +
             "r.orderHasProduct.order.orderDate as orderDate, " +
@@ -68,4 +69,14 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
             "AND rp.image IS NOT NULL " +
             "GROUP BY rp.image")
     List<ReturnProductInfoProjection> findReturnProductInfoById(@Param("idRequestReturnProduct") UUID idRequestReturnProduct);
+
+    @Query("SELECT ohp " +
+            "FROM BeanOrderHasProducts ohp " +
+            "JOIN ohp.order o " +
+            "WHERE o.orderNumber = :orderNumber " +
+            "ORDER BY ohp.idOrderProduct ASC")
+    Optional<BeanOrderHasProducts> findFirstByOrderNumber(@Param("orderNumber") String orderNumber);
+
+    boolean existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(String orderNumber, String status);
+
 }

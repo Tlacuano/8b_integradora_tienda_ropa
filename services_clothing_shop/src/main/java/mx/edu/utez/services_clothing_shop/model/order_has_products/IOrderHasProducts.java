@@ -4,6 +4,7 @@ import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.stereotype.Repository;
@@ -42,4 +43,8 @@ public interface IOrderHasProducts extends JpaRepository<BeanOrderHasProducts, U
 
     @Procedure("sp_fulfill_order")
     void sp_fulfill_order(UUID idOrder, UUID idUser);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "CALL update_order_has_product_status(:idOrderProduct)")
+    void updateOrderHasProductStatus(UUID idOrderProduct);
 }

@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.service.order_has_products;
 
-import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestActionBySeller;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.RequestGetPageSalesDTO;
 import mx.edu.utez.services_clothing_shop.controller.order_has_products.dto.ResponseOrdersSalesDTO;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +42,7 @@ public class OrderHasProductsService {
         this.emailService = emailService;
     }
 
-    @Transactional(rollbackOn = {Exception.class})
+    @Transactional
     public List<BeanOrderHasProducts> getOrdersHasProductsByOrder_IdOrder(UUID idOrder) {
         return orderHasProductsRepository.findAllByOrder_IdOrder(idOrder);
     }
@@ -169,5 +169,7 @@ public class OrderHasProductsService {
         return order;
     }
 
-
+    public void putStatusOrderHasProducts(UUID idOrderProduct) {
+       orderHasProductsRepository.updateOrderHasProductStatus(idOrderProduct);
+    }
 }
