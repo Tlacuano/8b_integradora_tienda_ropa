@@ -25,8 +25,8 @@ public class ShoppingCartController {
 
     @PostMapping("/get-shopping-cart")
     public ResponseEntity<Object> findShoppingCarsByUserEmail(@Validated @RequestBody RequestActionByEmailDTO payload) {
-        List<ResponseShoppingCartDTO> shoppingCarts = shoppingCartServices.findShoppingCartsByUserEmail(payload.getEmail());
-        return ResponseEntity.ok(new CustomResponse<>(shoppingCarts, "ok", false, 200));
+
+        return ResponseEntity.ok(new CustomResponse<>(shoppingCartServices.findShoppingCartsByUserEmail(payload.getEmail()), "ok", false, 200));
     }
 
     @PostMapping("/post-shopping-cart")
