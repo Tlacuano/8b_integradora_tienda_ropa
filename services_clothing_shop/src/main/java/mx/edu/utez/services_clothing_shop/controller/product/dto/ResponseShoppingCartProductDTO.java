@@ -22,6 +22,7 @@ public class ResponseShoppingCartProductDTO {
     private String subcategory;
     private List<BeanProductGallery> gallery;
     private int amount;
+    private boolean status;
 
     public static ResponseShoppingCartProductDTO fromProduct(BeanProduct product) {
         ResponseShoppingCartProductDTO productDTO = new ResponseShoppingCartProductDTO();
@@ -33,6 +34,17 @@ public class ResponseShoppingCartProductDTO {
         productDTO.setSubcategory(product.getSubcategory().getSubcategory());
         productDTO.setGallery(product.getProductGallery());
         productDTO.setAmount(product.getAmount());
+
+        boolean status = true;
+
+        for (int i = 0; i < product.getRequestSellProduct().size(); i++) {
+            if (!product.getRequestSellProduct().get(i).getStatus().getStatus().equals("Aprobado")) {
+                status = false;
+                break;
+            }
+        }
+
+        productDTO.setStatus(product.isStatus() && status);
         return productDTO;
     }
 }
