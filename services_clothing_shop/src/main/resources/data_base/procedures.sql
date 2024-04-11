@@ -409,8 +409,10 @@ BEGIN
     DECLARE v_exists_request INT;
 
     -- Verificar si existe una solicitud para el email proporcionado
-    SELECT COUNT(*) INTO v_exists_request FROM users u
-                                                   INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
+    SELECT COUNT(*)
+    INTO v_exists_request
+    FROM users u
+             INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
     WHERE u.email = p_email;
 
     IF v_exists_request = 0 THEN
@@ -447,8 +449,10 @@ BEGIN
     DECLARE v_exists_request INT;
 
     -- Verificar si existe una solicitud para el email proporcionado
-    SELECT COUNT(*) INTO v_exists_request FROM users u
-                                                   INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
+    SELECT COUNT(*)
+    INTO v_exists_request
+    FROM users u
+             INNER JOIN requests_become_seller r ON u.id_user = r.fk_id_user
     WHERE u.email = p_email;
 
     IF v_exists_request = 0 THEN
@@ -472,5 +476,42 @@ BEGIN
             SELECT 0 AS result;
         END IF;
     END IF;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `sp_fulfill_order`;
+DELIMITER $$
+CREATE PROCEDURE `sp_fulfill_order`(
+    IN p_order_id BINARY(16),
+    IN p_user_id BINARY(16)
+)
+BEGIN
+    DECLARE v_has_negative_stock INT;
+    DECLARE v_user_id BINARY(16);
+    -- 1. Modify the stock of the products in the order
+    UPDATE products p
+        JOIN orders_has_products ohp ON p.id_product = ohp.fk_id_product
+    SET p.amount = p.amount - ohp.amount
+    WHERE ohp.fk_id_order = p_order_id;
+
+    -- 2. Validate there is no product with negative stock from the order
+    SELECT COUNT(*)
+    INTO v_has_negative_stock
+    FROM products p
+             JOIN orders_has_products ohp ON p.id_product = ohp.fk_id_product
+    WHERE ohp.fk_id_order = p_order_id
+      AND p.amount < 0;
+
+    IF v_has_negative_stock > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the order';
+    END IF;
+
+    -- 3. Update the products status from order has products
+    UPDATE orders_has_products
+    SET fk_id_status = (SELECT id_status FROM order_status WHERE status = 'Preparación')
+    WHERE fk_id_order = p_order_id;
+
+    -- 4. Delete the user shopping cart
+    DELETE FROM shopping_cart WHERE fk_id_user = p_user_id;
 END $$
 DELIMITER ;

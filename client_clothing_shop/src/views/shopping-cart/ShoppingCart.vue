@@ -50,11 +50,11 @@
                       <b-row>
                         <b-col cols="auto my-auto">
                           <span class="pr-4">Cantidad</span>
-                            <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
-                                                 @click="decreaseAmount(product)"/>
-                              <span class="mx-2">{{ product.amount }}</span>
-                            <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
-                                                 @click="increaseAmount(product)"/>
+                          <font-awesome-icon icon="fa-solid fa-minus-circle" class="selectable"
+                                             @click="decreaseAmount(product)"/>
+                          <span class="mx-2">{{ product.amount }}</span>
+                          <font-awesome-icon icon="fa-solid fa-plus-circle" class="selectable"
+                                             @click="increaseAmount(product)"/>
                         </b-col>
                       </b-row>
 
@@ -127,7 +127,7 @@
                     </b-row>
                     <b-row class="mt-3">
                       <b-col>
-                        <b-button @click="finishOrder" class="mt-3 main-button">Continuar compra</b-button>
+                        <b-button :disabled="cart.length <=0" @click="finishOrder" class="mt-3 main-button">Continuar compra</b-button>
                       </b-col>
                     </b-row>
                   </b-list-group-item>
@@ -242,6 +242,16 @@ export default {
     },
 
     finishOrder() {
+      if (this.cart.length <= 0) {
+        Vue.swal({
+          title: 'Carrito vacío',
+          text: "No hay productos en el carrito",
+          icon: 'warning',
+          confirmButtonColor: 'var( --black-base)',
+          confirmButtonText: 'Aceptar',
+        })
+        return;
+      }
       this.$router.push({name: 'TransactionDetails'});
     },
 
@@ -286,6 +296,9 @@ export default {
   },
 
   mounted() {
+    if (!this.$store.getters.isLoggedIn) {
+      this.$router.push({name: 'Login'});
+    }
     this.getCart();
   }
 }

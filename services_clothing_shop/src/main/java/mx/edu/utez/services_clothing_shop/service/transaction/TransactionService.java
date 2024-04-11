@@ -13,6 +13,10 @@ import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestPostOrderDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
+import mx.edu.utez.services_clothing_shop.model.order_status.BeanOrderStatus;
+import mx.edu.utez.services_clothing_shop.model.order_status.IOrderStatus;
 import mx.edu.utez.services_clothing_shop.model.transaction.BeanTransaction;
 import mx.edu.utez.services_clothing_shop.model.transaction.ITransaction;
 import mx.edu.utez.services_clothing_shop.model.transaction_status.BeanTransactionStatus;
@@ -40,14 +44,18 @@ public class TransactionService {
     private final ITransaction transactionRepository;
     private final ITransactionStatus transactionStatusRepository;
     private final IUser userRepository;
+    private final IOrderHasProducts orderHasProductsRepository;
     private final OrderService orderService;
+    private final IOrderStatus orderStatusRepository;
 
 
-    public TransactionService(ITransaction transactionRepository, ITransactionStatus transactionStatusRepository, IUser userRepository, OrderService orderService) {
+    public TransactionService(ITransaction transactionRepository, ITransactionStatus transactionStatusRepository, IUser userRepository, OrderService orderService, IOrderStatus orderStatusRepository, IOrderHasProducts orderHasProductsRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionStatusRepository = transactionStatusRepository;
         this.userRepository = userRepository;
         this.orderService = orderService;
+        this.orderStatusRepository = orderStatusRepository;
+        this.orderHasProductsRepository = orderHasProductsRepository;
     }
 
     @PostConstruct
@@ -58,6 +66,12 @@ public class TransactionService {
     @Transactional
     public String createCheckoutSession(List<ResponseShoppingCartDTO> shoppingCart, String email, UUID idAddress, UUID idPaymentCard) throws StripeException {
         try {
+            for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
+                if (shoppingCartProduct.getAmount() > shoppingCartProduct.getProduct().getAmount()) {
+                    throw new RuntimeException("No hay suficiente stock para el producto: " + shoppingCartProduct.getProduct().getProductName());
+                }
+            }
+
             List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
             for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
                 ProductCreateParams productParams = ProductCreateParams.builder()
@@ -118,30 +132,38 @@ public class TransactionService {
     }
 
     public void fulfillOrder(String stripeSignature, String payload) throws StripeException {
-        if (stripeSignature == null || payload == null) {
-            throw new RuntimeException("No se recibio la sesión de pago");
-        }
+        try {
 
-        Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
-        Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
-        SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
-        Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
-        BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
+            if (stripeSignature == null || payload == null) {
+                throw new RuntimeException("No se recibio la sesión de pago");
+            }
 
-        if ("checkout.session.completed".equals(event.getType())) {
-            BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");
-            transaction.setPaymentStatus(sessionData.getPaymentStatus());
-            transaction.setCheckoutStatus(sessionData.getStatus());
-            transaction.setStatus(transactionStatus);
-            transactionRepository.save(transaction);
-        }
+            Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
+            Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
+            SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
+            Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
+            BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
 
-        if ("checkout.session.expired".equals(event.getType())) {
-            BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Cancelado");
-            transaction.setPaymentStatus(sessionData.getPaymentStatus());
-            transaction.setCheckoutStatus(sessionData.getStatus());
-            transaction.setStatus(transactionStatus);
-            transactionRepository.save(transaction);
+            if ("checkout.session.completed".equals(event.getType())) {
+                BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");
+                transaction.setPaymentStatus(sessionData.getPaymentStatus());
+                transaction.setCheckoutStatus(sessionData.getStatus());
+                transaction.setStatus(transactionStatus);
+                transactionRepository.save(transaction);
+
+                BeanOrder order = transaction.getOrder();
+                orderHasProductsRepository.sp_fulfill_order(order.getIdOrder(), order.getPaymentCard().getUser().getIdUser());
+            }
+
+            if ("checkout.session.expired".equals(event.getType())) {
+                BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Cancelado");
+                transaction.setPaymentStatus(sessionData.getPaymentStatus());
+                transaction.setCheckoutStatus(sessionData.getStatus());
+                transaction.setStatus(transactionStatus);
+                transactionRepository.save(transaction);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al procesar el webhook: " + e.getMessage());
         }
     }
 }

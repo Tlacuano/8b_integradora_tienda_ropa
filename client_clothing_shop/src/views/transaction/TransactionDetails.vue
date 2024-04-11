@@ -281,7 +281,13 @@ export default {
   },
 
   mounted() {
+    if (!this.$store.getters.isLoggedIn) {
+      this.$router.push({name: 'Login'});
+    }
     this.getShoppingCartProducts();
+    if (this.shoppingCart.length === 0) {
+      this.$router.push({name: 'Home'});
+    }
     this.getUserAddresses();
     this.getUserPaymentCards();
   }
