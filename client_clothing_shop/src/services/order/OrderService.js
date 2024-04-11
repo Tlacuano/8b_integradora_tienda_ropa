@@ -70,7 +70,14 @@ const cancelSellBySellerService = async (payload) => {
         return response.data;
     } catch (e) {
     }
+}
 
+const markAsSentBySellerService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/order-has-products/mark-as-sent-by-seller", payload);
+        return response.data;
+    } catch (e) {
+    }
 }
 
 
@@ -82,5 +89,6 @@ export default {
     getByProductAndBuyerService,
     getOrderStatusService,
     getOrdersBySellerAndStatusService,
-    cancelSellBySellerService
+    cancelSellBySellerService,
+    markAsSentBySellerService
 }

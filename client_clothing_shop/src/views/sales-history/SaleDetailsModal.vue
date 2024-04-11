@@ -123,7 +123,7 @@
       <section v-if="order.status === 'Preparación'">
         <b-row class="mt-4">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover" >
+            <b-card no-body class="selectable highlight-on-hover" @click="markAsSent()" >
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -206,7 +206,15 @@ export default {
         this.$bvModal.hide('sale-details-modal');
         this.$bvModal.show('cancel-sell-by-seller-modal');
       }
+    },
+
+    markAsSent() {
+      if(this.order.status === 'Preparación') {
+        this.$bvModal.hide('sale-details-modal');
+        this.$bvModal.show('mark-as-sent-by-seller-modal');
+      }
     }
+
   },
 }
 </script>
