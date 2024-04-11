@@ -80,12 +80,12 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.notFound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.amount.notnull", "La cantidad es obligatoria.");
         errorMessages.put("shoppingCart.amount.error", "No hay suficientes disponibles.");
-        errorMessages.put("shoppingCart.product.notnull","El producto es obligatorio.");
-        errorMessages.put("shoppingCart.product.notFound","El producto no fue encontrado.");
-        errorMessages.put("shoppingCart.save.error","Error al guardar el carrito de compras.");
-        errorMessages.put("shoppingCart.delete.error","Error al eliminar el carrito de compras.");
-        errorMessages.put("shoppingCart.update.error","Error al actualizar el carrito de compras.");
-        errorMessages.put("shoppingCart.update.amount.error","Error al actualizar misma cantidad.");
+        errorMessages.put("shoppingCart.product.notnull", "El producto es obligatorio.");
+        errorMessages.put("shoppingCart.product.notFound", "El producto no fue encontrado.");
+        errorMessages.put("shoppingCart.save.error", "Error al guardar el carrito de compras.");
+        errorMessages.put("shoppingCart.delete.error", "Error al eliminar el carrito de compras.");
+        errorMessages.put("shoppingCart.update.error", "Error al actualizar el carrito de compras.");
+        errorMessages.put("shoppingCart.update.amount.error", "Error al actualizar misma cantidad.");
         errorMessages.put("shoppingCart.id.notnull", "El id del carrito de compras es obligatorio.");
         errorMessages.put("shoppingCart.id.notfound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.product.invalidate", "El producto no se encuentra disponible.");
@@ -200,6 +200,13 @@ public class ErrorDictionary {
         //status
         errorMessages.put("status.notFound", "El estado no fue encontrado.");
 
+        // error messages transaction
+        errorMessages.put("transaction.product.stock", "No hay suficiente stock para el producto.");
+        errorMessages.put("transaction.session.failed", "Error al crear la sesión de pago.");
+        errorMessages.put("transaction.session.notfound", "La sesión de pago no fue encontrada.");
+        errorMessages.put("transaction.user.notfound", "El usuario no fue encontrado.");
+        errorMessages.put("transaction.notfound", "La transacción no fue encontrada.");
+        errorMessages.put("transaction.webhook.error", "No hubo respuesta del proveedor de pago.");
     }
 
     public String getErrorMessage(String errorCode) {
