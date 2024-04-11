@@ -48,6 +48,14 @@ public class OrderHasProductsController {
         );
     }
 
+    @PostMapping("/get-orders-has-products-by-seller-and-order-number")
+    public ResponseEntity<Object> getOrdersHasProductsBySellerAndOrderNumber(@RequestBody RequestGetPageSalesDTO requestBody, Pageable pageable) {
+        return new ResponseEntity<>(
+                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsBySellerAndNumber(requestBody, pageable), "Order has products found", false, HttpStatus.OK.value()),
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping("/cancel-sell-by-seller")
     public ResponseEntity<Object> cancelSellBySeller(@RequestBody RequestActionBySeller requestBody) {
         return new ResponseEntity<>(new CustomResponse<>(orderHasProductsService.cancelSellBySeller(requestBody), "Sell canceled", false, HttpStatus.OK.value()), HttpStatus.OK);
@@ -57,5 +65,7 @@ public class OrderHasProductsController {
     public ResponseEntity<Object> markAsSentBySeller(@RequestBody RequestActionBySeller requestBody) {
         return new ResponseEntity<>(new CustomResponse<>(orderHasProductsService.markAsSent(requestBody), "Sell marked as sent", false, HttpStatus.OK.value()), HttpStatus.OK);
     }
+
+
 
 }

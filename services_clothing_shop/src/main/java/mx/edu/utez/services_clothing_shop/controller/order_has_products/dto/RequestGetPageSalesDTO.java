@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class RequestGetPageSalesDTO {
     private String email;
+    private String orderNumber;
     private String status;
 }

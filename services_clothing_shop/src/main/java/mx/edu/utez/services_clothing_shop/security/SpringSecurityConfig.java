@@ -203,6 +203,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-order-id").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-buyer").hasAnyRole(BUYER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-seller-and-status").hasAnyRole(SELLER)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/get-orders-has-products-by-seller-and-order-number").hasAnyRole(SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/cancel-sell-by-seller").hasAnyRole(SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/order-has-products/mark-as-sent-by-seller").hasAnyRole(SELLER)
 
