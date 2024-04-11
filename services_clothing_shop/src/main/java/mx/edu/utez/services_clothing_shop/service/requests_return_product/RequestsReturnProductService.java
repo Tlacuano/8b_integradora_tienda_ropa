@@ -3,17 +3,19 @@ package mx.edu.utez.services_clothing_shop.service.requests_return_product;
 import jakarta.transaction.Transactional;
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductGetByIdResponseDTO;
+import mx.edu.utez.services_clothing_shop.controller.requests_return_product.dto.RequestsReturnProductPostRequestDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.BeanRequestReturnProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
+import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct;
-
+import mx.edu.utez.services_clothing_shop.model.return_product_gallery.IReturnProductGallery;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,10 +28,12 @@ public class RequestsReturnProductService {
 
     private final IRequestsReturnProduct IRequestsReturnProduct;
     private final IRequestStatus IRequestStatus;
+    private final IReturnProductGallery IReturnProductGallery;
 
-    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus) {
+    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, IReturnProductGallery IReturnProductGallery) {
         this.IRequestsReturnProduct = IRequestsReturnProduct;
         this.IRequestStatus = IRequestStatus;
+        this.IReturnProductGallery = IReturnProductGallery;
     }
 
     @Transactional
@@ -89,20 +93,35 @@ public class RequestsReturnProductService {
     }
 
     @Transactional
-    public RequestsReturnProductDTO postRequestReturnProduct(UUID orderHasProductId) {
-        BeanOrderHasProducts orderHasProduct = new BeanOrderHasProducts();
-        orderHasProduct.setIdOrderProduct(orderHasProductId);
+    public RequestsReturnProductDTO postRequestReturnProduct(RequestsReturnProductPostRequestDTO requestDTO) {
+        BeanOrderHasProducts orderHasProduct = IRequestsReturnProduct.findFirstByOrderNumber(requestDTO.getOrderNumber())
+                .orElseThrow(() -> new CustomException("Order not found"));
+
+        boolean existsPendingRequest = IRequestsReturnProduct.existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(
+                requestDTO.getOrderNumber(), "Pendiente");
+        if (existsPendingRequest) {
+            throw new CustomException("Ya existe una solicitud de devolución pendiente para este producto.");
+        }
 
         BeanRequestStatus requestStatus = IRequestStatus.findByStatus("Pendiente")
-                .orElseThrow(() -> new CustomException("requestsReturnProduct.status.notFound"));
+                .orElseThrow(() -> new CustomException("Request status not found"));
 
         BeanRequestReturnProduct request = new BeanRequestReturnProduct();
         request.setOrderHasProduct(orderHasProduct);
         request.setStatus(requestStatus);
+        request.setReturnReason(requestDTO.getReturnReason());
 
         BeanRequestReturnProduct savedRequest = IRequestsReturnProduct.save(request);
+        if (requestDTO.getImage() != null && !requestDTO.getImage().isEmpty()) {
+            BeanReturnProductGallery galleryImage = new BeanReturnProductGallery();
+            galleryImage.setImage(requestDTO.getImage());
+            galleryImage.setReturnProduct(savedRequest);
+            IReturnProductGallery.save(galleryImage);
+        }
+
         return convertToDTO(savedRequest);
     }
+
 
     public Page<ReturnRequestProjection> findRequestsByPageAndSearchTerm(Pageable pageable, String searchTerm) {
         return IRequestsReturnProduct.findRequestsWithOrderInfo(pageable, searchTerm);

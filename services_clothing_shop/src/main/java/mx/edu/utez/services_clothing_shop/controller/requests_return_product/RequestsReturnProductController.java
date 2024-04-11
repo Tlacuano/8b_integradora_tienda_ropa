@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -38,10 +40,17 @@ public class RequestsReturnProductController {
 
 
     @PostMapping("/post-request-return-product")
-    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequestReturnProduct(@RequestBody RequestsReturnProductPostDTO requestDTO) {
-        RequestsReturnProductDTO requestData = requestsReturnProductService.postRequestReturnProduct(requestDTO.getOrderHasProductId());
-        return ResponseEntity.ok(new CustomResponse<>(requestData, "Request created", false, 200));
+    public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> postRequestReturnProduct(@RequestBody RequestsReturnProductPostRequestDTO requestDTO) {
+        try {
+            RequestsReturnProductDTO requestData = requestsReturnProductService.postRequestReturnProduct(requestDTO);
+            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request created", false, 200));
+        } catch (CustomException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     @PutMapping("/put-request-return-product-status")
     public ResponseEntity<CustomResponse<RequestsReturnProductDTO>> putRequestReturnProduct(@RequestBody RequestsReturnProductPutDTO requestDTO) {
