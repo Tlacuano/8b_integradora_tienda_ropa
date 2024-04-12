@@ -108,6 +108,14 @@ const putStatusOrderHasProductService = async (payload) => {
     }
 }
 
+const cancelBuyService = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/order-has-products/cancel-sell-by-buyer", payload);
+        return response.data;
+    } catch (e) {
+    }
+}
+
 export default {
     getPageOrdersService,
     getPageOrderByOrderNumberService,
@@ -121,4 +129,5 @@ export default {
     markAsSentBySellerService,
     getOrdersBySellerAndNumberService,
     putStatusOrderHasProductService,
+    cancelBuyService
 }

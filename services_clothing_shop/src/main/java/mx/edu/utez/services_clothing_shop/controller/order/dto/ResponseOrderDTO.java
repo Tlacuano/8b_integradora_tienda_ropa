@@ -6,6 +6,7 @@ import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,11 @@ public class ResponseOrderDTO {
     public ResponseOrderDTO toOrderDTO(BeanOrder order) {
         ResponseOrderDTO dto = new ResponseOrderDTO();
         dto.setIdOrder(order.getIdOrder());
-        dto.setOrderDate(order.getOrderDate().toString());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = order.getOrderDate().format(formatter);
+        dto.setOrderDate(formattedDate);
+
         dto.setOrderNumber(order.getOrderNumber());
 
         order.getAddress().setPerson(null);

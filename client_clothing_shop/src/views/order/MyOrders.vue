@@ -85,6 +85,7 @@
       </b-col>
     </b-row>
     <MyOrderDetailsModal :Order="OrderSelected" :Product="ProductSelected"/>
+    <CancelMyOrderModal :Product="ProductSelected"/>
   </b-container>
 </template>
 
@@ -96,7 +97,8 @@ import {codeCrypto} from "@/utils/security/cryptoJs";
 export default {
   name: 'MyOrders',
   components: {
-    MyOrderDetailsModal: () => import('@/views/order/MyOrderDetailsModal.vue')
+    MyOrderDetailsModal: () => import('@/views/order/MyOrderDetailsModal.vue'),
+    CancelMyOrderModal: () => import('@/views/order/CancelMyOrderModal.vue')
   },
   data() {
     return {

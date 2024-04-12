@@ -60,6 +60,11 @@ public class OrderHasProductsController {
         return new ResponseEntity<>(new CustomResponse<>(orderHasProductsService.cancelSellBySeller(requestBody), "Sell canceled", false, HttpStatus.OK.value()), HttpStatus.OK);
     }
 
+    @PostMapping("/cancel-sell-by-buyer")
+    public ResponseEntity<Object> cancelSellByBuyer(@RequestBody RequestActionBySeller requestBody) {
+        return new ResponseEntity<>(new CustomResponse<>(orderHasProductsService.cancelSellByBuyer(requestBody), "Sell canceled", false, HttpStatus.OK.value()), HttpStatus.OK);
+    }
+
     @PostMapping("/mark-as-sent-by-seller")
     public ResponseEntity<Object> markAsSentBySeller(@RequestBody RequestActionBySeller requestBody) {
         return new ResponseEntity<>(new CustomResponse<>(orderHasProductsService.markAsSent(requestBody), "Sell marked as sent", false, HttpStatus.OK.value()), HttpStatus.OK);

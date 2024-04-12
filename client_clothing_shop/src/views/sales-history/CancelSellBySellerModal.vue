@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="cancel-sell-by-seller-modal" hide-header hide-footer centered>
+  <b-modal id="cancel-sell-by-seller-modal" hide-header hide-footer centered @hidden="resetModal">
     <b-row>
       <b-col class="text-right">
         <font-awesome-icon icon="times" class="selectable text-secondary" @click="$bvModal.hide('cancel-sell-by-seller-modal')"/>
@@ -88,6 +88,9 @@ export default {
           this.$bvModal.hide('cancel-sell-by-seller-modal');
         }
       });
+    },
+    resetModal() {
+      this.password = '';
     }
   }
 }
