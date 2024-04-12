@@ -98,14 +98,14 @@ public class ErrorDictionary {
         errorMessages.put("category.id.notnull", "El id de la categoría es obligatorio.");
         errorMessages.put("category.category.notnull", "La categoría es obligatoria.");
         errorMessages.put("category.category.size", "La categoría debe tener entre 5 y 30 caracteres.");
-        errorMessages.put("category.image.notnull", "La imagen es obligatoria.");
+        errorMessages.put("category.image.notnull", "La imagen de categoría es obligatoria.");
         errorMessages.put("category.image.size", "La imagen debe tener máximo 255 caracteres.");
 
         //error messages subcategory
         errorMessages.put("subcategory.id.notnull", "El id de la subcategoría es obligatorio.");
         errorMessages.put("subcategory.subcategory.notnull", "La subcategoría es obligatoria.");
         errorMessages.put("subcategory.subcategory.size", "La subcategoría debe tener entre 5 y 30 caracteres.");
-        errorMessages.put("subcategory.image.notnull", "La imagen es obligatoria.");
+        errorMessages.put("subcategory.image.notnull", "La imagen de subcategoría obligatoria.");
         errorMessages.put("subcategory.image.size", "La imagen debe tener máximo 255 caracteres.");
         errorMessages.put("subcategory.category.notnull", "La categoría es obligatoria.");
 
@@ -149,7 +149,7 @@ public class ErrorDictionary {
         errorMessages.put("returnProductGallery.notfound", "No hay imágenes de devolución registradas.");
         errorMessages.put("returnProductGallery.idImage.notnull", "El id de la imagen de devolución es obligatorio.");
         errorMessages.put("returnProductGallery.idReturnProductGallery.notfound", "La imagen de devolución no fue encontrada.");
-        errorMessages.put("returnProductGallery.image.notnull", "La imagen es obligatoria.");
+        errorMessages.put("returnProductGallery.image.notnull", "La imagen es del producto devuelto es obligatoria.");
         errorMessages.put("returnProductGallery.requestReturnProductId.notnull", "El id de la solicitud de devolución es obligatorio.");
         errorMessages.put("returnProductGallery.idRequestReturnProduct.notfound", "El id de la solicitud de devolución no fue encontrada.");
 
@@ -176,7 +176,7 @@ public class ErrorDictionary {
         errorMessages.put("requestReturnProduct.id.notnull", "El id de la solicitud de devolución es obligatorio.");
         errorMessages.put("requestsReturnProduct.status.notnull", "El estado de la solicitud de devolución es obligatorio.");
         errorMessages.put("requestsReturnProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
-        errorMessages.put("requestsReturnProduct.status.invalid", "El estado no es válido.");
+        errorMessages.put("requestsReturnProduct.status.invalid", "El estado de devolucion no es válido.");
         errorMessages.put("requestsReturnProduct.status.notFound", "El estado no fue encontrado.");
 
         //error de configuracion
@@ -186,14 +186,14 @@ public class ErrorDictionary {
         errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
         errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
         errorMessages.put("requestBecomeSeller.status.notnull", "El estado es obligatorio.");
-        errorMessages.put("requestBecomeSeller.status.invalid", "El estado no es válido.");
+        errorMessages.put("requestBecomeSeller.status.invalid", "El estado de la aplicacion no es válido.");
         errorMessages.put("requestBecomeSeller.request.notFound", "La solicitud no fue encontrada.");
 
         errorMessages.put("requestBecomeSeller.userSellerInformation.empty", "La información del usuario vendedor es obligatoria.");
         errorMessages.put("requestBecomeSeller.JSON.invalid", "El JSON no es válido.");
 
         //error messages request sell product
-        errorMessages.put("requestSellProduct.status.invalid", "El estado no es válido.");
+        errorMessages.put("requestSellProduct.status.invalid", "El estado de la solicitud de venta no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
 
         //twilio
