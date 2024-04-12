@@ -35,7 +35,8 @@ public class ErrorDictionary {
         errorMessages.put("person.birthday.age", "El usuario debe ser mayor de edad.");
         errorMessages.put("person.gender.notnull", "El género es obligatorio.");
         errorMessages.put("person.privacyPolicy.accepted", "Debes aceptar la política de privacidad.");
-        errorMessages.put("person.phone.verified", "Esta cuenta no puede eliminarse por este metodo.");
+        errorMessages.put("person.phone.verified", "Esta cuenta no puede eliminarse por este metodo.");\
+        errorMessages.put("person.not.found", "La persona no fue encontrada.");
 
         //error messages payment card
         errorMessages.put("payment.cardholderName.notnull", "El nombre del titular de la tarjeta es obligatorio.");
@@ -50,6 +51,7 @@ public class ErrorDictionary {
         errorMessages.put("payment.minimum.card", "El usuario debe tener registrada al menos una tarjeta de crédito.");
         errorMessages.put("payment.card.notFound", "La tarjeta de crédito no fue encontrada.");
         errorMessages.put("payment.card.registered", "La tarjeta de crédito ya está registrada.");
+
         //error messages order
         errorMessages.put("order.orderDate.notnull", "La fecha de la orden es obligatoria.");
         errorMessages.put("order.bybuyer.notfound", "Necesitas adquirir el producto para poder dar una reseña.");
@@ -72,7 +74,6 @@ public class ErrorDictionary {
         errorMessages.put("wishList.delete.error", "Error al eliminar la lista de deseos.");
         errorMessages.put("wishList.update.amount.error", "Error al actualizar la misma cantidad.");
 
-
         //error messages shopping cart
         errorMessages.put("shoppingCart.id.automatic", "El id del carrito de compras es automático no manual.");
         errorMessages.put("shoppingCart.user.notnull", "El usuario es obligatorio.");
@@ -89,6 +90,7 @@ public class ErrorDictionary {
         errorMessages.put("shoppingCart.id.notnull", "El id del carrito de compras es obligatorio.");
         errorMessages.put("shoppingCart.id.notfound", "El carrito de compras no fue encontrado.");
         errorMessages.put("shoppingCart.product.invalidate", "El producto no se encuentra disponible.");
+
         //error image uploading
         errorMessages.put("image.upload.error", "Error al subir imagen.");
 
@@ -180,7 +182,6 @@ public class ErrorDictionary {
         //error de configuracion
         errorMessages.put("controller.advice.encrypter", "Algo salió mal al encriptar la información.");
 
-
         //error messages request become seller
         errorMessages.put("requestBecomeSeller.email.notnull", "El email es obligatorio.");
         errorMessages.put("requestBecomeSeller.email.invalid", "El email no es válido.");
@@ -190,8 +191,7 @@ public class ErrorDictionary {
 
         errorMessages.put("requestBecomeSeller.userSellerInformation.empty", "La información del usuario vendedor es obligatoria.");
         errorMessages.put("requestBecomeSeller.JSON.invalid", "El JSON no es válido.");
-
-
+        
         //error messages request sell product
         errorMessages.put("requestSellProduct.status.invalid", "El estado no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
