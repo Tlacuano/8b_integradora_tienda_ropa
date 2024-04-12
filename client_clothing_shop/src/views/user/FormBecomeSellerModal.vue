@@ -60,13 +60,14 @@
                     placeholder="Seleccione una imagen"
                     @input="handleFileUpload"
                     name="image"
+                    browse-text="Buscar"
                     v-validate="'required|image|mimes:jpeg,jpg,png|image_size'"
                 />
                 <span v-show="errors.has('image')" class="text-danger">{{ errors.first('image') }}</span>
               </b-form-group>
             </b-form>
           </b-col>
-          <b-col class="text-center">
+          <b-col class="text-center align-self-center">
             <div class="image-container">
               <b-img v-if="imgPreview" :src="imgPreview" thumbnail class="image-preview" />
               <div v-else class="no-image-message">No se ha seleccionado ninguna imagen</div>
@@ -186,7 +187,6 @@ export default Vue.extend({
   border: 2px solid #ced4da;
   border-radius: 5px;
   max-height: 25rem;
-  margin-top: 30%;
 }
 
 .image-container {
@@ -200,6 +200,5 @@ export default Vue.extend({
   transform: translate(-50%, -50%);
   color: #6c757d;
   font-style: italic;
-  margin-top: 50%;
 }
 </style>

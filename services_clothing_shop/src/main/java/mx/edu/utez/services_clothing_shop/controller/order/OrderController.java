@@ -1,15 +1,13 @@
 package mx.edu.utez.services_clothing_shop.controller.order;
 
 import jakarta.validation.Valid;
-import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestOrderByIdOrderDTO;
-import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestOrderByOrderNumberDTO;
-import mx.edu.utez.services_clothing_shop.controller.order.dto.RequestPostOrderDTO;
-import mx.edu.utez.services_clothing_shop.controller.order.dto.ResponseOrderDTO;
+import mx.edu.utez.services_clothing_shop.controller.order.dto.*;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.order.IOrder;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
+import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -43,7 +41,8 @@ public class OrderController {
     @PostMapping("/get-order-details")
     public ResponseEntity<Object> getOrderDetailsByIdOrder(@RequestBody RequestOrderByIdOrderDTO payload) {
         IOrder.OrderDetailsProjection orderDetails = orderService.getOrderDetailsByIdOrder(payload.getIdOrder());
-        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(orderDetails, "Order details found", false, HttpStatus.OK.value()));
+        ResponseOrderDetailsDTO responseOrderDetails = ResponseOrderDetailsDTO.toOrderDetailsDTO(orderDetails);
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(responseOrderDetails, "Order details found", false, HttpStatus.OK.value()));
     }
 
     @PostMapping("/get-orders-by-user-email")
