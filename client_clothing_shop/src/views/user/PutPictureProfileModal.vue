@@ -28,6 +28,7 @@
                   placeholder="Seleccione una imagen"
                   @change="handleFileChange($event)"
                   lang="es"
+                  browse-text="Búscar"
               >
               </b-form-file>
             </b-form-group>

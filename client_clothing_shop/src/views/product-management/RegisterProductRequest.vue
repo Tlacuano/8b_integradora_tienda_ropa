@@ -1,49 +1,12 @@
 <template>
   <section class="interface">
     <b-row class="mb-4">
-      <b-col class="text-center mt-4">
+      <b-col class="text-center">
         <h1>Registrar solicitud de producto</h1>
       </b-col>
     </b-row>
     <b-form @submit.prevent="onSubmit()">
       <b-row>
-        <b-col class="" lg="6">
-          <b-col>
-            <b-form-group label="Imagen Principal:" label-for="principal-image">
-              <b-form-file id="principal-image" @change="handleImageUpload"  name="principal-image"
-                           v-validate="'image:2000000|image|image_size'" accept="image/*"></b-form-file>
-              <span style="color: red;">{{ errors.first('principal-image') }}</span>
-            </b-form-group>
-            <b-col class="preview-container">
-              <div v-if="imageUrl===null" class="text-center d-flex align-items-center mt-4 principal-image">
-                <div class="placeholder-content">
-                  Preview
-                </div>
-              </div>
-              <div v-else class="text-center mt-4 principal-image">
-                <img :src="imageUrl" width="250px" height="300px"/>
-
-              </div>
-            </b-col>
-          </b-col>
-          <b-col class="mt-4">
-            <b-form-group label="Selecciona hasta 4 imágenes">
-              <b-form-file v-on:change="handleImageUpload2" v-validate="'image:2000000|image|image_size'" name="images"
-                           accept="image/*"></b-form-file>
-              <span style="color: red;">{{ errors.first('images') }}</span>
-            </b-form-group>
-
-            <b-col class="preview-container">
-              <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
-                <div class="placeholder-content">Preview</div>
-              </div>
-              <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
-                <img :src="imagePreview" alt="Preview"/>
-                <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
-              </div>
-            </b-col>
-          </b-col>
-        </b-col>
         <b-col lg="6">
           <b-row>
             <b-col>
@@ -58,10 +21,10 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+          <b-row>
             <b-col>
               <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
-                <b-form-select name="category" v-model="category" v-validate="'required'" id="category-select" @change="updateSubcategories">
+                <b-form-select  name="category" v-model="category" v-validate="'required'" id="category-select" @change="updateSubcategories">
                   <option v-for="(category, index) in categories" :key="index" :value="category.category">
                     {{ category.category }}
                   </option>
@@ -71,7 +34,7 @@
             </b-col>
             <b-col>
               <b-form-group label="Subcategoria" label-for="subcategory-select">
-                <b-form-select name="subcategory" v-model="formData.subcategory" v-validate="'required'" id="subcategory-select">
+                <b-form-select :disabled="!category" name="subcategory" v-model="formData.subcategory" v-validate="'required'" id="subcategory-select">
                   <option v-for="(subcategory, index) in filteredSubcategories" :key="index" :value="subcategory.idSubcategory">
                     {{ subcategory.subcategory }}
                   </option>
@@ -80,7 +43,7 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+          <b-row>
             <b-col>
               <b-form-group label="Descripción: " label-for="description">
                 <b-form-textarea name="description" v-model="formData.description" v-validate="'required|alpha_spaces|description_min|description_max'"
@@ -89,7 +52,7 @@
               <span style="color: red;">{{ errors.first('description') }}</span>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+          <b-row>
             <b-col>
               <b-form-group label="Precio: " label-for="price">
                 <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required'"
@@ -105,17 +68,41 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+
+
+        </b-col>
+        <b-col class="" lg="6">
+          <b-row>
             <b-col>
-              <b-form-group label="Estado del producto" label-for="status">
-                <b-form-select name="status" id="status" v-model="formData.status" v-validate="'required'"
-                               :options="optionsStatus"></b-form-select>
-                <span style="color: red;">{{ errors.first('status') }}</span>
+              <b-form-group label="Selecciona hasta 4 imágenes">
+                <b-form-file
+                    v-on:change="handleImageUpload2"
+                    v-validate="'image:2000000|image|image_size'"
+                    name="images"
+                    placeholder=""
+                    browse-text="Búscar"
+                    accept="image/*"></b-form-file>
+                <span style="color: red;">{{ errors.first('images') }}</span>
               </b-form-group>
+
+              <b-col class="preview-container">
+                <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
+                  <div class="placeholder-content">Preview</div>
+                </div>
+                <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
+                  <img :src="imagePreview" alt="Preview"/>
+                  <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
+                </div>
+              </b-col>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
-            <b-col class="text-right">
+          {{formData.productGallery}}
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="12" class="mt-5">
+          <b-row class="text-right">
+            <b-col>
               <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
               <b-button variant="outline-dark" class="btn-cancel">Cancelar</b-button>
             </b-col>
@@ -145,7 +132,7 @@ export default {
       imagePreviews: [],
       formData: {
         productName: '',
-        user:'',
+        email:'',
         amount: 0,
         status: false,
         subcategory:'',
@@ -181,25 +168,11 @@ export default {
         }
       })
     },
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          this.imageUrl = e.target.result
-          this.newPrincipalImage = file
-          const response = await CloudinaryService.uploadImage(this.newPrincipalImage)
-          if (response) {
-            this.formData.productGallery.push(response.data.data)
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    },
+
     handleImageUpload2(event) {
       const files = event.target.files;
-      if (files.length + this.imagePreviews.length > 4) {
-        showWarningToast("No puedes cargar más de 4 imágenes");
+      if (files.length + this.imagePreviews.length > 5) {
+        showWarningToast("No puedes cargar más de 5 imágenes");
         return;
       }
       if (files.length === 0 && this.imagePreviews.length === 0) {
@@ -207,13 +180,14 @@ export default {
         return;
       }
 
+      if(files[0].size > 2000000){
+        showWarningToast("La imagen no puede pesar más de 2MB");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = async (e) => {
         this.imagePreviews.push(e.target.result);
-        const response = await CloudinaryService.uploadImage(files[0])
-        if (response) {
-            this.formData.productGallery.push(response.data.data);
-        }
       };
       reader.readAsDataURL(files[0]);
     },
