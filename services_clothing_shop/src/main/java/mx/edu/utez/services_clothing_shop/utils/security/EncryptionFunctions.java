@@ -17,13 +17,13 @@ import java.util.logging.Logger;
 @Component
 public class EncryptionFunctions {
 
-    private static String KEY;
+    private static String key;
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
 
     @Value("${secret-key}")
     public void setKey(String key) {
-        EncryptionFunctions.KEY = key;
+        EncryptionFunctions.key = key;
     }
 
     public static String encryptString(String value) {
@@ -76,6 +76,6 @@ public class EncryptionFunctions {
     }
 
     private static Key generateKey() {
-        return new SecretKeySpec(KEY.getBytes(), ALGORITHM);
+        return new SecretKeySpec(key.getBytes(), ALGORITHM);
     }
 }
