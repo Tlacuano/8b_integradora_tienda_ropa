@@ -43,7 +43,7 @@ public class SubcategoryController {
     public ResponseEntity<CustomResponse<List<ISubCategory.SubcategoryNameProjection>>> getSubcategoriesByCategory(@Valid @RequestBody RequestSubcategoryByCategoryDTO payload) {
         try {
             List<ISubCategory.SubcategoryNameProjection> subcategories = subcategoryService.getSubcategoriesByCategory(payload.getCategory());
-            return new ResponseEntity<>(new CustomResponse<>(subcategories, "Subcategorias encontradas", false, 200), HttpStatus.OK);
+            return new ResponseEntity<>(new CustomResponse<>(subcategories, "Subcategorias encontradas por categoria", false, 200), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener las subcategorias por categoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -71,7 +71,7 @@ public class SubcategoryController {
             }
             Page<BeanSubcategory> pageSubcategories = subcategoryService.getSubcategoriesBySubcategory(subcategory.getSubcategory(), page);
             Page<ResponseSubcategoryDTO> responseDTOList = pageSubcategories.map(ResponseSubcategoryDTO::toSubcategoryDTO);
-            return new ResponseEntity<>(new CustomResponse<>(responseDTOList, "Subcategorias encontradas", false, 200), HttpStatus.OK);
+            return new ResponseEntity<>(new CustomResponse<>(responseDTOList, "Subcategorias encontradas por subcategorias", false, 200), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener las subcategorias por subcategoria: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
