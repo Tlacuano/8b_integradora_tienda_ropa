@@ -3,20 +3,13 @@ package mx.edu.utez.services_clothing_shop.utils.listener;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PreUpdate;
+import mx.edu.utez.services_clothing_shop.audit.context.ApplicationContextProvider;
 import mx.edu.utez.services_clothing_shop.audit.context.AuditContext;
 import mx.edu.utez.services_clothing_shop.audit.model.AuditLog;
 import mx.edu.utez.services_clothing_shop.audit.service.AuditLogService;
 import mx.edu.utez.services_clothing_shop.utils.Convert;
-import org.springframework.context.ApplicationContext;
-
 
 public class AuditEntityListener {
-
-    private final ApplicationContext applicationContext;
-
-    public AuditEntityListener(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
 
     @PostPersist
     private void afterCreate(Object target) {
@@ -47,7 +40,7 @@ public class AuditEntityListener {
         auditLog.setUserName(AuditContext.getUserName());
         auditLog.setIpAddress(AuditContext.getIpAddress());
 
-        applicationContext.getBean(AuditLogService.class).recordAuditEvent(auditLog);
+        ApplicationContextProvider.getApplicationContext().getBean(AuditLogService.class).recordAuditEvent(auditLog);
     }
 
 }
