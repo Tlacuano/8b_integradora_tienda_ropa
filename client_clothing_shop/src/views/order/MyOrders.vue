@@ -140,8 +140,6 @@ export default {
       this.OrderSelected = order
       this.ProductSelected = product
       this.orderNumberForReturn = order.orderNumber;
-      console.log(this.OrderSelected)
-      console.log(this.ProductSelected)
       this.$root.$emit('bv::show::modal', 'my-order-details-modal');
     },
 
