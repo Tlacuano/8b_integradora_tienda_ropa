@@ -22,7 +22,7 @@
                   @mouseleave="showEditPicture = false"
               >
                 <template #badge v-if="showEditPicture"  >
-                  <font-awesome-icon icon="fa-solid fa-pen" class="selectable" v-b-modal:put-picture-profile-modal/>
+                  <font-awesome-icon icon="fa-solid fa-pen" class="selectable" v-b-modal:put-picture-profile-by-admin-modal/>
                 </template>
               </b-avatar>
             </div>
@@ -364,6 +364,7 @@
     <DeleteAccountAdminModal :email="decodeCrypto(email)"/>
     <PutPersonalInformationUserModal :email="decodeCrypto(email)"/>
     <BlockSellModal :email="decodeCrypto(email)"/>
+    <PutPictureProfileByAdminModal :email="decodeCrypto(email)"/>
   </section>
 </template>
 
@@ -379,7 +380,8 @@ export default {
   components: {
     DeleteAccountAdminModal : () => import('@/views/user/DeleteAccountAdminModal.vue'),
     PutPersonalInformationUserModal : () => import('@/views/user/PutPersonalInformationUserModal.vue'),
-    BlockSellModal : () => import('@/views/user/BlockSellAccountModal.vue')
+    BlockSellModal : () => import('@/views/user/BlockSellAccountModal.vue'),
+    PutPictureProfileByAdminModal : () => import('@/views/user/PutPictureProfileByAdminModal.vue')
   },
   props: {
     email: {
