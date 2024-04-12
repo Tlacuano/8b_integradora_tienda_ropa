@@ -12,7 +12,6 @@ import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
-import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +20,7 @@ import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequests
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.IReturnProductGallery;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct.ReturnRequestProjection;
 
 @Service
@@ -81,14 +79,6 @@ public class RequestsReturnProductService {
     }
 
 
-
-
-    private boolean isValidRejectionReason(String rejectionReason) {
-        Pattern pattern = Pattern.compile(RegexPatterns.REJECTION_REASON_REGEX);
-        Matcher matcher = pattern.matcher(rejectionReason);
-        return matcher.matches();
-    }
-
     public RequestsReturnProductGetByIdResponseDTO getRequestReturnProductInfoById(UUID idRequestReturnProduct) {
         List<IRequestsReturnProduct.ReturnProductInfoProjection> results = IRequestsReturnProduct.findReturnProductInfoById(idRequestReturnProduct);
         if (results.isEmpty()) {
@@ -110,12 +100,6 @@ public class RequestsReturnProductService {
         dto.setPrice(request.getPrice());
         dto.setProductName(request.getProductName());
         return dto;
-    }
-
-    public String getRequestStatusById(UUID statusId) {
-        BeanRequestStatus requestStatus = IRequestStatus.findById(statusId)
-                .orElseThrow(() -> new CustomException("requestsReturnProduct.status.notFound"));
-        return requestStatus.getStatus();
     }
 
     @Transactional

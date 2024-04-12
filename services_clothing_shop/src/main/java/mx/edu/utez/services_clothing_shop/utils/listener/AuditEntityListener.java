@@ -27,8 +27,6 @@ public class AuditEntityListener {
 
     @PostRemove
     private void afterDelete(Object target) {
-        String oldValue = Convert.toJSON(target);
-
         recordAuditAction(target, "DELETE", null);
     }
 

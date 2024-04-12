@@ -160,29 +160,6 @@ public class ProductService {
         iProduct.saveAndFlush(product);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteProduct(UUID idProduct) {
-        iProduct.deleteByIdProduct(idProduct);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteProductGallery(BeanProduct product) {
-        iProductGallery.deleteAllByProduct(product);
-    }
-
-    private void saveProductGallery(BeanProduct product, List<String> images) {
-        BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Predeterminada");
-        BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
-        String defaultStatusId = defaultStatus.getIdStatus().toString();
-        String enabledStatusId = enabledStatus.getIdStatus().toString();
-
-        for (int i = 0; i < images.size(); i++) {
-            String image = images.get(i);
-            String statusId = (i == 0) ? defaultStatusId : enabledStatusId;
-            iProductGallery.postProductGallery(product.getIdProduct().toString(), image, statusId);
-        }
-    }
-
     private void updateProductGallery(List<BeanProductGallery> productGallery) {
         for (BeanProductGallery gallery : productGallery) {
             BeanImageProductStatus imageProductStatus = iImageProductStatus.findByStatus(gallery.getStatus().getStatus());

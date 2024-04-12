@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ReturnProductGalleryService {
@@ -35,10 +34,7 @@ public class ReturnProductGalleryService {
         if (returnProductGalleriesData.isEmpty()) {
             throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.notfound"));
         }
-        return returnProductGalleriesData.stream()
-                .map(this::mapToResponseAllDTO)
-                .collect(Collectors.toList());
-
+        return returnProductGalleriesData.stream().map(this::mapToResponseAllDTO).toList();
     }
 
     @Transactional(readOnly = true)
@@ -53,8 +49,7 @@ public class ReturnProductGalleryService {
     @Transactional
     public BeanReturnProductGallery postReturnProductGallery(RequestPostReturnProductGalleryDTO payload) {
         UUID requestReturnProductId = payload.getRequestReturnProductId();
-        BeanRequestReturnProduct requestReturnProduct = iRequestsReturnProduct.findById(requestReturnProductId)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idRequestReturnProduct.notfound")));
+        BeanRequestReturnProduct requestReturnProduct = iRequestsReturnProduct.findById(requestReturnProductId).orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idRequestReturnProduct.notfound")));
 
         BeanReturnProductGallery newReturnProduct = new BeanReturnProductGallery();
         newReturnProduct.setImage(payload.getImage());
