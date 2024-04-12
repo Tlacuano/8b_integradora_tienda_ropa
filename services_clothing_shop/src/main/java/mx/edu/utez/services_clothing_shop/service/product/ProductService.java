@@ -86,19 +86,19 @@ public class ProductService {
     @Transactional
     public boolean postProduct(RequestProductDTO payload) {
         BeanUser user = iUser.findByEmail(payload.getEmail());
-        if(user == null){
+        if (user == null) {
             throw new CustomException("user.email.exists");
         }
 
         BeanSubcategory subcategory = iSubCategory.findByIdSubcategory(payload.getSubcategory());
-        if(subcategory == null){
+        if (subcategory == null) {
             throw new CustomException("subcategory.notfound");
         }
 
-        if(payload.getProductGallery().size() <= 2){
+        if (payload.getProductGallery().size() <= 2) {
             throw new CustomException("product.productGallery.size.min");
         }
-        if(payload.getProductGallery().size() > 5){
+        if (payload.getProductGallery().size() > 5) {
             throw new CustomException("product.productGallery.size.max");
         }
 
@@ -118,21 +118,19 @@ public class ProductService {
         BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Principal");
         BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
 
-
         for (String gallery : payload.getProductGallery()) {
             BeanProductGallery productGallery = new BeanProductGallery();
             productGallery.setProduct(product);
             productGallery.setImage(gallery);
 
-            if(payload.getProductGallery().indexOf(gallery) == 0){
+            if (payload.getProductGallery().indexOf(gallery) == 0) {
                 productGallery.setStatus(defaultStatus);
-            }else{
+            } else {
                 productGallery.setStatus(enabledStatus);
             }
 
             iProductGallery.save(productGallery);
         }
-
 
         //save request to sell product
         BeanRequestStatus pendingStatus = iRequestStatus.findByStatus("Pendiente").get();
@@ -143,12 +141,7 @@ public class ProductService {
 
         iRequestsSellProduct.save(requestSellProduct);
 
-        emailService.sendEmail(user.getEmail(),
-                "Solicitud registrada",
-                "Solitud de venta de producto registrada exitosamente",
-                "Tu producto ya esta en proceso de revisión, te notificaremos cuando este disponible en la tienda",
-                "");
-
+        emailService.sendEmail(user.getEmail(), "Solicitud registrada", "Solitud de venta de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando este disponible en la tienda", "");
 
         return true;
     }
@@ -162,7 +155,7 @@ public class ProductService {
 
     @Transactional
     public void putStatusProduct(UUID idProduct) {
-        BeanProduct product = getProduct(idProduct);
+        BeanProduct product = iProduct.findByIdProduct(idProduct);
         product.setStatus(!product.isStatus());
         iProduct.saveAndFlush(product);
     }

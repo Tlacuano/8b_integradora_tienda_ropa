@@ -109,18 +109,26 @@ public class RequestsDataChangeService {
         IRequestsDataChange.insertRequestDataChange(email, newUserInfoJSON);
     }
 
+    @Transactional
     public RequestDataChangeIdDTO getRequestByID(UUID idRequestDataChange) {
-        Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(idRequestDataChange);
+        try {
 
-        if (requestDataChangeOptional.isPresent()) {
+            Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(idRequestDataChange);
+
+            if (requestDataChangeOptional.isEmpty()) {
+                throw new CustomException("dataChange.requestId.notFound");
+            }
+
             BeanRequestDataChange requestDataChange = requestDataChangeOptional.get();
             Map<String, Object> newUserInformationMap = convertJsonToMap(requestDataChange.getNewUserInformation());
 
             BeanUser user = requestDataChange.getUser();
             BeanPerson person = user.getPerson();
-            String genderAsString = person != null ? person.getGender().toString() : null;
+            if (person == null) {
+                throw new CustomException("dataChange.personNotFound");
+            }
 
-
+            String genderAsString = person.getGender().toString();
 
             return new RequestDataChangeIdDTO(
                     requestDataChange.getIdRequestDataChange(),
@@ -128,30 +136,29 @@ public class RequestsDataChangeService {
                     requestDataChange.getRejectionReason(),
                     user.getEmail(),
                     requestDataChange.getStatus().getStatus(),
-                    person != null ? person.getIdPerson() : null,
-                    person != null ? person.getName() : null,
-                    person != null ? person.getLastName() : null,
-                    person != null ? person.getSecondLastName() : null,
-                    person != null ? person.getBirthday() : null,
-                    person != null ? person.getPhoneNumber() : null,
+                    person.getIdPerson(),
+                    person.getName(),
+                    person.getLastName(),
+                    person.getSecondLastName(),
+                    person.getBirthday(),
+                    person.getPhoneNumber(),
                     genderAsString
             );
-        } else {
+        } catch (CustomException e) {
             throw new CustomException("dataChange.requestId.notFound");
         }
     }
-
 
     @Transactional
     public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChangeWithPersonName(Pageable pageable, String searchTerm) {
         return IRequestsDataChange.findAllStatusesWithPersonNameAndLastName(pageable, searchTerm);
     }
 
-
     private Map<String, Object> convertJsonToMap(String json) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+            });
         } catch (JsonProcessingException e) {
             throw new CustomException("dataChange.JSON.invalid");
         }

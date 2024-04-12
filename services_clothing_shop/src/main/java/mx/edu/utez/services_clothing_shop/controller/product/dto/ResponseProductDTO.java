@@ -1,6 +1,8 @@
 package mx.edu.utez.services_clothing_shop.controller.product.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseProductDTO {
     private UUID idProduct;
     private String productName;
@@ -19,9 +23,6 @@ public class ResponseProductDTO {
     private String category;
     private boolean status;
     private List<ProductImageDTO> productGallery;
-
-    public ResponseProductDTO() {
-    }
 
     public static ResponseProductDTO toProductDTO(BeanProduct product) {
         ResponseProductDTO dto = new ResponseProductDTO();

@@ -37,7 +37,7 @@ public class OrderController {
     public ResponseEntity<Object> getOrdersByOrderNumber(Pageable pageable, @Valid @RequestBody RequestOrderByOrderNumberDTO payload, BindingResult result) {
         if (result.hasErrors()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponse<>(null, "Invalid data", true, HttpStatus.BAD_REQUEST.value()));
         Page<IOrder.OrderProjection> orders = orderService.getOrdersByOrderNumber(payload.getOrderNumber(), pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(orders, "Orders found", false, HttpStatus.OK.value()));
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(orders, "Orders by number found", false, HttpStatus.OK.value()));
     }
 
     @PostMapping("/get-order-details")
@@ -50,7 +50,7 @@ public class OrderController {
     public ResponseEntity<Object> getOrdersByUserEmail(@Valid @RequestBody RequestActionByEmailDTO payload, Pageable pageable) {
         Page<BeanOrder> orders = orderService.getOrdersByUserEmail(payload.getEmail(), pageable);
         Page<ResponseOrderDTO> responseOrders = orders.map(order -> new ResponseOrderDTO().toOrderDTO(order));
-        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(responseOrders, "Orders found", false, HttpStatus.OK.value()));
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(responseOrders, "Orders by email found", false, HttpStatus.OK.value()));
     }
 
     @PostMapping("/post-order")
