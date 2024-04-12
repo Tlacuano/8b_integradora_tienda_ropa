@@ -7,6 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -25,7 +26,7 @@ public class EncryptionFunctions {
         EncryptionFunctions.KEY = key;
     }
 
-    public static String encryptString(String value){
+    public static String encryptString(String value) {
         String dataEncrypt = "";
         try {
             Key key = generateKey();
@@ -37,25 +38,24 @@ public class EncryptionFunctions {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(initializationVector);
             cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
 
-            byte[] encryptedByteValue  = cipher.doFinal(value.getBytes("utf-8"));
+            byte[] encryptedByteValue = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
             byte[] encryptedValueWithIv = new byte[initializationVector.length + encryptedByteValue.length];
 
             System.arraycopy(initializationVector, 0, encryptedValueWithIv, 0, initializationVector.length);
             System.arraycopy(encryptedByteValue, 0, encryptedValueWithIv, initializationVector.length, encryptedByteValue.length);
 
             dataEncrypt = Base64.getEncoder().encodeToString(encryptedValueWithIv);
-        }catch (Exception e){
-            Logger.getLogger(EncryptionFunctions.class.getName())
-                    .severe("Error al encriptar la cadena: " + e.getMessage());
+        } catch (Exception e) {
+            Logger.getLogger(EncryptionFunctions.class.getName()).severe("Error al encriptar la cadena: " + e.getMessage());
         }
 
         return dataEncrypt;
     }
 
-    public static String decryptString(String value){
+    public static String decryptString(String value) {
         String dataDecrypt = "";
         try {
-            String urlDecode = URLDecoder.decode(value.replaceAll("\\+","%2B"), "UTF-8");
+            String urlDecode = URLDecoder.decode(value.replace("\\+", "%2B"), StandardCharsets.UTF_8);
             Key key = generateKey();
 
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -68,15 +68,13 @@ public class EncryptionFunctions {
             cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
             byte[] decryptedByteValue = cipher.doFinal(decodeValue, initializationVector.length, decodeValue.length - initializationVector.length);
 
-            dataDecrypt = new String(decryptedByteValue, "utf-8");
-        }catch (Exception e){
-            Logger.getLogger(EncryptionFunctions.class.getName())
-                    .severe("Error al desencriptar la cadena: " + e.getMessage());
+            dataDecrypt = new String(decryptedByteValue, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Logger.getLogger(EncryptionFunctions.class.getName()).severe("Error al desencriptar la cadena: " + e.getMessage());
         }
         return dataDecrypt;
     }
-
-
+    
     private static Key generateKey() throws Exception {
         return new SecretKeySpec(KEY.getBytes(), ALGORITHM);
     }
