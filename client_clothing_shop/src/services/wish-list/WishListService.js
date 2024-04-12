@@ -10,9 +10,20 @@ const getWishList = async (email) => {
     }
 }
 
+const postWishList = async (wishList) => {
+    try {
+        console.log("envia. ", wishList)
+        const response = await axios.doPost(`/venta-ropa/api/wishes-list/post-wish-list`, wishList);
+        console.log('obtiene: ', response.data)
+        return response.data;
+    } catch (e) {
+        showWarningToast('',e.message)
+    }
+}
+
 const deleteWishList = async (wishList) => {
     try {
-        const response = await axios.doPost("/venta-ropa/api/wishes-list/delete-wish-list", wishList);
+        const response = await axios.doPost(`/venta-ropa/api/wishes-list/delete-wish-list`, wishList);
         return response.data;
     } catch (e) {
         showWarningToast('',e.message)
@@ -21,5 +32,6 @@ const deleteWishList = async (wishList) => {
 
 export default {
     getWishList,
+    postWishList,
     deleteWishList,
 }
