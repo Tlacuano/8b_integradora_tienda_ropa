@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.controller.wish_list;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
+import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.RequestPostWishList;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponsePutWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
@@ -34,9 +35,13 @@ public class WishListController {
     }
 
     @PostMapping("/post-wish-list")
-    public ResponseEntity<CustomResponse<List<ResponseWishListDTO>>> createShoppingCart(@Validated @RequestBody BeanWishList wishList) {
-        ResponseWishListDTO response = wishListService.saveWishList(wishList);
-        return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200));
+    public ResponseEntity<Object> createShoppingCart(@Validated @RequestBody RequestPostWishList wishList) {
+        System.out.println("entra al controlador");
+        System.out.println("en el cont: "+ wishList);
+        //ResponseWishListDTO response = wishListService.saveWishList(wishList);
+        //return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(response), "ok", false, 200));
+
+    return ResponseEntity.ok(new CustomResponse<>(Collections.singletonList(wishListService.saveWishList(wishList.getEmail(), wishList.getIdProduct())), "Carrito de compras creado", false, 200));
     }
 
     @PostMapping("/delete-wish-list")

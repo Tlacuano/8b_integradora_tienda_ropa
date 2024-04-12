@@ -15,7 +15,6 @@ import java.util.UUID;
 public class ResponseWishListDTO {
     @NotNull
     private UUID idWish;
-    @NotBlank(message = "wishList.amount.notnull")
     private int amount;
     @NotBlank(message = "wishList.product.notnull")
     private ResponseWishListProductDTO product;
@@ -25,7 +24,6 @@ public class ResponseWishListDTO {
     public static ResponseWishListDTO fromWishList(BeanWishList wishList) {
         ResponseWishListDTO wishListDTO = new ResponseWishListDTO();
         wishListDTO.setIdWish(wishList.getIdWish());
-        wishListDTO.setAmount(wishList.getAmount());
         wishListDTO.setProduct(ResponseWishListProductDTO.fromProduct(wishList.getProduct()));
         wishListDTO.setUser(RequestUserByIdDTO.fromUser(wishList.getUser()));
         return wishListDTO;
