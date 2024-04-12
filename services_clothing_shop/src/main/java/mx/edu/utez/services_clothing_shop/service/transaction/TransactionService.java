@@ -1,12 +1,12 @@
 package mx.edu.utez.services_clothing_shop.service.transaction;
 
 import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.Product;
 import com.stripe.net.Webhook;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionExpireParams;
 import com.stripe.param.checkout.SessionRetrieveParams;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
@@ -59,7 +59,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public String createCheckoutSession(List<ResponseShoppingCartDTO> shoppingCart, String email, UUID idAddress, UUID idPaymentCard) throws StripeException {
+    public String createCheckoutSession(List<ResponseShoppingCartDTO> shoppingCart, String email, UUID idAddress, UUID idPaymentCard) {
         try {
             for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
                 if (shoppingCartProduct.getAmount() > shoppingCartProduct.getProduct().getAmount()) {
@@ -69,16 +69,32 @@ public class TransactionService {
 
             List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
             for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
-                ProductCreateParams productParams = ProductCreateParams.builder().setName(shoppingCartProduct.getProduct().getProductName()).setDescription(shoppingCartProduct.getProduct().getDescription()).addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
+                ProductCreateParams productParams = ProductCreateParams.builder()
+                        .setName(shoppingCartProduct.getProduct().getProductName())
+                        .setDescription(shoppingCartProduct.getProduct().getDescription())
+                        .addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
                 Product product = Product.create(productParams);
-                lineItems.add(SessionCreateParams.LineItem.builder().setQuantity((long) shoppingCartProduct.getAmount()).setPriceData(SessionCreateParams.LineItem.PriceData.builder().setCurrency("MXN").setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100)).setProduct(product.getId()).build()).build());
+                lineItems.add(SessionCreateParams.LineItem.builder()
+                        .setQuantity((long) shoppingCartProduct.getAmount())
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("MXN")
+                                .setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100))
+                                .setProduct(product.getId()).build()).build());
             }
-            SessionCreateParams sessionParams = SessionCreateParams.builder().addAllLineItem(lineItems).setMode(SessionCreateParams.Mode.PAYMENT).addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD).setSuccessUrl("http://localhost:5173/my-orders").setCancelUrl("http://localhost:5173/cancel").setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
+
+            SessionCreateParams sessionParams = SessionCreateParams.builder()
+                    .addAllLineItem(lineItems)
+                    .setMode(SessionCreateParams.Mode.PAYMENT)
+                    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                    .setSuccessUrl("http://localhost:5173/my-orders")
+                    .setCancelUrl("http://localhost:5173/")
+                    .setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
                     .build();
             Session session = Session.create(sessionParams);
 
             if (session.getUrl().isEmpty()) {
-                session.expire();
+                SessionExpireParams expireParams = SessionExpireParams.builder().build();
+                session.expire(expireParams);
                 throw new RuntimeException("transaction.session.failed");
             }
 
@@ -87,27 +103,14 @@ public class TransactionService {
                 throw new RuntimeException("transaction.user.notfound");
             }
 
-            BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
-
-            RequestPostOrderDTO order = new RequestPostOrderDTO();
-            order.setIdUser(user.getIdUser());
-            order.setOrderDate(LocalDate.now());
-            order.setIdAddress(idAddress);
-            order.setIdPaymentCard(idPaymentCard);
-            order.setOrderNumber(orderService.orderNumberGenerator());
-            System.out.println(order.getOrderNumber());
+            RequestPostOrderDTO order = new RequestPostOrderDTO(user.getIdUser(), LocalDate.now(), idAddress, idPaymentCard, orderService.orderNumberGenerator());
             orderService.postOrder(order);
 
             BeanOrder savedOrder = orderService.getOrderByOrderNumber(order.getOrderNumber());
+            double total = shoppingCart.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getAmount()).sum();
 
-            BeanTransaction transaction = new BeanTransaction();
-            transaction.setIdSession(session.getId());
-            transaction.setTotal(shoppingCart.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getAmount()).sum());
-            transaction.setUser(user);
-            transaction.setStatus(status);
-            transaction.setPaymentStatus(session.getPaymentStatus());
-            transaction.setCheckoutStatus(session.getStatus());
-            transaction.setOrder(savedOrder);
+            BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
+            BeanTransaction transaction = new BeanTransaction(session.getId(), total, user, savedOrder, status, session.getPaymentStatus(), session.getStatus());
             transactionRepository.save(transaction);
 
             return session.getUrl();
@@ -116,7 +119,7 @@ public class TransactionService {
         }
     }
 
-    public void fulfillOrder(String stripeSignature, String payload) throws StripeException {
+    public void fulfillOrder(String stripeSignature, String payload) {
         try {
 
             if (stripeSignature == null || payload == null) {
