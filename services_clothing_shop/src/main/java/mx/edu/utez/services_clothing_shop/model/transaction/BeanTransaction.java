@@ -51,4 +51,14 @@ public class BeanTransaction {
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
     private BeanTransactionStatus status;
+
+    public BeanTransaction(String id, double total, BeanUser user, BeanOrder order, BeanTransactionStatus status, String paymentStatus, String checkoutStatus) {
+        this.idSession = id;
+        this.total = total;
+        this.user = user;
+        this.order = order;
+        this.status = status;
+        this.paymentStatus = paymentStatus;
+        this.checkoutStatus = checkoutStatus;
+    }
 }

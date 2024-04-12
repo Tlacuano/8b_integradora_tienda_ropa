@@ -155,8 +155,11 @@ CREATE PROCEDURE `sp_post_order`(
 BEGIN
     DECLARE v_order_id BINARY(16);
     DECLARE total_products_in_shopping_cart INT;
+    DECLARE products_without_enough_stock INT;
     DECLARE products_from_same_user INT;
     DECLARE pending_status_id BINARY(16);
+    DECLARE enabled_status_id BINARY(16);
+    DECLARE enabled_products_count INT;
 
     START TRANSACTION;
     -- 1. Verify if the user has at least one product in the shopping cart
@@ -195,14 +198,41 @@ BEGIN
 
     -- 4.5 Verify that there's enough stock for the products in the shopping cart
     SELECT COUNT(*)
-    INTO total_products_in_shopping_cart
+    INTO products_without_enough_stock
     FROM shopping_cart sc
              JOIN products p ON sc.fk_id_product = p.id_product
     WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
       AND sc.amount > p.amount;
 
-    IF total_products_in_shopping_cart != 0 THEN
+    IF products_without_enough_stock != 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There is not enough stock for the products in the shopping cart';
+    END IF;
+
+    -- 4.6 Verify that the products in the shopping cart are enabled in the request_sell_products table
+    SELECT id_status INTO enabled_status_id FROM request_status WHERE status = 'Aprobado';
+
+    SELECT COUNT(*)
+    INTO enabled_products_count
+    FROM shopping_cart sc
+             JOIN products p ON sc.fk_id_product = p.id_product
+             JOIN requests_sell_product rsp ON p.id_product = rsp.fk_id_product
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
+      AND rsp.fk_id_status = enabled_status_id;
+
+    IF enabled_products_count != total_products_in_shopping_cart THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There are products in the shopping cart that are not enabled';
+    END IF;
+
+    -- 4.7 Verify that the products in the shopping cart are enabled in the products table
+    SELECT COUNT(*)
+    INTO enabled_products_count
+    FROM shopping_cart sc
+             JOIN products p ON sc.fk_id_product = p.id_product
+    WHERE sc.fk_id_user = UUID_TO_BIN(p_user_id)
+      AND p.status = true;
+
+    IF enabled_products_count != total_products_in_shopping_cart THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'There are products in the shopping cart that are not enabled';
     END IF;
 
     -- 5. Insert the products from the shopping cart into the orders_has_products table
@@ -406,10 +436,13 @@ BEGIN
     DECLARE v_pending_request INT;
 
     -- Verificar si existe una solicitud pendiente para el email proporcionado
-    SELECT COUNT(*) INTO v_pending_request FROM request_status rs
-    INNER JOIN requests_become_seller r ON rs.id_status = r.fk_id_status
-    INNER JOIN users u ON r.fk_id_user = u.id_user
-    WHERE u.email = p_email AND rs.status = 'PENDIENTE';
+    SELECT COUNT(*)
+    INTO v_pending_request
+    FROM request_status rs
+             INNER JOIN requests_become_seller r ON rs.id_status = r.fk_id_status
+             INNER JOIN users u ON r.fk_id_user = u.id_user
+    WHERE u.email = p_email
+      AND rs.status = 'PENDIENTE';
 
     -- Si hay alguna solicitud pendiente, retornar 1, de lo contrario, retornar 0
     IF v_pending_request = 1 THEN
