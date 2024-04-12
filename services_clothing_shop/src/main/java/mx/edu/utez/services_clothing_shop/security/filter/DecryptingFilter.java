@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,10 +17,10 @@ import java.util.List;
 @Component
 @Order(1)
 public class DecryptingFilter implements Filter {
+    private final String APPJSON = "application/json";
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         if (httpRequest.getAttribute("bodyDecrypted") != null) {
@@ -82,13 +83,13 @@ public class DecryptingFilter implements Filter {
 
                 @Override
                 public String getContentType() {
-                    return "application/json";
+                    return APPJSON;
                 }
 
                 @Override
                 public String getHeader(String name) {
                     if ("content-type".equalsIgnoreCase(name)) {
-                        return "application/json";
+                        return APPJSON;
                     }
                     return super.getHeader(name);
                 }
@@ -96,7 +97,7 @@ public class DecryptingFilter implements Filter {
                 @Override
                 public Enumeration<String> getHeaders(String name) {
                     if ("content-type".equalsIgnoreCase(name)) {
-                        return Collections.enumeration(List.of("application/json"));
+                        return Collections.enumeration(List.of(APPJSON));
                     }
                     return super.getHeaders(name);
                 }
@@ -112,8 +113,12 @@ public class DecryptingFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) {}
+    public void init(FilterConfig filterConfig) {
+        // Implementation not required
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        // Implementation not required
+    }
 }
