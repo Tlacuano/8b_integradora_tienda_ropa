@@ -27,7 +27,7 @@ public class AuthDetails implements UserDetails {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.status = user.isStatus();
-        this.role = user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList();
+        this.role = user.getRoles().stream().map(roleElement -> roleElement.getRole().getRoleName()).toList();
         this.emailVerified = user.isEmailVerified();
         this.privacyPolicy = user.isPrivacyPolicy();
         this.verificationPhone = user.getPerson() != null && user.getPerson().isVerificationPhone();
@@ -36,8 +36,8 @@ public class AuthDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new java.util.ArrayList<>();
-        for (String role : role) {
-            authorities.add(new SimpleGrantedAuthority(role));
+        for (String roleElement : role) {
+            authorities.add(new SimpleGrantedAuthority(roleElement));
         }
         return authorities;
     }

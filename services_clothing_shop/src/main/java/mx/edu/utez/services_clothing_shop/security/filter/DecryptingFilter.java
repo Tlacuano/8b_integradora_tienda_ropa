@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.security.filter;
 
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -66,7 +67,7 @@ public class DecryptingFilter implements Filter {
 
                         @Override
                         public void setReadListener(ReadListener readListener) {
-                            throw new RuntimeException("Not implemented");
+                            throw new CustomException("Not implemented");
                         }
                     };
                 }
@@ -107,7 +108,6 @@ public class DecryptingFilter implements Filter {
             chain.doFilter(wrappedRequest, response);
             return;
         }
-
         chain.doFilter(request, response);
 
     }

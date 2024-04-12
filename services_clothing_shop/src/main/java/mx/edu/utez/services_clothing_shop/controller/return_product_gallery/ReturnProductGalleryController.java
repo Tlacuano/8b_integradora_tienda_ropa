@@ -21,12 +21,12 @@ import java.util.List;
 public class ReturnProductGalleryController {
     private final ReturnProductGalleryService returnProductGalleryService;
 
-    public ReturnProductGalleryController(ReturnProductGalleryService returnProductGalleryService){
+    public ReturnProductGalleryController(ReturnProductGalleryService returnProductGalleryService) {
         this.returnProductGalleryService = returnProductGalleryService;
     }
 
     @GetMapping("/get-return-product-galleries")
-    public ResponseEntity<Object> getReturnProductGalleries(){
+    public ResponseEntity<Object> getReturnProductGalleries() {
         try {
             List<ResponseAllReturnProductGalleryDTO> responseDTOs = returnProductGalleryService.getReturnProductGalleries();
             return ResponseEntity.ok(new CustomResponse<>(responseDTOs, "Return product galleries retrieved successfully", false, HttpStatus.OK.value()));
@@ -37,7 +37,7 @@ public class ReturnProductGalleryController {
     }
 
     @PostMapping("/get-return-product-gallery")
-    public ResponseEntity<Object> getReturnProductGallery(@Validated @RequestBody RequestActionByIdDTO payload){
+    public ResponseEntity<Object> getReturnProductGallery(@Validated @RequestBody RequestActionByIdDTO payload) {
         try {
             BeanReturnProductGallery returnProductGallery = returnProductGalleryService.getReturnProductGallery(payload.getIdImage());
             return ResponseEntity.ok(new CustomResponse<>(returnProductGallery, "Return product gallery retrieved successfully", false, HttpStatus.OK.value()));
@@ -58,7 +58,7 @@ public class ReturnProductGalleryController {
     }
 
     @PutMapping("/put-return-product-gallery")
-    public ResponseEntity<Object> putReturnProductGallery(@Validated @RequestBody RequestPutImageReturnProductGalleryDTO payload){
+    public ResponseEntity<Object> putReturnProductGallery(@Validated @RequestBody RequestPutImageReturnProductGalleryDTO payload) {
         try {
             BeanReturnProductGallery updatedReturnProductGallery = returnProductGalleryService.putReturnProductGallery(payload);
             return ResponseEntity.ok(new CustomResponse<>(updatedReturnProductGallery, "Return product gallery updated successfully", false, HttpStatus.OK.value()));
@@ -68,7 +68,7 @@ public class ReturnProductGalleryController {
     }
 
     @DeleteMapping("/delete-return-product-gallery")
-    public ResponseEntity<Object> deleteReturnProductGallery(@Validated @RequestBody RequestActionByIdDTO payload){
+    public ResponseEntity<Object> deleteReturnProductGallery(@Validated @RequestBody RequestActionByIdDTO payload) {
         try {
             returnProductGalleryService.deleteReturnProductGallery(payload.getIdImage());
             return ResponseEntity.ok(new CustomResponse<>(null, "Return product gallery deleted successfully", false, HttpStatus.OK.value()));
