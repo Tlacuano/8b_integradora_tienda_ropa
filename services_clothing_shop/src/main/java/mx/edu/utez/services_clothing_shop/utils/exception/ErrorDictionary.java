@@ -35,7 +35,7 @@ public class ErrorDictionary {
         errorMessages.put("person.birthday.age", "El usuario debe ser mayor de edad.");
         errorMessages.put("person.gender.notnull", "El género es obligatorio.");
         errorMessages.put("person.privacyPolicy.accepted", "Debes aceptar la política de privacidad.");
-        errorMessages.put("person.phone.verified", "Esta cuenta no puede eliminarse por este metodo.");\
+        errorMessages.put("person.phone.verified", "Esta cuenta no puede eliminarse por este metodo.");
         errorMessages.put("person.not.found", "La persona no fue encontrada.");
 
         //error messages payment card
@@ -191,7 +191,7 @@ public class ErrorDictionary {
 
         errorMessages.put("requestBecomeSeller.userSellerInformation.empty", "La información del usuario vendedor es obligatoria.");
         errorMessages.put("requestBecomeSeller.JSON.invalid", "El JSON no es válido.");
-        
+
         //error messages request sell product
         errorMessages.put("requestSellProduct.status.invalid", "El estado no es válido.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
