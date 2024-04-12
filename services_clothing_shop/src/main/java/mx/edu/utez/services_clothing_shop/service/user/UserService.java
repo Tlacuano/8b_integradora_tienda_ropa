@@ -29,11 +29,11 @@ public class UserService {
     private final EmailService emailService;
     private final IUserRoles userRolesRepository;
     private final IOrderHasProducts orderHasProductsRepository;
-    private final String USER_NOT_FOUND = "user.not.found";
-    private final String VERIFICATION_CODE = "Código de verificación";
-    private final String STATUS_PREPARING = "Preparación";
-    private final String STATUS_SENT = "Enviado";
-    private final String TITLE_ACCOUNT_CHANGES = "Cambios en tu cuenta";
+    private static final String USER_NOT_FOUND = "user.not.found";
+    private static final String VERIFICATION_CODE = "Código de verificación";
+    private static final String STATUS_PREPARING = "Preparación";
+    private static final String STATUS_SENT = "Enviado";
+    private static final String TITLE_ACCOUNT_CHANGES = "Cambios en tu cuenta";
 
     public UserService(IUser userRepository, IRole roleRepository, PasswordEncoder passwordEncoder, EmailService emailService, IUserRoles userRolesRepository, IOrderHasProducts orderHasProductsRepository) {
         this.userRepository = userRepository;

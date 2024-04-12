@@ -21,7 +21,7 @@ public class RequestPaymentCardDTO {
     @Pattern(regexp = "\\d+", message = "payment.cardNumber.invalid")
     private String cardNumber;
     @NotBlank(message = "payment.expirationDate.notnull")
-    @Pattern(regexp = "(0[1-9]|1[0-2])/([0-9]{2})", message = "payment.expirationDate.invalid")
+    @Pattern(regexp = "(0[1-9]|1[0-2])/(\\d{2})", message = "payment.expirationDate.invalid")
     private String expirationDate;
     @NotBlank(message = "payment.cvv.notnull")
     @Pattern(regexp = "\\d{3}", message = "payment.cvv.invalid")

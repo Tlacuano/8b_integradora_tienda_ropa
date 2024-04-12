@@ -6,7 +6,6 @@ import mx.edu.utez.services_clothing_shop.model.role.BeanRole;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

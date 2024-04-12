@@ -8,7 +8,6 @@ import mx.edu.utez.services_clothing_shop.controller.requests_become_seller.dto.
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.IRequestsBecomeSeller;
-import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
@@ -27,13 +26,11 @@ import java.util.UUID;
 public class RequestsBecomeSellerService {
 
     private final IRequestsBecomeSeller requestBecomeSellerRepository;
-    private final IRequestStatus IRequestStatus;
     private final EntityManager entityManager;
     private final EmailService emailService;
 
-    public RequestsBecomeSellerService(IRequestsBecomeSeller requestBecomeSellerRepository, IRequestStatus IRequestStatus, EntityManager entityManager, EmailService emailService) {
+    public RequestsBecomeSellerService(IRequestsBecomeSeller requestBecomeSellerRepository, EntityManager entityManager, EmailService emailService) {
         this.requestBecomeSellerRepository = requestBecomeSellerRepository;
-        this.IRequestStatus = IRequestStatus;
         this.entityManager = entityManager;
         this.emailService = emailService;
     }
@@ -105,15 +102,14 @@ public class RequestsBecomeSellerService {
         }
     }
 
-
     @Transactional
     public void postRequestBecomeSeller(String email, UserSellerInformation userSellerInformation) {
         if (userSellerInformation == null ||
-                StringUtils.isEmpty(userSellerInformation.getTaxIdentificationNumber()) ||
-                StringUtils.isEmpty(userSellerInformation.getSecondaryPhoneNumber()) ||
+                !StringUtils.hasText(userSellerInformation.getTaxIdentificationNumber()) ||
+                !StringUtils.hasText(userSellerInformation.getSecondaryPhoneNumber()) ||
                 (userSellerInformation.getPrivacyPolicyAgreement() == null || !userSellerInformation.getPrivacyPolicyAgreement()) ||
-                StringUtils.isEmpty(userSellerInformation.getImageIdentification()) ||
-                StringUtils.isEmpty(userSellerInformation.getCurp())) {
+                !StringUtils.hasText(userSellerInformation.getImageIdentification()) ||
+                !StringUtils.hasText(userSellerInformation.getCurp())) {
             throw new CustomException("requestBecomeSeller.userSellerInformation.empty");
         }
 

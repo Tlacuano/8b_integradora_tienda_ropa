@@ -4,7 +4,6 @@ import mx.edu.utez.services_clothing_shop.controller.address.dto.*;
 import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.service.address.AddressService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
-import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

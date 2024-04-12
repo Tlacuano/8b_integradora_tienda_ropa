@@ -44,8 +44,4 @@ public class EmailService {
             Logger.getLogger(EmailService.class.getName()).severe("Error al enviar correo: " + e.getMessage());
         }
     }
-
-    ;
-
-
 }

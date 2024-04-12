@@ -108,7 +108,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("message", "Correo o contraseña incorrectos");
         body.put("error", failed.getMessage());
         body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
 
         String json = JsonMapper.builder().build().writeValueAsString(body);
         String encryptedJson = EncryptionFunctions.encryptString(json);

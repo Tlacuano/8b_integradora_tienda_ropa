@@ -4,12 +4,8 @@ import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPerson
 import mx.edu.utez.services_clothing_shop.controller.person.dto.RequestPutPictureDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestCodeDTO;
-import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.person.PersonService;
-import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
-import mx.edu.utez.services_clothing_shop.utils.validations.ValidatesFunctions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

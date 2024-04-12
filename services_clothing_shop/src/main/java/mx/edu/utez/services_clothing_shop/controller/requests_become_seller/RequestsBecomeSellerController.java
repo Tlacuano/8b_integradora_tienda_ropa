@@ -20,7 +20,7 @@ import java.util.UUID;
 public class RequestsBecomeSellerController {
 
     private final RequestsBecomeSellerService requestsBecomeSellerService;
-    private final String ERROR_MESSAGE = "Bad request";
+    private static final String ERRORMESSAGE = "Bad request";
 
     public RequestsBecomeSellerController(RequestsBecomeSellerService requestsBecomeSellerService) {
         this.requestsBecomeSellerService = requestsBecomeSellerService;
@@ -44,7 +44,7 @@ public class RequestsBecomeSellerController {
             requestsBecomeSellerService.putRequestBecomeSeller(requestId, status, rejectionReason);
             return ResponseEntity.ok(new CustomResponse<>("Request updated successfully", "Request updated", false, 200));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(e.getMessage(), ERROR_MESSAGE, true, 400));
+            return ResponseEntity.badRequest().body(new CustomResponse<>(e.getMessage(), ERRORMESSAGE, true, 400));
         }
     }
 
@@ -68,11 +68,11 @@ public class RequestsBecomeSellerController {
     @PostMapping("/get-by-user-email")
     public ResponseEntity<CustomResponse<Object>> getRequestBecomeSellerByUserEmail(@Valid @RequestBody RequestBecomeSellerGetByUserEmailDTO getByUserEmailDTO, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(result.getAllErrors(), ERROR_MESSAGE, true, 400));
+            return ResponseEntity.badRequest().body(new CustomResponse<>(result.getAllErrors(), ERRORMESSAGE, true, 400));
         }
         String email = getByUserEmailDTO.getEmail();
         Boolean exists = requestsBecomeSellerService.existsRequestBecomeSellerByUserEmail(email);
-        if (exists) {
+        if (Boolean.TRUE.equals(exists)) {
             return ResponseEntity.ok(new CustomResponse<>(true, "Request found by email", false, 200));
         } else {
             return ResponseEntity.ok(new CustomResponse<>(false, "Request not found", false, 200));
@@ -82,7 +82,7 @@ public class RequestsBecomeSellerController {
     @PostMapping("/get-page-by-user-email")
     public ResponseEntity<CustomResponse<Object>> getPageRequestBecomeSellerByUserEmail(Pageable page, @Valid @RequestBody RequestBecomeSellerGetByUserEmailDTO getByUserEmailDTO, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(new CustomResponse<>(result.getAllErrors(), ERROR_MESSAGE, true, 400));
+            return ResponseEntity.badRequest().body(new CustomResponse<>(result.getAllErrors(), ERRORMESSAGE, true, 400));
         }
         String email = getByUserEmailDTO.getEmail();
         Page<IRequestsBecomeSeller.RequestBecomeSellerProjection> requestData = requestsBecomeSellerService.getPageRequestBecomeSellerByUserEmail(email, page);

@@ -39,7 +39,7 @@ public class BeanRequestReturnProduct {
 
     //relacion muchos a uno con la tabla de orders has products
     @ManyToOne
-    @JoinColumn(name = "order_has_product") // TODO: Fix column not found
+    @JoinColumn(name = "order_has_product")
     private BeanOrderHasProducts orderHasProduct;
 
     //relacion uno a muchos con la tabla de return product gallery

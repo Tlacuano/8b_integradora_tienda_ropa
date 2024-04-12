@@ -25,8 +25,8 @@ public class PersonService {
     private final IUser userRepository;
     private final SmsService smsService;
     private final EmailService emailService;
-    private final String USER_NOT_FOUND = "user.email.exists";
-    private final String PERSON_NOT_FOUND = "person.not.found";
+    private static final String USER_EMAIL_EXISTS = "user.email.exists";
+    private static final String PERSON_NOT_FOUND = "person.not.found";
 
     public PersonService(IPerson personRepository, IUser userRepository, SmsService smsService, EmailService emailService) {
         this.personRepository = personRepository;
@@ -39,7 +39,7 @@ public class PersonService {
     public ResponseGetPersonalInformationDTO getPersonalInformation(String email) {
         BeanUser user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
@@ -55,7 +55,7 @@ public class PersonService {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         if (!payload.isPrivacyPolicy()) {
@@ -98,7 +98,7 @@ public class PersonService {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
@@ -122,7 +122,7 @@ public class PersonService {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
@@ -145,7 +145,7 @@ public class PersonService {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
@@ -170,7 +170,7 @@ public class PersonService {
     public boolean putPersonalInformation(RequestPutPersonalInformationDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
@@ -214,7 +214,7 @@ public class PersonService {
     public boolean putPicture(RequestPutPictureDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);

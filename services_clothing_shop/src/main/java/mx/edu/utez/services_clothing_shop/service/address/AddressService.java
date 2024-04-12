@@ -18,8 +18,8 @@ import java.util.UUID;
 public class AddressService {
     private final IAddress iAddress;
     private final IAddressStatus iAddressStatus;
-    private final String ADD_NOT_FOUND = "address.idAddress.notfound";
-    private final String STATUS_NOT_FOUND = "status.notfound";
+    private static final String ADDRESS_ID_ADDRESS_NOTFOUND = "address.idAddress.notfound";
+    private static final String STATUS_NOTFOUND = "status.notfound";
 
     public AddressService(IAddress iAddress, IAddressStatus iAddressStatus) {
         this.iAddress = iAddress;
@@ -39,7 +39,7 @@ public class AddressService {
     public BeanAddress getAddress(UUID idAddress) {
         Optional<BeanAddress> optionalBeanAddress = iAddress.findById(idAddress);
         if (optionalBeanAddress.isEmpty()) {
-            throw new CustomException(ADD_NOT_FOUND);
+            throw new CustomException(ADDRESS_ID_ADDRESS_NOTFOUND);
         }
         return optionalBeanAddress.get();
     }
@@ -81,7 +81,7 @@ public class AddressService {
         BeanPerson person = iAddress.findPersonByUserEmail(payload.getEmail()).orElseThrow(() -> new CustomException("person.email.notfound"));
         newAddress.setPerson(person);
 
-        BeanAddressStatus status = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOT_FOUND));
+        BeanAddressStatus status = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
         newAddress.setStatus(status);
 
         return iAddress.saveAndFlush(newAddress);
@@ -92,7 +92,7 @@ public class AddressService {
         //validar que el idAddress exista
         Optional<BeanAddress> optionalBeanAddress = iAddress.findById(payload.getIdAddress());
         if (optionalBeanAddress.isEmpty()) {
-            throw new CustomException(ADD_NOT_FOUND);
+            throw new CustomException(ADDRESS_ID_ADDRESS_NOTFOUND);
         }
         //traer el objeto de la base de datos
         BeanAddress existingAddress = optionalBeanAddress.get();
@@ -126,14 +126,14 @@ public class AddressService {
             List<BeanAddress> currentDefaultAddresses = iAddress.findByStatusAndPersonId("Predeterminada", payload.getIdPerson());
             for (BeanAddress currentDefaultAddress : currentDefaultAddresses) {
                 if (!currentDefaultAddress.getIdAddress().equals(payload.getIdAddress())) {
-                    BeanAddressStatus defaultStatus = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOT_FOUND));
+                    BeanAddressStatus defaultStatus = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
                     currentDefaultAddress.setStatus(defaultStatus);
                     iAddress.save(currentDefaultAddress);
                 }
             }
         }
 
-        BeanAddressStatus newStatus = iAddressStatus.findByStatus(payload.getStatus()).orElseThrow(() -> new CustomException(STATUS_NOT_FOUND));
+        BeanAddressStatus newStatus = iAddressStatus.findByStatus(payload.getStatus()).orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
         addressToUpdate.setStatus(newStatus);
         BeanAddress updatedAddress = iAddress.save(addressToUpdate);
 
@@ -156,7 +156,7 @@ public class AddressService {
     @Transactional
     public ResponseAllAddressDTO deleteAddress(RequestActionByIdDTO payload) {
         UUID idAddress = payload.getIdAddress();
-        BeanAddress address = iAddress.findById(idAddress).orElseThrow(() -> new CustomException(ADD_NOT_FOUND));
+        BeanAddress address = iAddress.findById(idAddress).orElseThrow(() -> new CustomException(ADDRESS_ID_ADDRESS_NOTFOUND));
         iAddress.deleteById(idAddress);
         return mapToResponseAllDTO(new Object[]{address.getAddress(), address.getReferencesAddress(), address.getPostalCode(), address.getState(), address.getStreet(), address.getNeighborhood(), address.getStatus().getIdStatus()});
     }

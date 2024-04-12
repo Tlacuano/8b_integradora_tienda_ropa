@@ -26,7 +26,7 @@ public class OrderHasProductsController {
 
     @PostMapping("/get-orders-has-products-by-order-id")
     public ResponseEntity<Object> getOrdersHasProductsByOrderId(@RequestBody RequestOrderHasProductsByOrderIdDTO requestBody) {
-        List<BeanOrderHasProducts> ordersHasProducts = orderHasProductsService.getOrdersHasProductsByOrder_IdOrder(requestBody.getIdOrder());
+        List<BeanOrderHasProducts> ordersHasProducts = orderHasProductsService.getOrdersHasProductsByOrderIdOrder(requestBody.getIdOrder());
         List<ResponseOrderHasProductsDTO> dtoPage = ordersHasProducts.stream().map(ResponseOrderHasProductsDTO::toOrderHasProductsDTO).toList();
         return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(dtoPage, "Orders has products by id found", false, HttpStatus.OK.value()));
     }

@@ -13,7 +13,6 @@ import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestD
 import mx.edu.utez.services_clothing_shop.model.request_data_change.IRequestsDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,11 +26,11 @@ import java.util.UUID;
 
 @Service
 public class RequestsDataChangeService {
-    private final IRequestsDataChange IRequestsDataChange;
-    private final String REQUEST_NOT_FOUND = "dataChange.requestId.notFound";
+    private final IRequestsDataChange requestsDataChangerepository;
+    private static final String REQUEST_NOT_FOUND = "dataChange.requestId.notFound";
 
-    public RequestsDataChangeService(IRequestsDataChange IRequestsDataChange) {
-        this.IRequestsDataChange = IRequestsDataChange;
+    public RequestsDataChangeService(IRequestsDataChange requestsDataChangerepository) {
+        this.requestsDataChangerepository = requestsDataChangerepository;
     }
 
     @Transactional
@@ -41,11 +40,11 @@ public class RequestsDataChangeService {
         String rejectionReason = requestData.getRejectionReason();
 
         try {
-            BeanRequestDataChange requestDataChange = IRequestsDataChange.findById(requestId)
+            BeanRequestDataChange requestDataChange = requestsDataChangerepository.findById(requestId)
                     .orElseThrow(() -> new CustomException(REQUEST_NOT_FOUND));
 
             if (status != null) {
-                Optional<BeanRequestStatus> requestStatus = IRequestsDataChange.findStatusByStatusName(status);
+                Optional<BeanRequestStatus> requestStatus = requestsDataChangerepository.findStatusByStatusName(status);
                 if (requestStatus.isPresent()) {
                     requestDataChange.setStatus(requestStatus.get());
 
@@ -60,7 +59,7 @@ public class RequestsDataChangeService {
                 requestDataChange.setRejectionReason(rejectionReason);
             }
 
-            IRequestsDataChange.save(requestDataChange);
+            requestsDataChangerepository.save(requestDataChange);
         } catch (CustomException e) {
             throw new CustomException("dataChange.putRequestError");
         }
@@ -107,14 +106,14 @@ public class RequestsDataChangeService {
             throw new CustomException("dataChange.JSON.invalid");
         }
 
-        IRequestsDataChange.insertRequestDataChange(email, newUserInfoJSON);
+        requestsDataChangerepository.insertRequestDataChange(email, newUserInfoJSON);
     }
 
     @Transactional
     public RequestDataChangeIdDTO getRequestByID(UUID idRequestDataChange) {
         try {
 
-            Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(idRequestDataChange);
+            Optional<BeanRequestDataChange> requestDataChangeOptional = requestsDataChangerepository.findById(idRequestDataChange);
 
             if (requestDataChangeOptional.isEmpty()) {
                 throw new CustomException(REQUEST_NOT_FOUND);
@@ -152,7 +151,7 @@ public class RequestsDataChangeService {
 
     @Transactional
     public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChangeWithPersonName(Pageable pageable, String searchTerm) {
-        return IRequestsDataChange.findAllStatusesWithPersonNameAndLastName(pageable, searchTerm);
+        return requestsDataChangerepository.findAllStatusesWithPersonNameAndLastName(pageable, searchTerm);
     }
 
     private Map<String, Object> convertJsonToMap(String json) {
