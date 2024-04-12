@@ -15,45 +15,41 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ReturnProductGalleryService {
     private final IReturnProductGallery iReturnProductGallery;
     private final IRequestsReturnProduct iRequestsReturnProduct;
     private final ErrorDictionary errorDictionary;
-    public ReturnProductGalleryService(IReturnProductGallery iReturnProductGallery, IRequestsReturnProduct iRequestsReturnProduct, ErrorDictionary errorDictionary){
+
+    public ReturnProductGalleryService(IReturnProductGallery iReturnProductGallery, IRequestsReturnProduct iRequestsReturnProduct, ErrorDictionary errorDictionary) {
         this.iReturnProductGallery = iReturnProductGallery;
         this.errorDictionary = errorDictionary;
         this.iRequestsReturnProduct = iRequestsReturnProduct;
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseAllReturnProductGalleryDTO> getReturnProductGalleries(){
+    public List<ResponseAllReturnProductGalleryDTO> getReturnProductGalleries() {
         List<Object[]> returnProductGalleriesData = iReturnProductGallery.findEssentialReturnProductGalleryInfo();
-        if(returnProductGalleriesData.isEmpty()){
-            throw new RuntimeException(errorDictionary.getErrorMessage("returnProductGallery.notfound"));
+        if (returnProductGalleriesData.isEmpty()) {
+            throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.notfound"));
         }
-        return returnProductGalleriesData.stream()
-                .map(this::mapToResponseAllDTO)
-                .collect(Collectors.toList());
-
+        return returnProductGalleriesData.stream().map(this::mapToResponseAllDTO).toList();
     }
 
     @Transactional(readOnly = true)
     public BeanReturnProductGallery getReturnProductGallery(UUID idReturnProductGallery) {
         Optional<BeanReturnProductGallery> optionalBeanReturnProductGallery = iReturnProductGallery.findById(idReturnProductGallery);
-        if(optionalBeanReturnProductGallery.isEmpty()){
-            throw new RuntimeException(errorDictionary.getErrorMessage("returnProductGallery.idReturnProductGallery.notfound"));
+        if (optionalBeanReturnProductGallery.isEmpty()) {
+            throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idReturnProductGallery.notfound"));
         }
         return optionalBeanReturnProductGallery.get();
     }
 
     @Transactional
-    public BeanReturnProductGallery postReturnProductGallery(RequestPostReturnProductGalleryDTO payload){
+    public BeanReturnProductGallery postReturnProductGallery(RequestPostReturnProductGalleryDTO payload) {
         UUID requestReturnProductId = payload.getRequestReturnProductId();
-        BeanRequestReturnProduct requestReturnProduct = iRequestsReturnProduct.findById(requestReturnProductId)
-                .orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idRequestReturnProduct.notfound")));
+        BeanRequestReturnProduct requestReturnProduct = iRequestsReturnProduct.findById(requestReturnProductId).orElseThrow(() -> new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idRequestReturnProduct.notfound")));
 
         BeanReturnProductGallery newReturnProduct = new BeanReturnProductGallery();
         newReturnProduct.setImage(payload.getImage());
@@ -66,7 +62,7 @@ public class ReturnProductGalleryService {
     @Transactional
     public BeanReturnProductGallery putReturnProductGallery(RequestPutImageReturnProductGalleryDTO payload) {
         Optional<BeanReturnProductGallery> optionalBeanReturnProductGallery = iReturnProductGallery.findById(payload.getIdImage());
-        if(optionalBeanReturnProductGallery.isEmpty()){
+        if (optionalBeanReturnProductGallery.isEmpty()) {
             throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idImage.notfound"));
         }
         BeanReturnProductGallery existingReturnProductGallery = optionalBeanReturnProductGallery.get();
@@ -76,14 +72,14 @@ public class ReturnProductGalleryService {
 
     @Transactional
     public void deleteReturnProductGallery(UUID idImage) {
-        if(iReturnProductGallery.existsById(idImage)){
+        if (iReturnProductGallery.existsById(idImage)) {
             iReturnProductGallery.deleteById(idImage);
         } else {
             throw new CustomException(errorDictionary.getErrorMessage("returnProductGallery.idImage.notfound"));
         }
     }
 
-    public ResponseAllReturnProductGalleryDTO mapToResponseAllDTO(Object[] row){
+    public ResponseAllReturnProductGalleryDTO mapToResponseAllDTO(Object[] row) {
         ResponseAllReturnProductGalleryDTO responseDTO = new ResponseAllReturnProductGalleryDTO();
         responseDTO.setImage((String) row[0]);
         responseDTO.setRequestReturnProductId((UUID) row[1]);

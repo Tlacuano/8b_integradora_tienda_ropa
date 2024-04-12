@@ -4,7 +4,6 @@ import mx.edu.utez.services_clothing_shop.controller.review.dto.*;
 import mx.edu.utez.services_clothing_shop.model.review.BeanReview;
 import mx.edu.utez.services_clothing_shop.service.review.ReviewService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
-import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +39,7 @@ public class ReviewController {
             );
     }
 
-    @PutMapping("/put-review")
+    @PostMapping("/put-review")
     public ResponseEntity<Object> putReview(@Validated @RequestBody RequestPutReviewDTO payload){
             BeanReview updatedReview = reviewService.putReview(payload);
             return new ResponseEntity<>(
@@ -49,12 +48,12 @@ public class ReviewController {
             );
     }
 
-    @DeleteMapping("/delete-review")
+    @PostMapping("/delete-review")
     public ResponseEntity<Object> deleteReview(@Validated @RequestBody RequestDeleteReview payload){
             reviewService.deleteReview(payload.getIdReview());
             return new ResponseEntity<>(
-                    new CustomResponse<>(null, "Review deleted successfully", false, 204),
-                    HttpStatus.NO_CONTENT
+                    new CustomResponse<>(true, "Review deleted successfully", false, 204),
+                    HttpStatus.OK
             );
     }
 

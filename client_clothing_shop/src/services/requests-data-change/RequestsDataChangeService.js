@@ -10,7 +10,6 @@ const getPageRequestsDataChangeService = async (pagination, searchTerm = '') => 
         const response = await axios.doGet(`/venta-ropa/api/requests-data-change/get-page?size=${size}&page=${page - 1}&searchTerm=${searchTerm}`);
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
@@ -21,7 +20,6 @@ const getRequestDataChangeByIdService = async (idRequestDataChange) => {
         });
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
@@ -30,7 +28,6 @@ const putRequestDataChangeService = async (requestData) => {
         const response = await axios.doPut('/venta-ropa/api/requests-data-change/put-request-data-change', requestData);
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 

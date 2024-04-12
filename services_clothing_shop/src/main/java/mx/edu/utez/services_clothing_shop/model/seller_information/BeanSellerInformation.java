@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanSellerInformation {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy=GenerationType.UUID)
     private UUID idSellerInformation;
 
     @Column(name = "tax_identification_number", length = 20)

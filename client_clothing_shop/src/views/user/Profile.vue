@@ -82,7 +82,7 @@
 
         <b-row v-if="user.buyer || user.seller" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToMyPaymentCards">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -184,7 +184,7 @@
 
         <b-row v-if="user.seller" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" @click="redirectToMySell">
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -201,7 +201,7 @@
 
         <b-row class="mt-5">
           <b-col class="text-center">
-            <b-button v-if="user.buyer && !user.seller" class="main-button" @click="openFormBecomeSeller" style="width: 60%">
+            <b-button v-if="user.buyer && !user.seller" class="main-button" @click="validIfUserHasRequest" style="width: 60%">
               Comenzar a vender!!
             </b-button>
           </b-col>
@@ -219,6 +219,8 @@
 
 <script>
 import UserService from "@/services/user/userService";
+import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
+import {showWarningToast} from "@/components/alerts/alerts";
 
 export default {
   name: 'UserDetails',
@@ -258,9 +260,25 @@ export default {
     redirectToAddresses() {
       this.$router.push({ name: 'BuyerAddressManagement' });
     },
-    openFormBecomeSeller() {
-      this.$bvModal.show('formBecomeSellerModal');
-    }
+    redirectToMySell(){
+      this.$router.push({name: 'SalesHistory'});
+    },
+    redirectToMyPaymentCards() {
+      this.$router.push({ name: 'MyPaymentCards' });
+    },
+    async validIfUserHasRequest() {
+      const email = this.$store.getters.getEmail;
+
+      const response = await RequestsBecomeSellerService.getRequestByUserEmailService(email);
+
+      if (response) {
+        showWarningToast("Ya has enviado una solicitud. Por favor espera a que sea revisada.");
+      } else if(response !== null){
+        this.$bvModal.show('formBecomeSellerModal');
+      } else {
+        showWarningToast("Ha ocurrido un error, por favor intenta más tarde.");
+      }
+    },
   },
   mounted() {
     this.getProfile();

@@ -5,7 +5,6 @@ const getSubcategoriesByCategory = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/subcategories/get-by-category", payload);
         return response.data;
     } catch (e) {
-        console.error(e);
     }
 }
 
@@ -15,7 +14,6 @@ const getPageSubcategoriesService = async (pagination) => {
         const response = await axios.doGet(`/venta-ropa/api/subcategories/get-subcategories?size=${size}&page=${page - 1}`);
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
@@ -24,7 +22,15 @@ const postSubcategoryService = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/subcategories/post-subcategory", payload);
         return response.data;
     } catch (e) {
-        console.log(e);
+    }
+}
+
+const getPageSubcategoriesBySubcategoryService = async (payload, pagination) => {
+    try {
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/subcategories/get-subcategories-by-subcategory?size=${size}&page=${page - 1}`, payload);
+        return response.data;
+    } catch (e) {
     }
 }
 
@@ -33,7 +39,6 @@ const putSubcategoryService = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/subcategories/put-subcategory", payload);
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
@@ -44,13 +49,13 @@ const putStatusSubcategoryService = async (subcategory) => {
         });
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
 export default {
     getSubcategoriesByCategory,
     getPageSubcategoriesService,
+    getPageSubcategoriesBySubcategoryService,
     postSubcategoryService,
     putSubcategoryService,
     putStatusSubcategoryService

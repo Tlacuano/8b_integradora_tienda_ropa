@@ -25,23 +25,15 @@ public class TransactionController {
     }
 
     @PostMapping("/create-checkout-session")
-    public ResponseEntity<CustomResponse<Object>> createCheckoutSession(@RequestBody RequestTransactionDTO requestTransactionDTO) {
-        try {
-            List<ResponseShoppingCartDTO> shoppingCart = shoppingCartServices.findShoppingCartsByUserEmail(requestTransactionDTO.getEmail());
-            ResponseTransactionSessionDTO responseTransactionSessionDTO = new ResponseTransactionSessionDTO(transactionService.createCheckoutSession(shoppingCart, requestTransactionDTO.getEmail(), requestTransactionDTO.getIdAddress(), requestTransactionDTO.getIdPaymentCard()));
-            return ResponseEntity.ok(new CustomResponse<>(responseTransactionSessionDTO, "Sesión de pago creada", false, 200));
-        } catch (StripeException e) {
-            return ResponseEntity.ok(new CustomResponse<>(null, "Error al crear la sesión de pago: " + e.getMessage(), true, 500));
-        }
+    public ResponseEntity<CustomResponse<Object>> createCheckoutSession(@RequestBody RequestTransactionDTO requestTransactionDTO) throws StripeException {
+        List<ResponseShoppingCartDTO> shoppingCart = shoppingCartServices.findShoppingCartsByUserEmail(requestTransactionDTO.getEmail());
+        ResponseTransactionSessionDTO responseTransactionSessionDTO = new ResponseTransactionSessionDTO(transactionService.createCheckoutSession(shoppingCart, requestTransactionDTO.getEmail(), requestTransactionDTO.getIdAddress(), requestTransactionDTO.getIdPaymentCard()));
+        return ResponseEntity.ok(new CustomResponse<>(responseTransactionSessionDTO, "Sesión de pago creada", false, 200));
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<CustomResponse<Object>> fulfillOrder(@RequestHeader("Stripe-Signature") String stripeSignature, @RequestBody String payload) {
-        try {
-            transactionService.fulfillOrder(stripeSignature, payload);
-        } catch (StripeException e) {
-            return ResponseEntity.ok(new CustomResponse<>(null, "Error al procesar el webhook: " + e.getMessage(), true, 500));
-        }
+    public ResponseEntity<CustomResponse<Object>> fulfillOrder(@RequestHeader("Stripe-Signature") String stripeSignature, @RequestBody String payload) throws StripeException {
+        transactionService.fulfillOrder(stripeSignature, payload);
         return ResponseEntity.ok(new CustomResponse<>(null, "Webhook received", false, 200));
     }
 }

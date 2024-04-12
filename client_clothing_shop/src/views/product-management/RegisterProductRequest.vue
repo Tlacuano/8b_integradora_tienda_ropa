@@ -1,9 +1,319 @@
 <template>
-  <h1>Registro</h1>
+  <section class="interface">
+    <b-row class="mb-4">
+      <b-col class="text-center">
+        <h1>Registrar solicitud de producto</h1>
+      </b-col>
+    </b-row>
+    <b-form @submit.prevent="onSubmit()">
+      <b-row>
+        <b-col lg="6">
+          <b-row>
+            <b-col>
+              <b-form-group label="Nombre" label-for="name">
+                <b-form-input
+                    name="name"
+                    v-validate="'required|alpha_spaces|product_name_max'"
+                    v-model="formData.productName"
+                    id="name"
+                ></b-form-input>
+                <span style="color: red;">{{ errors.first('name') }}</span>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
+                <b-form-select  name="category" v-model="category" v-validate="'required'" id="category-select" @change="updateSubcategories">
+                  <option v-for="(category, index) in categories" :key="index" :value="category.category">
+                    {{ category.category }}
+                  </option>
+                </b-form-select>
+                <span style="color: red;">{{ errors.first('category') }}</span>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group label="Subcategoria" label-for="subcategory-select">
+                <b-form-select :disabled="!category" name="subcategory" v-model="formData.subcategory" v-validate="'required'" id="subcategory-select">
+                  <option v-for="(subcategory, index) in filteredSubcategories" :key="index" :value="subcategory.idSubcategory">
+                    {{ subcategory.subcategory }}
+                  </option>
+                </b-form-select>
+                <span style="color: red;">{{ errors.first('subcategory') }}</span>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group label="Descripción: " label-for="description">
+                <b-form-textarea name="description" v-model="formData.description" v-validate="'required|alpha_spaces|description_min|description_max'"
+                                 id="description"></b-form-textarea>
+              </b-form-group>
+              <span style="color: red;">{{ errors.first('description') }}</span>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group label="Precio: " label-for="price">
+                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required'"
+                              type="number"></b-form-input>
+              </b-form-group>
+              <span style="color: red;">{{ errors.first('price') }}</span>
+            </b-col>
+            <b-col>
+              <b-form-group label="Stock:" label-for="stock">
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required'"
+                              type="number"></b-form-input>
+                <span style="color: red;">{{ errors.first('stock') }}</span>
+              </b-form-group>
+            </b-col>
+          </b-row>
+
+
+        </b-col>
+        <b-col class="" lg="6">
+          <b-row>
+            <b-col>
+              <b-form-group label="Selecciona hasta 4 imágenes">
+                <b-form-file
+                    v-on:change="handleImageUpload2"
+                    v-validate="'image:2000000|image|image_size'"
+                    name="images"
+                    placeholder=""
+                    browse-text="Búscar"
+                    accept="image/*"></b-form-file>
+                <span style="color: red;">{{ errors.first('images') }}</span>
+              </b-form-group>
+
+              <b-col class="preview-container">
+                <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
+                  <div class="placeholder-content">Preview</div>
+                </div>
+                <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
+                  <img :src="imagePreview" alt="Preview"/>
+                  <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
+                </div>
+              </b-col>
+            </b-col>
+          </b-row>
+          {{formData.productGallery}}
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="12" class="mt-5">
+          <b-row class="text-right">
+            <b-col>
+              <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
+              <b-button variant="outline-dark" class="btn-cancel">Cancelar</b-button>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
+    </b-form>
+  </section>
 </template>
 <script>
+import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
+import ProductManagementService from "@/services/product-management/ProductManagementService";
+import CategoryService from "@/services/category/CategoryService";
+import SubcategoryService from "@/services/subcategory/SubcategoryService";
+import {required} from "vee-validate/dist/rules.esm";
+import CloudinaryService from "@/services/cloudinary/CloudinaryService";
+import ProductService from "@/services/product/ProductService";
+import UserService from "@/services/user/userService";
+import RequestSellerProduct from "@/services/request-seller-product/RequestSellerProduct";
 
+export default {
+
+  data() {
+    return {
+      imageUrl: null,
+      selectedImages: [],
+      imagePreviews: [],
+      formData: {
+        productName: '',
+        email:'',
+        amount: 0,
+        status: false,
+        subcategory:'',
+        description: '',
+        price: 0,
+        productGallery: []
+      },
+      i: 0,
+      filteredSubcategories: [],
+      newImages: null,
+      newPrincipalImage: null,
+      optionsStatus: [
+        {value: true, text: "Habilitado"},
+        {value: false, text: "Deshabilitado"}
+      ],
+      categories: null,
+      subcategories: [],
+      category:null
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$validator.validate().then(async valid => {
+        if (!valid) {
+          showWarningToast("Completar los requisitos")
+        } else {
+          const response = await ProductManagementService.postProduct(this.formData)
+          const idProduct = response.data.idProduct
+          if(response){
+            const request = await RequestSellerProduct.postRequestSell({idProduct:idProduct})
+            showSuccessToast("Producto creado")
+          }
+        }
+      })
+    },
+
+    handleImageUpload2(event) {
+      const files = event.target.files;
+      if (files.length + this.imagePreviews.length > 5) {
+        showWarningToast("No puedes cargar más de 5 imágenes");
+        return;
+      }
+      if (files.length === 0 && this.imagePreviews.length === 0) {
+        showWarningToast("Debes cargar al menos una imagen");
+        return;
+      }
+
+      if(files[0].size > 2000000){
+        showWarningToast("La imagen no puede pesar más de 2MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        this.imagePreviews.push(e.target.result);
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    removeImage(index) {
+      this.imagePreviews.splice(index, 1);
+      if (this.formData.productGallery.length > 2) {
+        this.formData.productGallery.splice(index, 1);
+      }
+      if (this.imagePreviews.length === 0) {
+        showWarningToast("Debes cargar al menos una imagen");
+      }
+    },
+    async getProfile(){
+      const email = this.$store.getters.getEmail
+      const response = await UserService.getProfileService({email:email})
+      this.formData.user = response.data.idUser
+    },
+    async getCategories() {
+      const response = await CategoryService.getCategories()
+      this.categories = response.data.content
+      await this.getSubcategories(5)
+    },
+    async getSubcategories(pagination) {
+      const response = await SubcategoryService.getPageSubcategoriesService(pagination)
+      this.subcategories = response.data.content
+      this.updateSubcategories()
+    },
+    showOverlay() {
+      this.$store.dispatch('changeStatusOverlay');
+    },
+    updateSubcategories() {
+      this.filteredSubcategories = this.subcategories
+          .filter(subcategory => subcategory.category === this.category)
+          .map(subcategory => ({ idSubcategory: subcategory.idSubcategory, subcategory: subcategory.subcategory }));
+    }
+  },
+  computed: {
+    required() {
+      return required
+    },
+  },
+  mounted() {
+    this.getCategories()
+    this.getProfile()
+  },
+
+}
 </script>
-<style >
+<style>
+.btn-success {
+  width: 150px;
+}
 
+.btn-cancel {
+  width: 150px;
+}
+
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.image-preview {
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.principal-image img {
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #fff;
+  border: 1px solid #c0bebe;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.placeholder-content {
+  color: #c0bebe;
+}
+
+.principal-image {
+  width: 250px;
+  height: 300px;
+  background-color: #fff;
+  border: 1px solid #c0bebe;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-radius: 5px;
+  color: red;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.image-preview:hover .delete-button {
+  opacity: 1;
+}
 </style>

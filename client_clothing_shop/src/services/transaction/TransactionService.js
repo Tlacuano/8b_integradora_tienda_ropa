@@ -5,7 +5,6 @@ const createCheckoutSession = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/transactions/create-checkout-session", payload);
         return response.data;
     } catch (e) {
-        console.error(e);
     }
 }
 

@@ -6,11 +6,22 @@
       </b-col>
     </b-row>
 
+    <b-row class="mt-4" align-h="between">
+      <b-col cols="12" lg="4">
+        <b-form-group>
+          <div class="position-relative">
+            <b-form-input @input="getPageRequests" v-model="search" id="search" type="text" placeholder="Buscar..."  class="pr-5"/>
+            <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
+          </div>
+        </b-form-group>
+      </b-col>
+    </b-row>
+
     <b-row class="mt-3 container-requests">
       <b-col>
         <b-row>
           <b-col lg="4" v-for="(request, index) in requests" :key="index">
-            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request.idRequestBecomeSeller)">
+            <b-card no-body class="highlight-on-hover mb-2 selectable" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request.idRequestBecomeSeller)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
                   <b-avatar
@@ -20,7 +31,7 @@
                   />
                 </b-col>
 
-                <b-col cols="8" class="ml-2">
+                <b-col cols="auto" class="ml-2">
                   <b-row>
                     <b-col>
                       <div class="text-truncate font-weight-bold small"> {{ request.userEmail }}</div>
@@ -31,11 +42,9 @@
                       <div class="text-ellipsis text-secondary small"> {{ request.personName + ' ' + request.personLastName + ' ' + request.personSecondLastName }}</div>
                     </b-col>
                   </b-row>
-                  <b-row>
-                    <b-col>
-                      <b-badge :variant="getVariant(request.status.status)" class="text-ellipsis text-white small">{{ request.status.status }}</b-badge>
-                    </b-col>
-                  </b-row>
+                </b-col>
+                <b-col class="text-right align-content-center">
+                  <b-badge :variant="getVariant(request.status.status)" class="text-ellipsis text-white small" style="margin-right: 5%;">{{ request.status.status }}</b-badge>
                 </b-col>
               </b-row>
             </b-card>
@@ -51,6 +60,7 @@
             :total-rows="objectPagination.elements"
             :per-page="objectPagination.size"
             aria-controls="my-table"
+            @change="getPageRequests"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -72,21 +82,28 @@ export default Vue.extend({
     return {
       objectPagination: {
         page: 1,
-        size: 24,
+        size: 10,
         elements: 0
       },
       requests: [],
       selectedRequest: "",
+      search: null
     }
   },
   methods: {
-    async getPageRequests() {
-      this.showOverlay();
-      const response = await RequestsBecomeSellerService.getPageRequestsService(this.objectPagination);
-      this.showOverlay();
-
-      this.objectPagination.elements = response.totalElements;
-      this.requests = response.content;
+    async getPageRequests(page) {
+      this.objectPagination.page = page;
+      if (this.search === null || this.search === "")   {
+        this.showOverlay();
+        const response = await RequestsBecomeSellerService.getPageRequestsService(this.objectPagination);
+        this.showOverlay();
+        this.objectPagination.elements = response.totalElements;
+        this.requests = response.content;
+      } else {
+        const response = await RequestsBecomeSellerService.getPageRequestsByUserEmailService(this.search, this.objectPagination);
+        this.objectPagination.elements = response.totalElements;
+        this.requests = response.content;
+      }
     },
 
     getVariant(status) {
@@ -125,7 +142,7 @@ export default Vue.extend({
 
 <style scoped>
 .container-requests {
-  height: 65vh !important;
+  height: calc(100vh - 270px);
   overflow-x: hidden;
 }
 </style>

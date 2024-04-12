@@ -46,9 +46,9 @@
           </b-col>
         </b-row>
 
-        <b-row class="mt-1">
+        <b-row class="mt-1" v-if="user.roles.includes('ROLE_SELLER')">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)">
+            <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)" >
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>
@@ -452,7 +452,6 @@ export default {
       this.user.sellerInformation.taxIdentificationNumber = response.data.taxIdentificationNumber;
       this.user.sellerInformation.blockSell = response.data.blockSell;
 
-      console.log(this.user)
       this.showOverlay()
     },
 

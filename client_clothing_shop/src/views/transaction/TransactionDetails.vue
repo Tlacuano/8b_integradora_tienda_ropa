@@ -193,7 +193,7 @@ export default {
       const shippingDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
       const formatOptions = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
       return shippingDate.toLocaleDateString('es-ES', formatOptions).replace(/^\w/, c => c.toUpperCase());
-    }
+    },
   },
 
   methods: {
@@ -208,6 +208,9 @@ export default {
         this.shoppingCart = response.data;
         this.totalProducts = response.data.reduce((acumulado, producto) => acumulado + producto.amount, 0);
         this.total = this.calculateTotal(response.data);
+      }
+      if (this.shoppingCart.length === 0) {
+        await this.$router.push({name: 'Home'});
       }
     },
 
@@ -239,6 +242,7 @@ export default {
     },
 
     async createCheckoutSession() {
+      this.showOverlay();
       const payload = {
         total: this.total,
         description: `Orden de ${this.totalProducts} artículos`,
@@ -248,8 +252,10 @@ export default {
       };
       const response = await TransactionService.createCheckoutSession(payload);
       if (response.status === 200) {
-        window.open(response.data.transactionUrl)
+        await this.$store.dispatch('prepareForReload')
+        window.location.href = response.data.transactionUrl;
       }
+      this.showOverlay();
     },
 
     calculateTotal(products) {
@@ -278,6 +284,9 @@ export default {
   },
 
   mounted() {
+    if (!this.$store.getters.isLoggedIn) {
+      this.$router.push({name: 'Login'});
+    }
     this.getShoppingCartProducts();
     this.getUserAddresses();
     this.getUserPaymentCards();

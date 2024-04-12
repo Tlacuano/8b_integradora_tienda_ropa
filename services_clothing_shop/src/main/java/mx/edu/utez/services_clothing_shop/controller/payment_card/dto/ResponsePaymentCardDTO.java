@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.controller.payment_card.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
+import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ public class ResponsePaymentCardDTO {
         ResponsePaymentCardDTO dto = new ResponsePaymentCardDTO();
         dto.setIdPaymentCard(paymentCard.getIdPaymentCard());
         dto.setCardholderName(paymentCard.getCardholderName());
-        dto.setCardNumber(paymentCard.getCardNumber());
-        dto.setExpirationDate(paymentCard.getExpirationDate());
+        dto.setCardNumber(EncryptionFunctions.decryptString(paymentCard.getCardNumber()));
+        dto.setExpirationDate(EncryptionFunctions.decryptString(paymentCard.getExpirationDate()));
         dto.setStatus(paymentCard.getStatus().getStatus());
         return dto;
     }

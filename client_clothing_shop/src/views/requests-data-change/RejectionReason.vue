@@ -75,7 +75,6 @@ export default {
                 this.$emit('close-main-modal');
                 showSuccessToast('Éxito', 'La solicitud ha sido rechazada exitosamente');
               } catch (error) {
-                console.error("Error al rechazar la solicitud de cambio de datos:", error);
               } finally {
                 this.isLoading = false;
               }

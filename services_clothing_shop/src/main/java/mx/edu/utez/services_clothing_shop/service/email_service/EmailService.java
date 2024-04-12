@@ -37,15 +37,11 @@ public class EmailService {
                 helper.setSubject(asunt);
                 String html = Structure.email(title, mensaje, boldMessage);
 
-
                 helper.setText(html, true);
                 emailSender.send(message);
             }
         } catch (MessagingException e) {
             Logger.getLogger(EmailService.class.getName()).severe("Error al enviar correo: " + e.getMessage());
         }
-    };
-
-
-
+    }
 }

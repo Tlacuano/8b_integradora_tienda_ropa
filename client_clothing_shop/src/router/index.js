@@ -63,6 +63,12 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["BUYER"] },
                 },
                 {
+                  path: "my-payment-cards",
+                  name: "MyPaymentCards",
+                  component: () => import("../views/payment-card/MyPaymentCards.vue"),
+                    meta: { requiresAuth: true, roles: ["BUYER"] },
+                },
+                {
                     name:"ShoppingCart",
                     path:"shopping-cart",
                     component: () => import("../views/shopping-cart/ShoppingCart.vue"),
@@ -127,13 +133,6 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["SELLER"] },
                 },
                 {
-                    path: "product-details",
-                    name: "ProductDetails",
-                    component: () => import("../views/product-management/ViewProductDetails.vue"),
-                    meta: { requiresAuth: true, roles: ["SELLER"] },
-                    props:true
-                },
-                {
                     path:"product-sale",
                     name:"ProductSale",
                     component: () => import("../views/product-management/ViewProductSales.vue"),
@@ -156,6 +155,12 @@ const router = new VueRouter({
                     path:"register-product-request",
                     name:"RegisterProductRequest",
                     component: () => import("../views/product-management/RegisterProductRequest.vue"),
+                    meta: { requiresAuth: true, roles: ["SELLER"] },
+                },
+                {
+                    path:"sales-history",
+                    name:"SalesHistory",
+                    component: () => import("../views/sales-history/SalesHistory.vue"),
                     meta: { requiresAuth: true, roles: ["SELLER"] },
                 },
                 {
@@ -208,7 +213,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     const {requiresAuth, roles} = to.meta;
-    const isAuthenticated = store.getters.isLoggedIn || localStorage.getItem("token") ? true : false;
+    const isAuthenticated = !!(store.getters.isLoggedIn || localStorage.getItem("token"));
     const role = store.getters.getRole || localStorage.getItem("role");
 
     const verifiedIncomplete = localStorage.getItem("verified");

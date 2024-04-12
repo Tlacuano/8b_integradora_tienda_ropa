@@ -86,7 +86,7 @@
 import Vue from "vue";
 import CloudinaryService from "@/services/cloudinary/CloudinaryService";
 import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
-import {showInfoAlert, showWarningToast} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "FormBecomeSellerModal",
@@ -130,9 +130,9 @@ export default Vue.extend({
 
                   const response = await RequestsBecomeSellerService.postRequestBecomeSellerService(payload);
 
-                  if (response.status === 200) {
+                  if (response === 200) {
                     this.closeModal();
-                    showWarningToast("Solicitud enviada correctamente");
+                    showSuccessToast("Solicitud enviada correctamente");
                   } else {
                     showWarningToast("Error al enviar la solicitud");
                   }
@@ -186,6 +186,7 @@ export default Vue.extend({
   border: 2px solid #ced4da;
   border-radius: 5px;
   max-height: 25rem;
+  margin-top: 30%;
 }
 
 .image-container {

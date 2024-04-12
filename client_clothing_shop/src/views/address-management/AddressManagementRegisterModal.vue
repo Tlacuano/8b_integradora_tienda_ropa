@@ -134,7 +134,6 @@ export default {
           throw new Error('La respuesta no tiene el estado esperado.');
         }
       } catch (error) {
-        console.error("Error al registrar la dirección:", error);
         showWarningToast('Error', 'No se pudo registrar la dirección');
       }
     },

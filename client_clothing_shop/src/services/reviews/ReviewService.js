@@ -25,9 +25,29 @@ const postReviewService = async (payload) => {
     }
 }
 
+const deleteReviewService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/reviews/delete-review`, payload);
+        return response.data
+    }catch (e){
+
+    }
+}
+
+const putReviewService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/reviews/put-review`, payload);
+        return response.data
+    }catch (e){
+
+    }
+}
+
 
 export default {
     getReviewsByProductIdService,
     getComprobatToReviewService,
-    postReviewService
+    postReviewService,
+    deleteReviewService,
+    putReviewService
 }

@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.model.review;
 
-import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

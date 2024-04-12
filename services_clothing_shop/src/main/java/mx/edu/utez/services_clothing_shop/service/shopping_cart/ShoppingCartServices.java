@@ -44,7 +44,7 @@ public class ShoppingCartServices {
                 for (BeanShoppingCart cart : shoppingCart) {
                     shoppingCartDTOs.add(ResponseShoppingCartDTO.fromShoppingCart(cart));
                 }
-                return shoppingCartDTOs;
+                return  shoppingCartDTOs;
             } else {
                 throw new CustomException("shoppingCart.notfound");
             }
@@ -68,7 +68,16 @@ public class ShoppingCartServices {
             throw new CustomException("shoppingCart.product.exists");
         }
 
-        if(!product.isStatus() || product.getAmount() == 0){
+        boolean status = true;
+
+        for (int i = 0; i < product.getRequestSellProduct().size(); i++) {
+            if (!product.getRequestSellProduct().get(i).getStatus().getStatus().equals("Aprobado")) {
+                status = false;
+                break;
+            }
+        }
+
+        if(!product.isStatus() || product.getAmount() == 0 || !status){
             throw new CustomException("shoppingCart.product.invalidate");
         }
 

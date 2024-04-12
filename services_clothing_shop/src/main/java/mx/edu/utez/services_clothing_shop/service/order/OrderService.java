@@ -25,6 +25,10 @@ public class OrderService {
         return orderRepository.findAllOrdersForAdmin(page);
     }
 
+    public Page<IOrder.OrderProjection> getOrdersByOrderNumber(String orderNumber, Pageable page) {
+        return orderRepository.findAllOrdersForAdminByOrderNumber(orderNumber, page);
+    }
+
     @Transactional
     public IOrder.OrderDetailsProjection getOrderDetailsByIdOrder(UUID idOrder) {
         return orderRepository.findOrderDetailsByIdOrder(idOrder);
@@ -37,8 +41,7 @@ public class OrderService {
 
     @Transactional(rollbackOn = Exception.class)
     public void postOrder(RequestPostOrderDTO order) {
-        order.setOrderNumber(orderNumberGenerator());
-        orderRepository.postOrder(order.getIdUser().toString(), order.getOrderDate(), order.getIdAddress().toString(), order.getIdPaymentCard().toString(), order.getOrderNumber());
+        orderRepository.sp_post_order(order.getIdUser().toString(), order.getOrderDate(), order.getIdAddress().toString(), order.getIdPaymentCard().toString(), order.getOrderNumber());
     }
 
     @Transactional

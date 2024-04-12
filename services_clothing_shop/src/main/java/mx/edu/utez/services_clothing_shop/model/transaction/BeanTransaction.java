@@ -8,7 +8,6 @@ import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.transaction_status.BeanTransactionStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
@@ -20,8 +19,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanTransaction {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy=GenerationType.UUID)
     @Column(name = "id_transaction", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idTransaction;
 
@@ -51,4 +49,14 @@ public class BeanTransaction {
     @ManyToOne
     @JoinColumn(name = "fk_id_status")
     private BeanTransactionStatus status;
+
+    public BeanTransaction(String id, double total, BeanUser user, BeanOrder order, BeanTransactionStatus status, String paymentStatus, String checkoutStatus) {
+        this.idSession = id;
+        this.total = total;
+        this.user = user;
+        this.order = order;
+        this.status = status;
+        this.paymentStatus = paymentStatus;
+        this.checkoutStatus = checkoutStatus;
+    }
 }

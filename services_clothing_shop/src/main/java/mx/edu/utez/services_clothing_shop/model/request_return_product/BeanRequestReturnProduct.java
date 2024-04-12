@@ -8,7 +8,6 @@ import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasP
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,8 +20,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanRequestReturnProduct {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy=GenerationType.UUID)
     @Column(name = "id_request_return_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idRequestReturnProduct;
 
@@ -39,7 +37,7 @@ public class BeanRequestReturnProduct {
 
     //relacion muchos a uno con la tabla de orders has products
     @ManyToOne
-    @JoinColumn(name = "order_has_product") // TODO: Fix column not found
+    @JoinColumn(name = "order_has_product")
     private BeanOrderHasProducts orderHasProduct;
 
     //relacion uno a muchos con la tabla de return product gallery

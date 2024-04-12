@@ -8,4 +8,5 @@ public class RequestsReturnProductPutDTO {
     private UUID requestId;
     private String status;
     private String rejectionReason;
+    private String email;
 }

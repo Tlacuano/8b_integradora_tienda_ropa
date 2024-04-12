@@ -13,7 +13,6 @@ import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestD
 import mx.edu.utez.services_clothing_shop.model.request_data_change.IRequestsDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +26,11 @@ import java.util.UUID;
 
 @Service
 public class RequestsDataChangeService {
-    private final IRequestsDataChange IRequestsDataChange;
+    private final IRequestsDataChange requestsDataChangerepository;
+    private static final String REQUEST_NOT_FOUND = "dataChange.requestId.notFound";
 
-    public RequestsDataChangeService(IRequestsDataChange IRequestsDataChange) {
-        this.IRequestsDataChange = IRequestsDataChange;
+    public RequestsDataChangeService(IRequestsDataChange requestsDataChangerepository) {
+        this.requestsDataChangerepository = requestsDataChangerepository;
     }
 
     @Transactional
@@ -40,11 +40,11 @@ public class RequestsDataChangeService {
         String rejectionReason = requestData.getRejectionReason();
 
         try {
-            BeanRequestDataChange requestDataChange = IRequestsDataChange.findById(requestId)
-                    .orElseThrow(() -> new CustomException("dataChange.requestId.notFound"));
+            BeanRequestDataChange requestDataChange = requestsDataChangerepository.findById(requestId)
+                    .orElseThrow(() -> new CustomException(REQUEST_NOT_FOUND));
 
             if (status != null) {
-                Optional<BeanRequestStatus> requestStatus = IRequestsDataChange.findStatusByStatusName(status);
+                Optional<BeanRequestStatus> requestStatus = requestsDataChangerepository.findStatusByStatusName(status);
                 if (requestStatus.isPresent()) {
                     requestDataChange.setStatus(requestStatus.get());
 
@@ -59,7 +59,7 @@ public class RequestsDataChangeService {
                 requestDataChange.setRejectionReason(rejectionReason);
             }
 
-            IRequestsDataChange.save(requestDataChange);
+            requestsDataChangerepository.save(requestDataChange);
         } catch (CustomException e) {
             throw new CustomException("dataChange.putRequestError");
         }
@@ -106,21 +106,29 @@ public class RequestsDataChangeService {
             throw new CustomException("dataChange.JSON.invalid");
         }
 
-        IRequestsDataChange.insertRequestDataChange(email, newUserInfoJSON);
+        requestsDataChangerepository.insertRequestDataChange(email, newUserInfoJSON);
     }
 
+    @Transactional
     public RequestDataChangeIdDTO getRequestByID(UUID idRequestDataChange) {
-        Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(idRequestDataChange);
+        try {
 
-        if (requestDataChangeOptional.isPresent()) {
+            Optional<BeanRequestDataChange> requestDataChangeOptional = requestsDataChangerepository.findById(idRequestDataChange);
+
+            if (requestDataChangeOptional.isEmpty()) {
+                throw new CustomException(REQUEST_NOT_FOUND);
+            }
+
             BeanRequestDataChange requestDataChange = requestDataChangeOptional.get();
             Map<String, Object> newUserInformationMap = convertJsonToMap(requestDataChange.getNewUserInformation());
 
             BeanUser user = requestDataChange.getUser();
             BeanPerson person = user.getPerson();
-            String genderAsString = person != null ? person.getGender().toString() : null;
+            if (person == null) {
+                throw new CustomException("dataChange.personNotFound");
+            }
 
-
+            String genderAsString = person.getGender().toString();
 
             return new RequestDataChangeIdDTO(
                     requestDataChange.getIdRequestDataChange(),
@@ -128,30 +136,29 @@ public class RequestsDataChangeService {
                     requestDataChange.getRejectionReason(),
                     user.getEmail(),
                     requestDataChange.getStatus().getStatus(),
-                    person != null ? person.getIdPerson() : null,
-                    person != null ? person.getName() : null,
-                    person != null ? person.getLastName() : null,
-                    person != null ? person.getSecondLastName() : null,
-                    person != null ? person.getBirthday() : null,
-                    person != null ? person.getPhoneNumber() : null,
+                    person.getIdPerson(),
+                    person.getName(),
+                    person.getLastName(),
+                    person.getSecondLastName(),
+                    person.getBirthday(),
+                    person.getPhoneNumber(),
                     genderAsString
             );
-        } else {
-            throw new CustomException("dataChange.requestId.notFound");
+        } catch (CustomException e) {
+            throw new CustomException(REQUEST_NOT_FOUND);
         }
     }
 
-
     @Transactional
     public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChangeWithPersonName(Pageable pageable, String searchTerm) {
-        return IRequestsDataChange.findAllStatusesWithPersonNameAndLastName(pageable, searchTerm);
+        return requestsDataChangerepository.findAllStatusesWithPersonNameAndLastName(pageable, searchTerm);
     }
-
 
     private Map<String, Object> convertJsonToMap(String json) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+            });
         } catch (JsonProcessingException e) {
             throw new CustomException("dataChange.JSON.invalid");
         }

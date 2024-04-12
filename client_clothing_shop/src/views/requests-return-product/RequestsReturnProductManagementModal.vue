@@ -57,8 +57,8 @@ ok-only
 
   <b-row class="mt-4">
     <b-col class="text-right action-buttons">
-      <b-button class="btn-accept mr-2" @click="acceptRequestReturnProduct" v-if="request.status !== 'Aprobado' && request.status !== 'Rechazado'">Aprobar</b-button>
-      <b-button variant="danger" @click="openRejectionModal(request.requestId)" v-if="request.status !== 'Aprobado' && request.status !== 'Rechazado'">Rechazar</b-button>
+      <b-button class="btn-accept mr-2" @click="acceptRequestReturnProduct" v-if="!isStatusFinal">Aprobar</b-button>
+      <b-button variant="danger" @click="openRejectionModal(request.requestId)" v-if="!isStatusFinal">Rechazar</b-button>
     </b-col>
   </b-row>
 
@@ -66,8 +66,11 @@ ok-only
       @request-success="handleRequestSuccess"
       @request-error="handleRequestError"
       :selected-request-id="selectedRequestId"
+      :request-id="request.idRequestReturnProduct"
+      :user-email="request.email"
       @rejection-submitted="handleRejection"
       @close-main-modal="closeMainModal"
+      @rejection-completed="closeAllModals"
   />
 </b-container>
 </b-modal>
@@ -83,7 +86,8 @@ export default{
   name: "RequestsReturnProductManagementModal",
   components: {RejectionReason},
   props: {
-    requestId: String
+    requestId: String,
+    requestStatus: String,
   },
   data() {
     return {
@@ -101,10 +105,8 @@ export default{
         if (response && response.data && response.data.idRequestReturnProduct) {
           this.request = response.data;
         } else {
-          console.error("La respuesta no contiene datos válidos o la propiedad esperada:", response);
         }
       } catch (error) {
-        console.error("Error al obtener la solicitud de devolución de producto:", error);
       }
     },
     async modalClosed() {
@@ -135,7 +137,55 @@ export default{
 closeMainModal() {
       this.$bvModal.hide('requestReturnProductModal');
     },
+
+    async acceptRequestReturnProduct() {
+      showInfoAlert(
+          'Confirmación',
+          '¿Estás seguro de que quieres aprobar esta solicitud?',
+          'Aceptar',
+          async () => {
+            try {
+              const requestData = {
+                requestId: this.request.idRequestReturnProduct,
+                status: 'Aprobado',
+                rejectionReason: '',
+                email: this.request.email
+              };
+              const response = await RequestsReturnProductService.putRequestReturnProductStatusService(requestData);
+              if (response && response.data && response.data.status === 'Aprobado') {
+                showSuccessToast('La solicitud de devolución ha sido aprobada');
+                this.request.status = 'Aprobado';
+                this.$emit('approval-completed');
+                this.$bvModal.hide('requestReturnProductModal');
+              } else {
+              }
+            } catch (error) {
+              swal.fire({
+                button: 'Aceptar',
+                icon: 'error',
+                text: 'Ocurrió un error al procesar la petición',
+                title: 'Error'
+              });
+            }
+          }
+      );
+    },
+
+    openRejectionModal(requestId) {
+      this.selectedRequestId = requestId;
+      this.$bvModal.show('rejectionReasonModal');
+    },
+    closeAllModals() {
+      this.$bvModal.hide('rejectionReasonModal');
+      this.$bvModal.hide('requestReturnProductModal');
+      window.location.reload();
+    },
+    },
+  computed: {
+    isStatusFinal() {
+      return this.requestStatus === 'Aprobado' || this.requestStatus === 'Rechazado';
     }
+  }
 }
 </script>
 

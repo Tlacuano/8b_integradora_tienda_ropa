@@ -3,11 +3,16 @@
     <b-modal id="detailsRequestModal" hide-header hide-footer centered size="lg" @show="getRequest">
       <b-container>
         <b-row>
-          <b-col>
-            <h3 class="modal-title">Información del solicitante</h3>
+          <b-col class="text-right">
+            <font-awesome-icon icon="times" class="text-secondary selectable" @click="$bvModal.hide('detailsRequestModal')"/>
           </b-col>
         </b-row>
-        <b-row>
+        <b-row class="text-center">
+          <b-col>
+            <h1>Información del solicitante</h1>
+          </b-col>
+        </b-row>
+        <b-row class="my-4">
           <b-col class="modal-info">
             <ul>
               <li><strong>Nombre:</strong> {{ request.personName }}</li>
@@ -61,7 +66,10 @@
               placeholder="Escribe aquí la razón de rechazo"
               rows="3"
               max-rows="6"
+              v-validate="'required|max:255'"
+              name="rejectionReason"
           />
+          <span v-show="errors.has('rejectionReason')" class="text-danger">{{ errors.first('rejectionReason') }}</span>
         </b-col>
       </b-row>
       <b-row class="justify-content-center mt-2 mb-2">
@@ -75,7 +83,7 @@
 <script>
 import Vue from 'vue';
 import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
-import {showInfoAlert} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "DetailsRequestModal",
@@ -97,26 +105,31 @@ export default Vue.extend({
     },
 
     async putStatusRequest(status) {
-      await showInfoAlert(
-          "¿Estás seguro de cambiar el estado de la solicitud?",
-          "Esta acción no se puede deshacer",
-          "Cambiar",
-          async () => {
-            const payload = {
-              idRequestBecomeSeller: this.idRequest,
-              rejectionReason: this.rejectionReason,
-              status: status
-            }
-            await RequestsBecomeSellerService.putStatusRequestService(payload);
+      await this.$validator.validateAll().then(async result => {
+        if (result) {
+          await showInfoAlert(
+              "¿Estás seguro de cambiar el estado de la solicitud?",
+              "Esta acción no se puede deshacer",
+              "Cambiar",
+              async () => {
+                const payload = {
+                  idRequestBecomeSeller: this.idRequest,
+                  rejectionReason: this.rejectionReason,
+                  status: status
+                }
+                await RequestsBecomeSellerService.putStatusRequestService(payload);
 
-            this.$emit('request-updated');
-            this.$bvModal.hide('detailsRequestModal');
-            if (status === "Rechazado") {
-              this.rejectionReason = null;
-              this.$bvModal.hide('rejectionReasonModal');
-            }
-          }
-      )
+                this.$emit('request-updated');
+                showSuccessToast("Estado de la solicitud actualizado correctamente")
+                this.$bvModal.hide('detailsRequestModal');
+                if (status === "Rechazado") {
+                  this.rejectionReason = null;
+                  this.$bvModal.hide('rejectionReasonModal');
+                }
+              }
+          )
+        }
+      });
     },
 
     openReasonModal() {

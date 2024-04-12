@@ -5,10 +5,20 @@ const MESSAGE_ACCEPTED = "¡Felicidades! Tu solicitud para ser vendedor ha sido 
 
 const getPageRequestsService = async (pagination) => {
     try {
-        const response = await axios.doGet("/venta-ropa/api/requests-become-seller/get-page", {
-            pagination
-        })
+        const { page, size } = pagination;
+        const response = await axios.doGet(`/venta-ropa/api/requests-become-seller/get-page?size=${size}&page=${page - 1}`)
         return response.data
+    } catch (e) {
+    }
+}
+
+const getPageRequestsByUserEmailService = async (email, pagination) => {
+    try {
+        const { page, size } = pagination;
+        const response = await axios.doPost(`/venta-ropa/api/requests-become-seller/get-page-by-user-email?size=${size}&page=${page - 1}`, {
+            email: email
+        })
+        return response.data.data;
     } catch (e) {
     }
 }
@@ -23,13 +33,23 @@ const getRequestByIdService = async (request) => {
     }
 }
 
+const getRequestByUserEmailService = async (email) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/requests-become-seller/get-by-user-email", {
+            email: email
+        })
+        return response.data.data;
+    } catch (e) {
+    }
+}
+
 const postRequestBecomeSellerService = async (payload) => {
     try {
         const response = await axios.doPost("/venta-ropa/api/requests-become-seller/post-request-become-seller", {
             email: payload.email,
             userSellerInformation: payload.userSellerInformation
         })
-        return response.data.data;
+        return response.data.status;
     } catch (e) {
     }
 }
@@ -51,6 +71,8 @@ const putStatusRequestService = async (payload) => {
 export default {
     getPageRequestsService,
     getRequestByIdService,
+    getPageRequestsByUserEmailService,
+    getRequestByUserEmailService,
     postRequestBecomeSellerService,
     putStatusRequestService
 }

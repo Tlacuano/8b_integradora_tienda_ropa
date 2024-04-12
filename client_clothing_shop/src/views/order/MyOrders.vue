@@ -139,8 +139,7 @@ export default {
     seeDetails(order, product){
       this.OrderSelected = order
       this.ProductSelected = product
-      console.log(this.OrderSelected)
-      console.log(this.ProductSelected)
+      this.orderNumberForReturn = order.orderNumber;
       this.$root.$emit('bv::show::modal', 'my-order-details-modal');
     },
 
@@ -156,7 +155,7 @@ export default {
       const price = new Big(product.product.price);
       const quantity = new Big(product.amount);
       return price.times(quantity);
-    }
+    },
   },
   mounted() {
     this.getOrders();

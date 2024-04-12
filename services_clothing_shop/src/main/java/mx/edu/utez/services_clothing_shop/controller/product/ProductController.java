@@ -6,7 +6,6 @@ import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImagePr
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.product.ProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
@@ -94,21 +93,7 @@ public class ProductController {
 
     @PostMapping("/post-product")
     public ResponseEntity<Object> postProduct(@Valid @RequestBody RequestProductDTO product) {
-        BeanProduct newProduct = new BeanProduct();
-        try {
-            parseToBeanProduct(newProduct, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
-            BeanUser user = new BeanUser();
-            user.setIdUser(product.getUser());
-            newProduct.setUser(user);
-            newProduct.setStatus(product.isStatus());
-            List<String> images = new ArrayList<>(product.getProductGallery());
-            newProduct = productService.postProduct(newProduct, images);
-            return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
-        } catch (Exception e) {
-            productService.deleteProductGallery(newProduct);
-            productService.deleteProduct(newProduct.getIdProduct());
-            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al registrar el producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+       return new ResponseEntity<>(new CustomResponse<>(productService.postProduct(product), "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
     }
 
     @PutMapping("/put-product")
