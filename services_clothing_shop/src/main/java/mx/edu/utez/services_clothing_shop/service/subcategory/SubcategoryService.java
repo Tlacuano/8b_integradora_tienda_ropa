@@ -1,6 +1,5 @@
 package mx.edu.utez.services_clothing_shop.service.subcategory;
 
-import mx.edu.utez.services_clothing_shop.controller.subcategory.dto.ResponseSubcategoryNameDTO;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.model.subcategory.ISubCategory;
 import org.springframework.data.domain.Page;
