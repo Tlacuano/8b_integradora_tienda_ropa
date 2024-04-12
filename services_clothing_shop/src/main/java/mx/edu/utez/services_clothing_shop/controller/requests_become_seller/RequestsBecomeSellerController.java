@@ -59,7 +59,7 @@ public class RequestsBecomeSellerController {
         RequestBecomeSellerGetByIdResponseDTO requestData = requestsBecomeSellerService.getRequestBecomeSellerById(requestId).orElse(null);
 
         if (requestData != null) {
-            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
+            return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found by id", false, 200));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Request not found", true, 404));
         }
@@ -73,7 +73,7 @@ public class RequestsBecomeSellerController {
         String email = getByUserEmailDTO.getEmail();
         Boolean exists = requestsBecomeSellerService.existsRequestBecomeSellerByUserEmail(email);
         if (exists) {
-            return ResponseEntity.ok(new CustomResponse<>(true, "Request found", false, 200));
+            return ResponseEntity.ok(new CustomResponse<>(true, "Request found by email", false, 200));
         } else {
             return ResponseEntity.ok(new CustomResponse<>(false, "Request not found", false, 200));
         }
@@ -86,6 +86,6 @@ public class RequestsBecomeSellerController {
         }
         String email = getByUserEmailDTO.getEmail();
         Page<IRequestsBecomeSeller.RequestBecomeSellerProjection> requestData = requestsBecomeSellerService.getPageRequestBecomeSellerByUserEmail(email, page);
-        return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found", false, 200));
+        return ResponseEntity.ok(new CustomResponse<>(requestData, "Request found by email (page)", false, 200));
     }
 }
