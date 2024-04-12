@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,8 +18,6 @@ public interface IPaymentCard extends JpaRepository<BeanPaymentCard, UUID> {
     boolean existsByCardNumberAndUser_Email(String cardNumber, String email);
 
     void deleteByCardNumberAndUser_Email(String cardNumber, String email);
-
-    boolean existsByCardNumberAndUser_IdUser(String cardNumber, UUID idUser);
 
     @Query(value = "CALL sp_put_payment_card_status(:p_id_card, :p_status);", nativeQuery = true)
     Map<String, Object> putPaymentCardStatus(
