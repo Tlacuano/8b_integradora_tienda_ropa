@@ -2,7 +2,6 @@ package mx.edu.utez.services_clothing_shop.controller.order_has_products.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.services_clothing_shop.model.order.BeanOrder;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 

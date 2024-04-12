@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.controller.user.dto;
 
 import lombok.Data;
-import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 
 import java.time.LocalDate;

@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.model.request_data_change;
 
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

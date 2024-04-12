@@ -13,7 +13,6 @@ import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestD
 import mx.edu.utez.services_clothing_shop.model.request_data_change.IRequestsDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
-import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

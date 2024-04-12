@@ -2,14 +2,12 @@ package mx.edu.utez.services_clothing_shop.service.requests_sell_product;
 
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestDetailsDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;

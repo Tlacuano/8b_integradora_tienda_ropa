@@ -1,11 +1,8 @@
 package mx.edu.utez.services_clothing_shop.controller.requests_sell_product;
 
 
-import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.*;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
-import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.service.requests_sell_product.RequestsSellProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
