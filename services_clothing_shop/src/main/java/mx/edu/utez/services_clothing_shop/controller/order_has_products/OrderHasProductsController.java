@@ -28,13 +28,13 @@ public class OrderHasProductsController {
     public ResponseEntity<Object> getOrdersHasProductsByOrderId(@RequestBody RequestOrderHasProductsByOrderIdDTO requestBody) {
         List<BeanOrderHasProducts> ordersHasProducts = orderHasProductsService.getOrdersHasProductsByOrder_IdOrder(requestBody.getIdOrder());
         List<ResponseOrderHasProductsDTO> dtoPage = ordersHasProducts.stream().map(ResponseOrderHasProductsDTO::toOrderHasProductsDTO).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(dtoPage, "Orders has products found", false, HttpStatus.OK.value()));
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse<>(dtoPage, "Orders has products by id found", false, HttpStatus.OK.value()));
     }
 
     @PostMapping("/get-orders-has-products-by-buyer")
     public ResponseEntity<Object> getOrdersHasProductsByBuyer(@RequestBody RequestComprobationToReviewDTO requestBody) {
         return new ResponseEntity<>(
-                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsByBuyer(requestBody), "Order has products found", false, HttpStatus.OK.value()),
+                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsByBuyer(requestBody), "Order has products by buyer found", false, HttpStatus.OK.value()),
                 HttpStatus.OK
         );
     }
@@ -42,7 +42,7 @@ public class OrderHasProductsController {
     @PostMapping("/get-orders-has-products-by-seller-and-status")
     public ResponseEntity<Object> getOrdersHasProductsBySeller(@RequestBody RequestGetPageSalesDTO requestBody, Pageable pageable) {
         return new ResponseEntity<>(
-                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsBySeller(requestBody, pageable), "Order has products found", false, HttpStatus.OK.value()),
+                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsBySeller(requestBody, pageable), "Order has products by seller and status found", false, HttpStatus.OK.value()),
                 HttpStatus.OK
         );
     }
@@ -50,7 +50,7 @@ public class OrderHasProductsController {
     @PostMapping("/get-orders-has-products-by-seller-and-order-number")
     public ResponseEntity<Object> getOrdersHasProductsBySellerAndOrderNumber(@RequestBody RequestGetPageSalesDTO requestBody, Pageable pageable) {
         return new ResponseEntity<>(
-                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsBySellerAndNumber(requestBody, pageable), "Order has products found", false, HttpStatus.OK.value()),
+                new CustomResponse<>(orderHasProductsService.getOrdersHasProductsBySellerAndNumber(requestBody, pageable), "Order has products by seller and order number found", false, HttpStatus.OK.value()),
                 HttpStatus.OK
         );
     }
