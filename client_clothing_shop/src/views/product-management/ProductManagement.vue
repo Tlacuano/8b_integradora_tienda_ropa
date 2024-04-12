@@ -121,7 +121,6 @@
         const email = this.$store.getters.getEmail
         const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
         this.items = response.data.content
-        console.log(response.data.content)
         this.objectPagination.elements = response.totalElements
       },
       async putStatusProduct(idProduct){
@@ -130,7 +129,6 @@
           showSuccessToast("Estado del producto actualizado")
           this.getProductByUser()
               .then(product => {
-                console.log("Éxito");
               })
               .catch(error => {
               });

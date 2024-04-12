@@ -123,7 +123,6 @@ export default {
           throw new Error('La respuesta no tiene el estado esperado.');
         }
       } catch (error) {
-        console.error("Error al guardar los cambios de la dirección:", error);
         showWarningToast('Error', 'No se pudo actualizar la dirección');
       }
     },

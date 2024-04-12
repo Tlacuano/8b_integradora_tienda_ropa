@@ -141,7 +141,7 @@ export default {
 
     async getOrders(){
       this.showOverlay();
-      if(this.search.length === ''){
+      if(this.search.length === '' || !this.search){
         const payload ={
           email: this.$store.getters.getEmail,
           status: this.statusSelected
@@ -156,7 +156,6 @@ export default {
         this.orders = response.data.content;
         this.objetPagination.elements = response.data.totalElements;
       }else{
-        console.log("debio entrar aqui", this.search);
         const payload ={
           email: this.$store.getters.getEmail,
           orderNumber: this.search
@@ -165,8 +164,6 @@ export default {
           page: this.objetPagination.page,
           size: this.objetPagination.size
         }
-
-        console.log(payload);
 
         const response = await OrderService.getOrdersBySellerAndNumberService(payload, pagination);
 

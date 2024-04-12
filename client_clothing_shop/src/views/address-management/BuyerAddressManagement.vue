@@ -83,7 +83,6 @@ export default {
         const response = await AddressService.getAddressByEmailService(email);
         this.addresses = response.data
       } catch (error) {
-        console.error("Error al obtener direcciones:", error);
       }
     },
     async deleteAddress(idAddress) {
@@ -92,7 +91,6 @@ export default {
         showSuccessToast('Éxito', 'Dirección deshabilitada correctamente');
         this.fetchAddresses();  // Recargar las direcciones para reflejar los cambios
       } catch (error) {
-        console.error("Error al deshabilitar la dirección:", error);
         showWarningToast('Error', 'No se pudo deshabilitar la dirección');
       }
     },
@@ -107,7 +105,6 @@ export default {
         showSuccessToast('Éxito', 'Dirección marcada como predeterminada');
         this.fetchAddresses();
       } catch (error) {
-        console.error("Error al marcar como predeterminada:", error);
         showWarningToast('Error', 'No se pudo marcar como predeterminada');
       }
     },
@@ -117,7 +114,6 @@ export default {
         showSuccessToast('Éxito', 'Dirección habilitada correctamente');
         this.fetchAddresses();
       } catch (error) {
-        console.error("Error al habilitar la dirección:", error);
         showWarningToast('Error', 'No se pudo habilitar la dirección');
       }
     },

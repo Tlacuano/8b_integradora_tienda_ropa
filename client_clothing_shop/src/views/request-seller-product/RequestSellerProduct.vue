@@ -100,7 +100,6 @@ export default {
         this.showOverlay()
         const response = await ProductSalesRequestsService.getPageProductSalesRequests(this.objectPagination)
         this.showOverlay()
-        console.log(response)
         this.objectPagination.elements = response.totalElements
         this.products = response.content;
       }else{

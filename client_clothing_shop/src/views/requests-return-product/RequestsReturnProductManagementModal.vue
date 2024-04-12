@@ -105,10 +105,8 @@ export default{
         if (response && response.data && response.data.idRequestReturnProduct) {
           this.request = response.data;
         } else {
-          console.error("La respuesta no contiene datos válidos o la propiedad esperada:", response);
         }
       } catch (error) {
-        console.error("Error al obtener la solicitud de devolución de producto:", error);
       }
     },
     async modalClosed() {
@@ -160,10 +158,8 @@ closeMainModal() {
                 this.$emit('approval-completed');
                 this.$bvModal.hide('requestReturnProductModal');
               } else {
-                console.error("La respuesta no contiene datos válidos o la propiedad esperada:", response);
               }
             } catch (error) {
-              console.error("Error al aprobar la solicitud de devolución:", error);
               swal.fire({
                 button: 'Aceptar',
                 icon: 'error',

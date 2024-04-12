@@ -198,11 +198,9 @@ export default {
     async getProduct() {
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
       this.productGallery = response.data.productGallery
-      console.log(this.productGallery)
       this.data = response.data
       if(this.data !==null){
         const getReviews = await ProductManagementService.getReviews({idProduct:this.idProduct})
-        console.log(getReviews)
         this.reviews = getReviews.data
       }
     },
@@ -212,7 +210,6 @@ export default {
         showSuccessToast("Estado del producto actualizado")
         this.getProduct()
             .then(product => {
-              console.log("Éxito");
             })
             .catch(error => {
             });

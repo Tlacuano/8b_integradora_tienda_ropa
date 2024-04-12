@@ -374,7 +374,7 @@ export default {
 
         this.$validator.validate('codePhone')
       ]).then(async (result) => {
-        console.log(result)
+
         if (result.every(e => e)) {
           const payload = {
             email: this.form.user.email,
