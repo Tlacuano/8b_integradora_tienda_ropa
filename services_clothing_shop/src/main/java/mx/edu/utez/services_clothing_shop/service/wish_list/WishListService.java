@@ -2,13 +2,11 @@ package mx.edu.utez.services_clothing_shop.service.wish_list;
 
 
 import com.cloudinary.utils.StringUtils;
-import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.RequestPostWishList;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
 
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product.IProduct;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
@@ -30,14 +28,11 @@ public class WishListService {
     private final IWishList wishListRepository;
     private final IProduct productRepository;
     private final IUser userRepository;
-    private final EmailService emailService;
 
-    public WishListService(IWishList wishListRepository,IProduct productRepository, IUser userRepository, EmailService emailService) {
+    public WishListService(IWishList wishListRepository,IProduct productRepository, IUser userRepository) {
         this.wishListRepository = wishListRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
-        this.emailService = emailService;
-
     }
 
 
