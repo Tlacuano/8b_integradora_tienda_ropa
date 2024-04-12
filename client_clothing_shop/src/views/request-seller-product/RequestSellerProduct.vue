@@ -19,7 +19,7 @@
       <b-col>
         <b-row>
           <b-col lg="3" md="4" sm="6" v-for="product in products" :key="product.id" >
-            <b-card no-body class="highlight-on-hover mb-2" @click="openModal(product)">
+            <b-card no-body class="highlight-on-hover mb-2 selectable" @click="openModal(product)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-none d-md-block my-auto">
                   <b-avatar

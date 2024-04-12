@@ -7,6 +7,8 @@ import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishL
 
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product.IProduct;
+import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
+import mx.edu.utez.services_clothing_shop.model.user.IUser;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.model.wish_list.IWishList;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
@@ -25,10 +27,12 @@ import static mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns
 public class WishListService {
     private final IWishList wishListRepository;
     private final IProduct productRepository;
+    private final IUser userRepository;
 
-    public WishListService(IWishList wishListRepository, IProduct productRepository) {
+    public WishListService(IWishList wishListRepository,IProduct productRepository, IUser userRepository) {
         this.wishListRepository = wishListRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -52,33 +56,24 @@ public class WishListService {
     }
 
     @Transactional
-    public ResponseWishListDTO saveWishList(BeanWishList wishList) {
-        if (wishList == null) {
-            throw new CustomException("wishList.notnull");
-        } else if (wishList.getIdWish() != null) {
-            throw new CustomException("wishList.id.automatic");
-        } else if (wishList.getAmount() <= 0) {
-            throw new CustomException("shoppingCart.amount.notnull");
-        } else if (wishList.getProduct().getIdProduct() == null) {
-            throw new CustomException("wishList.product.notnull");
-        } else if (wishList.getUser().getIdUser() == null) {
-            throw new CustomException("wishList.user.notnull");
-        } else {
-            BeanProduct product = productRepository.findByIdProduct(wishList.getProduct().getIdProduct());
-            if (product == null) {
-                throw new CustomException("wishList.product.notExists");
-            }
-            int amount = product.getAmount();
-            if (wishList.getAmount() > amount) {
-                throw new CustomException("wishList.amount.error");
-            }
-            List<BeanWishList> existingWishList = wishListRepository.findByProduct_idProductAndUser_idUser(wishList.getProduct().getIdProduct(), wishList.getUser().getIdUser());
-            if (!existingWishList.isEmpty()) {
-                throw new CustomException("wishList.product.exists");
-            }
-            BeanWishList response = wishListRepository.save(wishList);
-            return ResponseWishListDTO.fromWishList(response);
+    public ResponseWishListDTO saveWishList(String email, UUID idProduct) {
+
+        BeanUser user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new CustomException("wishLists.user.notnull");
         }
+
+        BeanProduct product = productRepository.findByIdProduct(idProduct);
+        if (product == null) {
+            throw new CustomException("wishLists.product.notnull");
+        }
+
+        BeanWishList wish = new BeanWishList();
+        wish.setAmount(1);
+        wish.setProduct(product);
+        wish.setUser(user);
+        BeanWishList response = wishListRepository.save(wish);
+        return ResponseWishListDTO.fromWishList(response);
     }
 
     @Transactional
