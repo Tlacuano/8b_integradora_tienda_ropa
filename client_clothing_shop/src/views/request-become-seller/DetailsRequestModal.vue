@@ -3,11 +3,16 @@
     <b-modal id="detailsRequestModal" hide-header hide-footer centered size="lg" @show="getRequest">
       <b-container>
         <b-row>
-          <b-col>
-            <h3 class="modal-title">Información del solicitante</h3>
+          <b-col class="text-right">
+            <font-awesome-icon icon="times" class="text-secondary selectable" @click="$bvModal.hide('detailsRequestModal')"/>
           </b-col>
         </b-row>
-        <b-row>
+        <b-row class="text-center">
+          <b-col>
+            <h1>Información del solicitante</h1>
+          </b-col>
+        </b-row>
+        <b-row class="my-4">
           <b-col class="modal-info">
             <ul>
               <li><strong>Nombre:</strong> {{ request.personName }}</li>
