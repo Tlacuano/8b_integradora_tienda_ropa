@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class AddressService {
@@ -33,7 +32,7 @@ public class AddressService {
         if (addressesData.isEmpty()) {
             throw new CustomException("addresses.notfound");
         }
-        return addressesData.stream().map(this::mapToResponseAllDTO).collect(Collectors.toList());
+        return addressesData.stream().map(this::mapToResponseAllDTO).toList();
     }
 
     @Transactional
@@ -51,7 +50,7 @@ public class AddressService {
         if (addresses.isEmpty()) {
             throw new CustomException("addresses.notfound");
         }
-        return addresses.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return addresses.stream().map(this::convertToDTO).toList();
     }
 
     private ResponseGetAddressesByEmailDTO convertToDTO(BeanAddress address) {
