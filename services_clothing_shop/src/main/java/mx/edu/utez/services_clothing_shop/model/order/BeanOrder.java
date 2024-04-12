@@ -8,7 +8,6 @@ import mx.edu.utez.services_clothing_shop.model.address.BeanAddress;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.BeanOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,8 +21,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanOrder {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy=GenerationType.UUID)
     @Column(name = "id_order", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idOrder;
 

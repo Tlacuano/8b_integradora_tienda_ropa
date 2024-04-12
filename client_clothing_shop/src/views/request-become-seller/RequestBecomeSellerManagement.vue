@@ -21,7 +21,7 @@
       <b-col>
         <b-row>
           <b-col lg="4" v-for="(request, index) in requests" :key="index">
-            <b-card no-body class="highlight-on-hover mb-2" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request.idRequestBecomeSeller)">
+            <b-card no-body class="highlight-on-hover mb-2 selectable" style="border-radius: 0.7rem;" @click="openDetailsRequestModal(request.idRequestBecomeSeller)">
               <b-row class="m-2" no-gutters>
                 <b-col cols="auto" class="d-done d-md-block px-2 my-auto">
                   <b-avatar

@@ -23,7 +23,7 @@
               </b-button>
             </div>
           </div>
-          <div class="card-item card-add" @click="addCard">
+          <div class="card-item card-add" @click="openAddCardModal">
             <div class="card-add-icon">
               <font-awesome-icon icon="plus-circle" />
             </div>
@@ -32,6 +32,7 @@
         </div>
       </b-col>
     </b-row>
+    <AddCardModal @cardAdded="refreshCards"/>
     <EditCardModal :paymentCard="selectedPaymentCard" />
   </section>
 </template>
@@ -43,12 +44,13 @@ import PaymentCardService from "@/services/payment-card/PaymentCardService";
 export default Vue.extend({
   name: "MyPaymentCards",
   components: {
+    AddCardModal: () => import("@/views/payment-card/AddCardModal.vue"),
     EditCardModal: () => import("@/views/payment-card/EditCardModal.vue")
   },
   data() {
     return {
       paymentCards: [],
-      selectedPaymentCard: ""
+      selectedPaymentCard: {}
     }
   },
   methods: {
@@ -56,7 +58,9 @@ export default Vue.extend({
       const payload = {
         email: this.$store.getters.getEmail
       };
+      this.showOverlay()
       const response = await PaymentCardService.getPaymentCardsByUserEmail(payload);
+      this.showOverlay()
       if (response.status === 200) {
         this.paymentCards = response.data.content;
       }
@@ -67,7 +71,10 @@ export default Vue.extend({
         this.$bvModal.show("editCardModal");
       });
     },
-    addCard() {
+    openAddCardModal() {
+      this.$nextTick(() => {
+        this.$bvModal.show("addCardModal");
+      });
     },
     typeCard(cardNumber) {
       const firstDigit = cardNumber.charAt(0);
@@ -84,6 +91,12 @@ export default Vue.extend({
     },
     getLastFourDigits(cardNumber) {
       return cardNumber.slice(-4);
+    },
+    showOverlay() {
+      this.$store.dispatch('changeStatusOverlay')
+    },
+    refreshCards() {
+      this.getUserPaymentCards()
     }
   },
   mounted() {

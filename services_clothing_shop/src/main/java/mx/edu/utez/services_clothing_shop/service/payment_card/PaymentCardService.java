@@ -2,6 +2,8 @@ package mx.edu.utez.services_clothing_shop.service.payment_card;
 
 
 import jakarta.transaction.Transactional;
+import mx.edu.utez.services_clothing_shop.model.card_status.BeanCardStatus;
+import mx.edu.utez.services_clothing_shop.model.card_status.ICardStatus;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.payment_card.IPaymentCard;
 import org.springframework.data.domain.Page;
@@ -14,9 +16,11 @@ import java.util.UUID;
 @Service
 public class PaymentCardService {
     private final IPaymentCard paymentCardRepository;
+    private final ICardStatus cardStatusRepository;
 
-    public PaymentCardService(IPaymentCard paymentCardRepository) {
+    public PaymentCardService(IPaymentCard paymentCardRepository, ICardStatus cardStatusRepository) {
         this.paymentCardRepository = paymentCardRepository;
+        this.cardStatusRepository = cardStatusRepository;
     }
 
     @Transactional(rollbackOn = {Exception.class})
@@ -25,7 +29,14 @@ public class PaymentCardService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public BeanPaymentCard postPaymentCard(BeanPaymentCard paymentCard) {
+    public BeanPaymentCard postPaymentCard(BeanPaymentCard paymentCard, Integer count) {
+        BeanCardStatus cardStatus;
+        if (count == 0) {
+            cardStatus = cardStatusRepository.findByStatus("PREDETERMINADA");
+        } else {
+            cardStatus = cardStatusRepository.findByStatus("HABILITADA");
+        }
+        paymentCard.setStatus(cardStatus);
         return paymentCardRepository.saveAndFlush(paymentCard);
     }
 
@@ -50,7 +61,7 @@ public class PaymentCardService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public boolean cardIsRegistered(String cardNumber, UUID idUser) {
-        return paymentCardRepository.existsByCardNumberAndUser_IdUser(cardNumber, idUser);
+    public boolean cardIsRegistered(String cardNumber, String email) {
+        return paymentCardRepository.existsByCardNumberAndUser_Email(cardNumber, email);
     }
 }
