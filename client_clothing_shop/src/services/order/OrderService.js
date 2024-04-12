@@ -1,7 +1,4 @@
 import axios from "../../config/http-client.gateway";
-import {decryptData} from "@/utils/security/aes";
-
-const error = 'Ocurrió un error inesperado, por favor inténtelo más tarde';
 
 const getPageOrdersService = async (pagination) => {
     try {
@@ -35,7 +32,6 @@ const getOrdersByEmailService = async (payload, pagination) => {
 const getOrderDetailsByIdOrderService = async (payload) => {
     try {
         const response = await axios.doPost("/venta-ropa/api/orders/get-order-details", payload);
-        response.data.data.cardNumber = decryptData(response.data.data.cardNumber);
         return response.data.data;
     } catch (e) {
     }

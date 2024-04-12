@@ -7,13 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestPaymentCardDTO {
-    private UUID idPaymentCard;
     @NotBlank(message = "payment.cardholderName.notnull")
     private String cardholderName;
     @NotBlank(message = "payment.cardNumber.notnull")
@@ -27,6 +24,6 @@ public class RequestPaymentCardDTO {
     @Pattern(regexp = "\\d{3}", message = "payment.cvv.invalid")
     @Size(min = 3, max = 4, message = "payment.cvv.size")
     private String cvv;
-    private UUID idUser;
-    private UUID idStatus;
+    @NotBlank(message = "user.email.notnull")
+    private String email;
 }

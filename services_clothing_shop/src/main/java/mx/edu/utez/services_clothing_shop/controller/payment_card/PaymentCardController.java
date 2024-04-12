@@ -6,6 +6,7 @@ import mx.edu.utez.services_clothing_shop.model.card_status.BeanCardStatus;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.payment_card.PaymentCardService;
+import mx.edu.utez.services_clothing_shop.service.user.UserService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
@@ -15,6 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @RestController
@@ -22,9 +27,11 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class PaymentCardController {
     private final PaymentCardService paymentCardService;
+    private final UserService userService;
 
-    public PaymentCardController(PaymentCardService paymentCardService) {
+    public PaymentCardController(PaymentCardService paymentCardService, UserService userService) {
         this.paymentCardService = paymentCardService;
+        this.userService = userService;
     }
 
     @PostMapping("/get-payment-card-by-user-email")
@@ -35,16 +42,19 @@ public class PaymentCardController {
     }
 
     @PostMapping("/post-payment-card")
-    public ResponseEntity<CustomResponse<ResponsePaymentCardDTO>> postPaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) {
-        if (paymentCardService.cardIsRegistered(paymentCard.getCardNumber(), paymentCard.getIdUser())) {
+    public ResponseEntity<CustomResponse<ResponsePaymentCardDTO>> postPaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) throws UnsupportedEncodingException {
+        if (paymentCardService.cardIsRegistered(paymentCard.getCardNumber(), paymentCard.getEmail())) {
             throw new CustomException("payment.card.registered");
         }
-        BeanPaymentCard beanPaymentCard = getBeanPaymentCard(paymentCard);
-        beanPaymentCard.setCardNumber(EncryptionFunctions.encryptString(paymentCard.getCardNumber()));
-        beanPaymentCard.setCardholderName(EncryptionFunctions.encryptString(paymentCard.getCardholderName()));
-        beanPaymentCard.setExpirationDate(EncryptionFunctions.encryptString(paymentCard.getExpirationDate()));
-        beanPaymentCard.setCvv(EncryptionFunctions.encryptString(paymentCard.getCvv()));
-        ResponsePaymentCardDTO responsePaymentCard = ResponsePaymentCardDTO.toPaymentCardDTO(paymentCardService.postPaymentCard(beanPaymentCard));
+        BeanPaymentCard beanPaymentCard = new BeanPaymentCard();
+        beanPaymentCard.setCardNumber(URLEncoder.encode(EncryptionFunctions.encryptString(paymentCard.getCardNumber()), StandardCharsets.UTF_8));
+        beanPaymentCard.setCardholderName(URLEncoder.encode(EncryptionFunctions.encryptString(paymentCard.getCardholderName()), StandardCharsets.UTF_8));
+        beanPaymentCard.setExpirationDate(URLEncoder.encode(EncryptionFunctions.encryptString(paymentCard.getExpirationDate()), StandardCharsets.UTF_8));
+        beanPaymentCard.setCvv(URLEncoder.encode(EncryptionFunctions.encryptString(paymentCard.getCvv()), StandardCharsets.UTF_8));
+        BeanUser user = userService.getByEmail(paymentCard.getEmail());
+        beanPaymentCard.setUser(user);
+        Integer count = paymentCardService.countPaymentCardByUserEmail(paymentCard.getEmail());
+        ResponsePaymentCardDTO responsePaymentCard = ResponsePaymentCardDTO.toPaymentCardDTO(paymentCardService.postPaymentCard(beanPaymentCard, count));
         return new ResponseEntity<>(new CustomResponse<>(responsePaymentCard, "Tarjeta de crédito registrada correctamente", false, 200), HttpStatus.OK);
     }
 
@@ -67,22 +77,5 @@ public class PaymentCardController {
         }
         paymentCardService.deletePaymentCard(requestBody.getCardNumber(), requestBody.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(true);
-    }
-
-    private static BeanPaymentCard getBeanPaymentCard(RequestPaymentCardDTO paymentCard) {
-        BeanPaymentCard beanPaymentCard = new BeanPaymentCard();
-        beanPaymentCard.setCardholderName(EncryptionFunctions.encryptString(paymentCard.getCardholderName()));
-        beanPaymentCard.setCardNumber(EncryptionFunctions.encryptString(paymentCard.getCardNumber()));
-        beanPaymentCard.setExpirationDate(EncryptionFunctions.encryptString(paymentCard.getExpirationDate()));
-        beanPaymentCard.setCvv(EncryptionFunctions.encryptString(paymentCard.getCvv()));
-
-        BeanCardStatus status = new BeanCardStatus();
-        status.setIdStatus(paymentCard.getIdStatus());
-        beanPaymentCard.setStatus(status);
-
-        BeanUser user = new BeanUser();
-        user.setIdUser(paymentCard.getIdUser());
-        beanPaymentCard.setUser(user);
-        return beanPaymentCard;
     }
 }

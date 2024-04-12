@@ -8,6 +8,15 @@ const getPaymentCardsByUserEmail = async (payload) => {
     }
 }
 
+const postPaymentCard = async (payload) => {
+    try {
+        const response = await axios.doPost("/venta-ropa/api/payment-cards/post-payment-card", payload)
+        return response.data.status;
+    } catch (e) {
+    }
+}
+
 export default {
-    getPaymentCardsByUserEmail
+    getPaymentCardsByUserEmail,
+    postPaymentCard
 }

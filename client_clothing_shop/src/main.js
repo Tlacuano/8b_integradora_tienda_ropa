@@ -9,6 +9,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueSweetalert2 from "vue-sweetalert2";
 import 'sweetalert2/dist/sweetalert2.min.css';
 import {library} from "@fortawesome/fontawesome-svg-core";
+import {fab} from "@fortawesome/free-brands-svg-icons";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 import {far} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -24,6 +25,7 @@ Vue.use(ToastPlugin)
 Vue.use(VueSweetalert2);
 
 // fontawesome
+library.add(fab);
 library.add(fas);
 library.add(far);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
@@ -54,10 +56,27 @@ const dictionary = {
             phone: () => 'El número de teléfono no es válido',
             product_name_max:()=>'El nombre del producto debe contener máximo 25 caracteres',
             description_min:()=>'La descripción debe contener minimo 20 caracteres',
-            description_nax:()=> 'La descripción debe contener un máximo de 255 caracteres'
+            description_nax:()=> 'La descripción debe contener un máximo de 255 caracteres',
+            card_number: () => 'El número de tarjeta debe contener 16 dígitos'
         }
     }
 };
+
+//for card number
+Validator.extend('card_number', {
+    validate: value => {
+        const cardNumberRegex = /^\d{16}$/;
+        return cardNumberRegex.test(value);
+    }
+});
+
+//for cvv
+Validator.extend('cvv', {
+    validate: value => {
+        const cvvRegex = /^\d{3}$/;
+        return cvvRegex.test(value);
+    }
+});
 
 //for curp length
 Validator.extend('curp_length', {

@@ -1,77 +1,75 @@
 <template>
   <section>
     <b-modal id="addSubcategoryModal" hide-header hide-footer centered size="lg">
-      <b-row>
-        <b-col class="text-center">
-          <h3>Registrar subcategoría</h3>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col>
-          <b-form>
-            <b-form-group
-                label="Nombre de la subcategoría"
-                label-for="subcategory"
-            >
-              <b-form-input
-                  id="subcategory"
-                  v-model="form.subcategory"
-                  v-validate="'required|alpha_spaces|min:5|name_max'"
-                  name="subcategory"
-              />
-              <span v-show="errors.has('subcategory')" class="text-danger">{{ errors.first('subcategory') }}</span>
-            </b-form-group>
+      <b-card class="custom-card">
+        <b-row>
+          <b-col class="text-center">
+            <h3>Registrar subcategoría</h3>
+          </b-col>
+        </b-row>
+        <b-row class="mt-3">
+          <b-col>
+            <b-form>
+              <b-form-group
+                  label="Nombre de la subcategoría"
+                  label-for="subcategory"
+              >
+                <b-form-input
+                    id="subcategory"
+                    v-model="form.subcategory"
+                    v-validate="'required|alpha_spaces|min:5|name_max'"
+                    name="subcategory"
+                />
+                <span v-show="errors.has('subcategory')" class="text-danger">{{ errors.first('subcategory') }}</span>
+              </b-form-group>
 
-            <b-form-group
-                label="Imagen de la subcategoría"
-                label-for="image"
-            >
-              <b-form-file
-                  id="image"
-                  v-model="form.image"
-                  accept="image/jpeg, image/png, image/jpg"
-                  :state="Boolean(form.image)"
-                  placeholder="Seleccione una imagen"
-                  @input="handleFileUpload"
-                  name="image"
-                  v-validate="'required|image|mimes:jpeg,jpg,png|image_size'"
-              />
-              <span v-show="errors.has('image')" class="text-danger">{{ errors.first('image') }}</span>
-            </b-form-group>
+              <b-form-group
+                  label="Imagen de la subcategoría"
+                  label-for="image"
+              >
+                <b-form-file
+                    id="image"
+                    v-model="form.image"
+                    accept="image/jpeg, image/png, image/jpg"
+                    :state="Boolean(form.image)"
+                    placeholder="Seleccione una imagen"
+                    @input="handleFileUpload"
+                    name="image"
+                    browse-text="Buscar"
+                    v-validate="'required|image|mimes:jpeg,jpg,png|image_size'"
+                />
+                <span v-show="errors.has('image')" class="text-danger">{{ errors.first('image') }}</span>
+              </b-form-group>
 
-            <b-form-group
-                label="Categoría"
-                label-for="category"
-            >
-              <b-form-select
-                  id="category"
-                  v-model="form.category"
-                  :options="categories"
-                  value-field="idCategory"
-                  text-field="category"
-                  name="category"
-                  v-validate="'required'"
-              />
-              <span v-show="errors.has('category')" class="text-danger">{{ errors.first('category') }}</span>
-            </b-form-group>
-          </b-form>
-        </b-col>
-        <b-col class="text-center">
-          <div class="image-container">
-            <b-img
-                v-if="imgPreview"
-                :src="imgPreview"
-                thumbnail
-                style="max-width: 50%; max-height: 95%;"
-            />
-            <div v-else class="no-image-message">No se ha seleccionado ninguna imagen</div>
-          </div>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3 justify-content-center">
-        <b-button variant="dark" @click="addSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem;">Registrar</b-button>
-        <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
-      </b-row>
+              <b-form-group
+                  label="Categoría"
+                  label-for="category"
+              >
+                <b-form-select
+                    id="category"
+                    v-model="form.category"
+                    :options="categories"
+                    value-field="idCategory"
+                    text-field="category"
+                    name="category"
+                    v-validate="'required'"
+                />
+                <span v-show="errors.has('category')" class="text-danger">{{ errors.first('category') }}</span>
+              </b-form-group>
+            </b-form>
+          </b-col>
+          <b-col class="text-center align-self-center">
+            <div class="image-container">
+              <b-img v-if="imgPreview" :src="imgPreview" thumbnail class="image-preview" />
+              <div v-else class="no-image-message">No se ha seleccionado ninguna imagen</div>
+            </div>
+          </b-col>
+        </b-row>
+        <b-row class="mt-3 justify-content-center">
+          <b-button variant="dark" @click="addSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem;">Registrar</b-button>
+          <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
+        </b-row>
+      </b-card>
     </b-modal>
   </section>
 </template>
@@ -170,6 +168,19 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.custom-card {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 10px;
+}
+.image-preview {
+  border: 2px solid #ced4da;
+  border-radius: 5px;
+  max-height: 20rem;
+}
+.image-container {
+  position: relative;
+}
 .no-image-message {
   position: absolute;
   top: 50%;
@@ -177,6 +188,5 @@ export default Vue.extend({
   transform: translate(-50%, -50%);
   color: #6c757d;
   font-style: italic;
-  margin-top: 30%;
 }
 </style>
