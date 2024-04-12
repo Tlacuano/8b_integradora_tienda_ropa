@@ -6,16 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
+import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.request_become_seller.BeanRequestsBecomeSeller;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.transaction.BeanTransaction;
 import mx.edu.utez.services_clothing_shop.model.user_roles.BeanUserRoles;
-import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.utils.listener.AuditEntityListener;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
 import java.util.UUID;
