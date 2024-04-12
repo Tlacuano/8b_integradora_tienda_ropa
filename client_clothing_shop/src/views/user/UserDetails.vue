@@ -46,9 +46,9 @@
           </b-col>
         </b-row>
 
-        <b-row class="mt-1">
+        <b-row class="mt-1" v-if="user.roles.includes('ROLE_SELLER')">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)">
+            <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)" >
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
                   <b>

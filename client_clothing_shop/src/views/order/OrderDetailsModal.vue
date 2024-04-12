@@ -3,6 +3,11 @@
     <b-modal id="orderDetailsModal" hide-footer hide-header centered size="xl" @show="getOrderHasProducts">
       <b-container>
         <b-row>
+          <b-col class="text-right">
+            <font-awesome-icon icon="times" class="text-secondary selectable" @click="$bvModal.hide('orderDetailsModal')"/>
+          </b-col>
+        </b-row>
+        <b-row>
           <b-col style="border: 1px solid black;" class="m-2" cols="auto">
             <p class="font-weight-bold">Numero de orden:</p>
             <p class="text-truncate">#{{ orderDetails.orderNumber }}</p>
