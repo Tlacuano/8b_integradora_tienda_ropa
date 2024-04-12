@@ -19,8 +19,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanRequestSellProduct {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy=GenerationType.UUID)
     @Column(name = "id_request_sell_product", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idRequestSellProduct;
 

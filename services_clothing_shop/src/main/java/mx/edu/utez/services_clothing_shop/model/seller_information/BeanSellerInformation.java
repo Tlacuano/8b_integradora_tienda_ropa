@@ -19,7 +19,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanSellerInformation {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy=GenerationType.UUID)
     private UUID idSellerInformation;
 
     @Column(name = "tax_identification_number", length = 20)

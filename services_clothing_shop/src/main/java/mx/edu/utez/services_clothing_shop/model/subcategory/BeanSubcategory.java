@@ -21,8 +21,7 @@ import java.util.UUID;
 @EntityListeners(AuditEntityListener.class)
 public class BeanSubcategory {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy=GenerationType.UUID)
     @Column(name = "id_subcategory", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idSubcategory;
 
