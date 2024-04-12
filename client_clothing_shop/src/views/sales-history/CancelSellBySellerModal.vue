@@ -86,7 +86,6 @@ export default {
           );
 
           this.$bvModal.hide('cancel-sell-by-seller-modal');
-          window.location.reload();
         }
       });
     }

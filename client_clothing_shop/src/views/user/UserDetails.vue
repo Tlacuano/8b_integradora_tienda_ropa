@@ -452,7 +452,6 @@ export default {
       this.user.sellerInformation.taxIdentificationNumber = response.data.taxIdentificationNumber;
       this.user.sellerInformation.blockSell = response.data.blockSell;
 
-      console.log(this.user)
       this.showOverlay()
     },
 

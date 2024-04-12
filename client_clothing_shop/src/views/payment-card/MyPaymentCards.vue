@@ -59,7 +59,6 @@ export default Vue.extend({
       const response = await PaymentCardService.getPaymentCardsByUserEmail(payload);
       if (response.status === 200) {
         this.paymentCards = response.data.content;
-        console.log(this.paymentCards);
       }
     },
     openEditCardModal(paymentCard) {

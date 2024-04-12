@@ -6,7 +6,6 @@ const postAddressService = async (addressData) => {
         const response = await axios.doPost('/venta-ropa/api/addresses/post-address', addressData);
         return response.data;
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }
@@ -16,7 +15,6 @@ const getAddressByEmailService = async (email) => {
         const response = await axios.doPost('/venta-ropa/api/addresses/get-addresses-by-email', { email });
         return response.data;
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }
@@ -26,19 +24,15 @@ const putAddressService = async (addressData) => {
         const response = await axios.doPut('/venta-ropa/api/addresses/put-address', addressData);
         return response.data;
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }
 
 const putAddressStatusService = async (statusData) => {
-    console.log("Datos enviados al servidor:", statusData);
-
     try {
         const response = await axios.doPut('/venta-ropa/api/addresses/put-status-address', statusData);
         return response.data;
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }
@@ -51,7 +45,6 @@ const disableAddressService = async (idAddress) => {
         });
         return response.data;
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }
@@ -64,7 +57,6 @@ const enableAddressService = async (idAddress) => {
         });
         return response.data;
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }

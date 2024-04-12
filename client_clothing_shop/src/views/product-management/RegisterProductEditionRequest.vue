@@ -176,7 +176,6 @@ export default {
         if (!valid) {
           showWarningToast("Completar los requisitos")
         } else {
-          console.log(this.formData)
           const response = await ProductManagementService.putProduct(this.formData)
           if(response){
             showSuccessToast("Producto editado")
@@ -238,7 +237,6 @@ export default {
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
       this.productGallery = response.data.productGallery
       this.formData = response.data
-      console.log(this.formData)
       this.imageUrl = this.formData.productGallery[0].image
       for (let i = 1; i < this.formData.productGallery.length; i++) {
         this.imagePreviews.push(this.formData.productGallery[i].image);
@@ -253,7 +251,6 @@ export default {
     async getSubcategories(pagination) {
       const response = await SubcategoryService.getPageSubcategoriesService(pagination)
       this.subcategories = response.data.content
-      console.log(this.subcategories)
       this.updateSubcategories()
     },
     showOverlay() {

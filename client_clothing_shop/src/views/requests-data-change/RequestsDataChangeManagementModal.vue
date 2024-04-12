@@ -95,10 +95,8 @@ export default {
         if (response && response.requestId) {
           this.request = response;
         } else {
-          console.error("La respuesta no contiene datos válidos o la propiedad esperada:", response);
         }
       } catch (error) {
-        console.error("Error al obtener la solicitud de cambio de datos:", error);
       }
     },
 
@@ -125,7 +123,6 @@ export default {
               this.$bvModal.hide('requestDataChangeModal');
               showSuccessToast('Éxito', 'La solicitud ha sido aprobada exitosamente');
             } catch (error) {
-              console.error("Error al aceptar la solicitud de cambio de datos:", error);
             }
           }
       );

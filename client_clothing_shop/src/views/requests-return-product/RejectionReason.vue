@@ -60,7 +60,6 @@ export default {
                 this.$emit('rejection-completed');
                 this.closeModal();
               } catch (error) {
-                console.error("Error al rechazar la solicitud de devolución:", error);
               }
             }
         );

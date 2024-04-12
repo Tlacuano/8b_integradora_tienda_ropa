@@ -78,7 +78,6 @@ const getOrdersBySellerAndStatusService = async (payload, pagination) => {
 const getOrdersBySellerAndNumberService = async (payload, pagination) => {
     try {
         const { page, size } = pagination;
-        console.log(payload)
         const response = await axios.doPost(`/venta-ropa/api/order-has-products/get-orders-has-products-by-seller-and-order-number?size=${size}&page=${page - 1}`, payload);
         return response.data;
     } catch (e) {

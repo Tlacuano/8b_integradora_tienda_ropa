@@ -6,7 +6,6 @@ const getPageRequestsReturnProductService = async (pagination, searchTerm = '') 
         const response = await axios.doGet(`/venta-ropa/api/requests-return-product/get-page?size=${size}&page=${page - 1}&searchTerm=${searchTerm}`);
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
@@ -17,7 +16,6 @@ const getRequestReturnProductByIdService = async (requestId) => {
         });
         return response.data;
     } catch (e) {
-        console.log(e);
     }
 }
 
