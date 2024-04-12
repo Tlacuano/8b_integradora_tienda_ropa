@@ -17,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -37,9 +36,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        BeanUser user = null;
-        String email = null;
-        String password = null;
+        BeanUser user;
+        String email;
+        String password;
         try {
             user = new ObjectMapper().readValue(request.getInputStream(), BeanUser.class);
             email = user.getEmail();
@@ -60,28 +59,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         for (GrantedAuthority authority : user.getAuthorities()) {
             if (authority.getAuthority().equals("ROLE_ADMIN")) {
                 role = "ADMIN";
-            }else if(authority.getAuthority().equals("ROLE_SUPERADMIN")){
+            } else if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
                 role = "SUPERADMIN";
-            }else {
+            } else {
                 role = "BUYER";
             }
-            break;
         }
         boolean emailVerified = user.isEmailVerified();
         boolean privacyPolicy = user.isPrivacyPolicy();
         boolean verificationPhone = user.isVerificationPhone();
 
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
-        Claims claims = Jwts.claims()
-                .add("authorities", new ObjectMapper().writeValueAsString(roles))
-                .build();
+        Claims claims = Jwts.claims().add("authorities", new ObjectMapper().writeValueAsString(roles)).build();
 
-        String token = Jwts.builder()
-                .subject(email)
-                .claims(claims)
-                .expiration(new Date(System.currentTimeMillis() + 18000000))
-                .issuedAt(new Date())
-                .signWith(SECRET_KEY).compact();
+        String token = Jwts.builder().subject(email).claims(claims).expiration(new Date(System.currentTimeMillis() + 18000000)).issuedAt(new Date()).signWith(SECRET_KEY).compact();
 
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
 
@@ -91,13 +82,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("hasMultipleRoles", hasMultipleRoles);
         body.put("role", role);
 
-        if(!emailVerified){
+        if (!emailVerified) {
             body.put("emailVerified", false);
         }
-        if(!privacyPolicy){
+        if (!privacyPolicy) {
             body.put("privacyPolicy", false);
         }
-        if(!verificationPhone){
+        if (!verificationPhone) {
             body.put("verificationPhone", false);
         }
 
