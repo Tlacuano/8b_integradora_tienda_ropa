@@ -6,7 +6,6 @@ import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImagePr
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.product.ProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;

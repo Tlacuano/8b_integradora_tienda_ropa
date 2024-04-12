@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.services_clothing_shop.model.person.GenderEnum;
-import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 
 import java.time.LocalDate;
 import java.util.UUID;

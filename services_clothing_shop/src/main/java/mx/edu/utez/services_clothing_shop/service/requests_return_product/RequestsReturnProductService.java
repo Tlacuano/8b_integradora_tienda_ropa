@@ -12,7 +12,6 @@ import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.BeanReturnProductGallery;
 import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
-import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,45 +20,44 @@ import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequests
 import mx.edu.utez.services_clothing_shop.model.return_product_gallery.IReturnProductGallery;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import mx.edu.utez.services_clothing_shop.model.request_return_product.IRequestsReturnProduct.ReturnRequestProjection;
 
 @Service
 public class RequestsReturnProductService {
 
-    private final IRequestsReturnProduct IRequestsReturnProduct;
-    private final IRequestStatus IRequestStatus;
-    private final IReturnProductGallery IReturnProductGallery;
+    private final IRequestsReturnProduct requestsReturnProductRepository;
+    private final IRequestStatus requestStatusRepository;
+    private final IReturnProductGallery returnProductGalleryRepository;
     private final EmailService emailService;
-    private final IOrderHasProducts IOrderHasProducts;
+    private final IOrderHasProducts orderHasProductsRepository;
 
-    public RequestsReturnProductService(IRequestsReturnProduct IRequestsReturnProduct, IRequestStatus IRequestStatus, IReturnProductGallery IReturnProductGallery, EmailService emailService, IOrderHasProducts IOrderHasProducts) {
-        this.IRequestsReturnProduct = IRequestsReturnProduct;
-        this.IRequestStatus = IRequestStatus;
-        this.IReturnProductGallery = IReturnProductGallery;
+    public RequestsReturnProductService(IRequestsReturnProduct requestsReturnProductRepository, IRequestStatus requestStatusRepository, IReturnProductGallery returnProductGalleryRepository, EmailService emailService, IOrderHasProducts orderHasProductsRepository) {
+        this.requestsReturnProductRepository = requestsReturnProductRepository;
+        this.requestStatusRepository = requestStatusRepository;
+        this.returnProductGalleryRepository = returnProductGalleryRepository;
         this.emailService = emailService;
-        this.IOrderHasProducts = IOrderHasProducts;
+        this.orderHasProductsRepository = orderHasProductsRepository;
     }
 
     @Transactional
     public RequestsReturnProductDTO putRequestReturnProduct(UUID requestId, String status, String rejectionReason, String email) {
-        BeanRequestReturnProduct request = IRequestsReturnProduct.findById(requestId)
+        BeanRequestReturnProduct request = requestsReturnProductRepository.findById(requestId)
                 .orElseThrow(() -> new CustomException("Request not found"));
 
-        BeanRequestStatus requestStatus = IRequestsReturnProduct.findRequestStatusByName(status)
+        BeanRequestStatus requestStatus = requestsReturnProductRepository.findRequestStatusByName(status)
                 .orElseThrow(() -> new CustomException("Status not found"));
 
         request.setStatus(requestStatus);
         request.setRejectionReason(rejectionReason);
-        IRequestsReturnProduct.save(request);
+        requestsReturnProductRepository.save(request);
 
         if (status.equals("Aprobado")) {
-            BeanOrderStatus orderStatus = IRequestsReturnProduct.findOrderStatusByName("Reembolsado")
+            BeanOrderStatus orderStatus = requestsReturnProductRepository.findOrderStatusByName("Reembolsado")
                     .orElseThrow(() -> new CustomException("Order status not found"));
             BeanOrderHasProducts orderHasProduct = request.getOrderHasProduct();
             orderHasProduct.setStatus(orderStatus);
-            IOrderHasProducts.save(orderHasProduct);
+            orderHasProductsRepository.save(orderHasProduct);
 
             emailService.sendEmail(
                     email,
@@ -81,16 +79,8 @@ public class RequestsReturnProductService {
     }
 
 
-
-
-    private boolean isValidRejectionReason(String rejectionReason) {
-        Pattern pattern = Pattern.compile(RegexPatterns.REJECTION_REASON_REGEX);
-        Matcher matcher = pattern.matcher(rejectionReason);
-        return matcher.matches();
-    }
-
     public RequestsReturnProductGetByIdResponseDTO getRequestReturnProductInfoById(UUID idRequestReturnProduct) {
-        List<IRequestsReturnProduct.ReturnProductInfoProjection> results = IRequestsReturnProduct.findReturnProductInfoById(idRequestReturnProduct);
+        List<IRequestsReturnProduct.ReturnProductInfoProjection> results = requestsReturnProductRepository.findReturnProductInfoById(idRequestReturnProduct);
         if (results.isEmpty()) {
             throw new CustomException("requestReturnProduct.id.notFound");
         }
@@ -112,24 +102,18 @@ public class RequestsReturnProductService {
         return dto;
     }
 
-    public String getRequestStatusById(UUID statusId) {
-        BeanRequestStatus requestStatus = IRequestStatus.findById(statusId)
-                .orElseThrow(() -> new CustomException("requestsReturnProduct.status.notFound"));
-        return requestStatus.getStatus();
-    }
-
     @Transactional
     public RequestsReturnProductDTO postRequestReturnProduct(RequestsReturnProductPostRequestDTO requestDTO) {
-        BeanOrderHasProducts orderHasProduct = IRequestsReturnProduct.findFirstByOrderNumber(requestDTO.getOrderNumber())
+        BeanOrderHasProducts orderHasProduct = requestsReturnProductRepository.findFirstByOrderNumber(requestDTO.getOrderNumber())
                 .orElseThrow(() -> new CustomException("Order not found"));
 
-        boolean existsPendingRequest = IRequestsReturnProduct.existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(
+        boolean existsPendingRequest = requestsReturnProductRepository.existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(
                 requestDTO.getOrderNumber(), "Pendiente");
         if (existsPendingRequest) {
             throw new CustomException("Ya existe una solicitud de devolución pendiente para este producto.");
         }
 
-        BeanRequestStatus requestStatus = IRequestStatus.findByStatus("Pendiente")
+        BeanRequestStatus requestStatus = requestStatusRepository.findByStatus("Pendiente")
                 .orElseThrow(() -> new CustomException("Request status not found"));
 
         BeanRequestReturnProduct request = new BeanRequestReturnProduct();
@@ -137,12 +121,12 @@ public class RequestsReturnProductService {
         request.setStatus(requestStatus);
         request.setReturnReason(requestDTO.getReturnReason());
 
-        BeanRequestReturnProduct savedRequest = IRequestsReturnProduct.save(request);
+        BeanRequestReturnProduct savedRequest = requestsReturnProductRepository.save(request);
         if (requestDTO.getImage() != null && !requestDTO.getImage().isEmpty()) {
             BeanReturnProductGallery galleryImage = new BeanReturnProductGallery();
             galleryImage.setImage(requestDTO.getImage());
             galleryImage.setReturnProduct(savedRequest);
-            IReturnProductGallery.save(galleryImage);
+            returnProductGalleryRepository.save(galleryImage);
         }
 
         return convertToDTO(savedRequest);
@@ -150,7 +134,7 @@ public class RequestsReturnProductService {
 
 
     public Page<ReturnRequestProjection> findRequestsByPageAndSearchTerm(Pageable pageable, String searchTerm) {
-        return IRequestsReturnProduct.findRequestsWithOrderInfo(pageable, searchTerm);
+        return requestsReturnProductRepository.findRequestsWithOrderInfo(pageable, searchTerm);
     }
 
 

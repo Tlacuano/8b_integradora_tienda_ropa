@@ -2,7 +2,6 @@ package mx.edu.utez.services_clothing_shop.controller.shopping_cart;
 
 import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.*;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.service.shopping_cart.ShoppingCartServices;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.http.HttpStatus;

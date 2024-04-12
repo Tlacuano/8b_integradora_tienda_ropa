@@ -1,12 +1,9 @@
 package mx.edu.utez.services_clothing_shop.controller.wish_list;
 
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponsePutShoppingCartDTO;
-import mx.edu.utez.services_clothing_shop.controller.shopping_cart.dto.ResponseShoppingCartDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponsePutWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.service.wish_list.WishListService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;

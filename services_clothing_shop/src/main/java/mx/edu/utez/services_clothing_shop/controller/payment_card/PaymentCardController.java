@@ -7,6 +7,7 @@ import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.payment_card.PaymentCardService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,57 +29,44 @@ public class PaymentCardController {
 
     @PostMapping("/get-payment-card-by-user-email")
     public ResponseEntity<CustomResponse<Page<ResponsePaymentCardDTO>>> getPaymentCardByUserEmail(@Valid @RequestBody RequestPaymentCardByUserEmailDTO requestBody, Pageable page) {
-        try {
-            Page<BeanPaymentCard> paymentCardPage = paymentCardService.getPaymentCardByUserEmail(requestBody.getEmail(), page);
-            Page<ResponsePaymentCardDTO> responsePaymentCardPage = paymentCardPage.map(ResponsePaymentCardDTO::toPaymentCardDTO);
-            return ResponseEntity.ok(new CustomResponse<>(responsePaymentCardPage, "Tarjetas de crédito encontradas", false, 200));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(null, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
-        }
+        Page<BeanPaymentCard> paymentCardPage = paymentCardService.getPaymentCardByUserEmail(requestBody.getEmail(), page);
+        Page<ResponsePaymentCardDTO> responsePaymentCardPage = paymentCardPage.map(ResponsePaymentCardDTO::toPaymentCardDTO);
+        return ResponseEntity.ok(new CustomResponse<>(responsePaymentCardPage, "Tarjetas de crédito encontradas", false, 200));
     }
 
     @PostMapping("/post-payment-card")
     public ResponseEntity<CustomResponse<ResponsePaymentCardDTO>> postPaymentCard(@Valid @RequestBody RequestPaymentCardDTO paymentCard) {
         if (paymentCardService.cardIsRegistered(paymentCard.getCardNumber(), paymentCard.getIdUser())) {
-            throw new RuntimeException("payment.card.registered");
+            throw new CustomException("payment.card.registered");
         }
         BeanPaymentCard beanPaymentCard = getBeanPaymentCard(paymentCard);
         beanPaymentCard.setCardNumber(EncryptionFunctions.encryptString(paymentCard.getCardNumber()));
         beanPaymentCard.setCardholderName(EncryptionFunctions.encryptString(paymentCard.getCardholderName()));
         beanPaymentCard.setExpirationDate(EncryptionFunctions.encryptString(paymentCard.getExpirationDate()));
         beanPaymentCard.setCvv(EncryptionFunctions.encryptString(paymentCard.getCvv()));
-        ResponsePaymentCardDTO responsePaymentCard = new ResponsePaymentCardDTO().toPaymentCardDTO(paymentCardService.postPaymentCard(beanPaymentCard));
+        ResponsePaymentCardDTO responsePaymentCard = ResponsePaymentCardDTO.toPaymentCardDTO(paymentCardService.postPaymentCard(beanPaymentCard));
         return new ResponseEntity<>(new CustomResponse<>(responsePaymentCard, "Tarjeta de crédito registrada correctamente", false, 200), HttpStatus.OK);
     }
 
     @PostMapping("/put-payment-card-status")
     public ResponseEntity<CustomResponse<Boolean>> putPaymentCardStatus(@Valid @RequestBody RequestPaymentCardStatusDTO requestBody) {
-        try {
-            Map<String, Object> response = paymentCardService.putPaymentCardStatus(requestBody.getIdCard(), requestBody.getStatus());
-            if (response.containsKey("error_message")) {
-                throw new RuntimeException(response.get("error_message").toString());
-            }
-            return new ResponseEntity<>(new CustomResponse<>(true, response.get("message").toString(), false, 200), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(false, e.getMessage(), true, 400), HttpStatus.BAD_REQUEST);
+        Map<String, Object> response = paymentCardService.putPaymentCardStatus(requestBody.getIdCard(), requestBody.getStatus());
+        if (response.containsKey("error_message")) {
+            throw new CustomException(response.get("error_message").toString());
         }
+        return new ResponseEntity<>(new CustomResponse<>(true, response.get("message").toString(), false, 200), HttpStatus.OK);
     }
 
-    // TODO: Deleting a payment card is necessary, but it can break the app
     @PostMapping("/delete-payment-card")
     public ResponseEntity<Boolean> deletePaymentCard(@Valid @RequestBody RequestDeletePaymentCardDTO requestBody) {
-        try {
-            if (!paymentCardService.cardIsFromUser(requestBody.getCardNumber(), requestBody.getEmail())) {
-                throw new RuntimeException("payment.card.notFound");
-            }
-            if (paymentCardService.countPaymentCardByUserEmail(requestBody.getEmail()) <= 1) {
-                throw new RuntimeException("payment.minimum.card");
-            }
-            paymentCardService.deletePaymentCard(requestBody.getCardNumber(), requestBody.getEmail());
-            return ResponseEntity.status(HttpStatus.OK).body(true);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(false);
+        if (!paymentCardService.cardIsFromUser(requestBody.getCardNumber(), requestBody.getEmail())) {
+            throw new CustomException("payment.card.notFound");
         }
+        if (paymentCardService.countPaymentCardByUserEmail(requestBody.getEmail()) <= 1) {
+            throw new CustomException("payment.minimum.card");
+        }
+        paymentCardService.deletePaymentCard(requestBody.getCardNumber(), requestBody.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
     private static BeanPaymentCard getBeanPaymentCard(RequestPaymentCardDTO paymentCard) {

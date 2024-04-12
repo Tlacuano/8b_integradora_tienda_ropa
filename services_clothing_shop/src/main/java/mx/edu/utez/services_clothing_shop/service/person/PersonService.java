@@ -24,8 +24,9 @@ public class PersonService {
     private final IPerson personRepository;
     private final IUser userRepository;
     private final SmsService smsService;
-
     private final EmailService emailService;
+    private static final String USER_EMAIL_EXISTS = "user.email.exists";
+    private static final String PERSON_NOT_FOUND = "person.not.found";
 
     public PersonService(IPerson personRepository, IUser userRepository, SmsService smsService, EmailService emailService) {
         this.personRepository = personRepository;
@@ -37,13 +38,13 @@ public class PersonService {
     @Transactional
     public ResponseGetPersonalInformationDTO getPersonalInformation(String email) {
         BeanUser user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
-        if(person == null){
-            throw new CustomException("person.not.found");
+        if (person == null) {
+            throw new CustomException(PERSON_NOT_FOUND);
         }
 
         return ResponseGetPersonalInformationDTO.fromPerson(person);
@@ -53,11 +54,11 @@ public class PersonService {
     public boolean postPersonalInformation(RequestPutPersonalInformationDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
-        if(!payload.isPrivacyPolicy()){
+        if (!payload.isPrivacyPolicy()) {
             throw new CustomException("person.privacyPolicy.accepted");
         }
 
@@ -70,7 +71,7 @@ public class PersonService {
         newPersonalInformation.setGender(payload.getGender());
         newPersonalInformation.setBirthday(payload.getBirthday());
 
-        if(!ValidatesFunctions.isAdult(payload.getBirthday())){
+        if (!ValidatesFunctions.isAdult(payload.getBirthday())) {
             throw new CustomException("person.birthday.age");
         }
 
@@ -96,18 +97,18 @@ public class PersonService {
     public boolean verifyPhone(RequestCodeDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
 
-        if(person == null){
-            throw new CustomException("person.not.found");
+        if (person == null) {
+            throw new CustomException(PERSON_NOT_FOUND);
         }
 
         boolean result = payload.getCode().equals(user.getVerificationCode());
-        if(result){
+        if (result) {
             person.setVerificationPhone(true);
             personRepository.save(person);
             return true;
@@ -120,14 +121,14 @@ public class PersonService {
     public boolean resendPhoneCode(RequestActionByEmailDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
 
-        if(person == null){
-            throw new CustomException("person.not.found");
+        if (person == null) {
+            throw new CustomException(PERSON_NOT_FOUND);
         }
 
         SendSmsDTO sendSmsDTO = new SendSmsDTO();
@@ -143,17 +144,17 @@ public class PersonService {
     public boolean deletePersonalInformationIncomplete(RequestActionByEmailDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
 
-        if(person == null){
-            throw new CustomException("person.not.found");
+        if (person == null) {
+            throw new CustomException(PERSON_NOT_FOUND);
         }
 
-        if(person.isVerificationPhone()){
+        if (person.isVerificationPhone()) {
             throw new CustomException("person.phone.verified");
         }
 
@@ -168,13 +169,13 @@ public class PersonService {
     @Transactional
     public boolean putPersonalInformation(RequestPutPersonalInformationDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
-        if(person == null){
-            throw new CustomException("person.not.found");
+        if (person == null) {
+            throw new CustomException(PERSON_NOT_FOUND);
         }
 
         String phoneNumber = person.getPhoneNumber();
@@ -186,13 +187,13 @@ public class PersonService {
         person.setGender(payload.getGender());
         person.setBirthday(payload.getBirthday());
 
-        if(!ValidatesFunctions.isAdult(payload.getBirthday())){
+        if (!ValidatesFunctions.isAdult(payload.getBirthday())) {
             throw new CustomException("person.birthday.age");
         }
 
         boolean result = !phoneNumber.equals(payload.getPhoneNumber());
 
-        if(result){
+        if (result) {
             person.setVerificationPhone(false);
             SendSmsDTO sendSmsDTO = new SendSmsDTO();
             sendSmsDTO.setEmail(payload.getEmail());
@@ -203,11 +204,7 @@ public class PersonService {
 
         personRepository.save(person);
 
-        emailService.sendEmail(payload.getEmail(),
-                "Actualización de información",
-                "Cambios en tu cuenta",
-                "Tus datos han sido actualizados correctamente.",
-                "");
+        emailService.sendEmail(payload.getEmail(), "Actualización de información", "Cambios en tu cuenta", "Tus datos han sido actualizados correctamente.", "");
 
         return true;
     }
@@ -216,13 +213,13 @@ public class PersonService {
     @Transactional
     public boolean putPicture(RequestPutPictureDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(USER_EMAIL_EXISTS);
         }
 
         BeanPerson person = personRepository.findByUser(user);
-        if(person == null){
-            throw new CustomException("person.not.found");
+        if (person == null) {
+            throw new CustomException(PERSON_NOT_FOUND);
         }
 
         person.setPicture(payload.getPicture());

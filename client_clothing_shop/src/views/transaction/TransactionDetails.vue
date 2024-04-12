@@ -193,7 +193,7 @@ export default {
       const shippingDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
       const formatOptions = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
       return shippingDate.toLocaleDateString('es-ES', formatOptions).replace(/^\w/, c => c.toUpperCase());
-    }
+    },
   },
 
   methods: {
@@ -208,6 +208,9 @@ export default {
         this.shoppingCart = response.data;
         this.totalProducts = response.data.reduce((acumulado, producto) => acumulado + producto.amount, 0);
         this.total = this.calculateTotal(response.data);
+      }
+      if (this.shoppingCart.length === 0) {
+        await this.$router.push({name: 'Home'});
       }
     },
 
@@ -285,9 +288,6 @@ export default {
       this.$router.push({name: 'Login'});
     }
     this.getShoppingCartProducts();
-    if (this.shoppingCart.length === 0) {
-      this.$router.push({name: 'Home'});
-    }
     this.getUserAddresses();
     this.getUserPaymentCards();
   }

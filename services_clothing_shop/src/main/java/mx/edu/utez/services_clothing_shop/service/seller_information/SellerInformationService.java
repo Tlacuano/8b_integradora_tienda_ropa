@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class SellerInformationService {
@@ -28,7 +28,8 @@ public class SellerInformationService {
     private final IRequestsSellProduct iRequestsSellProduct;
     private final IRequestStatus iRequestStatus;
     private final EmailService emailService;
-    private ErrorDictionary errorDictionary;
+    private final ErrorDictionary errorDictionary;
+
     public SellerInformationService(ISellerInformation iSellerInformation, IUser iUser, IRequestsSellProduct iRequestsSellProduct, IRequestStatus iRequestStatus, EmailService emailService, ErrorDictionary errorDictionary) {
         this.iSellerInformation = iSellerInformation;
         this.iUser = iUser;
@@ -39,20 +40,18 @@ public class SellerInformationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseAllSellerInformationDTO> getSellersInformation(){
+    public List<ResponseAllSellerInformationDTO> getSellersInformation() {
         List<Object[]> sellersInformationData = iSellerInformation.findEssentialSellerInformationInfo();
-        if(sellersInformationData.isEmpty()){
+        if (sellersInformationData.isEmpty()) {
             throw new CustomException(errorDictionary.getErrorMessage("sellerInformation.notfound"));
         }
-        return sellersInformationData.stream()
-                .map(this::mapToResponseAllSellerInformationDTO)
-                .collect(Collectors.toList());
+        return sellersInformationData.stream().map(this::mapToResponseAllSellerInformationDTO).toList();
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<BeanSellerInformation> getSellerInformation(BeanSellerInformation sellerInformation){
+    public ResponseEntity<BeanSellerInformation> getSellerInformation(BeanSellerInformation sellerInformation) {
         try {
-            if(iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())){
+            if (iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())) {
                 return ResponseEntity.ok(iSellerInformation.findByIdSellerInformation(sellerInformation.getIdSellerInformation()));
             } else {
                 return ResponseEntity.status(400).build();
@@ -63,7 +62,7 @@ public class SellerInformationService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanSellerInformation> postSellerInformation(BeanSellerInformation sellerInformation){
+    public ResponseEntity<BeanSellerInformation> postSellerInformation(BeanSellerInformation sellerInformation) {
         try {
             return ResponseEntity.status(200).body(iSellerInformation.save(sellerInformation));
         } catch (Exception e) {
@@ -72,9 +71,9 @@ public class SellerInformationService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanSellerInformation> putSellerInformation(BeanSellerInformation sellerInformation){
+    public ResponseEntity<BeanSellerInformation> putSellerInformation(BeanSellerInformation sellerInformation) {
         try {
-            if(iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())){
+            if (iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())) {
                 return ResponseEntity.status(200).body(iSellerInformation.save(sellerInformation));
             } else {
                 return ResponseEntity.status(400).build();
@@ -85,9 +84,9 @@ public class SellerInformationService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<BeanSellerInformation> deleteSellerInformation(BeanSellerInformation sellerInformation){
+    public ResponseEntity<BeanSellerInformation> deleteSellerInformation(BeanSellerInformation sellerInformation) {
         try {
-            if(iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())){
+            if (iSellerInformation.existsByIdSellerInformation(sellerInformation.getIdSellerInformation())) {
                 iSellerInformation.deleteById(sellerInformation.getIdSellerInformation());
                 return ResponseEntity.status(200).build();
             } else {
@@ -99,7 +98,7 @@ public class SellerInformationService {
     }
 
     @Transactional
-    public ResponseAllSellerInformationDTO mapToResponseAllSellerInformationDTO(Object[] row){
+    public ResponseAllSellerInformationDTO mapToResponseAllSellerInformationDTO(Object[] row) {
         ResponseAllSellerInformationDTO responseDTO = new ResponseAllSellerInformationDTO();
         responseDTO.setFullName((String) row[0]);
         responseDTO.setCurp((String) row[1]);
@@ -108,10 +107,10 @@ public class SellerInformationService {
     }
 
     @Transactional
-    public boolean blockSell(RequestActionByEmailDTO payload){
+    public boolean blockSell(RequestActionByEmailDTO payload) {
         BeanUser user = iUser.findByEmail(payload.getEmail());
 
-        if(user == null){
+        if (user == null) {
             throw new CustomException(errorDictionary.getErrorMessage("user.notfound"));
         }
 
@@ -127,32 +126,24 @@ public class SellerInformationService {
             iRequestsSellProduct.save(request);
         });
 
-        emailService.sendEmail(user.getEmail(),
-                "Sanción en tu cuenta",
-                "Recibiste un bloqueo de venta en tu cuenta",
-                payload.getReason(),
-                "Atentamente, "+payload.getAdmin());
+        emailService.sendEmail(user.getEmail(), "Sanción en tu cuenta", "Recibiste un bloqueo de venta en tu cuenta", payload.getReason(), "Atentamente, " + payload.getAdmin());
 
         return true;
     }
 
 
     @Transactional
-    public boolean unblockSell(RequestActionByEmailDTO payload){
+    public boolean unblockSell(RequestActionByEmailDTO payload) {
         BeanUser user = iUser.findByEmail(payload.getEmail());
 
-        if(user == null){
+        if (user == null) {
             throw new CustomException(errorDictionary.getErrorMessage("user.notfound"));
         }
 
         user.getPerson().getSellerInformation().setBlockSell(false);
         iSellerInformation.save(user.getPerson().getSellerInformation());
 
-        emailService.sendEmail(user.getEmail(),
-                "Desbloqueo en tu cuenta",
-                "Tu cuenta ya puede vender nuevamente",
-                "",
-                "Atentamente, "+payload.getAdmin());
+        emailService.sendEmail(user.getEmail(), "Desbloqueo en tu cuenta", "Tu cuenta ya puede vender nuevamente", "", "Atentamente, " + payload.getAdmin());
 
         return true;
     }

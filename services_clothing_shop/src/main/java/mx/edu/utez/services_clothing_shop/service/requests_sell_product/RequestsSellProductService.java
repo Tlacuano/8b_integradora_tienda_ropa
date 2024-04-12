@@ -2,14 +2,12 @@ package mx.edu.utez.services_clothing_shop.service.requests_sell_product;
 
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestDetailsDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto.RequestsSellProductDTO;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.ResponsePageUsersDTO;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
-import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
@@ -26,12 +24,13 @@ import java.util.regex.Pattern;
 @Service
 public class RequestsSellProductService {
 
-    private final IRequestsSellProduct IRequestsSellProduct;
-    private final IRequestStatus IRequestStatus;
+    private final IRequestsSellProduct requestsSellProductRepository;
+    private final IRequestStatus requestStatusRepository;
+    private static final String STATUS_INVALID = "requestStatus.invalid";
 
-    public RequestsSellProductService(IRequestsSellProduct IRequestsSellProduct, IRequestStatus IRequestStatus) {
-        this.IRequestsSellProduct = IRequestsSellProduct;
-        this.IRequestStatus = IRequestStatus;
+    public RequestsSellProductService(IRequestsSellProduct requestsSellProductRepository, IRequestStatus requestStatusRepository) {
+        this.requestsSellProductRepository = requestsSellProductRepository;
+        this.requestStatusRepository = requestStatusRepository;
     }
 
     @Transactional
@@ -39,15 +38,15 @@ public class RequestsSellProductService {
         if (!isValidRejectionReason(rejectionReason)) {
             throw new CustomException("requestSellProduct.rejectionReason.invalid");
         }
-        Optional<BeanRequestSellProduct> existingRequestOptional = IRequestsSellProduct.findById(requestId);
+        Optional<BeanRequestSellProduct> existingRequestOptional = requestsSellProductRepository.findById(requestId);
         if (existingRequestOptional.isPresent()) {
             BeanRequestSellProduct existingRequest = existingRequestOptional.get();
-            BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
-                    .orElseThrow(() -> new CustomException("requestSellProduct.status.invalid"));
+            BeanRequestStatus requestStatus = requestStatusRepository.findByStatus(status)
+                    .orElseThrow(() -> new CustomException(STATUS_INVALID));
 
             existingRequest.setStatus(requestStatus);
             existingRequest.setRejectionReason(rejectionReason);
-            BeanRequestSellProduct updatedRequest = IRequestsSellProduct.save(existingRequest);
+            BeanRequestSellProduct updatedRequest = requestsSellProductRepository.save(existingRequest);
 
             return convertToDTO(updatedRequest);
         } else {
@@ -61,10 +60,10 @@ public class RequestsSellProductService {
         return matcher.matches();
     }
 
-    public RequestDetailsDTO getRequestById(UUID idRequestSellProduct){
-        Optional<BeanRequestSellProduct> requestOptional = IRequestsSellProduct.findById(idRequestSellProduct);
+    public RequestDetailsDTO getRequestById(UUID idRequestSellProduct) {
+        Optional<BeanRequestSellProduct> requestOptional = requestsSellProductRepository.findById(idRequestSellProduct);
 
-        if(requestOptional.isPresent()){
+        if (requestOptional.isPresent()) {
             BeanRequestSellProduct request = requestOptional.get();
             RequestDetailsDTO requestDetailsDTO = new RequestDetailsDTO();
             requestDetailsDTO.setIdRequestSellProduct(request.getIdRequestSellProduct());
@@ -89,32 +88,32 @@ public class RequestsSellProductService {
         }
     }
 
-    public String getRequestSellProductById(UUID statusID){
-        BeanRequestStatus requestStatus = IRequestStatus.findById(statusID)
-                .orElseThrow(() -> new CustomException("requestSellProduct.status.invalid"));
+    public String getRequestSellProductById(UUID statusID) {
+        BeanRequestStatus requestStatus = requestStatusRepository.findById(statusID)
+                .orElseThrow(() -> new CustomException(STATUS_INVALID));
         return requestStatus.getStatus();
     }
 
     @Transactional
-    public RequestsSellProductDTO postRequestSellProduct(UUID productId){
+    public RequestsSellProductDTO postRequestSellProduct(UUID productId) {
         BeanProduct product = new BeanProduct();
         product.setIdProduct(productId);
-        BeanRequestStatus requestStatus = IRequestStatus.findByStatus("Pendiente")
-                .orElseThrow(() -> new CustomException("requestSellProduct.status.invalid"));
+        BeanRequestStatus requestStatus = requestStatusRepository.findByStatus("Pendiente")
+                .orElseThrow(() -> new CustomException(STATUS_INVALID));
         BeanRequestSellProduct requestSellProduct = new BeanRequestSellProduct();
         requestSellProduct.setProduct(product);
         requestSellProduct.setStatus(requestStatus);
 
-        BeanRequestSellProduct newRequest = IRequestsSellProduct.save(requestSellProduct);
+        BeanRequestSellProduct newRequest = requestsSellProductRepository.save(requestSellProduct);
         return convertToDTO(newRequest);
     }
 
     @Transactional
-    public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProduct(Pageable pageable){
-        return IRequestsSellProduct.findAllStatuses(pageable);
+    public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProduct(Pageable pageable) {
+        return requestsSellProductRepository.findAllStatuses(pageable);
     }
 
-    private RequestsSellProductDTO convertToDTO(BeanRequestSellProduct requestSellProduct){
+    private RequestsSellProductDTO convertToDTO(BeanRequestSellProduct requestSellProduct) {
         RequestsSellProductDTO requestSellProductDTO = new RequestsSellProductDTO();
         requestSellProductDTO.setIdRequestSellProduct(requestSellProduct.getIdRequestSellProduct());
         requestSellProductDTO.setRejectionReason(requestSellProduct.getRejectionReason());
@@ -125,8 +124,8 @@ public class RequestsSellProductService {
     }
 
     @Transactional
-    public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProductByEmail(String email, Pageable pageable){
-        return IRequestsSellProduct.findAllByEmailLikeIgnoreCase(email, pageable);
+    public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProductByEmail(String email, Pageable pageable) {
+        return requestsSellProductRepository.findAllByEmailLikeIgnoreCase(email, pageable);
     }
 
 }

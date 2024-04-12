@@ -1,18 +1,14 @@
 package mx.edu.utez.services_clothing_shop.service.wish_list;
 
 
-
-
 import com.cloudinary.utils.StringUtils;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseInformationWishListDTO;
 import mx.edu.utez.services_clothing_shop.controller.wish_list.dto.ResponseWishListDTO;
 
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import mx.edu.utez.services_clothing_shop.model.product.IProduct;
-import mx.edu.utez.services_clothing_shop.model.shopping_cart.BeanShoppingCart;
 import mx.edu.utez.services_clothing_shop.model.wish_list.BeanWishList;
 import mx.edu.utez.services_clothing_shop.model.wish_list.IWishList;
-import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +25,10 @@ import static mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns
 public class WishListService {
     private final IWishList wishListRepository;
     private final IProduct productRepository;
-    private final EmailService emailService;
 
-    public WishListService(IWishList wishListRepository,IProduct productRepository, EmailService emailService) {
+    public WishListService(IWishList wishListRepository, IProduct productRepository) {
         this.wishListRepository = wishListRepository;
         this.productRepository = productRepository;
-        this.emailService = emailService;
     }
 
 
@@ -57,7 +51,6 @@ public class WishListService {
         }
     }
 
-
     @Transactional
     public ResponseWishListDTO saveWishList(BeanWishList wishList) {
         if (wishList == null) {
@@ -72,11 +65,11 @@ public class WishListService {
             throw new CustomException("wishList.user.notnull");
         } else {
             BeanProduct product = productRepository.findByIdProduct(wishList.getProduct().getIdProduct());
-            if(product == null){
+            if (product == null) {
                 throw new CustomException("wishList.product.notExists");
             }
             int amount = product.getAmount();
-            if(wishList.getAmount() > amount){
+            if (wishList.getAmount() > amount) {
                 throw new CustomException("wishList.amount.error");
             }
             List<BeanWishList> existingWishList = wishListRepository.findByProduct_idProductAndUser_idUser(wishList.getProduct().getIdProduct(), wishList.getUser().getIdUser());
@@ -87,7 +80,6 @@ public class WishListService {
             return ResponseWishListDTO.fromWishList(response);
         }
     }
-
 
     @Transactional
     public void deleteWishListById(UUID wishListId) {
@@ -106,7 +98,6 @@ public class WishListService {
         }
     }
 
-
     @Transactional(rollbackFor = {Exception.class})
     public BeanWishList updateWishListById(@RequestBody BeanWishList wishList) {
         if (wishList == null) {
@@ -120,7 +111,7 @@ public class WishListService {
                 } else if (wishList.getAmount() == existingWishList.getAmount()) {
                     throw new CustomException("wishList.update.amount.error");
                 } else {
-                    if(wishList.getAmount() > product.getAmount()){
+                    if (wishList.getAmount() > product.getAmount()) {
                         throw new CustomException("wishList.amount.error");
                     }
                     existingWishList.setAmount(wishList.getAmount());

@@ -1,9 +1,7 @@
 package mx.edu.utez.services_clothing_shop.model.wish_list;
 
-import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;

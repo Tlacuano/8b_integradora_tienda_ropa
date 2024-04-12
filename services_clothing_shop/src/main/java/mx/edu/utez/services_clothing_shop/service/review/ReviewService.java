@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.review;
 
 import mx.edu.utez.services_clothing_shop.controller.review.dto.*;
-import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.order_has_products.IOrderHasProducts;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
@@ -16,13 +15,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
     private final IReview iReview;
     private final IUser iUser;
     private final IOrderHasProducts iOrderHasProducts;
+
     public ReviewService(IReview iReview, IUser iUser, IOrderHasProducts iOrderHasProducts) {
         this.iReview = iReview;
         this.iUser = iUser;
@@ -30,31 +29,28 @@ public class ReviewService {
     }
 
     @Transactional
-    public List<ResponseAllReviewDTO> getReviewsByOrderProductId(UUID idOrderProduct){
+    public List<ResponseAllReviewDTO> getReviewsByOrderProductId(UUID idOrderProduct) {
         List<Object[]> reviewsData = iReview.findEssentialReviewInfo(idOrderProduct);
         if (reviewsData.isEmpty()) {
             throw new CustomException("review.idOrderHasProduct.notfound");
         }
-        return reviewsData
-                .stream()
-                .map(this::mapToResponseAllDTO)
-                .collect(Collectors.toList());
+        return reviewsData.stream().map(this::mapToResponseAllDTO).toList();
     }
 
     @Transactional
-    public BeanReview putReview(RequestPutReviewDTO payload){
+    public BeanReview putReview(RequestPutReviewDTO payload) {
         Optional<BeanReview> optionalBeanReview = iReview.findById(payload.getIdReview());
-        if(optionalBeanReview.isEmpty()){
+        if (optionalBeanReview.isEmpty()) {
             throw new CustomException("review.idReview.notfound");
         }
 
         BeanReview existingReview = optionalBeanReview.get();
-        if(payload.getComment() != null){
+        if (payload.getComment() != null) {
             existingReview.setComment(payload.getComment());
         }
 
         Integer assessmentValue = payload.getAssessment();
-        if(assessmentValue != null){
+        if (assessmentValue != null) {
             existingReview.setAssessment(assessmentValue);
         }
         existingReview.setReviewDate(LocalDate.now());
@@ -62,7 +58,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public BeanReview postReview(RequestPostReviewDTO payload){
+    public BeanReview postReview(RequestPostReviewDTO payload) {
         UUID orderHasProductId = payload.getOrderHasProductId();
         if (iReview.existsByOrderHasProduct_IdOrderProduct(orderHasProductId)) {
             throw new CustomException("review.orderHasProduct.exists");
@@ -77,7 +73,7 @@ public class ReviewService {
         return iReview.saveAndFlush(newReview);
     }
 
-    public ResponseAllReviewDTO mapToResponseAllDTO(Object[] row){
+    public ResponseAllReviewDTO mapToResponseAllDTO(Object[] row) {
         ResponseAllReviewDTO responseDTO = new ResponseAllReviewDTO();
         responseDTO.setComment((String) row[0]);
         responseDTO.setReviewDate((LocalDate) row[1]);
@@ -85,8 +81,12 @@ public class ReviewService {
         return responseDTO;
     }
 
-    public void deleteReview(UUID idReview){
-        if(!iReview.existsByIdReview(idReview)){
+    public ResponseReviewsByProductIdDTO mapToResponseReviewsByProductIdDTO(BeanReview reviews) {
+        return ResponseReviewsByProductIdDTO.fromReview(reviews);
+    }
+
+    public void deleteReview(UUID idReview) {
+        if (!iReview.existsByIdReview(idReview)) {
             throw new CustomException("review.idReview.notfound");
         }
         iReview.deleteById(idReview);
@@ -94,36 +94,33 @@ public class ReviewService {
 
 
     @Transactional
-    public List<ResponseReviewsByProductIdDTO> findByProductId(UUID idProduct){
+    public List<ResponseReviewsByProductIdDTO> findByProductId(UUID idProduct) {
         List<BeanReview> reviews = iReview.findByProductId(idProduct);
 
-        return reviews
-                .stream()
-                .map(ResponseReviewsByProductIdDTO::fromReview)
-                .collect(Collectors.toList());
+        return reviews.stream().map(this::mapToResponseReviewsByProductIdDTO).toList();
     }
 
     @Transactional
-    public boolean getComprobantToReview(RequestComprobationToReviewDTO payload){
+    public boolean getComprobantToReview(RequestComprobationToReviewDTO payload) {
         BeanUser user = iUser.findByEmail(payload.getEmail());
 
-        if(user == null){
+        if (user == null) {
             throw new CustomException("user.email.exists");
         }
 
         BeanOrderHasProducts order = iOrderHasProducts.findOrderHasProductByBuyerAndProduct(user.getIdUser(), payload.getIdProduct());
 
-        if(order == null){
+        if (order == null) {
             throw new CustomException("order.bybuyer.notfound");
         }
 
-        if(order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")){
+        if (order.getStatus().getStatus().equals("Preparación") || order.getStatus().getStatus().equals("Enviado")) {
             throw new CustomException("order.status.notallowed");
         }
 
         BeanReview review = iReview.findByOrderId(order.getOrder().getIdOrder());
 
-        if(review != null){
+        if (review != null) {
             throw new CustomException("review.exists");
         }
 

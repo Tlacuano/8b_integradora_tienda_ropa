@@ -29,10 +29,10 @@ public class SpringSecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final DecryptingFilter decryptingFilter;
 
-    private final String ADMIN = "ADMIN";
-    private final String SUPERADMIN = "SUPERADMIN";
-    private final String BUYER = "BUYER";
-    private final String SELLER = "SELLER";
+    private static final String ADMIN = "ADMIN";
+    private static final String SUPERADMIN = "SUPERADMIN";
+    private static final String BUYER = "BUYER";
+    private static final String SELLER = "SELLER";
 
 
     public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, DecryptingFilter decryptingFilter) {
@@ -130,7 +130,6 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-sell-product/get-page-by-user-email").hasAnyRole(ADMIN, SUPERADMIN)
 
 
-
                                 //Modulo address
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/addresses/get-addresses").hasAnyRole(BUYER, SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/addresses/get-address").hasAnyRole(BUYER, SELLER)
@@ -187,7 +186,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products-by-user").hasAnyRole(SELLER, ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/post-product").hasRole(SELLER)
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-product").hasRole(SELLER)
-                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-status-product").hasAnyRole(SELLER, ADMIN,SUPERADMIN)
+                                .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-status-product").hasAnyRole(SELLER, ADMIN, SUPERADMIN)
 
                                 //Modulo cloudinary
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/images/upload-images").hasAnyRole(BUYER, SELLER, ADMIN, SUPERADMIN)

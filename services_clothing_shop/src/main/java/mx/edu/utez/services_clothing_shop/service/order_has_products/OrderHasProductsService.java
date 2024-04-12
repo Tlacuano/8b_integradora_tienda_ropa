@@ -32,7 +32,8 @@ public class OrderHasProductsService {
 
     private final EmailService emailService;
 
-
+    private static final String NO_USER_FOUND = "user.email.exists";
+    private static final String CANCELLED = "Compra cancelada";
 
     public OrderHasProductsService(IOrderHasProducts orderHasProductsRepository, IUser userRepository, IOrderStatus orderStatusRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.orderHasProductsRepository = orderHasProductsRepository;
@@ -43,7 +44,7 @@ public class OrderHasProductsService {
     }
 
     @Transactional
-    public List<BeanOrderHasProducts> getOrdersHasProductsByOrder_IdOrder(UUID idOrder) {
+    public List<BeanOrderHasProducts> getOrdersHasProductsByOrderIdOrder(UUID idOrder) {
         return orderHasProductsRepository.findAllByOrder_IdOrder(idOrder);
     }
 
@@ -51,13 +52,13 @@ public class OrderHasProductsService {
     public BeanOrderHasProducts getOrdersHasProductsByBuyer(RequestComprobationToReviewDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(NO_USER_FOUND);
         }
 
-        BeanOrderHasProducts order = orderHasProductsRepository.findOrderHasProductByBuyerAndProduct(user.getIdUser(),payload.getIdProduct());
+        BeanOrderHasProducts order = orderHasProductsRepository.findOrderHasProductByBuyerAndProduct(user.getIdUser(), payload.getIdProduct());
 
-        if(order == null){
+        if (order == null) {
             throw new CustomException("order.bybuyer.notfound");
         }
 
@@ -68,13 +69,13 @@ public class OrderHasProductsService {
     public Object getOrdersHasProductsBySeller(RequestGetPageSalesDTO payload, Pageable pageable) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(NO_USER_FOUND);
         }
 
         BeanOrderStatus status = orderStatusRepository.findByStatus(payload.getStatus());
 
-        if(status == null){
+        if (status == null) {
             throw new CustomException("order.status.notfound");
         }
 
@@ -85,11 +86,11 @@ public class OrderHasProductsService {
 
     @Transactional
     public boolean cancelSellBySeller(RequestActionBySeller payload) {
-        BeanOrderHasProducts order = VerifyAuthorityOnOrder(payload);
+        BeanOrderHasProducts order = verifyAuthorityOnOrder(payload);
 
         BeanOrderStatus status = orderStatusRepository.findByStatus("Cancelado");
 
-        if(status == null){
+        if (status == null) {
             throw new CustomException("status.notFound");
         }
 
@@ -103,8 +104,8 @@ public class OrderHasProductsService {
         String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
 
         emailService.sendEmail(order.getOrder().getAddress().getPerson().getUser().getEmail(),
-                "Compra cancelada",
-                "Compra cancelada",
+                CANCELLED,
+                CANCELLED,
                 "El vendedor ha cancelado la compra de tu producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas." +
                         "<br><br>Tu dinero será devuelto en un plazo de 3 a 5 días hábiles a tu tarjeta con número: " + "**** **** **** " + lastFourDigits,
                 "");
@@ -114,11 +115,11 @@ public class OrderHasProductsService {
 
     @Transactional
     public boolean markAsSent(RequestActionBySeller payload) {
-        BeanOrderHasProducts order = VerifyAuthorityOnOrder(payload);
+        BeanOrderHasProducts order = verifyAuthorityOnOrder(payload);
 
         BeanOrderStatus status = orderStatusRepository.findByStatus("Enviado");
 
-        if(status == null){
+        if (status == null) {
             throw new CustomException("status.notFound");
         }
 
@@ -137,32 +138,32 @@ public class OrderHasProductsService {
     public Object getOrdersHasProductsBySellerAndNumber(RequestGetPageSalesDTO payload, Pageable pageable) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(NO_USER_FOUND);
         }
-        Page<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySellerAndOrderNumber(user.getEmail(), "%"+payload.getOrderNumber()+"%", pageable);
+        Page<BeanOrderHasProducts> orders = orderHasProductsRepository.findBySellerAndOrderNumber(user.getEmail(), "%" + payload.getOrderNumber() + "%", pageable);
 
         return orders.map(ResponseOrdersSalesDTO::toOrderSalesDTO);
     }
 
-    private BeanOrderHasProducts VerifyAuthorityOnOrder(RequestActionBySeller payload) {
+    private BeanOrderHasProducts verifyAuthorityOnOrder(RequestActionBySeller payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
-        if(user == null){
-            throw new CustomException("user.email.exists");
+        if (user == null) {
+            throw new CustomException(NO_USER_FOUND);
         }
 
-        if(payload.getPassword() == null || !passwordEncoder.matches(payload.getPassword(), user.getPassword())){
+        if (payload.getPassword() == null || !passwordEncoder.matches(payload.getPassword(), user.getPassword())) {
             throw new CustomException("user.password.incorrect");
         }
 
         BeanOrderHasProducts order = orderHasProductsRepository.findById(payload.getIdOrderProduct()).orElse(null);
 
-        if(order == null){
+        if (order == null) {
             throw new CustomException("order.notfound");
         }
 
-        if(!order.getProduct().getUser().getEmail().equals(user.getEmail())){
+        if (!order.getProduct().getUser().getEmail().equals(user.getEmail())) {
             throw new CustomException("order.notfound");
         }
 
@@ -170,15 +171,15 @@ public class OrderHasProductsService {
     }
 
     public void putStatusOrderHasProducts(UUID idOrderProduct, String rejectReason) {
-       orderHasProductsRepository.updateOrderHasProductStatus(idOrderProduct);
+        orderHasProductsRepository.updateOrderHasProductStatus(idOrderProduct);
 
-       BeanOrderHasProducts order = orderHasProductsRepository.findByIdOrderProduct(idOrderProduct);
+        BeanOrderHasProducts order = orderHasProductsRepository.findByIdOrderProduct(idOrderProduct);
 
-       emailService.sendEmail(order.getOrder().getAddress().getPerson().getUser().getEmail(),
-               "Compra cancelada",
-               "Compra cancelada",
-               "Un administrador ha cancelado la compra de tu producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas." +
-                       "<br><br>El motivo de la cancelación es: " + rejectReason + ".",
-               "");
+        emailService.sendEmail(order.getOrder().getAddress().getPerson().getUser().getEmail(),
+                CANCELLED,
+                CANCELLED,
+                "Un administrador ha cancelado la compra de tu producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas." +
+                        "<br><br>El motivo de la cancelación es: " + rejectReason + ".",
+                "");
     }
 }

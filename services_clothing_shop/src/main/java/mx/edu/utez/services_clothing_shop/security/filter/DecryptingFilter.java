@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.security.filter;
 
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.security.EncryptionFunctions;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -7,8 +8,8 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+
 import java.io.*;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -16,10 +17,10 @@ import java.util.List;
 @Component
 @Order(1)
 public class DecryptingFilter implements Filter {
+    private static final String APPJSON = "application/json";
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         if (httpRequest.getAttribute("bodyDecrypted") != null) {
@@ -65,7 +66,7 @@ public class DecryptingFilter implements Filter {
 
                         @Override
                         public void setReadListener(ReadListener readListener) {
-                            throw new RuntimeException("Not implemented");
+                            throw new CustomException("Not implemented");
                         }
                     };
                 }
@@ -82,13 +83,13 @@ public class DecryptingFilter implements Filter {
 
                 @Override
                 public String getContentType() {
-                    return "application/json";
+                    return APPJSON;
                 }
 
                 @Override
                 public String getHeader(String name) {
                     if ("content-type".equalsIgnoreCase(name)) {
-                        return "application/json";
+                        return APPJSON;
                     }
                     return super.getHeader(name);
                 }
@@ -96,7 +97,7 @@ public class DecryptingFilter implements Filter {
                 @Override
                 public Enumeration<String> getHeaders(String name) {
                     if ("content-type".equalsIgnoreCase(name)) {
-                        return Collections.enumeration(List.of("application/json"));
+                        return Collections.enumeration(List.of(APPJSON));
                     }
                     return super.getHeaders(name);
                 }
@@ -106,14 +107,17 @@ public class DecryptingFilter implements Filter {
             chain.doFilter(wrappedRequest, response);
             return;
         }
-
         chain.doFilter(request, response);
 
     }
 
     @Override
-    public void init(FilterConfig filterConfig) {}
+    public void init(FilterConfig filterConfig) {
+        // Implementation not required
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        // Implementation not required
+    }
 }
