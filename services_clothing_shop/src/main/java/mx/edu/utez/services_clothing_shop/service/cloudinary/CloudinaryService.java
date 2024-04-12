@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.service.cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,7 @@ public class CloudinaryService {
             }
             return uploadResults;
         } catch (IOException e) {
-            throw new RuntimeException("image.upload.error");
+            throw new CustomException("image.upload.error");
         }
     }
 
@@ -37,7 +38,7 @@ public class CloudinaryService {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             return uploadResult.get("url").toString();
         } catch (IOException e) {
-            throw new RuntimeException("image.upload.error");
+            throw new CustomException("image.upload.error");
         }
     }
 }
