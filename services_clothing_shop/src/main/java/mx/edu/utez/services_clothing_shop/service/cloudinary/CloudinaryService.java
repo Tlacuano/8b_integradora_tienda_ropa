@@ -2,6 +2,7 @@ package mx.edu.utez.services_clothing_shop.service.cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,17 +20,25 @@ public class CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public List<String> uploadImages(List<MultipartFile> files) throws IOException {
-        List<String> uploadResults = new ArrayList<>();
-        for (MultipartFile file : files) {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            uploadResults.add(uploadResult.get("url").toString());
+    public List<String> uploadImages(List<MultipartFile> files) {
+        try {
+            List<String> uploadResults = new ArrayList<>();
+            for (MultipartFile file : files) {
+                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+                uploadResults.add(uploadResult.get("url").toString());
+            }
+            return uploadResults;
+        } catch (IOException e) {
+            throw new CustomException("image.upload.error");
         }
-        return uploadResults;
     }
 
-    public String uploadImage(MultipartFile file) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-        return uploadResult.get("url").toString();
+    public String uploadImage(MultipartFile file) {
+        try {
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            return uploadResult.get("url").toString();
+        } catch (IOException e) {
+            throw new CustomException("image.upload.error");
+        }
     }
 }

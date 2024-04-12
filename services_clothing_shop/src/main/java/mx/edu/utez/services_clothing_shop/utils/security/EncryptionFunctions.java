@@ -75,7 +75,7 @@ public class EncryptionFunctions {
         return dataDecrypt;
     }
 
-    private static Key generateKey() throws Exception {
+    private static Key generateKey() {
         return new SecretKeySpec(KEY.getBytes(), ALGORITHM);
     }
 }

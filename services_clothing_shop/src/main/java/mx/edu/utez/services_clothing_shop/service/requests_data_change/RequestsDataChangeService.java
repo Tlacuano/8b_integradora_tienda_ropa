@@ -28,6 +28,7 @@ import java.util.UUID;
 @Service
 public class RequestsDataChangeService {
     private final IRequestsDataChange IRequestsDataChange;
+    private final String REQUEST_NOT_FOUND = "dataChange.requestId.notFound";
 
     public RequestsDataChangeService(IRequestsDataChange IRequestsDataChange) {
         this.IRequestsDataChange = IRequestsDataChange;
@@ -41,7 +42,7 @@ public class RequestsDataChangeService {
 
         try {
             BeanRequestDataChange requestDataChange = IRequestsDataChange.findById(requestId)
-                    .orElseThrow(() -> new CustomException("dataChange.requestId.notFound"));
+                    .orElseThrow(() -> new CustomException(REQUEST_NOT_FOUND));
 
             if (status != null) {
                 Optional<BeanRequestStatus> requestStatus = IRequestsDataChange.findStatusByStatusName(status);
@@ -116,7 +117,7 @@ public class RequestsDataChangeService {
             Optional<BeanRequestDataChange> requestDataChangeOptional = IRequestsDataChange.findById(idRequestDataChange);
 
             if (requestDataChangeOptional.isEmpty()) {
-                throw new CustomException("dataChange.requestId.notFound");
+                throw new CustomException(REQUEST_NOT_FOUND);
             }
 
             BeanRequestDataChange requestDataChange = requestDataChangeOptional.get();
@@ -145,7 +146,7 @@ public class RequestsDataChangeService {
                     genderAsString
             );
         } catch (CustomException e) {
-            throw new CustomException("dataChange.requestId.notFound");
+            throw new CustomException(REQUEST_NOT_FOUND);
         }
     }
 

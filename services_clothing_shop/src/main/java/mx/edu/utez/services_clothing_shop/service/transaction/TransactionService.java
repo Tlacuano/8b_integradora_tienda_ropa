@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.transaction;
 
 import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.Product;
 import com.stripe.net.Webhook;
@@ -21,6 +22,7 @@ import mx.edu.utez.services_clothing_shop.model.transaction_status.ITransactionS
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
+import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -59,103 +61,94 @@ public class TransactionService {
     }
 
     @Transactional
-    public String createCheckoutSession(List<ResponseShoppingCartDTO> shoppingCart, String email, UUID idAddress, UUID idPaymentCard) {
-        try {
-            for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
-                if (shoppingCartProduct.getAmount() > shoppingCartProduct.getProduct().getAmount()) {
-                    throw new RuntimeException("transaction.product.stock");
-                }
+    public String createCheckoutSession(List<ResponseShoppingCartDTO> shoppingCart, String email, UUID idAddress, UUID idPaymentCard) throws StripeException {
+        for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
+            if (shoppingCartProduct.getAmount() > shoppingCartProduct.getProduct().getAmount()) {
+                throw new CustomException("transaction.product.stock");
             }
-
-            List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
-            for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
-                ProductCreateParams productParams = ProductCreateParams.builder()
-                        .setName(shoppingCartProduct.getProduct().getProductName())
-                        .setDescription(shoppingCartProduct.getProduct().getDescription())
-                        .addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
-                Product product = Product.create(productParams);
-                lineItems.add(SessionCreateParams.LineItem.builder()
-                        .setQuantity((long) shoppingCartProduct.getAmount())
-                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                                .setCurrency("MXN")
-                                .setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100))
-                                .setProduct(product.getId()).build()).build());
-            }
-
-            SessionCreateParams sessionParams = SessionCreateParams.builder()
-                    .addAllLineItem(lineItems)
-                    .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                    .setSuccessUrl("http://localhost:5173/my-orders")
-                    .setCancelUrl("http://localhost:5173/")
-                    .setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
-                    .build();
-            Session session = Session.create(sessionParams);
-
-            if (session.getUrl().isEmpty()) {
-                SessionExpireParams expireParams = SessionExpireParams.builder().build();
-                session.expire(expireParams);
-                throw new RuntimeException("transaction.session.failed");
-            }
-
-            BeanUser user = userRepository.findByEmail(email);
-            if (user == null) {
-                throw new RuntimeException("transaction.user.notfound");
-            }
-
-            RequestPostOrderDTO order = new RequestPostOrderDTO(user.getIdUser(), LocalDate.now(), idAddress, idPaymentCard, orderService.orderNumberGenerator());
-            orderService.postOrder(order);
-
-            BeanOrder savedOrder = orderService.getOrderByOrderNumber(order.getOrderNumber());
-            double total = shoppingCart.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getAmount()).sum();
-
-            BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
-            BeanTransaction transaction = new BeanTransaction(session.getId(), total, user, savedOrder, status, session.getPaymentStatus(), session.getStatus());
-            transactionRepository.save(transaction);
-
-            return session.getUrl();
-        } catch (Exception e) {
-            throw new RuntimeException("transaction.session.failed");
         }
+
+        List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
+        for (ResponseShoppingCartDTO shoppingCartProduct : shoppingCart) {
+            ProductCreateParams productParams = ProductCreateParams.builder()
+                    .setName(shoppingCartProduct.getProduct().getProductName())
+                    .setDescription(shoppingCartProduct.getProduct().getDescription())
+                    .addImage(shoppingCartProduct.getProduct().getGallery().get(0).getImage()).build();
+            Product product = Product.create(productParams);
+            lineItems.add(SessionCreateParams.LineItem.builder()
+                    .setQuantity((long) shoppingCartProduct.getAmount())
+                    .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                            .setCurrency("MXN")
+                            .setUnitAmount((long) (shoppingCartProduct.getProduct().getPrice() * 100))
+                            .setProduct(product.getId()).build()).build());
+        }
+
+        SessionCreateParams sessionParams = SessionCreateParams.builder()
+                .addAllLineItem(lineItems)
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .setSuccessUrl("http://localhost:5173/my-orders")
+                .setCancelUrl("http://localhost:5173/")
+                .setExpiresAt(System.currentTimeMillis() / 1000 + 3600) // 1 hour
+                .build();
+        Session session = Session.create(sessionParams);
+
+        if (session.getUrl().isEmpty()) {
+            SessionExpireParams expireParams = SessionExpireParams.builder().build();
+            session.expire(expireParams);
+            throw new CustomException("transaction.session.failed");
+        }
+
+        BeanUser user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new CustomException("transaction.user.notfound");
+        }
+
+        RequestPostOrderDTO order = new RequestPostOrderDTO(user.getIdUser(), LocalDate.now(), idAddress, idPaymentCard, orderService.orderNumberGenerator());
+        orderService.postOrder(order);
+
+        BeanOrder savedOrder = orderService.getOrderByOrderNumber(order.getOrderNumber());
+        double total = shoppingCart.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getAmount()).sum();
+
+        BeanTransactionStatus status = transactionStatusRepository.findByStatus("Pendiente");
+        BeanTransaction transaction = new BeanTransaction(session.getId(), total, user, savedOrder, status, session.getPaymentStatus(), session.getStatus());
+        transactionRepository.save(transaction);
+
+        return session.getUrl();
     }
 
-    public void fulfillOrder(String stripeSignature, String payload) {
-        try {
+    public void fulfillOrder(String stripeSignature, String payload) throws StripeException {
+        if (stripeSignature == null || payload == null) {
+            throw new CustomException("transaction.session.notfound");
+        }
 
-            if (stripeSignature == null || payload == null) {
-                throw new RuntimeException("transaction.session.notfound");
-            }
+        Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
+        Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
+        SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
+        Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
+        BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
 
-            Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
-            Session sessionEvent = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
-            SessionRetrieveParams params = SessionRetrieveParams.builder().addExpand("line_items").build();
-            Session sessionData = Session.retrieve(sessionEvent.getId(), params, null);
-            BeanTransaction transaction = transactionRepository.findByIdSession(sessionEvent.getId());
+        if (transaction == null) {
+            throw new CustomException("transaction.notfound");
+        }
 
-            if (transaction == null) {
-                throw new RuntimeException("transaction.notfound");
-            }
+        if ("checkout.session.completed".equals(event.getType())) {
+            BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");
+            transaction.setPaymentStatus(sessionData.getPaymentStatus());
+            transaction.setCheckoutStatus(sessionData.getStatus());
+            transaction.setStatus(transactionStatus);
+            transactionRepository.save(transaction);
 
-            if ("checkout.session.completed".equals(event.getType())) {
-                BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Pagado");
-                transaction.setPaymentStatus(sessionData.getPaymentStatus());
-                transaction.setCheckoutStatus(sessionData.getStatus());
-                transaction.setStatus(transactionStatus);
-                transactionRepository.save(transaction);
+            BeanOrder order = transaction.getOrder();
+            orderHasProductsRepository.sp_fulfill_order(order.getIdOrder(), order.getPaymentCard().getUser().getIdUser());
+        }
 
-                BeanOrder order = transaction.getOrder();
-                orderHasProductsRepository.sp_fulfill_order(order.getIdOrder(), order.getPaymentCard().getUser().getIdUser());
-            }
-
-            if ("checkout.session.expired".equals(event.getType())) {
-                BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Cancelado");
-                transaction.setPaymentStatus(sessionData.getPaymentStatus());
-                transaction.setCheckoutStatus(sessionData.getStatus());
-                transaction.setStatus(transactionStatus);
-                transactionRepository.save(transaction);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("transaction.webhook.error");
+        if ("checkout.session.expired".equals(event.getType())) {
+            BeanTransactionStatus transactionStatus = transactionStatusRepository.findByStatus("Cancelado");
+            transaction.setPaymentStatus(sessionData.getPaymentStatus());
+            transaction.setCheckoutStatus(sessionData.getStatus());
+            transaction.setStatus(transactionStatus);
+            transactionRepository.save(transaction);
         }
     }
 }
