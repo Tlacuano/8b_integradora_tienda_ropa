@@ -94,21 +94,7 @@ public class ProductController {
 
     @PostMapping("/post-product")
     public ResponseEntity<Object> postProduct(@Valid @RequestBody RequestProductDTO product) {
-        BeanProduct newProduct = new BeanProduct();
-        try {
-            parseToBeanProduct(newProduct, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
-            BeanUser user = new BeanUser();
-            user.setIdUser(product.getUser());
-            newProduct.setUser(user);
-            newProduct.setStatus(product.isStatus());
-            List<String> images = new ArrayList<>(product.getProductGallery());
-            newProduct = productService.postProduct(newProduct, images);
-            return new ResponseEntity<>(new CustomResponse<>(newProduct, "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
-        } catch (Exception e) {
-            productService.deleteProductGallery(newProduct);
-            productService.deleteProduct(newProduct.getIdProduct());
-            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al registrar el producto", true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+       return new ResponseEntity<>(new CustomResponse<>(productService.postProduct(product), "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
     }
 
     @PutMapping("/put-product")

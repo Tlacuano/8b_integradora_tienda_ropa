@@ -121,6 +121,8 @@ public class ErrorDictionary {
         errorMessages.put("product.user.notnull", "El usuario del producto es obligatorio.");
         errorMessages.put("product.user.nonempty", "El usuario del producto no puede estar vacío.");
         errorMessages.put("product.productGallery.nonempty", "La galería del producto no puede estar vacía.");
+        errorMessages.put("product.productGallery.size.min", "La galería del producto debe tener al menos 2 imágenes.");
+        errorMessages.put("product.productGallery.size.max", "La galería del producto no puede tener más de 5 imágenes.");
 
         //error messages address
         errorMessages.put("addresses.notfound", "No hay direcciones registradas.");
