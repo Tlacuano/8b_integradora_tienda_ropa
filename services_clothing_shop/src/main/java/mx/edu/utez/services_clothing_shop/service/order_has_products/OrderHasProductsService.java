@@ -32,8 +32,8 @@ public class OrderHasProductsService {
 
     private final EmailService emailService;
 
-    private final String NO_USER_FOUND = "user.email.exists";
-    private final String CANCELLED = "Compra cancelada";
+    private static final String NO_USER_FOUND = "user.email.exists";
+    private static final String CANCELLED = "Compra cancelada";
 
     public OrderHasProductsService(IOrderHasProducts orderHasProductsRepository, IUser userRepository, IOrderStatus orderStatusRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.orderHasProductsRepository = orderHasProductsRepository;
@@ -44,7 +44,7 @@ public class OrderHasProductsService {
     }
 
     @Transactional
-    public List<BeanOrderHasProducts> getOrdersHasProductsByOrder_IdOrder(UUID idOrder) {
+    public List<BeanOrderHasProducts> getOrdersHasProductsByOrderIdOrder(UUID idOrder) {
         return orderHasProductsRepository.findAllByOrder_IdOrder(idOrder);
     }
 
@@ -86,7 +86,7 @@ public class OrderHasProductsService {
 
     @Transactional
     public boolean cancelSellBySeller(RequestActionBySeller payload) {
-        BeanOrderHasProducts order = VerifyAuthorityOnOrder(payload);
+        BeanOrderHasProducts order = verifyAuthorityOnOrder(payload);
 
         BeanOrderStatus status = orderStatusRepository.findByStatus("Cancelado");
 
@@ -115,7 +115,7 @@ public class OrderHasProductsService {
 
     @Transactional
     public boolean markAsSent(RequestActionBySeller payload) {
-        BeanOrderHasProducts order = VerifyAuthorityOnOrder(payload);
+        BeanOrderHasProducts order = verifyAuthorityOnOrder(payload);
 
         BeanOrderStatus status = orderStatusRepository.findByStatus("Enviado");
 
@@ -146,7 +146,7 @@ public class OrderHasProductsService {
         return orders.map(ResponseOrdersSalesDTO::toOrderSalesDTO);
     }
 
-    private BeanOrderHasProducts VerifyAuthorityOnOrder(RequestActionBySeller payload) {
+    private BeanOrderHasProducts verifyAuthorityOnOrder(RequestActionBySeller payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
 
         if (user == null) {

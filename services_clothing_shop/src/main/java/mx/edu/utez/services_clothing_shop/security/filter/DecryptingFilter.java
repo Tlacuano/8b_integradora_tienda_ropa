@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @Order(1)
 public class DecryptingFilter implements Filter {
-    private final String APPJSON = "application/json";
+    private static final String APPJSON = "application/json";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

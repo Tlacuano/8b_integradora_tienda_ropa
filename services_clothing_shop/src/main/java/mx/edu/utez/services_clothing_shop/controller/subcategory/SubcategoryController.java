@@ -132,9 +132,7 @@ public class SubcategoryController {
 
     private ResponseEntity<Object> validation(BindingResult result) {
         Map<String, String> errors = new HashMap<>();
-        result.getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), "El campo " + error.getField() + " " + error.getDefaultMessage());
-        });
+        result.getFieldErrors().forEach(error -> errors.put(error.getField(), "El campo " + error.getField() + " " + error.getDefaultMessage()));
         return new ResponseEntity<>(new CustomResponse<>(errors, "El objeto no cumple con los requisitos", true, 400), HttpStatus.BAD_REQUEST);
     }
 }

@@ -13,7 +13,6 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
     private String email;
     private boolean status;
 
-
     private UUID idPerson;
     private String name;
     private String lastName;
@@ -32,41 +31,40 @@ public class ResponseGetUserDetailsByEmailAdminDTO {
     private List<String> roles;
 
     public static ResponseGetUserDetailsByEmailAdminDTO fromUser(BeanUser user) {
-        ResponseGetUserDetailsByEmailAdminDTO UserDetails = new ResponseGetUserDetailsByEmailAdminDTO();
+        ResponseGetUserDetailsByEmailAdminDTO userDetails = new ResponseGetUserDetailsByEmailAdminDTO();
 
-        UserDetails.setEmail(user.getEmail());
-        UserDetails.setStatus(user.isStatus());
+        userDetails.setEmail(user.getEmail());
+        userDetails.setStatus(user.isStatus());
 
 
-        UserDetails.setRoles(user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList());
+        userDetails.setRoles(user.getRoles().stream().map(role -> role.getRole().getRoleName()).toList());
 
-        if(user.getPerson() == null){
-            return UserDetails;
-        }
-        
-        UserDetails.setIdPerson(user.getPerson().getIdPerson());
-        UserDetails.setName(user.getPerson().getName());
-        UserDetails.setLastName(user.getPerson().getLastName());
-        UserDetails.setSecondLastName(user.getPerson().getSecondLastName());
-        UserDetails.setPicture(user.getPerson().getPicture());
-        UserDetails.setBirthday(user.getPerson().getBirthday());
-        UserDetails.setPhoneNumber(user.getPerson().getPhoneNumber());
-        UserDetails.setGender(String.valueOf(user.getPerson().getGender()));
-
-        if(user.getPerson().getSellerInformation() == null){
-            return UserDetails;
+        if (user.getPerson() == null) {
+            return userDetails;
         }
 
-        UserDetails.setTaxIdentificationNumber(user.getPerson().getSellerInformation().getTaxIdentificationNumber());
-        UserDetails.setSecondaryPhoneNumber(user.getPerson().getSellerInformation().getSecondaryPhoneNumber());
-        UserDetails.setImageIdentification(user.getPerson().getSellerInformation().getImageIdentification());
-        UserDetails.setCurp(user.getPerson().getSellerInformation().getCurp());
-        UserDetails.setBlockSell(user.getPerson().getSellerInformation().isBlockSell());
+        userDetails.setIdPerson(user.getPerson().getIdPerson());
+        userDetails.setName(user.getPerson().getName());
+        userDetails.setLastName(user.getPerson().getLastName());
+        userDetails.setSecondLastName(user.getPerson().getSecondLastName());
+        userDetails.setPicture(user.getPerson().getPicture());
+        userDetails.setBirthday(user.getPerson().getBirthday());
+        userDetails.setPhoneNumber(user.getPerson().getPhoneNumber());
+        userDetails.setGender(String.valueOf(user.getPerson().getGender()));
+
+        if (user.getPerson().getSellerInformation() == null) {
+            return userDetails;
+        }
+
+        userDetails.setTaxIdentificationNumber(user.getPerson().getSellerInformation().getTaxIdentificationNumber());
+        userDetails.setSecondaryPhoneNumber(user.getPerson().getSellerInformation().getSecondaryPhoneNumber());
+        userDetails.setImageIdentification(user.getPerson().getSellerInformation().getImageIdentification());
+        userDetails.setCurp(user.getPerson().getSellerInformation().getCurp());
+        userDetails.setBlockSell(user.getPerson().getSellerInformation().isBlockSell());
 
 
-        return UserDetails;
+        return userDetails;
     }
-
 
 
 }

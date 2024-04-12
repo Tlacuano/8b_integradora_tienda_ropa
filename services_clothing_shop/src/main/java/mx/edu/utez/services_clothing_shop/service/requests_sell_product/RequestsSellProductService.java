@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 @Service
 public class RequestsSellProductService {
 
-    private final IRequestsSellProduct IRequestsSellProduct;
-    private final IRequestStatus IRequestStatus;
-    private final String STATUS_INVALID = "requestStatus.invalid";
+    private final IRequestsSellProduct requestsSellProductRepository;
+    private final IRequestStatus requestStatusRepository;
+    private static final String STATUS_INVALID = "requestStatus.invalid";
 
-    public RequestsSellProductService(IRequestsSellProduct IRequestsSellProduct, IRequestStatus IRequestStatus) {
-        this.IRequestsSellProduct = IRequestsSellProduct;
-        this.IRequestStatus = IRequestStatus;
+    public RequestsSellProductService(IRequestsSellProduct requestsSellProductRepository, IRequestStatus requestStatusRepository) {
+        this.requestsSellProductRepository = requestsSellProductRepository;
+        this.requestStatusRepository = requestStatusRepository;
     }
 
     @Transactional
@@ -38,15 +38,15 @@ public class RequestsSellProductService {
         if (!isValidRejectionReason(rejectionReason)) {
             throw new CustomException("requestSellProduct.rejectionReason.invalid");
         }
-        Optional<BeanRequestSellProduct> existingRequestOptional = IRequestsSellProduct.findById(requestId);
+        Optional<BeanRequestSellProduct> existingRequestOptional = requestsSellProductRepository.findById(requestId);
         if (existingRequestOptional.isPresent()) {
             BeanRequestSellProduct existingRequest = existingRequestOptional.get();
-            BeanRequestStatus requestStatus = IRequestStatus.findByStatus(status)
+            BeanRequestStatus requestStatus = requestStatusRepository.findByStatus(status)
                     .orElseThrow(() -> new CustomException(STATUS_INVALID));
 
             existingRequest.setStatus(requestStatus);
             existingRequest.setRejectionReason(rejectionReason);
-            BeanRequestSellProduct updatedRequest = IRequestsSellProduct.save(existingRequest);
+            BeanRequestSellProduct updatedRequest = requestsSellProductRepository.save(existingRequest);
 
             return convertToDTO(updatedRequest);
         } else {
@@ -61,7 +61,7 @@ public class RequestsSellProductService {
     }
 
     public RequestDetailsDTO getRequestById(UUID idRequestSellProduct) {
-        Optional<BeanRequestSellProduct> requestOptional = IRequestsSellProduct.findById(idRequestSellProduct);
+        Optional<BeanRequestSellProduct> requestOptional = requestsSellProductRepository.findById(idRequestSellProduct);
 
         if (requestOptional.isPresent()) {
             BeanRequestSellProduct request = requestOptional.get();
@@ -89,7 +89,7 @@ public class RequestsSellProductService {
     }
 
     public String getRequestSellProductById(UUID statusID) {
-        BeanRequestStatus requestStatus = IRequestStatus.findById(statusID)
+        BeanRequestStatus requestStatus = requestStatusRepository.findById(statusID)
                 .orElseThrow(() -> new CustomException(STATUS_INVALID));
         return requestStatus.getStatus();
     }
@@ -98,19 +98,19 @@ public class RequestsSellProductService {
     public RequestsSellProductDTO postRequestSellProduct(UUID productId) {
         BeanProduct product = new BeanProduct();
         product.setIdProduct(productId);
-        BeanRequestStatus requestStatus = IRequestStatus.findByStatus("Pendiente")
+        BeanRequestStatus requestStatus = requestStatusRepository.findByStatus("Pendiente")
                 .orElseThrow(() -> new CustomException(STATUS_INVALID));
         BeanRequestSellProduct requestSellProduct = new BeanRequestSellProduct();
         requestSellProduct.setProduct(product);
         requestSellProduct.setStatus(requestStatus);
 
-        BeanRequestSellProduct newRequest = IRequestsSellProduct.save(requestSellProduct);
+        BeanRequestSellProduct newRequest = requestsSellProductRepository.save(requestSellProduct);
         return convertToDTO(newRequest);
     }
 
     @Transactional
     public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProduct(Pageable pageable) {
-        return IRequestsSellProduct.findAllStatuses(pageable);
+        return requestsSellProductRepository.findAllStatuses(pageable);
     }
 
     private RequestsSellProductDTO convertToDTO(BeanRequestSellProduct requestSellProduct) {
@@ -125,7 +125,7 @@ public class RequestsSellProductService {
 
     @Transactional
     public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProductByEmail(String email, Pageable pageable) {
-        return IRequestsSellProduct.findAllByEmailLikeIgnoreCase(email, pageable);
+        return requestsSellProductRepository.findAllByEmailLikeIgnoreCase(email, pageable);
     }
 
 }
