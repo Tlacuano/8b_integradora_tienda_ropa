@@ -141,7 +141,7 @@ public class ProductService {
 
         iRequestsSellProduct.save(requestSellProduct);
 
-        emailService.sendEmail("20213tn114@utez.edu.mx", "Solicitud registrada", "Solitud de venta de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando este disponible en la tienda", "");
+        emailService.sendEmail(user.getEmail(), "Solicitud registrada", "Solitud de venta de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando este disponible en la tienda", "");
 
         return true;
     }
