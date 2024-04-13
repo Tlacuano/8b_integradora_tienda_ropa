@@ -95,7 +95,7 @@ public class ProductService {
             throw new CustomException("subcategory.notfound");
         }
 
-        if (payload.getProductGallery().size() <= 2) {
+        if (payload.getProductGallery().size() < 2) {
             throw new CustomException("product.productGallery.size.min");
         }
         if (payload.getProductGallery().size() > 5) {
@@ -141,7 +141,7 @@ public class ProductService {
 
         iRequestsSellProduct.save(requestSellProduct);
 
-        emailService.sendEmail(user.getEmail(), "Solicitud registrada", "Solitud de venta de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando este disponible en la tienda", "");
+        emailService.sendEmail("20213tn114@utez.edu.mx", "Solicitud registrada", "Solitud de venta de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando este disponible en la tienda", "");
 
         return true;
     }

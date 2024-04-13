@@ -74,10 +74,9 @@
         <b-col class="" lg="6">
           <b-row>
             <b-col>
-              <b-form-group label="Selecciona hasta 4 imágenes">
+              <b-form-group label="Selecciona hasta 5 imágenes">
                 <b-form-file
                     v-on:change="handleImageUpload2"
-                    v-validate="'image:2000000|image|image_size'"
                     name="images"
                     placeholder=""
                     browse-text="Búscar"
@@ -96,7 +95,6 @@
               </b-col>
             </b-col>
           </b-row>
-          {{formData.productGallery}}
         </b-col>
       </b-row>
       <b-row>
@@ -119,35 +117,22 @@ import CategoryService from "@/services/category/CategoryService";
 import SubcategoryService from "@/services/subcategory/SubcategoryService";
 import {required} from "vee-validate/dist/rules.esm";
 import CloudinaryService from "@/services/cloudinary/CloudinaryService";
-import ProductService from "@/services/product/ProductService";
-import UserService from "@/services/user/userService";
-import RequestSellerProduct from "@/services/request-seller-product/RequestSellerProduct";
 
 export default {
 
   data() {
     return {
-      imageUrl: null,
-      selectedImages: [],
       imagePreviews: [],
       formData: {
         productName: '',
-        email:'',
+        email:this.$store.getters.getEmail,
         amount: 0,
-        status: false,
         subcategory:'',
         description: '',
         price: 0,
         productGallery: []
       },
-      i: 0,
       filteredSubcategories: [],
-      newImages: null,
-      newPrincipalImage: null,
-      optionsStatus: [
-        {value: true, text: "Habilitado"},
-        {value: false, text: "Deshabilitado"}
-      ],
       categories: null,
       subcategories: [],
       category:null
@@ -155,17 +140,36 @@ export default {
   },
   methods: {
     onSubmit() {
+      if (this.formData.productGallery.length === 0) {
+        showWarningToast("Debes cargar al menos dos imagenes");
+        return;
+      }
       this.$validator.validate().then(async valid => {
         if (!valid) {
           showWarningToast("Completar los requisitos")
         } else {
-          const response = await ProductManagementService.postProduct(this.formData)
-          const idProduct = response.data.idProduct
-          if(response){
-            const request = await RequestSellerProduct.postRequestSell({idProduct:idProduct})
-            showSuccessToast("Producto creado")
+          this.showOverlay()
+          for (let i= 0; i < this.formData.productGallery.length; i++){
+            const uploadImg = await CloudinaryService.uploadImage(this.formData.productGallery[i])
+            if(uploadImg){
+              this.formData.productGallery[i] = null
+              this.formData.productGallery[i] = uploadImg.data.data
+            }else{
+              showSuccessToast("Ocurrio un error al subir las imagenes, intentalo de nuevo")
+              return
+            }
           }
+          const response = await ProductManagementService.postProduct(this.formData)
+          if(response){
+            this.showOverlay()
+            showSuccessToast("Producto creado")
+            setTimeout(() => {
+              window.location.reload()
+            }, 2000)
+          }
+          this.showOverlay()
         }
+        this.showOverlay()
       })
     },
 
@@ -179,7 +183,6 @@ export default {
         showWarningToast("Debes cargar al menos una imagen");
         return;
       }
-
       if(files[0].size > 2000000){
         showWarningToast("La imagen no puede pesar más de 2MB");
         return;
@@ -188,22 +191,19 @@ export default {
       const reader = new FileReader();
       reader.onload = async (e) => {
         this.imagePreviews.push(e.target.result);
+        this.formData.productGallery.push(files[0])
       };
       reader.readAsDataURL(files[0]);
     },
     removeImage(index) {
       this.imagePreviews.splice(index, 1);
+      this.formData.productGallery.splice(index, 1);
       if (this.formData.productGallery.length > 2) {
         this.formData.productGallery.splice(index, 1);
       }
       if (this.imagePreviews.length === 0) {
         showWarningToast("Debes cargar al menos una imagen");
       }
-    },
-    async getProfile(){
-      const email = this.$store.getters.getEmail
-      const response = await UserService.getProfileService({email:email})
-      this.formData.user = response.data.idUser
     },
     async getCategories() {
       const response = await CategoryService.getCategories()
@@ -231,7 +231,6 @@ export default {
   },
   mounted() {
     this.getCategories()
-    this.getProfile()
   },
 
 }
