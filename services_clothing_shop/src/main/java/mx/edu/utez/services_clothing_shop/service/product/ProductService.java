@@ -95,7 +95,7 @@ public class ProductService {
             throw new CustomException("subcategory.notfound");
         }
 
-        if (payload.getProductGallery().size() <= 2) {
+        if (payload.getProductGallery().size() < 2) {
             throw new CustomException("product.productGallery.size.min");
         }
         if (payload.getProductGallery().size() > 5) {
