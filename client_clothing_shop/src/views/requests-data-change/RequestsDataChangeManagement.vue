@@ -86,7 +86,7 @@ export default{
       },
       requests: [],
       selectRequestId: null,
-
+      searchQuery: ''
     }
   },
   methods: {

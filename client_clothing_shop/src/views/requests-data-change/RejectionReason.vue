@@ -39,7 +39,6 @@ import { showSuccessToast, showInfoAlert} from "../../components/alerts/alerts";
 export default {
   props:{
     selectedRequestId: String
-
   },
   name: 'RejectionModal',
   data() {

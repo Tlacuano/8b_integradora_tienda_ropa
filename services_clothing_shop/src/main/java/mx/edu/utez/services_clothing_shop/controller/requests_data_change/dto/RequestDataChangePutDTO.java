@@ -15,11 +15,8 @@ public class RequestDataChangePutDTO {
     private UUID idRequestDataChange;
     private String rejectionReason;
     private String status;
-    private String name;
-    private String lastName;
-    private String secondLastName;
-    private LocalDate birthday;
-    private String phoneNumber;
-    private GenderEnum gender;
-
+    private String taxIdentificationNumber;
+    private String secondaryPhoneNumber;
+    private String imageIdentification;
+    private String curp;
 }

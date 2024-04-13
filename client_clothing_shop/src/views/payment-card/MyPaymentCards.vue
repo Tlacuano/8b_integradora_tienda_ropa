@@ -12,15 +12,23 @@
           <div v-for="(paymentCard, index) in paymentCards" :key="index" class="card-item">
             <div class="card-header">
               <font-awesome-icon :icon="typeCard(paymentCard.cardNumber)" class="card-icon"/>
+              <template>
+                <b-dropdown variant="link" class="status-dropdown" right no-caret>
+                  <template #button-content>
+                    <font-awesome-icon :icon="cardStatusIcon(paymentCard.status)" :class="`status-icon status-${paymentCard.status.toLowerCase()}`"/>
+                  </template>
+                  <b-dropdown-item @click="updateCardStatus(paymentCard.idPaymentCard, 'Predeterminada')">Predeterminada</b-dropdown-item>
+                  <b-dropdown-item @click="updateCardStatus(paymentCard.idPaymentCard, 'Habilitada')">Habilitada</b-dropdown-item>
+                  <b-dropdown-item @click="updateCardStatus(paymentCard.idPaymentCard, 'Deshabilitada')">Deshabilitada</b-dropdown-item>
+                </b-dropdown>
+              </template>
             </div>
             <div class="card-body">
               <div class="card-number">Terminada en {{ getLastFourDigits(paymentCard.cardNumber) }}</div>
               <div class="card-expiration">Vencimiento: {{ paymentCard.expirationDate }}</div>
             </div>
             <div class="card-footer">
-              <b-button block variant="dark" @click="openEditCardModal(paymentCard)">
-                Editar
-              </b-button>
+              <b-button variant="link" class="delete-button" @click="deleteCard(paymentCard.idPaymentCard)">Eliminar</b-button>
             </div>
           </div>
           <div class="card-item card-add" @click="openAddCardModal">
@@ -33,24 +41,22 @@
       </b-col>
     </b-row>
     <AddCardModal @cardAdded="refreshCards"/>
-    <EditCardModal :paymentCard="selectedPaymentCard" />
   </section>
 </template>
 
 <script>
 import Vue from "vue";
 import PaymentCardService from "@/services/payment-card/PaymentCardService";
+import {showInfoAlert, showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "MyPaymentCards",
   components: {
     AddCardModal: () => import("@/views/payment-card/AddCardModal.vue"),
-    EditCardModal: () => import("@/views/payment-card/EditCardModal.vue")
   },
   data() {
     return {
       paymentCards: [],
-      selectedPaymentCard: {}
     }
   },
   methods: {
@@ -63,18 +69,55 @@ export default Vue.extend({
       this.showOverlay()
       if (response.status === 200) {
         this.paymentCards = response.data.content;
+        console.log(this.paymentCards)
       }
-    },
-    openEditCardModal(paymentCard) {
-      this.selectedPaymentCard = paymentCard;
-      this.$nextTick(() => {
-        this.$bvModal.show("editCardModal");
-      });
     },
     openAddCardModal() {
       this.$nextTick(() => {
         this.$bvModal.show("addCardModal");
       });
+    },
+    async updateCardStatus(idPaymentCard, status) {
+      const payload = {
+        idCard: idPaymentCard,
+        status: status,
+      }
+      const response = await PaymentCardService.putPaymentCardStatus(payload);
+      if (response === 200) {
+        showSuccessToast("Estado de la tarjeta actualizado correctamente")
+        await this.getUserPaymentCards()
+      } else {
+        showWarningToast("Error al actualizar el estado de la tarjeta")
+      }
+    },
+    async deleteCard(idPaymentCard) {
+      await showInfoAlert(
+          "Eliminar tarjeta",
+          "¿Estás seguro de que deseas eliminar esta tarjeta?",
+          "Sí, eliminar",
+          async () => {
+            const payload = {
+              idPaymentCard: idPaymentCard,
+              email: this.$store.getters.getEmail,
+            }
+            const response = await PaymentCardService.deletePaymentCard(payload);
+            console.log(response)
+            if (response === 200) {
+              showSuccessToast("Tarjeta eliminada correctamente")
+              await this.getUserPaymentCards()
+            } else if (response === 409) {
+              Vue.swal({
+                title: "Operación no permitida",
+                text: "Debido a politicas de devolucón, debes tener al menos una tarjeta registrada.",
+                icon: "error",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#212529",
+              })
+            } else {
+              showWarningToast("Error al eliminar la tarjeta")
+            }
+          }
+      )
     },
     typeCard(cardNumber) {
       const firstDigit = cardNumber.charAt(0);
@@ -97,7 +140,16 @@ export default Vue.extend({
     },
     refreshCards() {
       this.getUserPaymentCards()
-    }
+    },
+cardStatusIcon(status) {
+      if (status === 'Predeterminada') {
+        return "fa-solid fa-star"
+      } else if (status === 'Habilitada') {
+        return "fa-solid fa-check"
+      } else {
+        return "fa-solid fa-times"
+      }
+    },
   },
   mounted() {
     this.getUserPaymentCards()
@@ -128,6 +180,7 @@ export default Vue.extend({
   transform: translateY(-5px);
 }
 .card-header {
+  position: relative;
   align-items: center;
   background-color: #ccc;
   border-top-left-radius: 10px;
@@ -176,5 +229,28 @@ export default Vue.extend({
 .card-add-text {
   font-size: 16px;
   margin-top: 10px;
+}
+.delete-button {
+  color: #dc3545;
+  font-weight: bold;
+  transition: color 0.2s ease-in-out;
+}
+
+.delete-button:hover {
+  color: #c82333;
+  text-decoration: underline;
+}
+.status-icon {
+  font-size: 24px;
+  color: #fff;
+}
+.status-predeterminada { color: gold; }
+.status-habilitada { color: green; }
+.status-deshabilitada { color: red; }
+.status-dropdown {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
 }
 </style>
