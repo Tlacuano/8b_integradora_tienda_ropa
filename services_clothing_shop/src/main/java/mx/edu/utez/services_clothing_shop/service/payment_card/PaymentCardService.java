@@ -25,16 +25,16 @@ public class PaymentCardService {
 
     @Transactional(rollbackOn = {Exception.class})
     public Page<BeanPaymentCard> getPaymentCardByUserEmail(String email, Pageable page) {
-        return paymentCardRepository.findAllByUser_Email(email, page);
+        return paymentCardRepository.findAllByUser_EmailAndStatusIsNotNull(email, page);
     }
 
     @Transactional(rollbackOn = {Exception.class})
     public BeanPaymentCard postPaymentCard(BeanPaymentCard paymentCard, Integer count) {
         BeanCardStatus cardStatus;
         if (count == 0) {
-            cardStatus = cardStatusRepository.findByStatus("PREDETERMINADA");
+            cardStatus = cardStatusRepository.findByStatus("Predeterminada");
         } else {
-            cardStatus = cardStatusRepository.findByStatus("HABILITADA");
+            cardStatus = cardStatusRepository.findByStatus("Habilitada");
         }
         paymentCard.setStatus(cardStatus);
         return paymentCardRepository.saveAndFlush(paymentCard);
@@ -46,18 +46,23 @@ public class PaymentCardService {
     }
 
     @Transactional(rollbackOn = {Exception.class})
-    public void deletePaymentCard(String cardNumber, String email) {
-        paymentCardRepository.deleteByCardNumberAndUser_Email(cardNumber, email);
+    public void deletePaymentCard(UUID idCard) {
+        BeanPaymentCard paymentCard = paymentCardRepository.findById(idCard).orElse(null);
+        if (paymentCard != null) {
+            paymentCard.setCardNumber(null);
+            paymentCard.setCardholderName(null);
+            paymentCard.setExpirationDate(null);
+            paymentCard.setCvv(null);
+            paymentCard.setStatus(null);
+            paymentCardRepository.save(paymentCard);
+        } else {
+            throw new RuntimeException("Tarjeta de crédito no encontrada");
+        }
     }
 
     @Transactional(rollbackOn = {Exception.class})
     public int countPaymentCardByUserEmail(String email) {
         return paymentCardRepository.countByUser_Email(email);
-    }
-
-    @Transactional(rollbackOn = {Exception.class})
-    public boolean cardIsFromUser(String cardNumber, String email) {
-        return paymentCardRepository.existsByCardNumberAndUser_Email(cardNumber, email);
     }
 
     @Transactional(rollbackOn = {Exception.class})
