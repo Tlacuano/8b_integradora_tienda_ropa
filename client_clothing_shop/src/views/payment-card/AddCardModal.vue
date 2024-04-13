@@ -7,7 +7,7 @@
           <span v-show="errors.has('cardNumber')" class="text-danger">{{ errors.first('cardNumber') }}</span>
         </b-form-group>
         <b-form-group label="Nombre del Titular">
-          <b-form-input v-model="form.cardHolderName" name="cardHolderName" v-validate="'required'"/>
+          <b-form-input v-model="form.cardHolderName" name="cardHolderName" v-validate="'required|alpha_spaces'"/>
           <span v-show="errors.has('cardHolderName')" class="text-danger">{{ errors.first('cardHolderName') }}</span>
         </b-form-group>
         <b-form-group label="Fecha de Vencimiento">
@@ -32,9 +32,10 @@
                   v-validate="'required'"
               />
             </b-col>
-            <span v-show="errors.has('expirationMonth')" class="text-danger">{{ errors.first('expirationMonth') }}</span>
-            <span v-show="errors.has('expirationYear')" class="text-danger">{{ errors.first('expirationYear') }}</span>
           </b-row>
+          <span v-if="errors.has('expirationMonth') || errors.has('expirationYear')" class="text-danger">
+              {{ errors.first('expirationMonth') || errors.first('expirationYear') }}
+          </span>
         </b-form-group>
         <b-form-group label="CVV">
           <b-form-input v-model="form.cvv" type="number" name="cvv" v-validate="'required|cvv'"/>
