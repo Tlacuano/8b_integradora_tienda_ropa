@@ -31,8 +31,6 @@ public interface IRequestsDataChange extends JpaRepository<BeanRequestDataChange
             "WHERE (:searchTerm = '' OR CONCAT(p.name, ' ', p.lastName) LIKE %:searchTerm%)")
     Page<RequestDataChangeStatusPersonProjection> findAllStatusesWithPersonNameAndLastName(Pageable pageable, @Param("searchTerm") String searchTerm);
 
-    @Query("SELECT r.user.person.idPerson FROM BeanRequestDataChange r WHERE r.idRequestDataChange = :requestId")
-    UUID findPersonIdByRequestId(@Param("requestId") UUID requestId);
 
     interface RequestDataChangeStatusPersonProjection {
         UUID getRequestId();
