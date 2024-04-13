@@ -131,7 +131,6 @@ public class ProductService {
             } else {
                 productGallery.setStatus(enabledStatus);
             }
-
             iProductGallery.save(productGallery);
         }
 
@@ -171,17 +170,41 @@ public class ProductService {
         BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Principal");
         BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
 
+        ProductImageDTO nuevaImagenPrincipal = null;
+
         for (ProductImageDTO gallery : payload.getProductGallery()) {
-            BeanProductGallery productGallery = iProductGallery.findByStatus(gallery.getStatus());
-            if(!productGallery.equals(defaultStatus)){
+            BeanProductGallery productGallery = iProductGallery.findByIdImage(gallery.getIdImage());
+            if(productGallery == null) {
+                productGallery = new BeanProductGallery();
+                productGallery.setProduct(product);
+                productGallery.setImage(gallery.getImage());
                 productGallery.setStatus(enabledStatus);
+                iProductGallery.save(productGallery);
             }
-            if(productGallery.equals(enabledStatus)){
-                productGallery.setStatus(defaultStatus);
+            if(productGallery.getProduct().equals(defaultStatus)){
+                nuevaImagenPrincipal = gallery;
             }
-            iProductGallery.saveAndFlush(productGallery);
+            if (productGallery.getStatus().equals(enabledStatus)) {
+                productGallery.setStatus(enabledStatus);
+                iProductGallery.saveAndFlush(productGallery);
+            }
+            int nuevoIndicePrincipal = payload.getProductGallery().indexOf(nuevaImagenPrincipal);
+            
+            if (nuevoIndicePrincipal != 0) {
+                ProductImageDTO imagenPrincipalActual = payload.getProductGallery().get(0);
+                payload.getProductGallery().set(0, nuevaImagenPrincipal);
+                payload.getProductGallery().set(nuevoIndicePrincipal, imagenPrincipalActual);
+            }
         }
 
+        BeanRequestStatus pendingStatus = iRequestStatus.findByStatus("Pendiente").get();
+        BeanRequestSellProduct requestSellProduct = new BeanRequestSellProduct();
+        requestSellProduct.setProduct(product);
+        requestSellProduct.setStatus(pendingStatus);
+
+        iRequestsSellProduct.save(requestSellProduct);
+
+        emailService.sendEmail(product.getUser().getEmail(), "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");
 
         return true;
     }

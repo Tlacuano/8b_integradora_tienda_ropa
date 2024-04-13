@@ -18,6 +18,6 @@ public interface IProductGallery extends JpaRepository<BeanProductGallery, UUID>
             @Param("p_image") String image,
             @Param("p_id_status") String idStatus
     );
-    BeanProductGallery findByStatus(String status);
+    BeanProductGallery findByIdImage(UUID idImage);
     public void deleteAllByProduct(BeanProduct product);
 }

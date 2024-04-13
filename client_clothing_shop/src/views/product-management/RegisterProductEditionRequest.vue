@@ -98,13 +98,20 @@
                 </div>
               </b-col>
             </b-col>
-            <b-modal v-model="showImageModal" title="Vista previa de la imagen">
+            <b-modal v-model="showImageModal" title="Vista previa de la imagen" hide-footer>
               <img :src="selectedImage" alt="Selected Image" style="max-width: 100%; max-height: 100%;">
+              <b-row>
+                <b-col class="text-right mt-4">
+                  <b-button>Cambiar Estado</b-button>
+                  <b-button>Cerrar</b-button>
+                </b-col>
+              </b-row>
             </b-modal>
           </b-row>
         </b-col>
       </b-row>
       <b-row>
+        {{formData.productGallery}}
         <b-col cols="12" class="mt-5">
           <b-row class="text-right">
             <b-col>
