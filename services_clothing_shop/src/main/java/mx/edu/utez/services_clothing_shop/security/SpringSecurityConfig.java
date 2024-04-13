@@ -183,6 +183,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-by-search-query").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products").permitAll()
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-product").permitAll()
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-product-to-edit").hasRole(SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/get-products-by-user").hasAnyRole(SELLER, ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/products/post-product").hasRole(SELLER)
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/products/put-product").hasRole(SELLER)

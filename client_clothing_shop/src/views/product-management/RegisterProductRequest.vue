@@ -162,7 +162,7 @@ export default {
           const response = await ProductManagementService.postProduct(this.formData)
           if(response){
             this.showOverlay()
-            showSuccessToast("Producto creado")
+            showSuccessToast("Solcitud enviada correctamente, en breve se revisará tu solicitud")
             setTimeout(() => {
               window.location.reload()
             }, 2000)

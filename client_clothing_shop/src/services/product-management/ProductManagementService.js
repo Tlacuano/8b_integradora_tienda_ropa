@@ -13,7 +13,7 @@ const getProductByUser = async (pagination,email) => {
 
 const getProduct = async (payload) =>{
     try{
-        const response = await axios.doPost(`/venta-ropa/api/products/get-product?`,payload)
+        const response = await axios.doPost(`/venta-ropa/api/products/get-product-to-edit?`,payload)
         return response.data
     }catch(e){
     }

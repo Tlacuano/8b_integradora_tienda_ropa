@@ -1,49 +1,12 @@
 <template>
   <section class="interface">
     <b-row class="mb-4">
-      <b-col class="text-center mt-4">
-        <h1>Registrar solicitud de edición de producto</h1>
+      <b-col class="text-center">
+        <h1>Registrar solicitud de producto</h1>
       </b-col>
     </b-row>
     <b-form @submit.prevent="onSubmit()">
       <b-row>
-        <b-col class="" lg="6">
-          <b-col>
-            <b-form-group label="Imagen Principal:" label-for="principal-image">
-              <b-form-file id="principal-image" @change="handleImageUpload"  name="principal-image"
-                           v-validate="'image:2000000|image|image_size'" accept="image/*"></b-form-file>
-              <span style="color: red;">{{ errors.first('principal-image') }}</span>
-            </b-form-group>
-            <b-col class="preview-container">
-              <div v-if="imageUrl===null" class="text-center d-flex align-items-center mt-4 principal-image">
-                <div class="placeholder-content">
-                  Preview
-                </div>
-              </div>
-              <div v-else class="text-center mt-4 principal-image">
-                <img :src="imageUrl" width="250px" height="300px"/>
-
-              </div>
-            </b-col>
-          </b-col>
-          <b-col class="mt-4">
-            <b-form-group label="Selecciona hasta 4 imágenes">
-              <b-form-file v-on:change="handleImageUpload2" v-validate="'image:2000000|image|image_size'" name="images"
-                           accept="image/*"></b-form-file>
-              <span style="color: red;">{{ errors.first('images') }}</span>
-            </b-form-group>
-
-            <b-col class="preview-container">
-              <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
-                <div class="placeholder-content">Preview</div>
-              </div>
-              <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
-                <img :src="imagePreview" alt="Preview"/>
-                <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
-              </div>
-            </b-col>
-          </b-col>
-        </b-col>
         <b-col lg="6">
           <b-row>
             <b-col>
@@ -58,10 +21,11 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+          <b-row>
             <b-col>
               <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
-                <b-form-select name="category" v-model="formData.category" v-validate="'required'" id="category-select" @change="updateSubcategories">
+                <b-form-select name="category" v-model="category" v-validate="'required'" id="category-select"
+                               @change="updateSubcategories">
                   <option v-for="(category, index) in categories" :key="index" :value="category.category">
                     {{ category.category }}
                   </option>
@@ -71,8 +35,10 @@
             </b-col>
             <b-col>
               <b-form-group label="Subcategoria" label-for="subcategory-select">
-                <b-form-select name="subcategory" v-model="formData.subcategory" v-validate="'required'" id="subcategory-select">
-                  <option v-for="(subcategory, index) in filteredSubcategories" :key="index" :value="subcategory.subcategory">
+                <b-form-select name="subcategory" v-model="formData.subcategory" v-validate="'required'"
+                               id="subcategory-select">
+                  <option v-for="(subcategory, index) in filteredSubcategories" :key="index"
+                          :value="subcategory.idSubcategory">
                     {{ subcategory.subcategory }}
                   </option>
                 </b-form-select>
@@ -80,42 +46,68 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+          <b-row>
             <b-col>
               <b-form-group label="Descripción: " label-for="description">
-                <b-form-textarea name="description" v-model="formData.description" v-validate="'required|alpha_spaces'"
+                <b-form-textarea name="description" v-model="formData.description"
+                                 v-validate="'required|alpha_spaces|description_min|description_max'"
                                  id="description"></b-form-textarea>
               </b-form-group>
               <span style="color: red;">{{ errors.first('description') }}</span>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+          <b-row>
             <b-col>
               <b-form-group label="Precio: " label-for="price">
-                <b-form-input name="price" id="price" v-model="formData.price" v-validate="'required'"
+                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required'"
                               type="number"></b-form-input>
               </b-form-group>
               <span style="color: red;">{{ errors.first('price') }}</span>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input name="stock" id="stock" v-model="formData.amount" v-validate="'required'"
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required'"
                               type="number"></b-form-input>
                 <span style="color: red;">{{ errors.first('stock') }}</span>
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row class="mt-4">
+
+
+        </b-col>
+        <b-col class="" lg="6">
+          <b-row>
             <b-col>
-              <b-form-group label="Estado del producto" label-for="status">
-                <b-form-select name="status" id="status" v-model="formData.status" v-validate="'required'"
-                               :options="optionsStatus"></b-form-select>
-                <span style="color: red;">{{ errors.first('status') }}</span>
+              <b-form-group label="Selecciona hasta 5 imágenes">
+                <b-form-file
+                    v-on:change="handleImageUpload2"
+                    name="images"
+                    placeholder=""
+                    browse-text="Búscar"
+                    accept="image/*"></b-form-file>
+                <span style="color: red;">{{ errors.first('images') }}</span>
               </b-form-group>
+
+              <b-col class="preview-container">
+                <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
+                  <div class="placeholder-content">Preview</div>
+                </div>
+                <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
+                  <img :src="imagePreview" alt="Preview" @click="openImage(index)"/>
+                  <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
+                </div>
+              </b-col>
             </b-col>
+            <b-modal v-model="showImageModal" title="Vista previa de la imagen">
+              <img :src="selectedImage" alt="Selected Image" style="max-width: 100%; max-height: 100%;">
+            </b-modal>
           </b-row>
-          <b-row class="mt-4">
-            <b-col class="text-right">
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="12" class="mt-5">
+          <b-row class="text-right">
+            <b-col>
               <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
               <b-button variant="outline-dark" class="btn-cancel">Cancelar</b-button>
             </b-col>
@@ -144,19 +136,25 @@ export default {
   },
   data() {
     return {
+      showImageModal: false,
       imageUrl: null,
-      selectedImages: [],
+      category: null,
+      selectedImage: '',
       imagePreviews: [],
       formData: {
-        idProduct:'',
+        idProduct: '',
         productName: '',
         amount: 0,
-        status: false,
-        category: '',
-        subcategory:'',
+        subcategory: '',
         description: '',
         price: 0,
-        productGallery: []
+        productGallery: [
+          {
+            idImage: '',
+            image: '',
+            status:''
+          }
+        ]
       },
       i: 0,
       filteredSubcategories: [],
@@ -172,58 +170,66 @@ export default {
   },
   methods: {
     onSubmit() {
+      if (this.formData.productGallery.length === 0) {
+        showWarningToast("Debes cargar al menos dos imagenes");
+        return;
+      }
       this.$validator.validate().then(async valid => {
         if (!valid) {
           showWarningToast("Completar los requisitos")
         } else {
+          this.showOverlay()
+          for(let i=0; i<this.formData.productGallery.length;i++){
+            if(this.formData.productGallery[i] !== String){
+              const response = await CloudinaryService.uploadImage(this.formData.productGallery[i])
+              if (response) {
+                this.formData.productGallery[i] = null
+                this.formData.productGallery[i] = response.data.data
+              }
+            }
+          }
           const response = await ProductManagementService.putProduct(this.formData)
           if(response){
-            showSuccessToast("Producto editado")
+            this.showOverlay()
+            showSuccessToast("Solicitud de edición enviada correctamente")
+            setTimeout(() => {
+              window.location.reload()
+            }, 2000)
           }
+          this.showOverlay()
         }
       })
     },
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          this.imageUrl = e.target.result
-          this.newPrincipalImage = file
-          const response = await CloudinaryService.uploadImage(this.newPrincipalImage)
-          if (response) {
-            this.formData.productGallery[0].image = response.data.data
-          }
-        };
-        reader.readAsDataURL(file);
-      }
+    openImage(index) {
+      this.selectedImage = this.imagePreviews[index];
+      this.showImageModal = true;
     },
     handleImageUpload2(event) {
       const files = event.target.files;
       const totalImages = this.formData.productGallery.length
-      if (files.length + this.imagePreviews.length > 4) {
-        showWarningToast("No puedes cargar más de 4 imágenes");
+      if (files.length + this.imagePreviews.length > 5) {
+        showWarningToast("No puedes cargar más de 5 imágenes");
         return;
       }
       if (files.length === 0 && this.imagePreviews.length === 0) {
         showWarningToast("Debes cargar al menos una imagen");
         return;
       }
+      if (files[0].size > 2000000) {
+        showWarningToast("La imagen no puede pesar más de 2MB");
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = async (e) => {
         this.imagePreviews.push(e.target.result);
-        const response = await CloudinaryService.uploadImage(files[0])
-        if (response) {
-          if(totalImages >= 2) {
-            this.formData.productGallery.push({image: response.data.data});
-          }
-        }
+        this.formData.productGallery.push(files[0]);
       };
       reader.readAsDataURL(files[0]);
     },
     removeImage(index) {
       this.imagePreviews.splice(index, 1);
+      this.formData.productGallery.splice(index, 1);
       if (this.formData.productGallery.length > 2) {
         this.formData.productGallery.splice(index, 1);
       }
@@ -235,9 +241,10 @@ export default {
     async getDetailProduct() {
       this.showOverlay()
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
+      console.log(response.data)
       this.productGallery = response.data.productGallery
+      this.category = response.data.category
       this.formData = response.data
-      this.imageUrl = this.formData.productGallery[0].image
       for (let i = 1; i < this.formData.productGallery.length; i++) {
         this.imagePreviews.push(this.formData.productGallery[i].image);
       }
@@ -257,7 +264,7 @@ export default {
       this.$store.dispatch('changeStatusOverlay');
     },
     updateSubcategories() {
-      this.filteredSubcategories = this.subcategories.filter(subcategory => subcategory.category === this.formData.category);
+      this.filteredSubcategories = this.subcategories.filter(subcategory => subcategory.category === this.category);
     }
   },
   computed: {

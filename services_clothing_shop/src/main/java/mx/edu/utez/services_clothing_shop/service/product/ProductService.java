@@ -1,7 +1,9 @@
 package mx.edu.utez.services_clothing_shop.service.product;
 
+import mx.edu.utez.services_clothing_shop.controller.product.dto.ProductImageDTO;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductBySearchQueryDTO;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductDTO;
+import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestPutProductDTO;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.IImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -78,6 +80,7 @@ public class ProductService {
         return iProduct.findAllByUser_Email(email, page);
     }
 
+
     @Transactional
     public BeanProduct getProduct(UUID idProduct) {
         return iProduct.findByIdProduct(idProduct);
@@ -147,10 +150,40 @@ public class ProductService {
     }
 
     @Transactional
-    public BeanProduct putProduct(BeanProduct product, List<BeanProductGallery> productGallery) {
-        BeanProduct updatedProduct = iProduct.saveAndFlush(product);
-        updateProductGallery(productGallery);
-        return updatedProduct;
+    public boolean putProduct(RequestPutProductDTO payload) {
+        BeanProduct product = iProduct.findByIdProduct(payload.getIdProduct());
+        if (product == null) {
+            throw new CustomException("product.notfound");
+        }
+        BeanSubcategory subcategory = iSubCategory.findByIdSubcategory(payload.getSubcategory());
+        if (subcategory == null) {
+            throw new CustomException("subcategory.notfound");
+        }
+
+        product.setProductName(payload.getProductName());
+        product.setDescription(payload.getDescription());
+        product.setPrice(payload.getPrice());
+        product.setAmount(payload.getAmount());
+        product.setSubcategory(subcategory);
+        iProduct.saveAndFlush(product);
+
+        //save gallery
+        BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Principal");
+        BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
+
+        for (ProductImageDTO gallery : payload.getProductGallery()) {
+            BeanProductGallery productGallery = iProductGallery.findByStatus(gallery.getStatus());
+            if(!productGallery.equals(defaultStatus)){
+                productGallery.setStatus(enabledStatus);
+            }
+            if(productGallery.equals(enabledStatus)){
+                productGallery.setStatus(defaultStatus);
+            }
+            iProductGallery.saveAndFlush(productGallery);
+        }
+
+
+        return true;
     }
 
     @Transactional
