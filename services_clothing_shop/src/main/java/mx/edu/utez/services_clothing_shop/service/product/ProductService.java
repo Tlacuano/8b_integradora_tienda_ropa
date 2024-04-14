@@ -1,9 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.product;
 
-import mx.edu.utez.services_clothing_shop.controller.product.dto.ProductImageDTO;
-import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductBySearchQueryDTO;
-import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductDTO;
-import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestPutProductDTO;
+import mx.edu.utez.services_clothing_shop.controller.product.dto.*;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.IImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -169,32 +166,27 @@ public class ProductService {
         //save gallery
         BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Principal");
         BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
+        BeanImageProductStatus disabledStatus = iImageProductStatus.findByStatus("Desabilitada");
 
-        ProductImageDTO nuevaImagenPrincipal = null;
+        ProductImageEditDTO nuevaImagenPrincipal = null;
 
-        for (ProductImageDTO gallery : payload.getProductGallery()) {
-            BeanProductGallery productGallery = iProductGallery.findByIdImage(gallery.getIdImage());
-            if(productGallery == null) {
+        for (ProductImageEditDTO gallery : payload.getProductGallery()) {
+            BeanProductGallery productGallery = iProductGallery.findByImage(gallery.getImage());
+            if (productGallery == null) {
                 productGallery = new BeanProductGallery();
                 productGallery.setProduct(product);
                 productGallery.setImage(gallery.getImage());
-                productGallery.setStatus(enabledStatus);
-                iProductGallery.save(productGallery);
             }
-            if(productGallery.getProduct().equals(defaultStatus)){
+            if (gallery.getStatus().equals("Principal")) {
+                productGallery.setStatus(defaultStatus);
                 nuevaImagenPrincipal = gallery;
-            }
-            if (productGallery.getStatus().equals(enabledStatus)) {
+            } else {
                 productGallery.setStatus(enabledStatus);
-                iProductGallery.saveAndFlush(productGallery);
             }
-            int nuevoIndicePrincipal = payload.getProductGallery().indexOf(nuevaImagenPrincipal);
-            
-            if (nuevoIndicePrincipal != 0) {
-                ProductImageDTO imagenPrincipalActual = payload.getProductGallery().get(0);
-                payload.getProductGallery().set(0, nuevaImagenPrincipal);
-                payload.getProductGallery().set(nuevoIndicePrincipal, imagenPrincipalActual);
+            if (!payload.getProductGallery().contains(gallery)) {
+                productGallery.setStatus(disabledStatus);
             }
+            iProductGallery.save(productGallery);
         }
 
         BeanRequestStatus pendingStatus = iRequestStatus.findByStatus("Pendiente").get();
@@ -204,7 +196,7 @@ public class ProductService {
 
         iRequestsSellProduct.save(requestSellProduct);
 
-        emailService.sendEmail(product.getUser().getEmail(), "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");
+        emailService.sendEmail("20213tn114@utez.edu.mx", "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");
 
         return true;
     }

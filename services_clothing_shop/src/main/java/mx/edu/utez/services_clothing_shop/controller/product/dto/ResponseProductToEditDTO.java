@@ -20,7 +20,7 @@ public class ResponseProductToEditDTO {
     private int amount;
     private UUID subcategory;
     private String category;
-    private List<ProductImageDTO> productGallery;
+    private List<ProductImageEditDTO> productGallery;
 
     public static ResponseProductToEditDTO toProductDTO(BeanProduct product) {
         ResponseProductToEditDTO dto = new ResponseProductToEditDTO();
@@ -31,9 +31,9 @@ public class ResponseProductToEditDTO {
         dto.setAmount(product.getAmount());
         dto.setSubcategory(product.getSubcategory().getIdSubcategory());
         dto.setCategory(product.getSubcategory().getCategory().getCategory());
-        List<ProductImageDTO> productImages = new ArrayList<>();
+        List<ProductImageEditDTO> productImages = new ArrayList<>();
         for (BeanProductGallery gallery : product.getProductGallery()) {
-            productImages.add(new ProductImageDTO(gallery.getIdImage(), gallery.getImage(), gallery.getStatus().getStatus()));
+            productImages.add(new ProductImageEditDTO(gallery.getImage(), gallery.getStatus().getStatus()));
         }
         dto.setProductGallery(productImages);
         return dto;

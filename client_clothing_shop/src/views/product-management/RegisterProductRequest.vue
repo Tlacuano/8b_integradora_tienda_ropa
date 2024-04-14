@@ -140,10 +140,15 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (this.formData.productGallery.length === 0) {
+      if (this.formData.productGallery.length === 0 || this.formData.productGallery.length < 2) {
         showWarningToast("Debes cargar al menos dos imagenes");
         return;
       }
+      if(this.formData.productGallery.length > 5){
+        showWarningToast("No puedes cargar más de 5 imágenes");
+        return;
+      }
+
       this.$validator.validate().then(async valid => {
         if (!valid) {
           showWarningToast("Completar los requisitos")

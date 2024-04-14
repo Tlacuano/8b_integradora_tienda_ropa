@@ -94,16 +94,43 @@
                 </div>
                 <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
                   <img :src="imagePreview" alt="Preview" @click="openImage(index)"/>
-                  <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
+                  <template v-if="index !== 0">
+                    <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
+                  </template>
+                  <template v-else>
+                    <!-- Aquí puedes agregar un indicador de imagen principal -->
+                    <span class="principal-indicator">Principal</span>
+                  </template>
                 </div>
               </b-col>
             </b-col>
-            <b-modal v-model="showImageModal" title="Vista previa de la imagen" hide-footer>
+            <b-modal v-model="showImageModal" no-close-on-esc hide-footer hide-header>
+              <b-row>
+                <b-col class="text-center">
+                  <h3>Vista previa de la imagen</h3>
+                </b-col>
+              </b-row>
               <img :src="selectedImage" alt="Selected Image" style="max-width: 100%; max-height: 100%;">
               <b-row>
-                <b-col class="text-right mt-4">
-                  <b-button>Cambiar Estado</b-button>
-                  <b-button>Cerrar</b-button>
+                <b-col cols="4" class="mt-3">
+                  <div v-if="loading">
+                    <b-spinner variant="primary" label="Spinning"></b-spinner>
+                  </div>
+                  <div v-else>
+                    <h5><b-badge variant="light">
+                      {{formData.productGallery[this.index].status === 'Principal' ? 'Principal' : 'Habilitada'}}
+                    </b-badge></h5>
+                  </div>
+                </b-col>
+                <b-col cols="8" class="text-right mt-3">
+                  <template v-if="formData.productGallery[this.index].status !== 'Principal'">
+                    <b-button class="mr-4" variant="dark" @click="changeStatus()">Cambiar Estado</b-button>
+                  </template>
+                  <template v-else>
+                    <!-- Aquí puedes agregar un breve texto indicando que la imagen principal no se puede eliminar -->
+                    <span class="principal-indicator-text">La imagen principal no se puede eliminar</span>
+                  </template>
+                  <b-button :disabled="loading" variant="outline-dark" @click="closeImageModal">Cerrar</b-button>
                 </b-col>
               </b-row>
             </b-modal>
@@ -111,7 +138,6 @@
         </b-col>
       </b-row>
       <b-row>
-        {{formData.productGallery}}
         <b-col cols="12" class="mt-5">
           <b-row class="text-right">
             <b-col>
@@ -132,6 +158,7 @@ import SubcategoryService from "@/services/subcategory/SubcategoryService";
 import {required} from "vee-validate/dist/rules.esm";
 import CloudinaryService from "@/services/cloudinary/CloudinaryService";
 import ProductService from "@/services/product/ProductService";
+import index from "vuex";
 
 export default {
 
@@ -144,6 +171,7 @@ export default {
   data() {
     return {
       showImageModal: false,
+      index:0,
       imageUrl: null,
       category: null,
       selectedImage: '',
@@ -165,50 +193,90 @@ export default {
       },
       i: 0,
       filteredSubcategories: [],
-      newImages: null,
-      newPrincipalImage: null,
-      optionsStatus: [
-        {value: true, text: "Habilitado"},
-        {value: false, text: "Deshabilitado"}
+      newImages: [
+        {
+          idImage: '',
+          image: '',
+          status:''
+        }
       ],
       categories: null,
-      subcategories: []
+      subcategories: [],
+      loading: false
     }
   },
   methods: {
     onSubmit() {
-      if (this.formData.productGallery.length === 0) {
+      if (this.formData.productGallery.length === 0 || this.formData.productGallery.length < 2) {
         showWarningToast("Debes cargar al menos dos imagenes");
         return;
       }
+      if(this.formData.productGallery.length > 5){
+        showWarningToast("No puedes cargar más de 5 imágenes");
+        return;
+      }
+      console.log(this.formData)
       this.$validator.validate().then(async valid => {
         if (!valid) {
-          showWarningToast("Completar los requisitos")
+          showWarningToast("Completar los requisitos");
         } else {
-          this.showOverlay()
-          for(let i=0; i<this.formData.productGallery.length;i++){
-            if(this.formData.productGallery[i] !== String){
-              const response = await CloudinaryService.uploadImage(this.formData.productGallery[i])
+          this.showOverlay();
+          for (let i = 0; i < this.formData.productGallery.length; i++) {
+            const image = this.formData.productGallery[i];
+            // Verificar si el elemento es de tipo file (es decir, no es una URL)
+            if (image instanceof File && ! image.$path) {
+              const response = await CloudinaryService.uploadImage(this.formData.productGallery[i]);
               if (response) {
-                this.formData.productGallery[i] = null
-                this.formData.productGallery[i] = response.data.data
+                this.formData.productGallery[i]= {
+                  image: response.data.data,
+                  status: 'Habilitada'
+                }
               }
             }
           }
           const response = await ProductManagementService.putProduct(this.formData)
-          if(response){
-            this.showOverlay()
-            showSuccessToast("Solicitud de edición enviada correctamente")
+          if (response) {
+            this.showOverlay();
+            showSuccessToast("Solicitud de edición enviada correctamente");
             setTimeout(() => {
-              window.location.reload()
-            }, 2000)
+              window.location.reload();
+            }, 2000);
           }
-          this.showOverlay()
+          this.showOverlay();
         }
-      })
+      });
+    },
+
+    closeImageModal() {
+      this.showImageModal = false;
+    },
+    changeStatus() {
+      this.loading = true;
+      const imagenPrincipalAnterior = this.formData.productGallery[0];
+      if (this.formData.productGallery[this.index].status === 'Habilitada') {
+        this.formData.productGallery[this.index].status = 'Principal';
+      } else if (this.formData.productGallery[this.index].status === 'Principal') {
+        this.formData.productGallery[this.index].status = 'Habilitada';
+      }
+
+
+      if (this.formData.productGallery[this.index].status === 'Principal') {
+        this.$set(this.formData.productGallery, 0, this.formData.productGallery[this.index]);
+        this.$set(this.formData.productGallery, this.index, imagenPrincipalAnterior);
+        if (imagenPrincipalAnterior !== undefined) {
+          imagenPrincipalAnterior.status = 'Habilitada';
+        }
+      }
+      this.$nextTick(() => {
+        this.$forceUpdate();
+      });
+      this.loading = false;
+      this.imagePreviews = this.formData.productGallery.map(image => image.image);
+      this.showImageModal = false;
     },
     openImage(index) {
       this.selectedImage = this.imagePreviews[index];
+      this.index = index;
       this.showImageModal = true;
     },
     handleImageUpload2(event) {
@@ -249,12 +317,21 @@ export default {
       this.showOverlay()
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
       console.log(response.data)
-      this.productGallery = response.data.productGallery
+      this.newImages = response.data.productGallery.slice()
+      console.log(this.productGallery)
       this.category = response.data.category
       this.formData = response.data
-      for (let i = 1; i < this.formData.productGallery.length; i++) {
-        this.imagePreviews.push(this.formData.productGallery[i].image);
+      this.formData.productGallery = [];
+      for (let i = 0; i < this.newImages.length; i++) {
+        if (this.newImages[i].status === 'Principal') {
+          this.imagePreviews.unshift(this.newImages[i].image);
+          this.formData.productGallery.unshift(this.newImages[i])
+        } else {
+          this.imagePreviews.push(this.newImages[i].image);
+          this.formData.productGallery.push(this.newImages[i])
+        }
       }
+      delete this.formData.category
       this.showOverlay()
     },
     async getCategories() {

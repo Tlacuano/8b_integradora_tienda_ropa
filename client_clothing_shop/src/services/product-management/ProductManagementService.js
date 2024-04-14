@@ -18,6 +18,13 @@ const getProduct = async (payload) =>{
     }catch(e){
     }
 }
+const getProductDetails = async (payload) =>{
+    try{
+        const response = await axios.doPost(`/venta-ropa/api/products/get-product?`,payload)
+        return response.data
+    }catch(e){
+    }
+}
 const putStatusProduct = async (productId)=>{
     try {
         const response = await axios.doPut(`/venta-ropa/api/products/put-status-product?`,{idProduct:productId})
@@ -58,5 +65,6 @@ export default {
     getProduct,
     getReviews,
     putProduct,
-    postProduct
+    postProduct,
+    getProductDetails
 }

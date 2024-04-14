@@ -196,7 +196,7 @@ export default {
   },
   methods: {
     async getProduct() {
-      const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
+      const response = await ProductManagementService.getProductDetails({idProduct: this.idProduct})
       this.productGallery = response.data.productGallery
       this.data = response.data
       if(this.data !==null){

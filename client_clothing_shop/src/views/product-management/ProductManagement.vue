@@ -28,7 +28,7 @@
             <b-card no-body class="card highlight-on-hover">
               <b-row no-gutters class="body-card">
                 <b-col cols="12" sm="4" md="4" lg="4" class="image-container">
-                  <b-img :src="item.productGallery[0].image"  class="img-fluid"></b-img>
+                  <b-img :src="item.productGallery"  class="img-fluid"></b-img>
                 </b-col>
                 <b-col cols="11" sm="6" md="6" lg="6" class="body-text">
                   <b-row>
@@ -69,6 +69,7 @@
                     <b-dropdown-item @click="viewProductDetail(item.idProduct)">Ver detalles</b-dropdown-item>
                     <b-dropdown-item @click="registerProductEditionRequest(item.idProduct)">Editar</b-dropdown-item>
                     <b-dropdown-item @click="putStatusProduct(item.idProduct)">{{item.status ? 'Deshabilitar' : 'Habilitar'}}</b-dropdown-item>
+
                   </b-dropdown>
                 </b-col>
               </b-row>
@@ -113,6 +114,7 @@
           elements: 0,
         },
         items:[],
+        mainImage:[],
         selectProductId:null
       };
     },
@@ -121,6 +123,17 @@
         const email = this.$store.getters.getEmail
         const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
         this.items = response.data.content
+        console.log(this.items)
+        this.mainImage = this.items
+        for (let i = 0; i < this.mainImage.length; i++) {
+          for (let j = 0; j < this.mainImage[i].productGallery.length; j++) {
+            if (this.mainImage[i].productGallery[j].status === 'Principal') {
+              this.mainImage[i].productGallery = this.mainImage[i].productGallery[j].image;
+              break;
+            }
+          }
+        }
+
         this.objectPagination.elements = response.totalElements
       },
       async putStatusProduct(idProduct){

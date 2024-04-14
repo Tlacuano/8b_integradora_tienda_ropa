@@ -135,17 +135,5 @@ public class ProductController {
         newProduct.setSubcategory(subcategory);
     }
 
-    private static List<BeanProductGallery> getBeanProductGalleries(RequestPutProductDTO product) {
-        List<BeanProductGallery> productGallery = new ArrayList<>();
-        for (ProductImageDTO gallery : product.getProductGallery()) {
-            BeanProductGallery productGalleryBean = new BeanProductGallery();
-            productGalleryBean.setIdImage(gallery.getIdImage());
-            productGalleryBean.setImage(gallery.getImage());
-            BeanImageProductStatus imageProductStatus = new BeanImageProductStatus();
-            imageProductStatus.setStatus(gallery.getStatus());
-            productGalleryBean.setStatus(imageProductStatus);
-            productGallery.add(productGalleryBean);
-        }
-        return productGallery;
-    }
+
 }
