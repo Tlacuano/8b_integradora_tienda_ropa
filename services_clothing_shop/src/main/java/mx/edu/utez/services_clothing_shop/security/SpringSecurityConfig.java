@@ -160,6 +160,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/sellers-information/put-seller-information").hasRole(SELLER)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/block-sell").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/unblock-sell").hasAnyRole(ADMIN, SUPERADMIN)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/sellers-information/get-seller-information-by-email").hasAnyRole(ADMIN, SUPERADMIN)
 
                                 //Modulo categories
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/categories/get-categories").permitAll()

@@ -1,6 +1,8 @@
 package mx.edu.utez.services_clothing_shop.controller.seller_information;
 
 import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.ResponseAllSellerInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.SellerInformationGetbyEmailRequestDTO;
+import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.SellerInformationGetbyEmailResponseDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.service.seller_information.SellerInformationService;
@@ -66,6 +68,11 @@ public class SellerInformationController {
                 new CustomResponse<>(sellerInformationService.unblockSell(requestActionByEmailDTO), "Unblock sell successfully", false, HttpStatus.OK.value()),
                 HttpStatus.OK
         );
+    }
+
+    @PostMapping("/get-seller-information-by-email")
+    public ResponseEntity<SellerInformationGetbyEmailResponseDTO> getSellerInformationByEmail(@RequestBody SellerInformationGetbyEmailRequestDTO requestDTO){
+        return sellerInformationService.getSellerInformationByEmail(requestDTO.getEmail());
     }
 
 }
