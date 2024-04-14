@@ -111,6 +111,7 @@ public class ErrorDictionary {
 
         //error messages product
         errorMessages.put("product.id.notnull", "El id del producto es obligatorio.");
+        errorMessages.put("product.notfound", "El producto no fue encontrado.");
         errorMessages.put("product.id.nonempty", "El id del producto no puede estar vacío.");
         errorMessages.put("product.name.notnull", "El nombre del producto es obligatorio.");
         errorMessages.put("product.name.size", "El nombre del producto debe tener entre 5 y 30 caracteres.");

@@ -133,18 +133,6 @@ const router = new VueRouter({
                     meta: { requiresAuth: true, roles: ["SELLER"] },
                 },
                 {
-                    path:"product-sale",
-                    name:"ProductSale",
-                    component: () => import("../views/product-management/ViewProductSales.vue"),
-                    meta: { requiresAuth: true, roles: ["SELLER"] },
-                },
-                {
-                    path:"product-reviews",
-                    name:"ProductReviews",
-                    component: () => import("../views/product-management/ViewProductReviews.vue"),
-                    meta: { requiresAuth: true, roles: ["SELLER"] },
-                },
-                {
                     path:"register-product-edition",
                     name:"RegisterProductEditionRequest",
                     component: () => import("../views/product-management/RegisterProductEditionRequest.vue"),

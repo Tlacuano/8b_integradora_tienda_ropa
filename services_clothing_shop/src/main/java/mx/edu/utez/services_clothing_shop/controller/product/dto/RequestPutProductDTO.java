@@ -1,12 +1,16 @@
 package mx.edu.utez.services_clothing_shop.controller.product.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestPutProductDTO {
     @NotNull(message = "product.id.notnull")
     private UUID idProduct;
@@ -23,17 +27,7 @@ public class RequestPutProductDTO {
     @NotNull(message = "product.subcategory.notnull")
     private UUID subcategory;
     @NotEmpty(message = "product.productGallery.nonempty")
-    private List<ProductImageDTO> productGallery;
+    private List<ProductImageEditDTO> productGallery;
 
-    public RequestPutProductDTO() {
-    }
 
-    public RequestPutProductDTO(String productName, String description, double price, int amount, UUID subcategory, List<ProductImageDTO> productGallery) {
-        this.productName = productName;
-        this.description = description;
-        this.price = price;
-        this.amount = amount;
-        this.subcategory = subcategory;
-        this.productGallery = productGallery;
-    }
 }

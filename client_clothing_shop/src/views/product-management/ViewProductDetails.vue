@@ -15,13 +15,26 @@
         <b-col sm="12" md="6" lg="4">
           <b-row>
             <b-col class="mt-4" lg="12" md="12" sm="12">
-              <b-carousel v-model="slide" :interval="5000">
-                <b-carousel-slide v-for="(slide, index) in productGallery" :key="index" :img-src="slide.image"/>
+              <b-carousel v-model="slide" :interval="5000" style="color: black">
+                <b-carousel-slide  v-for="(slide, index) in productGallery" :key="index" :img-src="slide.image">
+                  <template>
+                    <div  v-if="slide.status === 'Deshabilitada'" style="color: #9b9b9b ">
+                      <h1 class="text-center font-weight-bold">Deshabilitada</h1>
+                    </div>
+                    <div v-if="slide.status ==='Principal'" style="color: #9b9b9b ">
+                      <h1 class="text-center font-weight-bold">Principal</h1>
+                    </div>
+                    <div v-if="slide.status ==='Habilitada'" style="color: #9b9b9b ">
+                      <h1 class="text-center font-weight-bold">Habilitada</h1>
+                    </div>
+                  </template>
+                </b-carousel-slide>
               </b-carousel>
             </b-col>
             <b-col class="mt-4 text-center" lg="12" md="12" sm="12">
               <div class="carousel-thumbnails">
                 <img v-for="(slide, index) in productGallery" :key="index" :src="slide.image" @click="goToSlide(index)" class="thumbnail"/>
+                <b-badge variant="dark">{{ slide + 1 }} / {{ productGallery.length }}</b-badge>
               </div>
             </b-col>
           </b-row>
@@ -196,7 +209,7 @@ export default {
   },
   methods: {
     async getProduct() {
-      const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
+      const response = await ProductManagementService.getProductDetails({idProduct: this.idProduct})
       this.productGallery = response.data.productGallery
       this.data = response.data
       if(this.data !==null){

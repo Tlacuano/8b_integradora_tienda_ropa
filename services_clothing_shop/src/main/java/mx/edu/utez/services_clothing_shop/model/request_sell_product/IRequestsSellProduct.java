@@ -71,3 +71,4 @@ public interface IRequestsSellProduct extends JpaRepository<BeanRequestSellProdu
     Page<RequestSellStatusProjection> findAllByEmailLikeIgnoreCase(@Param("email") String email,Pageable pageable);
 }
 
+

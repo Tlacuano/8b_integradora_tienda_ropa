@@ -13,6 +13,13 @@ const getProductByUser = async (pagination,email) => {
 
 const getProduct = async (payload) =>{
     try{
+        const response = await axios.doPost(`/venta-ropa/api/products/get-product-to-edit?`,payload)
+        return response.data
+    }catch(e){
+    }
+}
+const getProductDetails = async (payload) =>{
+    try{
         const response = await axios.doPost(`/venta-ropa/api/products/get-product?`,payload)
         return response.data
     }catch(e){
@@ -52,11 +59,21 @@ const postProduct = async (payload) =>{
 
     }
 }
+const getProductByProductName = async (pagination,payload) => {
+    try{
+        const {page,size}=pagination
+        const response = await axios.doPost(`/venta-ropa/api/products/get-products-by-product-name?size=${size}&page=${page - 1}`,payload)
+        return response.data
+    }catch(e){
+    }
+}
 export default {
     getProductByUser,
     putStatusProduct,
     getProduct,
     getReviews,
     putProduct,
-    postProduct
+    postProduct,
+    getProductDetails,
+    getProductByProductName
 }
