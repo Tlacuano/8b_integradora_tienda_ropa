@@ -27,8 +27,18 @@ const putRequestDataChangeService = async (requestData) => {
     }
 }
 
+const postRequestDataChangeService = async (requestData) => {
+    try {
+        const response = await axios.doPost('/venta-ropa/api/requests-data-change/post-request-data-change', requestData);
+        return response.data;
+    } catch (e) {
+    }
+
+}
+
 export default {
     getPageRequestsDataChangeService,
     getRequestDataChangeByIdService,
-    putRequestDataChangeService
+    putRequestDataChangeService,
+    postRequestDataChangeService
 }

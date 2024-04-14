@@ -167,12 +167,10 @@
 
         <b-row v-if="user.seller" class="my-2">
           <b-col>
-            <b-card no-body class="selectable highlight-on-hover">
+            <b-card no-body class="selectable highlight-on-hover" v-b-modal:fiscal-information-change-modal>
               <b-row align-h="between" class="p-2 mx-1">
                 <b-col>
-                  <b>
-                    Información fiscal
-                  </b>
+                  <b>Información fiscal</b>
                 </b-col>
                 <b-col class="text-right">
                   <font-awesome-icon icon="fa-solid fa-angle-right"/>
@@ -214,6 +212,7 @@
     <PutPictureProfileModal/>
     <PutUserInformationModal/>
     <FormBecomeSellerModal />
+    <FiscalInformationChangeModal/>
   </section>
 </template>
 
@@ -222,6 +221,7 @@ import UserService from "@/services/user/userService";
 import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
 import {showWarningToast} from "@/components/alerts/alerts";
 
+
 export default {
   name: 'UserDetails',
   components: {
@@ -229,6 +229,7 @@ export default {
     PutPictureProfileModal: () => import("@/views/user/PutPictureProfileModal.vue"),
     PutUserInformationModal: () => import("@/views/user/PutUserInformationModal.vue"),
     FormBecomeSellerModal: () => import("@/views/user/FormBecomeSellerModal.vue"),
+    FiscalInformationChangeModal: () => import("@/views/user/PostRequestDataChangeSellerModal.vue"),
   },
   data() {
     return {

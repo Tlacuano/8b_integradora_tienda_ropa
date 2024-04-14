@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.requests_data_change;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,15 +101,17 @@ public class RequestsDataChangeService {
     @Transactional
     public void postRequestDataChange(String email, NewInformation newInformation) {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         String newUserInfoJSON;
         try {
             newUserInfoJSON = objectMapper.writeValueAsString(newInformation);
+            requestsDataChangerepository.insertRequestDataChange(email, newUserInfoJSON);
         } catch (JsonProcessingException e) {
             throw new CustomException("dataChange.JSON.invalid");
         }
-
-        requestsDataChangerepository.insertRequestDataChange(email, newUserInfoJSON);
     }
+
 
     @Transactional
     public RequestDataChangeIdDTO getRequestByID(UUID idRequestDataChange) {
