@@ -210,9 +210,7 @@ export default {
   methods: {
     async getProduct() {
       const response = await ProductManagementService.getProductDetails({idProduct: this.idProduct})
-      console.log(response)
       this.productGallery = response.data.productGallery
-      console.log(this.productGallery)
       this.data = response.data
       if(this.data !==null){
         const getReviews = await ProductManagementService.getReviews({idProduct:this.idProduct})

@@ -94,18 +94,12 @@
 <script>
 
   import ProductManagementService from "@/services/product-management/ProductManagementService";
-  import ProductDetails from "@/views/product/ProductDetails.vue";
   import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
   import ViewProductDetails from "@/views/product-management/ViewProductDetails.vue";
 
   export default {
     name: "ProductManagement",
     components: {ViewProductDetails},
-    computed: {
-      ProductDetails() {
-        return ProductDetails
-      }
-    },
     data() {
       return {
         objectPagination:{
@@ -148,7 +142,6 @@
             userEmail:this.$store.getters.getEmail
           }
           const response = await ProductManagementService.getProductByProductName(this.objectPagination,payload)
-          console.log(response)
           this.items = response.data.content
           this.mainImage = this.items
           for (let i = 0; i < this.mainImage.length; i++) {

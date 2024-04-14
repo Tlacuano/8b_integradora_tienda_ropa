@@ -164,8 +164,6 @@ import CategoryService from "@/services/category/CategoryService";
 import SubcategoryService from "@/services/subcategory/SubcategoryService";
 import {required} from "vee-validate/dist/rules.esm";
 import CloudinaryService from "@/services/cloudinary/CloudinaryService";
-import ProductService from "@/services/product/ProductService";
-import index from "vuex";
 
 export default {
 
@@ -212,7 +210,6 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log(this.formData.productGallery)
       let count = 0;
       let principal = 0;
       for (let i = 0; i < this.formData.productGallery.length; i++) {
@@ -251,7 +248,6 @@ export default {
           this.showOverlay();
           for (let i = 0; i < this.formData.productGallery.length; i++) {
             const image = this.formData.productGallery[i];
-            // Verificar si el elemento es de tipo file (es decir, no es una URL)
             if (image instanceof File && !image.$path) {
               const response = await CloudinaryService.uploadImage(this.formData.productGallery[i]);
               if (response) {
@@ -323,7 +319,6 @@ export default {
     },
     handleImageUpload2(event) {
       const files = event.target.files;
-      const totalImages = this.formData.productGallery.length
       if (files.length + this.imagePreviews.length > 5) {
         showWarningToast("No puedes cargar más de 5 imágenes");
         return;
@@ -448,16 +443,6 @@ export default {
 
 .placeholder-content {
   color: #c0bebe;
-}
-
-.principal-image {
-  width: 250px;
-  height: 300px;
-  background-color: #fff;
-  border: 1px solid #c0bebe;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  justify-content: center;
 }
 
 .delete-button {
