@@ -201,6 +201,12 @@ public class ProductService {
     }
 
     @Transactional
+    public Page<BeanProduct> getProductsByName(String name, String userEmail, Pageable page) {
+        String modifiedName = "%" + name + "%";
+        return iProduct.findAllByProductNameLikeIgnoreCaseAndUserEmail(modifiedName,userEmail, page);
+    }
+
+    @Transactional
     public void putStatusProduct(UUID idProduct) {
         BeanProduct product = iProduct.findByIdProduct(idProduct);
         product.setStatus(!product.isStatus());

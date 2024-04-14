@@ -59,6 +59,14 @@ const postProduct = async (payload) =>{
 
     }
 }
+const getProductByProductName = async (pagination,payload) => {
+    try{
+        const {page,size}=pagination
+        const response = await axios.doPost(`/venta-ropa/api/products/get-products-by-product-name?size=${size}&page=${page - 1}`,payload)
+        return response.data
+    }catch(e){
+    }
+}
 export default {
     getProductByUser,
     putStatusProduct,
@@ -66,5 +74,6 @@ export default {
     getReviews,
     putProduct,
     postProduct,
-    getProductDetails
+    getProductDetails,
+    getProductByProductName
 }

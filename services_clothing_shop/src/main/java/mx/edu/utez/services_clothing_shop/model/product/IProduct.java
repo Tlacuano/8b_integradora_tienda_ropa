@@ -27,4 +27,7 @@ public interface IProduct extends JpaRepository<BeanProduct, UUID> {
 
     @Query("SELECT p FROM BeanProduct p JOIN p.requestSellProduct s WHERE p.productName LIKE %:query% AND p.subcategory.category.category = :category AND p.status = true AND p.amount > 0 AND s.status.status = 'Aprobado'")
     Page<BeanProduct> findAllByProductNameContainingIgnoreCase(String query, String category, Pageable page);
+
+
+    Page<BeanProduct> findAllByProductNameLikeIgnoreCaseAndUserEmail(String productName, String userEmail, Pageable page);
 }

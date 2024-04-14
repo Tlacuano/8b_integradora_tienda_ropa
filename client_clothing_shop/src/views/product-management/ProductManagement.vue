@@ -12,7 +12,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input @input="getProductByUser" v-model="search" id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -115,26 +115,53 @@
         },
         items:[],
         mainImage:[],
-        selectProductId:null
+        selectProductId:null,
+        search:null
       };
     },
     methods:{
       async getProductByUser(){
-        const email = this.$store.getters.getEmail
-        const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
-        this.items = response.data.content
-        console.log(this.items)
-        this.mainImage = this.items
-        for (let i = 0; i < this.mainImage.length; i++) {
-          for (let j = 0; j < this.mainImage[i].productGallery.length; j++) {
-            if (this.mainImage[i].productGallery[j].status === 'Principal') {
-              this.mainImage[i].productGallery = this.mainImage[i].productGallery[j].image;
-              break;
+        if(this.search === null || this.search === ""){
+          this.showOverlay()
+          const email = this.$store.getters.getEmail
+          const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
+          if(response){
+            this.items = response.data.content
+            this.mainImage = this.items
+            for (let i = 0; i < this.mainImage.length; i++) {
+              for (let j = 0; j < this.mainImage[i].productGallery.length; j++) {
+                if (this.mainImage[i].productGallery[j].status === 'Principal') {
+                  this.mainImage[i].productGallery = this.mainImage[i].productGallery[j].image;
+                  break;
+                }
+              }
+            }
+            this.objectPagination.elements = response.totalElements
+            this.showOverlay()
+          }else{
+            this.showOverlay()
+            showWarningToast("Ocurrio un error inesperado", "No se pudieron obtener los productos")
+          }
+        }else{
+          const payload ={
+            productName: this.search,
+            userEmail:this.$store.getters.getEmail
+          }
+          const response = await ProductManagementService.getProductByProductName(this.objectPagination,payload)
+          console.log(response)
+          this.items = response.data.content
+          this.mainImage = this.items
+          for (let i = 0; i < this.mainImage.length; i++) {
+            for (let j = 0; j < this.mainImage[i].productGallery.length; j++) {
+              if (this.mainImage[i].productGallery[j].status === 'Principal') {
+                this.mainImage[i].productGallery = this.mainImage[i].productGallery[j].image;
+                break;
+              }
             }
           }
+          this.objectPagination.elements = response.totalElements
         }
 
-        this.objectPagination.elements = response.totalElements
       },
       async putStatusProduct(idProduct){
         const response = await ProductManagementService.putStatusProduct(idProduct)
@@ -163,6 +190,9 @@
       },
       handleRequestSuccess() {
         this.getProductByUser();
+      },
+      showOverlay(){
+        this.$store.dispatch('changeStatusOverlay');
       },
     },
     mounted() {

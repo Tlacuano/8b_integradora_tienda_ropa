@@ -59,6 +59,17 @@ public class ProductController {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/get-products-by-product-name")
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getPageProductByName(@RequestBody RequestProductByNameDTO requestProductByNameDTO, Pageable pageable) {
+        try {
+            Page<BeanProduct> beanProductPage = productService.getProductsByName(requestProductByNameDTO.getProductName(), requestProductByNameDTO.getUserEmail(), pageable);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductPage.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
     @PostMapping("/get-by-search-query")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsBySearchQuery(@Valid @RequestBody RequestProductBySearchQueryDTO payload, Pageable page) {
