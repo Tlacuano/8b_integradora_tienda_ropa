@@ -2,7 +2,6 @@ package mx.edu.utez.services_clothing_shop.controller.payment_card;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.payment_card.dto.*;
-import mx.edu.utez.services_clothing_shop.model.card_status.BeanCardStatus;
 import mx.edu.utez.services_clothing_shop.model.payment_card.BeanPaymentCard;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.service.payment_card.PaymentCardService;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -68,14 +66,16 @@ public class PaymentCardController {
     }
 
     @PostMapping("/delete-payment-card")
-    public ResponseEntity<Boolean> deletePaymentCard(@Valid @RequestBody RequestDeletePaymentCardDTO requestBody) {
-        if (!paymentCardService.cardIsFromUser(requestBody.getCardNumber(), requestBody.getEmail())) {
-            throw new CustomException("payment.card.notFound");
-        }
+    public ResponseEntity<CustomResponse<Boolean>> deletePaymentCard(@Valid @RequestBody RequestDeletePaymentCardDTO requestBody) {
+
         if (paymentCardService.countPaymentCardByUserEmail(requestBody.getEmail()) <= 1) {
-            throw new CustomException("payment.minimum.card");
+            System.out.println("No se puede eliminar la única tarjeta de crédito registrada");
+            return new ResponseEntity<>(
+                    new CustomResponse<>(false, "No se puede eliminar la única tarjeta registrada", true, 409),
+                    HttpStatus.OK
+            );
         }
-        paymentCardService.deletePaymentCard(requestBody.getCardNumber(), requestBody.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(true);
+        paymentCardService.deletePaymentCard(requestBody.getIdPaymentCard());
+        return new ResponseEntity<>(new CustomResponse<>(true, "Tarjeta de crédito eliminada correctamente", false, 200), HttpStatus.OK);
     }
 }

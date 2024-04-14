@@ -11,13 +11,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface IPaymentCard extends JpaRepository<BeanPaymentCard, UUID> {
-    Page<BeanPaymentCard> findAllByUser_Email(String email, Pageable page);
+    Page<BeanPaymentCard> findAllByUser_EmailAndStatusIsNotNull(String email, Pageable page);
 
     int countByUser_Email(String email);
 
     boolean existsByCardNumberAndUser_Email(String cardNumber, String email);
-
-    void deleteByCardNumberAndUser_Email(String cardNumber, String email);
 
     @Query(value = "CALL sp_put_payment_card_status(:p_id_card, :p_status);", nativeQuery = true)
     Map<String, Object> putPaymentCardStatus(
