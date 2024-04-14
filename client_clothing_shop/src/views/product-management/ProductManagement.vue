@@ -12,7 +12,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input @input="getProductByUser" v-model="search" id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input @input="getProductByUser" v-model="search" id="search" type="text" placeholder="Buscar producto por nombre..." class="pr-5"></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>

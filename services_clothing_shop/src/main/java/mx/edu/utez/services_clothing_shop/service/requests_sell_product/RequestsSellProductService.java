@@ -8,6 +8,7 @@ import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequest
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
 import mx.edu.utez.services_clothing_shop.model.request_status.IRequestStatus;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import mx.edu.utez.services_clothing_shop.utils.validations.RegexPatterns;
 import org.springframework.data.domain.Page;
@@ -26,11 +27,13 @@ public class RequestsSellProductService {
 
     private final IRequestsSellProduct requestsSellProductRepository;
     private final IRequestStatus requestStatusRepository;
+    private final EmailService emailService;
     private static final String STATUS_INVALID = "requestStatus.invalid";
 
-    public RequestsSellProductService(IRequestsSellProduct requestsSellProductRepository, IRequestStatus requestStatusRepository) {
+    public RequestsSellProductService(IRequestsSellProduct requestsSellProductRepository, IRequestStatus requestStatusRepository, EmailService emailService) {
         this.requestsSellProductRepository = requestsSellProductRepository;
         this.requestStatusRepository = requestStatusRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -47,6 +50,18 @@ public class RequestsSellProductService {
             existingRequest.setStatus(requestStatus);
             existingRequest.setRejectionReason(rejectionReason);
             BeanRequestSellProduct updatedRequest = requestsSellProductRepository.save(existingRequest);
+
+            // Envío de correo electrónico
+            String emailSubject;
+            String emailContent;
+            if (status.equals("Aprobado")) {
+                emailSubject = "Producto Aprobado";
+                emailContent = "Tu solicitud de venta de producto ha sido aprobada. El producto está disponible en la tienda.";
+            } else {
+                emailSubject = "Producto Rechazado";
+                emailContent = "Tu solicitud de venta de producto ha sido rechazada. Razón: " + rejectionReason;
+            }
+            emailService.sendEmail(existingRequest.getProduct().getUser().getEmail(),"Revisión de solicitud para venta de producto",emailSubject,emailContent,"");
 
             return convertToDTO(updatedRequest);
         } else {
@@ -71,7 +86,10 @@ public class RequestsSellProductService {
             requestDetailsDTO.setPrice(request.getProduct().getPrice());
             requestDetailsDTO.setDescription(request.getProduct().getDescription());
             requestDetailsDTO.setProductName(request.getProduct().getProductName());
-            requestDetailsDTO.setImage(getPrimaryImage(request.getProduct().getProductGallery()));
+            requestDetailsDTO.setAmount(request.getProduct().getAmount());
+            requestDetailsDTO.setCategory(request.getProduct().getSubcategory().getCategory().getCategory());
+            requestDetailsDTO.setSubcategory(request.getProduct().getSubcategory().getSubcategory());
+            requestDetailsDTO.setImages(request.getProduct().getProductGallery());
             requestDetailsDTO.setProductId(request.getProduct().getIdProduct());
 
             return requestDetailsDTO;
@@ -125,7 +143,8 @@ public class RequestsSellProductService {
 
     @Transactional
     public Page<IRequestsSellProduct.RequestSellStatusProjection> getPageRequestSellProductByEmail(String email, Pageable pageable) {
-        return requestsSellProductRepository.findAllByEmailLikeIgnoreCase(email, pageable);
+        String emailPattern = "%" + email + "%";
+        return requestsSellProductRepository.findAllByEmailLikeIgnoreCase(emailPattern, pageable);
     }
 
 }

@@ -29,12 +29,21 @@
             <strong style="display: inline;">Nombre:</strong> <p style="display: inline;">{{product.productName}}</p>
           </b-col>
           <b-col class="mb-3">
+            <strong style="display: inline;">Categoria:</strong> <p style="display: inline;">{{product.category}}</p>
+          </b-col>
+          <b-col class="mb-3">
             <strong style="display: inline;">Descripción:</strong>
           </b-col>
         </b-col>
         <b-col cols="12"lg="6" class="mt-lg-3 order-md-1 order-lg-1 order-sm-1">
           <b-col class="mb-3">
             <strong style="display: inline;">Precio:</strong> <p style="display: inline;">${{product.price}}</p>
+          </b-col>
+          <b-col class="mb-3">
+            <strong style="display: inline;">Stock:</strong> <p style="display: inline;">${{product.amount}}</p>
+          </b-col>
+          <b-col class="mb-3">
+            <strong style="display: inline;">Subcategoria:</strong> <p style="display: inline;">{{product.subcategory}}</p>
           </b-col>
         </b-col>
         <b-col cols="12"lg="12" class="mt-lg-3 order-md-3 order-lg-1 order-sm-3" >
@@ -51,7 +60,7 @@
       </b-row>
       <b-row>
         <b-col md="4" lg="3" class="img-product mt-4" v-for="image in images" :key="image">
-          <img :src="image"/>
+          <img :src="image.image"/>
         </b-col>
       </b-row>
       <br/>
@@ -69,6 +78,7 @@
 <script>
 import ProductSalesRequestsService from '@/services/request-seller-product/RequestSellerProduct';
 import RejectionReason from "@/views/request-seller-product/RejectionReason.vue";
+import {showWarningToast} from "@/components/alerts/alerts";
 export default {
   name: "ProductSalesRequestsDetails",
   components: {RejectionReason},
@@ -84,9 +94,16 @@ export default {
   },
   methods: {
     async getByIdRequestSellProduct(){
+      this.showOverlay();
       const response = await ProductSalesRequestsService.getByIdProductSalesRequest(this.productId)
-      this.product = response.data;
-      this.images = Array.isArray(this.product.image) ? this.product.image : [this.product.image];
+      if(response){
+        this.product = response.data;
+        this.images = response.data.images;
+        this.showOverlay()
+      }else{
+        this.showOverlay()
+        showWarningToast("No se pudo obtener la información del producto")
+      }
     },
     async acceptRequestSellProduct(){
       const response = await ProductSalesRequestsService.putProductSalesRequestStatus(this.productId, 'Aprobado','sin comentarios')
@@ -101,6 +118,9 @@ export default {
     },
     modalClosed() {
       this.$emit('modal-closed')
+    },
+    showOverlay(){
+      this.$store.dispatch('changeStatusOverlay');
     },
     handleRequestSuccess(response) {
       this.$emit('request-success', response);
