@@ -1,6 +1,7 @@
 package mx.edu.utez.services_clothing_shop.service.seller_information;
 
 import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.ResponseAllSellerInformationDTO;
+import mx.edu.utez.services_clothing_shop.controller.seller_information.dto.SellerInformationGetbyEmailResponseDTO;
 import mx.edu.utez.services_clothing_shop.controller.user.dto.RequestActionByEmailDTO;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.BeanRequestSellProduct;
 import mx.edu.utez.services_clothing_shop.model.request_sell_product.IRequestsSellProduct;
@@ -146,6 +147,24 @@ public class SellerInformationService {
         emailService.sendEmail(user.getEmail(), "Desbloqueo en tu cuenta", "Tu cuenta ya puede vender nuevamente", "", "Atentamente, " + payload.getAdmin());
 
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<SellerInformationGetbyEmailResponseDTO> getSellerInformationByEmail(String email) {
+        BeanUser user = iUser.findByEmail(email);
+        if (user != null && user.getPerson() != null) {
+            BeanSellerInformation sellerInfo = user.getPerson().getSellerInformation();
+            if (sellerInfo != null) {
+                SellerInformationGetbyEmailResponseDTO responseDTO = new SellerInformationGetbyEmailResponseDTO(
+                        sellerInfo.getTaxIdentificationNumber(),
+                        sellerInfo.getSecondaryPhoneNumber(),
+                        sellerInfo.getImageIdentification(),
+                        sellerInfo.getCurp()
+                );
+                return ResponseEntity.ok(responseDTO);
+            }
+        }
+        throw new CustomException("Seller information not found for email: " + email);
     }
 
 }
