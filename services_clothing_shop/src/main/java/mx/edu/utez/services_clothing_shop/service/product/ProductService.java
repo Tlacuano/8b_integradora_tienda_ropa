@@ -166,7 +166,7 @@ public class ProductService {
         //save gallery
         BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Principal");
         BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
-        BeanImageProductStatus disabledStatus = iImageProductStatus.findByStatus("Desabilitada");
+        BeanImageProductStatus disabledStatus = iImageProductStatus.findByStatus("Deshabilitada");
 
         ProductImageEditDTO nuevaImagenPrincipal = null;
 
@@ -179,13 +179,12 @@ public class ProductService {
             }
             if (gallery.getStatus().equals("Principal")) {
                 productGallery.setStatus(defaultStatus);
-                nuevaImagenPrincipal = gallery;
-            } else {
+            } else if(gallery.getStatus().equals("Deshabilitada")) {
+                productGallery.setStatus(disabledStatus);
+            }else{
                 productGallery.setStatus(enabledStatus);
             }
-            if (!payload.getProductGallery().contains(gallery)) {
-                productGallery.setStatus(disabledStatus);
-            }
+
             iProductGallery.save(productGallery);
         }
 
@@ -196,7 +195,7 @@ public class ProductService {
 
         iRequestsSellProduct.save(requestSellProduct);
 
-        emailService.sendEmail("20213tn114@utez.edu.mx", "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");
+        emailService.sendEmail(product.getUser().getEmail(), "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");
 
         return true;
     }

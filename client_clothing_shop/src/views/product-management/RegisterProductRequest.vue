@@ -13,7 +13,7 @@
               <b-form-group label="Nombre" label-for="name">
                 <b-form-input
                     name="name"
-                    v-validate="'required|alpha_spaces|product_name_max'"
+                    v-validate="'required|alpha_spaces|product_name_max|min'"
                     v-model="formData.productName"
                     id="name"
                 ></b-form-input>
@@ -102,7 +102,7 @@
           <b-row class="text-right">
             <b-col>
               <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
-              <b-button variant="outline-dark" class="btn-cancel">Cancelar</b-button>
+              <b-button variant="outline-dark" class="btn-cancel" @click="$router.push({name: 'product-management'})">Cancelar</b-button>
             </b-col>
           </b-row>
         </b-col>
@@ -171,6 +171,12 @@ export default {
             setTimeout(() => {
               window.location.reload()
             }, 2000)
+          }else{
+            showWarningToast("Ocurrio un error inesperado", "La solicitud no se pudo enviar")
+            setTimeout(() => {
+              window.location.reload()
+            }, 2000)
+            this.showOverlay()
           }
           this.showOverlay()
         }

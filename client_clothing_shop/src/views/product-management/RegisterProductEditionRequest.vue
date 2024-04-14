@@ -2,7 +2,7 @@
   <section class="interface">
     <b-row class="mb-4">
       <b-col class="text-center">
-        <h1>Registrar solicitud de producto</h1>
+        <h1>Registrar solicitud de edición de producto</h1>
       </b-col>
     </b-row>
     <b-form @submit.prevent="onSubmit()">
@@ -13,7 +13,7 @@
               <b-form-group label="Nombre" label-for="name">
                 <b-form-input
                     name="name"
-                    v-validate="'required|alpha_spaces|product_name_max'"
+                    v-validate="'required|alpha_spaces|product_name_max|min'"
                     v-model="formData.productName"
                     id="name"
                 ></b-form-input>
@@ -98,7 +98,6 @@
                     <b-button class="delete-button" @click="removeImage(index)">❌</b-button>
                   </template>
                   <template v-else>
-                    <!-- Aquí puedes agregar un indicador de imagen principal -->
                     <span class="principal-indicator">Principal</span>
                   </template>
                 </div>
@@ -110,27 +109,35 @@
                   <h3>Vista previa de la imagen</h3>
                 </b-col>
               </b-row>
-              <img :src="selectedImage" alt="Selected Image" style="max-width: 100%; max-height: 100%;">
               <b-row>
-                <b-col cols="4" class="mt-3">
+                <b-col class="text-center">
+                  <img :src="selectedImage" alt="Selected Image" style="max-width: 100%; max-height: 100%;">
+                </b-col>
+              </b-row>
+
+              <b-row>
+                <b-col cols="3" class="mt-3">
                   <div v-if="loading">
                     <b-spinner variant="primary" label="Spinning"></b-spinner>
                   </div>
                   <div v-else>
-                    <h5><b-badge variant="light">
-                      {{formData.productGallery[this.index].status === 'Principal' ? 'Principal' : 'Habilitada'}}
-                    </b-badge></h5>
+                    <h5>
+                      <b-badge variant="light">
+                        {{ formData.productGallery[this.index].status === 'Principal' ? 'Principal' : (formData.productGallery[this.index].status === 'Habilitada' ? 'Habilitada' : 'Deshabilitada') }}
+                      </b-badge>
+                    </h5>
                   </div>
                 </b-col>
-                <b-col cols="8" class="text-right mt-3">
+                <b-col cols="9" class="text-right mt-3">
                   <template v-if="formData.productGallery[this.index].status !== 'Principal'">
                     <b-button class="mr-4" variant="dark" @click="changeStatus()">Cambiar Estado</b-button>
+                    <b-button :disabled="loading" variant="outline-dark" @click="closeImageModal">Cerrar</b-button>
                   </template>
                   <template v-else>
-                    <!-- Aquí puedes agregar un breve texto indicando que la imagen principal no se puede eliminar -->
-                    <span class="principal-indicator-text">La imagen principal no se puede eliminar</span>
+                    <span class="principal-indicator-text">La imagen principal no se puede deshabilitar</span>
+                    <b-button class="mt-4" :disabled="loading" variant="outline-dark" @click="closeImageModal">Cerrar</b-button>
                   </template>
-                  <b-button :disabled="loading" variant="outline-dark" @click="closeImageModal">Cerrar</b-button>
+
                 </b-col>
               </b-row>
             </b-modal>
@@ -142,7 +149,7 @@
           <b-row class="text-right">
             <b-col>
               <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
-              <b-button variant="outline-dark" class="btn-cancel">Cancelar</b-button>
+              <b-button variant="outline-dark" class="btn-cancel" @click="$router.push({name: 'product-management'})">Cancelar</b-button>
             </b-col>
           </b-row>
         </b-col>
@@ -171,8 +178,7 @@ export default {
   data() {
     return {
       showImageModal: false,
-      index:0,
-      imageUrl: null,
+      index: 0,
       category: null,
       selectedImage: '',
       imagePreviews: [],
@@ -187,17 +193,16 @@ export default {
           {
             idImage: '',
             image: '',
-            status:''
+            status: ''
           }
         ]
       },
-      i: 0,
       filteredSubcategories: [],
       newImages: [
         {
           idImage: '',
           image: '',
-          status:''
+          status: ''
         }
       ],
       categories: null,
@@ -207,15 +212,38 @@ export default {
   },
   methods: {
     onSubmit() {
+      console.log(this.formData.productGallery)
+      let count = 0;
+      let principal = 0;
+      for (let i = 0; i < this.formData.productGallery.length; i++) {
+        if (this.formData.productGallery[i].status === 'Principal') {
+          principal++;
+        }
+        if (this.formData.productGallery[i].status === 'Habilitada') {
+          count++;
+        }
+      }
+      if (principal != 1) {
+        showWarningToast("Debe haber una imagen principal");
+        return;
+      }
+      if (count < 1) {
+        showWarningToast("Debe haber al menos dos imagenes habilitadas");
+        return;
+      }
+      if (count > 4) {
+        showWarningToast("No puedes cargar más de 5 imágenes");
+        return;
+      }
       if (this.formData.productGallery.length === 0 || this.formData.productGallery.length < 2) {
         showWarningToast("Debes cargar al menos dos imagenes");
         return;
       }
-      if(this.formData.productGallery.length > 5){
+      if (this.formData.productGallery.length > 5) {
         showWarningToast("No puedes cargar más de 5 imágenes");
         return;
       }
-      console.log(this.formData)
+
       this.$validator.validate().then(async valid => {
         if (!valid) {
           showWarningToast("Completar los requisitos");
@@ -224,13 +252,17 @@ export default {
           for (let i = 0; i < this.formData.productGallery.length; i++) {
             const image = this.formData.productGallery[i];
             // Verificar si el elemento es de tipo file (es decir, no es una URL)
-            if (image instanceof File && ! image.$path) {
+            if (image instanceof File && !image.$path) {
               const response = await CloudinaryService.uploadImage(this.formData.productGallery[i]);
               if (response) {
-                this.formData.productGallery[i]= {
+                this.formData.productGallery[i] = {
                   image: response.data.data,
                   status: 'Habilitada'
                 }
+              }else{
+                this.showOverlay();
+                showWarningToast("Ocurrio un error inesperado", "No se pudo cargar la imagen");
+                return;
               }
             }
           }
@@ -239,12 +271,19 @@ export default {
             this.showOverlay();
             showSuccessToast("Solicitud de edición enviada correctamente");
             setTimeout(() => {
-              window.location.reload();
+              this.$router.push({name: 'product-management'});
+            }, 2000);
+          }else{
+            this.showOverlay();
+            showWarningToast("Ocurrio un error inesperado", "No se pudo enviar la solicitud de edición");
+            setTimeout(() => {
+              this.$router.push({name: 'product-management'});
             }, 2000);
           }
           this.showOverlay();
         }
       });
+      this.showOverlay();
     },
 
     closeImageModal() {
@@ -257,6 +296,9 @@ export default {
         this.formData.productGallery[this.index].status = 'Principal';
       } else if (this.formData.productGallery[this.index].status === 'Principal') {
         this.formData.productGallery[this.index].status = 'Habilitada';
+      } else if (this.formData.productGallery[this.index].status === 'Deshabilitada') {
+        this.formData.productGallery[this.index].status = 'Habilitada';
+        showWarningToast("Imagen Habilitada")
       }
 
 
@@ -303,36 +345,33 @@ export default {
       reader.readAsDataURL(files[0]);
     },
     removeImage(index) {
-      this.imagePreviews.splice(index, 1);
-      this.formData.productGallery.splice(index, 1);
-      if (this.formData.productGallery.length > 2) {
-        this.formData.productGallery.splice(index, 1);
-      }
-      if (this.imagePreviews.length === 0) {
-        showWarningToast("Debes cargar al menos una imagen");
-      }
+      this.formData.productGallery[index].status = 'Deshabilitada';
+      showWarningToast("Imagen Deshabilitada");
     },
 
     async getDetailProduct() {
       this.showOverlay()
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
-      console.log(response.data)
-      this.newImages = response.data.productGallery.slice()
-      console.log(this.productGallery)
-      this.category = response.data.category
-      this.formData = response.data
-      this.formData.productGallery = [];
-      for (let i = 0; i < this.newImages.length; i++) {
-        if (this.newImages[i].status === 'Principal') {
-          this.imagePreviews.unshift(this.newImages[i].image);
-          this.formData.productGallery.unshift(this.newImages[i])
-        } else {
-          this.imagePreviews.push(this.newImages[i].image);
-          this.formData.productGallery.push(this.newImages[i])
+      if(response){
+        this.newImages = response.data.productGallery.slice()
+        this.category = response.data.category
+        this.formData = response.data
+        this.formData.productGallery = [];
+        for (let i = 0; i < this.newImages.length; i++) {
+          if (this.newImages[i].status === 'Principal') {
+            this.imagePreviews.unshift(this.newImages[i].image);
+            this.formData.productGallery.unshift(this.newImages[i])
+          } else {
+            this.imagePreviews.push(this.newImages[i].image);
+            this.formData.productGallery.push(this.newImages[i])
+          }
         }
+        delete this.formData.category
+        this.showOverlay()
+      }else{
+        this.showOverlay()
+        showWarningToast("Ocurrio un error inesperado", "No se pudo cargar la información del producto")
       }
-      delete this.formData.category
-      this.showOverlay()
     },
     async getCategories() {
       const response = await CategoryService.getCategories()
