@@ -210,12 +210,21 @@ export default {
   methods: {
     async getProduct() {
       const response = await ProductManagementService.getProductDetails({idProduct: this.idProduct})
-      this.productGallery = response.data.productGallery
-      this.data = response.data
-      if(this.data !==null){
-        const getReviews = await ProductManagementService.getReviews({idProduct:this.idProduct})
-        this.reviews = getReviews.data
+      if(response){
+        this.productGallery = response.data.productGallery
+        this.data = response.data
+        if(this.data !==null){
+          const getReviews = await ProductManagementService.getReviews({idProduct:this.idProduct})
+          if(getReviews) {
+            this.reviews = getReviews.data
+          }else{
+            showWarningToast("Ocurrio un error inesperado", "No se pudo obtener las reseñas")
+          }
+        }
+      }else{
+        showWarningToast("Ocurrio un error inesperado", "No se pudo obtener los detalles del producto")
       }
+
     },
     async putStatusProduct(idProduct){
       const response = await ProductManagementService.putStatusProduct(idProduct)
