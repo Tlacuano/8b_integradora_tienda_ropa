@@ -117,7 +117,7 @@ export default {
       this.$bvModal.hide('addressManagementRegisterModal');
     },
     async registerAddress() {
-      if (!this.$refs.observer.validate()) {
+      if (this.$refs.observer.validate()) {
         const addressToRegister = {
         address: this.address.address,
         neighborhood: this.address.neighborhood,
