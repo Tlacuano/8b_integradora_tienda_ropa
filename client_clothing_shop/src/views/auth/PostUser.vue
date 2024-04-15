@@ -258,9 +258,9 @@
                   name="gender"
                   v-validate="'required'"
                 >
-                  <b-form-select-option value="masculino">Masculino</b-form-select-option>
-                  <b-form-select-option value="femenino">Femenino</b-form-select-option>
-                  <b-form-select-option value="otros">Otro</b-form-select-option>
+                  <b-form-select-option value="MASCULINO">Masculino</b-form-select-option>
+                  <b-form-select-option value="FEMENINO">Femenino</b-form-select-option>
+                  <b-form-select-option value="OTROS">Otro</b-form-select-option>
                 </b-form-select>
                 <span v-show="errors.has('gender')" class="text-danger">{{ errors.first('gender')}}</span>
               </b-form-group>

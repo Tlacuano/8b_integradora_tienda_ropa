@@ -11,4 +11,5 @@ public class RequestProductBySearchQueryDTO {
     private String query;
     private String category;
     private String subcategory;
+    private String email;
 }
