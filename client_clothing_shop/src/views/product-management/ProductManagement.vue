@@ -33,7 +33,7 @@
                 <b-col cols="11" sm="6" md="6" lg="6" class="body-text">
                   <b-row>
                     <b-col>
-                      <h4 class="mb-0">{{item.productName}}</h4>
+                      <h4 class="mb-0 text-truncate">{{item.productName}}</h4>
                     </b-col>
                   </b-row>
                   <b-row class="mt-2">
