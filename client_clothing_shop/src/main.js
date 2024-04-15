@@ -62,7 +62,7 @@ const dictionary = {
             negative_numbers: () => 'No se permiten números negativos',
             not_zero: () => 'No se permiten valores en cero',
             alpha:()=>'Este campo solo puede contener letras',
-            minor_120: () => 'La edad no puede ser mayor a 120 años'
+            minor_120: () => 'La edad no puede ser mayor a 120 años',
             cvv: () => 'El CVV debe contener 3 dígitos',
             rejection_reason_length: () => 'La razón de rechazo no debe exceder los 255 caracteres',
         }
