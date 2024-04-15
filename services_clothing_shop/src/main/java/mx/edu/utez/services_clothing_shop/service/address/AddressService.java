@@ -84,6 +84,7 @@ public class AddressService {
         // Verifica si es la primera dirección del usuario
         List<BeanAddress> existingAddresses = iAddress.findAllByPersonId(person.getIdPerson());
         BeanAddressStatus status;
+        
         if (existingAddresses.isEmpty()) {
             // Si no hay direcciones, la nueva dirección será 'Predeterminada'
             status = iAddressStatus.findByStatus("Predeterminada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));

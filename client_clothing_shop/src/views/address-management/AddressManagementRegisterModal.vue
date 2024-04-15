@@ -161,5 +161,4 @@ export default {
 .modal-title {
   font-weight: bold;
 }
-
 </style>
