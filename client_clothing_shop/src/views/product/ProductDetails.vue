@@ -4,7 +4,7 @@
       <b-col cols="12" xl="5" lg="4">
         <b-carousel id="product-carousel" v-model="slide" :interval="10000" controls indicators class="mb-3">
           <b-carousel-slide v-for="(image, index) in product.productGallery" :key="index" :img-src="image.image"
-                            alt="article"></b-carousel-slide>
+                            alt="article" img-height="100%"></b-carousel-slide>
         </b-carousel>
       </b-col>
       <b-col cols="12" xl="7" lg="8" class="pl-4">
