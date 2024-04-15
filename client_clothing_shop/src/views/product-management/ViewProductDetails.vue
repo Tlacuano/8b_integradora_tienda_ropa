@@ -1,5 +1,5 @@
 <template>
-  <section class="interface">
+
     <b-modal id="product-detail" size="xl" @hide="modalClosed" @show="getProduct" hide-header hide-footer scrollable centered>
       <b-row>
         <b-col class="text-right">
@@ -183,7 +183,7 @@
         </b-col>
       </b-row>
     </b-modal>
-  </section>
+
 </template>
 <script>
 import ProductManagementService from "@/services/product-management/ProductManagementService";

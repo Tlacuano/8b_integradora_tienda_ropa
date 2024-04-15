@@ -17,7 +17,7 @@
       </b-row>
       <b-row>
         <b-col class="text-center">
-          <h3>Solicitudes para venta de productos</h3>
+          <h3>Detalles de solicitud para venta de producto</h3>
         </b-col>
       </b-row>
       <b-row>
@@ -59,7 +59,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="4" lg="3" class="img-product mt-4" v-for="image in images" :key="image">
+        <b-col md="4" lg="3" class="img-product mt-4" v-for="image in images" :key="image.idImage">
           <img :src="image.image"/>
         </b-col>
       </b-row>
@@ -87,7 +87,18 @@ export default {
   },
   data() {
     return {
-      product: {},
+      product: {
+        amount: 0,
+        category: '',
+        description: '',
+        idRequestSellProduct: '',
+        images: [],
+        price: 0,
+        productId: '',
+        productName: '',
+        subcategory: '',
+        userEmail: ''
+      },
       images:null,
       selectProductId: null
     };

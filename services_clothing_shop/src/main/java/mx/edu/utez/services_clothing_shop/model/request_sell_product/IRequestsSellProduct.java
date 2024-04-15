@@ -21,6 +21,7 @@ public interface IRequestsSellProduct extends JpaRepository<BeanRequestSellProdu
         UUID getIdRequestSellProduct();
         String getImage();
         String getProductName();
+        String getCategory();
         String getEmail();
         BeanRequestStatus getStatus();
     }
@@ -42,9 +43,12 @@ public interface IRequestsSellProduct extends JpaRepository<BeanRequestSellProdu
             "(SELECT pg.image FROM BeanProductGallery pg WHERE pg.product = p AND pg.status.status = 'Principal') as image, " +
             "p.productName as productName, " +
             "u.email as email, " +
-            "r.status as status " +
+            "r.status as status, " +
+            "s.category.category as category " + // Seleccionar el nombre de la categoría del producto
             "FROM BeanRequestSellProduct r " +
             "JOIN r.product p " +
+            "JOIN p.subcategory s " + // Unir la tabla de subcategorías
+            "JOIN s.category c " + // Unir la tabla de categorías
             "JOIN p.user u")
     Page<RequestSellStatusProjection> findAllStatuses(Pageable pageable);
 
