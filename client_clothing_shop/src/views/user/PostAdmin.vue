@@ -232,7 +232,7 @@
                     name="birthday"
                     min="1940-01-01"
                     :max="today"
-                    v-validate="'required|over_18'"
+                    v-validate="'required|over_18|minor_120'"
                 ></b-form-input>
                 <span v-show="errors.has('birthday')" class="text-danger">{{ errors.first('birthday') }}</span>
               </b-form-group>
