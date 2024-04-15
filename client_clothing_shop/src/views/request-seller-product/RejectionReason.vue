@@ -13,11 +13,12 @@
       </b-row>
       <b-row>
         <b-col class="text-area text-center">
-          <textarea rows="4" cols="40" placeholder="Escribe tu razon aqui" v-model="reason" @input="validateInput">
+          <textarea rows="4" cols="40" placeholder="Escribe tu razon aqui" v-model="reason" @input="validateInput" >
 
           </textarea>
           <div v-if="notNull" style="color: red;">Razón obligatoria para rechazo</div>
           <div v-if="error" style="color: red;">¡Los caracteres especiales no son permitidos!</div>
+          <div v-if="excess" style="color: red;">La razón de rechazo no puede exceder los 300 caracteres</div>
         </b-col>
       </b-row>
       <b-row>
@@ -26,7 +27,7 @@
           <b-spinner small variant="dark"></b-spinner>
         </b-col>
         <b-col class="text-right mt-4">
-          <b-button variant="danger"  @click="rejectionRequestSellProduct" :disabled="error || notNull">Rechazar</b-button>
+          <b-button variant="danger"  @click="rejectionRequestSellProduct" :disabled="error || notNull || excess">Rechazar</b-button>
         </b-col>
       </b-row>
     </b-container>
@@ -46,7 +47,8 @@ export default{
       isLoading: false,
       error:false,
       notNull: true,
-      reason:''
+      reason:'',
+      excess: false
     }
   },
   methods: {
@@ -64,6 +66,11 @@ export default{
     },
     validateInput(){
       const regex = regexRejectionReason;
+      if(this.reason.trim().length > 300) {
+        this.notNull = false
+        this.error = false;
+        this.excess = true;
+      }
       if (this.reason.trim().length === 0) {
         this.notNull = true
         this.error = false;
