@@ -25,7 +25,7 @@
     <b-form id="formulario">
       <b-row>
         <b-col cols="6">
-          <b-form-group label="Dirección:">
+          <b-form-group label="Nombre de la dirección:">
           <validation-provider rules="required|min:5|max:100" v-slot="{ errors }">
             <b-form-input v-model="address.address"></b-form-input>
             <span class="text-danger">{{ errors[0] }}</span>
@@ -41,7 +41,7 @@
           </b-form-group>
         </b-col>
         <b-col cols="6">
-          <b-form-group label="Calle:">
+          <b-form-group label="Calle y numero:">
             <validation-provider rules="required|max:50" v-slot="{ errors }">
               <b-form-input v-model="address.street"></b-form-input>
               <span class="text-danger">{{ errors[0] }}</span>

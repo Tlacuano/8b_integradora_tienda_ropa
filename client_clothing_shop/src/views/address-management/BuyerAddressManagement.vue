@@ -31,16 +31,32 @@
                 <div class="mt-2 mt-md-0">
                   <div class="status-badge">{{ address.status }}</div>
                 </div>
-              <b-dropdown variant="link" no-caret class="card-dropdown">
-                <template #button-content>
-                  <font-awesome-icon icon="ellipsis-v" class="text-dark" />
-                </template>
-                <b-dropdown-item @click="enableAddress(address.idAddress)">Habilitar</b-dropdown-item>
-                <b-dropdown-item @click="deleteAddress(address.idAddress)">Deshabilitar</b-dropdown-item>
-                <b-dropdown-item @click="setAsDefault(address)">Marcar como predeterminada</b-dropdown-item>
-                <b-dropdown-item @click="openEditModal(address)">Modificar</b-dropdown-item>
-              </b-dropdown>
-                </div>
+                <b-dropdown variant="link" no-caret class="card-dropdown">
+                  <template #button-content>
+                    <font-awesome-icon icon="ellipsis-v" class="text-dark" />
+                  </template>
+                  <!-- Mostrar si el usuario es vendedor -->
+                  <b-dropdown-item
+                      v-if="role === 'SELLER'"
+                      @click="setAsSale(address)"
+                      v-show="address.status !== 'Venta'"
+                  >
+                    Marcar como venta
+                  </b-dropdown-item>
+                  <!-- Mostrar si el usuario es comprador -->
+                  <b-dropdown-item
+                      v-if="role === 'BUYER'"
+                      @click="setAsDefault(address)"
+                      v-show="address.status !== 'Predeterminada'"
+                  >
+                    Marcar como predeterminada
+                  </b-dropdown-item>
+                  <b-dropdown-item @click="enableAddress(address.idAddress)">Habilitar</b-dropdown-item>
+                  <b-dropdown-item @click="deleteAddress(address.idAddress)">Deshabilitar</b-dropdown-item>
+                  <b-dropdown-item @click="openEditModal(address)">Modificar</b-dropdown-item>
+                </b-dropdown>
+
+              </div>
             </b-card>
           </b-col>
         </b-row>
@@ -71,9 +87,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getEmail']),
+    ...mapGetters(['getEmail', "getRole"]),
     email() {
       return this.getEmail;
+    },
+    role() {
+      return this.getRole;
     }
   },
   methods: {
@@ -89,7 +108,7 @@ export default {
       try {
         await AddressService.disableAddressService(idAddress);
         showSuccessToast('Éxito', 'Dirección deshabilitada correctamente');
-        this.fetchAddresses();  // Recargar las direcciones para reflejar los cambios
+        this.fetchAddresses();
       } catch (error) {
         showWarningToast('Error', 'No se pudo deshabilitar la dirección');
       }
@@ -108,6 +127,20 @@ export default {
         showWarningToast('Error', 'No se pudo marcar como predeterminada');
       }
     },
+    async setAsSale(address) {
+      try {
+        const response = await AddressService.putAddressStatusService({
+          idAddress: address.idAddress,
+          status: "Venta",
+          idPerson: address.idPerson
+        });
+        showSuccessToast('Éxito', 'Dirección marcada como venta');
+        this.fetchAddresses();
+      } catch (error) {
+        showWarningToast('Error', 'No se pudo marcar como venta');
+      }
+    },
+
     async enableAddress(idAddress) {
       try {
         await AddressService.enableAddressService(idAddress);
@@ -140,9 +173,11 @@ export default {
       this.$refs.registrationModal.show();
     },
   },
+
   mounted() {
     this.fetchAddresses();
   },
+
 };
 </script>
 
