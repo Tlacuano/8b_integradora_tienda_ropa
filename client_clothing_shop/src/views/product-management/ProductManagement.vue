@@ -201,6 +201,11 @@
     },
     mounted() {
       this.getProductByUser()
+    },
+    watch:{
+      objectPagination(){
+        this.getProductByUser()
+      }
     }
   }
 </script>

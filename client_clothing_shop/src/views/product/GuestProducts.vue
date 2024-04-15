@@ -17,7 +17,17 @@
       </b-row>
     </div>
     <div v-show="selectedCategory" class="pb-5">
-
+      <b-row class="mt-2 px-3" align-h="between">
+        <b-col cols="12" lg="4">
+          <b-form-group>
+            <div class="position-relative">
+              <b-form-input @keyup.enter="getProducts()" v-model="searchQuery" id="search" type="text"
+                            placeholder="Buscar..." class="pr-5"></b-form-input>
+              <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
+            </div>
+          </b-form-group>
+        </b-col>
+      </b-row>
       <b-row v-if="products.length > 0" no-gutters>
         <b-col
             v-for="product in products"
@@ -35,8 +45,8 @@
               tag="article"
               class="mb-2 selectable zoom-on-hover h-100"
               @click="selectProduct(product.idProduct)"
-              img-height="320px"
-              style="width: auto"
+              img-height="350px"
+              style="width: 90%"
 
           >
             <b-card-text class="text-left">
@@ -51,6 +61,7 @@
                 </b-col>
               </b-row>
               <p class="mb-0">$ {{ product.price }} MXN</p>
+              <p class="mb-0">{{ product.amount }} disponibles</p>
             </b-card-text>
           </b-card>
         </b-col>
