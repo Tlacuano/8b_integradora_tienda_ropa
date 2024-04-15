@@ -19,7 +19,7 @@
                 >
                   <b-row>
                     <b-col cols="4 my-auto">
-                      <b-img :src="findMainImage(product.product.gallery)" class="img-fluid"/>
+                      <b-img style="max-height: 350px" :src="findMainImage(product.product.gallery)" class="img-fluid"/>
                     </b-col>
 
                     <b-col cols="7">
