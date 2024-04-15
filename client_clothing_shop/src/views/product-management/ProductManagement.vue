@@ -23,8 +23,13 @@
     </b-row>
     <b-row class="container-products">
       <b-col>
+        <b-row class="mt-5" v-if="statusNotData">
+          <b-col class="text-center m-auto" >
+            <h3>No tienes productos registrados</h3>
+          </b-col>
+        </b-row>
         <b-row>
-          <b-col class="container-card mt-3" md="6" lg="4" sm="12" v-for="item in items" :key="item.idProduct">
+          <b-col class="mt-3" md="6" lg="4" sm="12" v-for="item in items" :key="item.idProduct">
             <b-card no-body class="card highlight-on-hover">
               <b-row no-gutters class="body-card">
                 <b-col cols="12" sm="4" md="4" lg="4" class="image-container">
@@ -104,13 +109,14 @@
       return {
         objectPagination:{
           page: 1,
-          size: 10,
+          size: 6,
           elements: 0,
         },
         items:[],
         mainImage:[],
         selectProductId:null,
-        search:null
+        search:null,
+        statusNotData: false,
       };
     },
     methods:{
@@ -119,6 +125,10 @@
           this.showOverlay()
           const email = this.$store.getters.getEmail
           const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
+          if(response.data.content.length === 0) {
+            this.statusNotData = true
+            showWarningToast("No se encontraron productos", "No tienes productos registrados")
+          }
           if(response){
             this.items = response.data.content
             this.mainImage = this.items
@@ -131,11 +141,12 @@
               }
             }
             this.objectPagination.elements = response.totalElements
-            this.showOverlay()
+
           }else{
             this.showOverlay()
             showWarningToast("Ocurrio un error inesperado", "No se pudieron obtener los productos")
           }
+          this.showOverlay()
         }else{
           const payload ={
             productName: this.search,
@@ -197,7 +208,7 @@
 <style>
 .container-products {
   height: calc(100vh - 270px);
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 .body-card{
   height: 100%;
