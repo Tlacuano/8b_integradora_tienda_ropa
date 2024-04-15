@@ -61,9 +61,9 @@ public class ProductService {
     @Transactional
     public Page<BeanProduct> getProductsBySearchQuery(RequestProductBySearchQueryDTO payload, Pageable page) {
         if (!payload.getSubcategory().isEmpty()) {
-            return iProduct.findAllByProductNameAndSubcategory(payload.getQuery(), payload.getCategory(), payload.getSubcategory(), page);
+            return iProduct.findAllByProductNameAndSubcategory(payload.getQuery(), payload.getCategory(), payload.getSubcategory(), payload.getEmail(), page);
         } else {
-            return iProduct.findAllByProductNameContainingIgnoreCase(payload.getQuery(), payload.getCategory(), page);
+            return iProduct.findAllByProductNameContainingIgnoreCase(payload.getQuery(), payload.getCategory(), payload.getEmail(), page);
         }
     }
 
@@ -179,9 +179,9 @@ public class ProductService {
             }
             if (gallery.getStatus().equals("Principal")) {
                 productGallery.setStatus(defaultStatus);
-            } else if(gallery.getStatus().equals("Deshabilitada")) {
+            } else if (gallery.getStatus().equals("Deshabilitada")) {
                 productGallery.setStatus(disabledStatus);
-            }else{
+            } else {
                 productGallery.setStatus(enabledStatus);
             }
 
@@ -203,7 +203,7 @@ public class ProductService {
     @Transactional
     public Page<BeanProduct> getProductsByName(String name, String userEmail, Pageable page) {
         String modifiedName = "%" + name + "%";
-        return iProduct.findAllByProductNameLikeIgnoreCaseAndUserEmail(modifiedName,userEmail, page);
+        return iProduct.findAllByProductNameLikeIgnoreCaseAndUserEmail(modifiedName, userEmail, page);
     }
 
     @Transactional
