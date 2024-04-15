@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-
 @RestController
 @RequestMapping("venta-ropa/api/products")
 @CrossOrigin(origins = "*")
@@ -36,7 +34,7 @@ public class ProductController {
     @PostMapping("/get-by-category")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsByCategory(@Valid @RequestBody RequestProductByCategoryDTO payload, Pageable page) {
         try {
-            Page<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory(), page);
+            Page<BeanProduct> beanProductList = productService.getProductsByCategory(payload.getCategory(), payload.getEmail(), page);
             Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
             return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por categoria encontrados", false, 200));
         } catch (Exception e) {
@@ -47,13 +45,14 @@ public class ProductController {
     @PostMapping("/get-by-subcategory")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsBySubcategory(@Valid @RequestBody RequestProductBySubcategoryDTO payload, Pageable page) {
         try {
-            Page<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory(), page);
+            Page<BeanProduct> beanProductList = productService.getProductsBySubcategory(payload.getCategory(), payload.getSubcategory(), payload.getEmail(), page);
             Page<ResponseProductDTO> responseProductDTOList = beanProductList.map(ResponseProductDTO::toProductDTO);
             return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos por subcategoria encontrados", false, 200));
         } catch (Exception e) {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/get-products-by-product-name")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getPageProductByName(@RequestBody RequestProductByNameDTO requestProductByNameDTO, Pageable pageable) {
         try {
@@ -96,6 +95,7 @@ public class ProductController {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/get-product-to-edit")
     public ResponseEntity<Object> getProductToEdit(@Valid @RequestBody RequestProductByIdDTO product) {
         try {
@@ -108,7 +108,7 @@ public class ProductController {
 
     @PostMapping("/post-product")
     public ResponseEntity<Object> postProduct(@Valid @RequestBody RequestProductDTO product) {
-       return new ResponseEntity<>(new CustomResponse<>(productService.postProduct(product), "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
+        return new ResponseEntity<>(new CustomResponse<>(productService.postProduct(product), "Producto registrado correctamente", false, 201), HttpStatus.CREATED);
     }
 
     @PutMapping("/put-product")

@@ -192,9 +192,9 @@
                           <b-col md="4">
                             <b-form-group label="Género">
                               <b-form-select v-model="user.person.gender" disabled>
-                                <b-form-select-option value="masculino">Hombre</b-form-select-option>
-                                <b-form-select-option value="femenino">Mujer</b-form-select-option>
-                                <b-form-select-option value="otros">Otro</b-form-select-option>
+                                <b-form-select-option value="MASCULINO">Hombre</b-form-select-option>
+                                <b-form-select-option value="FEMENINO">Mujer</b-form-select-option>
+                                <b-form-select-option value="OTROS">Otro</b-form-select-option>
                               </b-form-select>
                             </b-form-group>
                           </b-col>
