@@ -1,6 +1,6 @@
 <template>
-  <div class="interface">
-    <div v-if="!selectedCategory">
+  <div class="interface pb-3">
+    <div v-show="!selectedCategory">
       <b-row class="full-page" no-gutters>
         <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="">
           <b-card
@@ -10,13 +10,13 @@
               header-class="text-center"
               @click="selectCategory(category.category)"
               overlay
-              img-height="100%"
+              img-height="700px"
           >
           </b-card>
         </b-col>
       </b-row>
     </div>
-    <div v-else>
+    <div v-show="selectedCategory">
       <b-row class="mt-2 px-3" align-h="between">
         <b-col cols="12" lg="4">
           <b-form-group>
@@ -45,7 +45,9 @@
               tag="article"
               class="mb-2 selectable zoom-on-hover h-100"
               @click="selectProduct(product.idProduct)"
-              img-width="100%"
+              img-height="300px"
+              style="width: 90%"
+
           >
             <b-card-text class="text-left">
               <b-row no-gutters>
