@@ -54,8 +54,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Page<BeanProduct> getProductsByCategory(String category, Pageable page) {
-        return iProduct.findAllByCategory(category, page);
+    public Page<BeanProduct> getProductsByCategory(String category, String email, Pageable page) {
+        return iProduct.findAllByCategory(category, email, page);
     }
 
     @Transactional
@@ -68,8 +68,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Page<BeanProduct> getProductsBySubcategory(String category, String subcategory, Pageable page) {
-        return iProduct.findAllBySubcategory(category, subcategory, page);
+    public Page<BeanProduct> getProductsBySubcategory(String category, String subcategory, String email, Pageable page) {
+        return iProduct.findAllBySubcategory(category, subcategory, email, page);
     }
 
     @Transactional

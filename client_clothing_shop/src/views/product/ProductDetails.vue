@@ -4,7 +4,7 @@
       <b-col cols="12" xl="5" lg="4">
         <b-carousel id="product-carousel" v-model="slide" :interval="10000" controls indicators class="mb-3">
           <b-carousel-slide v-for="(image, index) in product.productGallery" :key="index" :img-src="image.image"
-            :alt="image.alt"></b-carousel-slide>
+                            alt="article"></b-carousel-slide>
         </b-carousel>
       </b-col>
       <b-col cols="12" xl="7" lg="8" class="pl-4">
@@ -28,19 +28,19 @@
         <p>Subcategoría: {{ product.subcategory }}</p>
         <b-row no-gutters>
           <b-col cols="12" lg="4">
-            <b-button variant="dark" @click="addToCart(product)" :disabled="product.amount < 1">
+            <b-button variant="dark" @click="addToCart(product)" :disabled="product.amount <= 0">
               <span v-if="product.amount > 0">Añadir al carrito</span>
               <span v-else>Producto agotado</span>
             </b-button>
             <b-button pill variant="light" class="wishlist-btn ml-4 p-0" @click="wishlistProduct(product)">
-              <b-icon class="icon-container" :icon="isWishlisted ? 'heart-fill' : 'heart'" />
+              <b-icon class="icon-container" :icon="isWishlisted ? 'heart-fill' : 'heart'"/>
             </b-button>
           </b-col>
         </b-row>
       </b-col>
 
       <b-col cols="12">
-        <ReviewsProduct :idProduct="product.idProduct" />
+        <ReviewsProduct :idProduct="product.idProduct"/>
       </b-col>
     </b-row>
     <b-row v-else class="p-4" no-gutters>
@@ -53,10 +53,10 @@
 
 <script>
 import ProductService from "@/services/product/ProductService";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 import ShoppingCartService from "@/services/shopping-cart/ShoppingCartService";
 import WishListService from '@/services/wish-list/WishListService';
-import { showSuccessToast, showWarningToast } from "@/components/alerts/alerts";
+import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 
 export default {
   name: "ProductDetails",
@@ -68,7 +68,6 @@ export default {
       // Product details
       selectedProductId: this.$route.params.id || "",
       product: {},
-      // TODO: Implement function to check if product is wishlisted
       productIsWishlisted: false,
       // Carousel
       slide: 0
@@ -79,23 +78,22 @@ export default {
     isWishlisted() {
       return this.productIsWishlisted;
     },
-    ...mapGetters(["isLoggedIn"])
+    ...mapGetters(["isLoggedIn"]),
   },
 
   methods: {
     async getProduct() {
       if (!this.selectedProductId) {
-        await this.$router.push({ name: "GuestProducts" });
+        await this.$router.push({name: "GuestProducts"});
         return;
       }
       const response = await ProductService.getProductById(this.selectedProductId);
       if (response.status === 200) {
         this.product = response.data;
         await this.checkProductIsWishlisted();
-      } 
+      }
     },
 
-    // TODO: Implement function to wishlist product
     async wishlistProduct(product) {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
@@ -135,7 +133,6 @@ export default {
       }
     },
 
-    // TODO: Implement function to add product to cart
     async addToCart(product) {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
@@ -151,7 +148,7 @@ export default {
       }
     },
     async checkProductIsWishlisted() {
-      if(this.$store.getters.isLoggedIn){
+      if (this.$store.getters.isLoggedIn) {
         try {
           const response = await WishListService.getWishList(this.$store.getters.getEmail)
           if (response && response.data) {
@@ -166,7 +163,6 @@ export default {
           return false;
         }
       }
-
     },
 
     showOverlay() {
@@ -174,7 +170,7 @@ export default {
     },
     hideOverlay() {
       this.$store.dispatch('changeStatusOverlay');
-    }
+    },
   },
   created() {
     this.getProduct();

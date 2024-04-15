@@ -10,6 +10,7 @@
               header-class="text-center"
               @click="selectCategory(category.category)"
               overlay
+              img-height="100%"
           >
           </b-card>
         </b-col>
@@ -44,6 +45,7 @@
               tag="article"
               class="mb-2 selectable zoom-on-hover h-100"
               @click="selectProduct(product.idProduct)"
+              img-width="100%"
           >
             <b-card-text class="text-left">
               <b-row no-gutters>
@@ -133,18 +135,21 @@ export default {
         payload = {
           query: this.searchQuery,
           category: this.selectedCategory,
-          subcategory: this.selectedSubcategory
+          subcategory: this.selectedSubcategory,
+          email: this.$store.getters.getEmail || ""
         };
         response = await ProductService.getProductsByQuery(payload, this.objectPagination);
       } else if (this.selectedSubcategory) {
         payload = {
           category: this.selectedCategory,
-          subcategory: this.selectedSubcategory
+          subcategory: this.selectedSubcategory,
+          email: this.$store.getters.getEmail || ""
         };
         response = await ProductService.getProductsBySubcategory(payload, this.objectPagination);
       } else {
         payload = {
           category: this.selectedCategory,
+          email: this.$store.getters.getEmail || ""
         };
         response = await ProductService.getProductsByCategory(payload, this.objectPagination);
       }
