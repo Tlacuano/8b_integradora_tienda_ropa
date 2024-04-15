@@ -17,6 +17,11 @@
     </b-row>
     <b-row class="mt-3 container-products" >
       <b-col>
+        <b-row class="mt-5" v-if="statusRequestExist">
+          <b-col class="text-center m-auto" >
+            <h3>No hay solicitudes de venta de productos</h3>
+          </b-col>
+        </b-row>
         <b-row>
           <b-col lg="3" md="4" sm="6" v-for="product in products" :key="product.id" >
             <b-card no-body class="highlight-on-hover mb-2 selectable" @click="openModal(product)">
@@ -46,6 +51,11 @@
                   <b-row>
                     <b-col>
                       <div class="text-truncate  small"><b>Usuario:</b> {{ product.email }}</div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <div class="text-truncate  small"><b>Categoria:</b> {{ product.category }}</div>
                     </b-col>
                   </b-row>
                   <b-row>
@@ -86,12 +96,13 @@ export default {
       productDetail: false,
       objectPagination: {
         page: 1,
-        size: 24,
+        size: 12,
         elements: 0,
       },
       products:[],
       selectProductId:null,
-      search: null
+      search: null,
+      statusRequestExist: false
     };
   },
   methods: {
@@ -99,14 +110,16 @@ export default {
       if(this.search ===null || this.search === ""){
         this.showOverlay()
         const response = await ProductSalesRequestsService.getPageProductSalesRequests(this.objectPagination)
+        if(response.content.length === 0) {
+          this.statusRequestExist = true
+        }
         if(response){
-          this.showOverlay()
           this.objectPagination.elements = response.totalElements
           this.products = response.content;
         }else{
-          this.showOverlay()
           showWarningToast("No se pudo obtener la información de las solicitudes")
         }
+        this.showOverlay()
       }else{
         const payload = {
           email: this.search

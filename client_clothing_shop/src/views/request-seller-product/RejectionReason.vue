@@ -45,7 +45,8 @@ export default{
     return{
       isLoading: false,
       error:false,
-      notNull: true
+      notNull: true,
+      reason:''
     }
   },
   methods: {
