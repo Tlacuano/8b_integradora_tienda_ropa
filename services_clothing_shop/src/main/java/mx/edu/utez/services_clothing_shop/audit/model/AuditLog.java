@@ -18,19 +18,19 @@ public class AuditLog {
     @Column(name = "id_control", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID idControl;
 
-    @Column(name = "action", length = 100)
+    @Column(name = "action")
     private String action;
 
-    @Column(name = "table_name", length = 100)
+    @Column(name = "table_name")
     private String tableName;
 
-    @Column(name = "new_value", columnDefinition = "JSON")
+    @Column(name = "new_value", columnDefinition = "TEXT")
     private String newValue;
 
-    @Column(name = "user_name", length = 100)
+    @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "ip_address", length = 100)
+    @Column(name = "ip_address")
     private String ipAddress;
 
     @Column(name = "created_at")
