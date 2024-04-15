@@ -59,6 +59,17 @@ public class ProductController {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos por subcategoría: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/get-products-by-product-name")
+    public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getPageProductByName(@RequestBody RequestProductByNameDTO requestProductByNameDTO, Pageable pageable) {
+        try {
+            Page<BeanProduct> beanProductPage = productService.getProductsByName(requestProductByNameDTO.getProductName(), requestProductByNameDTO.getUserEmail(), pageable);
+            Page<ResponseProductDTO> responseProductDTOList = beanProductPage.map(ResponseProductDTO::toProductDTO);
+            return ResponseEntity.ok(new CustomResponse<>(responseProductDTOList, "Productos encontrados", false, 200));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener los productos: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
     @PostMapping("/get-by-search-query")
     public ResponseEntity<CustomResponse<Page<ResponseProductDTO>>> getProductsBySearchQuery(@Valid @RequestBody RequestProductBySearchQueryDTO payload, Pageable page) {
@@ -90,6 +101,15 @@ public class ProductController {
             return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/get-product-to-edit")
+    public ResponseEntity<Object> getProductToEdit(@Valid @RequestBody RequestProductByIdDTO product) {
+        try {
+            BeanProduct retrievedProduct = productService.getProduct(product.getIdProduct());
+            return retrievedProduct != null ? ResponseEntity.ok(new CustomResponse<>(ResponseProductToEditDTO.toProductDTO(retrievedProduct), "Producto encontrado", false, 200)) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Producto no encontrado", true, 404));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CustomResponse<>(null, "Error al obtener el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/post-product")
     public ResponseEntity<Object> postProduct(@Valid @RequestBody RequestProductDTO product) {
@@ -98,17 +118,9 @@ public class ProductController {
 
     @PutMapping("/put-product")
     public ResponseEntity<Object> putProduct(@Valid @RequestBody RequestPutProductDTO product) {
-        try {
-            BeanProduct productUpdated = new BeanProduct();
-            productUpdated.setIdProduct(product.getIdProduct());
-            parseToBeanProduct(productUpdated, product.getProductName(), product.getDescription(), product.getPrice(), product.getAmount(), product.getSubcategory());
-            List<BeanProductGallery> productGallery = getBeanProductGalleries(product);
-            productUpdated = productService.putProduct(productUpdated, productGallery);
-            return new ResponseEntity<>(new CustomResponse<>(productUpdated, "Producto actualizado correctamente", false, 200), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new CustomResponse<>(null, "Se produjo un error al actualizar el producto: " + e.getMessage(), true, 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(new CustomResponse<>(productService.putProduct(product), "Producto actualizado correctamente", false, 200), HttpStatus.OK);
     }
+
 
     @PutMapping("/put-status-product")
     public ResponseEntity<Object> putStatusProduct(@Valid @RequestBody RequestProductByIdDTO product) {
@@ -134,17 +146,5 @@ public class ProductController {
         newProduct.setSubcategory(subcategory);
     }
 
-    private static List<BeanProductGallery> getBeanProductGalleries(RequestPutProductDTO product) {
-        List<BeanProductGallery> productGallery = new ArrayList<>();
-        for (ProductImageDTO gallery : product.getProductGallery()) {
-            BeanProductGallery productGalleryBean = new BeanProductGallery();
-            productGalleryBean.setIdImage(gallery.getIdImage());
-            productGalleryBean.setImage(gallery.getImage());
-            BeanImageProductStatus imageProductStatus = new BeanImageProductStatus();
-            imageProductStatus.setStatus(gallery.getStatus());
-            productGalleryBean.setStatus(imageProductStatus);
-            productGallery.add(productGalleryBean);
-        }
-        return productGallery;
-    }
+
 }

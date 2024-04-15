@@ -114,6 +114,59 @@ public class OrderHasProductsService {
     }
 
     @Transactional
+    public boolean cancelSellByBuyer(RequestActionBySeller requestBody) {
+        BeanUser user = userRepository.findByEmail(requestBody.getEmail());
+
+        if (user == null) {
+            throw new CustomException(NO_USER_FOUND);
+        }
+        if (requestBody.getPassword() == null || !passwordEncoder.matches(requestBody.getPassword(), user.getPassword())) {
+            throw new CustomException("user.password.incorrect");
+        }
+
+
+        BeanOrderHasProducts order = orderHasProductsRepository.findById(requestBody.getIdOrderProduct()).orElse(null);
+
+        if (order == null) {
+            throw new CustomException("order.notfound");
+        }
+
+
+        BeanOrderStatus status = orderStatusRepository.findByStatus("Cancelado");
+
+        if (status == null) {
+            throw new CustomException("status.notFound");
+        }
+
+        order.setStatus(status);
+        orderHasProductsRepository.save(order);
+
+        order.getProduct().setAmount(order.getProduct().getAmount() + order.getAmount());
+
+        emailService.sendEmail(order.getProduct().getUser().getEmail(),
+                CANCELLED,
+                CANCELLED,
+                "El comprador ha cancelado la compra de tu producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas.",
+                "");
+
+        order.getProduct().setAmount(order.getProduct().getAmount() + order.getAmount());
+        order.getProduct().setStatus(false);
+
+
+        String cardNumber = EncryptionFunctions.decryptString(order.getOrder().getPaymentCard().getCardNumber());
+        String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
+
+        emailService.sendEmail(user.getEmail(),
+                "Compra cancelada",
+                "La compra ha sido cancelada",
+                "Has cancelado la compra del producto: " + order.getProduct().getProductName() + " con la cantidad de: " + order.getAmount() + " piezas." +
+                        "<br><br>Tu dinero será devuelto en un plazo de 3 a 5 días hábiles a tu tarjeta con número: " + "**** **** **** " + lastFourDigits,
+                "");
+
+        return true;
+    }
+
+    @Transactional
     public boolean markAsSent(RequestActionBySeller payload) {
         BeanOrderHasProducts order = verifyAuthorityOnOrder(payload);
 
@@ -182,4 +235,6 @@ public class OrderHasProductsService {
                         "<br><br>El motivo de la cancelación es: " + rejectReason + ".",
                 "");
     }
+
+
 }

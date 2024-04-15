@@ -3,7 +3,9 @@ package mx.edu.utez.services_clothing_shop.controller.requests_sell_product.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,6 +17,9 @@ public class RequestDetailsDTO {
     private double price;
     private String description;
     private String productName;
-    private String image;
+    private List<BeanProductGallery> images;
+    private String subcategory;
+    private String category;
+    private double amount;
     private UUID productId;
 }

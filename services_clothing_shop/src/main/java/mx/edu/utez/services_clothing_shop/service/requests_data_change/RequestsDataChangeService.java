@@ -1,5 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.requests_data_change;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,10 +9,10 @@ import mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto.Ne
 import mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto.RequestDataChangeIdDTO;
 import mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto.RequestDataChangePutDTO;
 import mx.edu.utez.services_clothing_shop.model.person.BeanPerson;
-import mx.edu.utez.services_clothing_shop.model.person.GenderEnum;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.BeanRequestDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_data_change.IRequestsDataChange;
 import mx.edu.utez.services_clothing_shop.model.request_status.BeanRequestStatus;
+import mx.edu.utez.services_clothing_shop.model.seller_information.BeanSellerInformation;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -19,10 +20,11 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Service
 public class RequestsDataChangeService {
@@ -49,7 +51,7 @@ public class RequestsDataChangeService {
                     requestDataChange.setStatus(requestStatus.get());
 
                     if ("Aprobado".equals(status)) {
-                        updatePersonInformation(requestDataChange, requestData);
+                        updateSellerInformation(requestDataChange, requestData);
                     }
                 } else {
                     throw new CustomException("dataChange.statusNotFound");
@@ -65,56 +67,56 @@ public class RequestsDataChangeService {
         }
     }
 
-    private void updatePersonInformation(BeanRequestDataChange requestDataChange, RequestDataChangePutDTO requestData) {
+    private void updateSellerInformation(BeanRequestDataChange requestDataChange, RequestDataChangePutDTO requestData) {
         BeanUser user = requestDataChange.getUser();
         BeanPerson person = user.getPerson();
+        BeanSellerInformation sellerInfo = person.getSellerInformation();
 
-        if (person != null) {
-            String newName = requestData.getName();
-            if (newName != null) {
-                person.setName(newName);
+        if (sellerInfo != null) {
+            boolean needsUpdate = false;
+            if (requestData.getTaxIdentificationNumber() != null) {
+                sellerInfo.setTaxIdentificationNumber(requestData.getTaxIdentificationNumber());
+                needsUpdate = true;
             }
-            String newLastName = requestData.getLastName();
-            if (newLastName != null) {
-                person.setLastName(newLastName);
+            if (requestData.getSecondaryPhoneNumber() != null) {
+                sellerInfo.setSecondaryPhoneNumber(requestData.getSecondaryPhoneNumber());
+                needsUpdate = true;
             }
-            String newSecondLastName = requestData.getSecondLastName();
-            if (newSecondLastName != null) {
-                person.setSecondLastName(newSecondLastName);
+            if (requestData.getImageIdentification() != null) {
+                sellerInfo.setImageIdentification(requestData.getImageIdentification());
+                needsUpdate = true;
             }
-
-            LocalDate newBirthday = requestData.getBirthday();
-            if (newBirthday != null) {
-                person.setBirthday(newBirthday);
+            if (requestData.getCurp() != null) {
+                sellerInfo.setCurp(requestData.getCurp());
+                needsUpdate = true;
             }
-            GenderEnum newGender = requestData.getGender();
-            if (newGender != null) {
-                person.setGender(newGender);
+            if (needsUpdate) {
+                requestsDataChangerepository.save(requestDataChange);
             }
         } else {
-            throw new CustomException("dataChange.personNotFound");
+            throw new CustomException("dataChange.sellerInfoNotFound");
         }
     }
 
     @Transactional
     public void postRequestDataChange(String email, NewInformation newInformation) {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         String newUserInfoJSON;
         try {
             newUserInfoJSON = objectMapper.writeValueAsString(newInformation);
+            requestsDataChangerepository.insertRequestDataChange(email, newUserInfoJSON);
         } catch (JsonProcessingException e) {
             throw new CustomException("dataChange.JSON.invalid");
         }
-
-        requestsDataChangerepository.insertRequestDataChange(email, newUserInfoJSON);
     }
+
 
     @Transactional
     public RequestDataChangeIdDTO getRequestByID(UUID idRequestDataChange) {
         try {
-
             Optional<BeanRequestDataChange> requestDataChangeOptional = requestsDataChangerepository.findById(idRequestDataChange);
-
             if (requestDataChangeOptional.isEmpty()) {
                 throw new CustomException(REQUEST_NOT_FOUND);
             }
@@ -122,13 +124,13 @@ public class RequestsDataChangeService {
             BeanRequestDataChange requestDataChange = requestDataChangeOptional.get();
             Map<String, Object> newUserInformationMap = convertJsonToMap(requestDataChange.getNewUserInformation());
 
-            BeanUser user = requestDataChange.getUser();
-            BeanPerson person = user.getPerson();
-            if (person == null) {
-                throw new CustomException("dataChange.personNotFound");
-            }
+            newUserInformationMap = convertKeysToCamelCase(newUserInformationMap);
 
-            String genderAsString = person.getGender().toString();
+            BeanUser user = requestDataChange.getUser();
+            BeanSellerInformation sellerInfo = user.getPerson().getSellerInformation();
+            if (sellerInfo == null) {
+                throw new CustomException("dataChange.sellerInfoNotFound");
+            }
 
             return new RequestDataChangeIdDTO(
                     requestDataChange.getIdRequestDataChange(),
@@ -136,18 +138,16 @@ public class RequestsDataChangeService {
                     requestDataChange.getRejectionReason(),
                     user.getEmail(),
                     requestDataChange.getStatus().getStatus(),
-                    person.getIdPerson(),
-                    person.getName(),
-                    person.getLastName(),
-                    person.getSecondLastName(),
-                    person.getBirthday(),
-                    person.getPhoneNumber(),
-                    genderAsString
+                    sellerInfo.getTaxIdentificationNumber(),
+                    sellerInfo.getSecondaryPhoneNumber(),
+                    sellerInfo.getImageIdentification(),
+                    sellerInfo.getCurp()
             );
         } catch (CustomException e) {
             throw new CustomException(REQUEST_NOT_FOUND);
         }
     }
+
 
     @Transactional
     public Page<IRequestsDataChange.RequestDataChangeStatusPersonProjection> getPageRequestDataChangeWithPersonName(Pageable pageable, String searchTerm) {
@@ -162,5 +162,25 @@ public class RequestsDataChangeService {
         } catch (JsonProcessingException e) {
             throw new CustomException("dataChange.JSON.invalid");
         }
+    }
+
+    public Map<String, Object> convertKeysToCamelCase(Map<String, Object> originalMap) {
+        Map<String, Object> convertedMap = originalMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> toCamelCase(entry.getKey()),
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        HashMap::new
+                ));
+        return convertedMap;
+    }
+
+    private String toCamelCase(String field) {
+        String[] parts = field.split("_");
+        StringBuilder camelCaseString = new StringBuilder(parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            camelCaseString.append(parts[i].substring(0, 1).toUpperCase()).append(parts[i].substring(1).toLowerCase());
+        }
+        return camelCaseString.toString();
     }
 }

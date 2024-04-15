@@ -21,6 +21,7 @@ import mx.edu.utez.services_clothing_shop.model.transaction_status.BeanTransacti
 import mx.edu.utez.services_clothing_shop.model.transaction_status.ITransactionStatus;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.model.user.IUser;
+import mx.edu.utez.services_clothing_shop.service.email_service.EmailService;
 import mx.edu.utez.services_clothing_shop.service.order.OrderService;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,14 +46,15 @@ public class TransactionService {
     private final IUser userRepository;
     private final IOrderHasProducts orderHasProductsRepository;
     private final OrderService orderService;
+    private final EmailService emailService;
 
-
-    public TransactionService(ITransaction transactionRepository, ITransactionStatus transactionStatusRepository, IUser userRepository, OrderService orderService, IOrderHasProducts orderHasProductsRepository) {
+    public TransactionService(ITransaction transactionRepository, ITransactionStatus transactionStatusRepository, IUser userRepository, OrderService orderService, IOrderHasProducts orderHasProductsRepository, EmailService emailService) {
         this.transactionRepository = transactionRepository;
         this.transactionStatusRepository = transactionStatusRepository;
         this.userRepository = userRepository;
         this.orderService = orderService;
         this.orderHasProductsRepository = orderHasProductsRepository;
+        this.emailService = emailService;
     }
 
     @PostConstruct
@@ -117,6 +119,7 @@ public class TransactionService {
         return session.getUrl();
     }
 
+    @Transactional
     public void fulfillOrder(String stripeSignature, String payload) throws StripeException {
         if (stripeSignature == null || payload == null) {
             throw new CustomException("transaction.session.notfound");
@@ -141,6 +144,8 @@ public class TransactionService {
 
             BeanOrder order = transaction.getOrder();
             orderHasProductsRepository.sp_fulfill_order(order.getIdOrder(), order.getPaymentCard().getUser().getIdUser());
+
+            emailService.sendEmail(order.getPaymentCard().getUser().getEmail(), "Compra realizada", "Su compra ha sido realizada con éxito", "El número de su orden es:", order.getOrderNumber());
         }
 
         if ("checkout.session.expired".equals(event.getType())) {

@@ -12,7 +12,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input @input="getProductByUser" v-model="search" id="search" type="text" placeholder="Buscar producto por nombre..." class="pr-5"></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -28,7 +28,7 @@
             <b-card no-body class="card highlight-on-hover">
               <b-row no-gutters class="body-card">
                 <b-col cols="12" sm="4" md="4" lg="4" class="image-container">
-                  <b-img :src="item.productGallery[0].image"  class="img-fluid"></b-img>
+                  <b-img :src="item.productGallery"  class="img-fluid"></b-img>
                 </b-col>
                 <b-col cols="11" sm="6" md="6" lg="6" class="body-text">
                   <b-row>
@@ -69,6 +69,7 @@
                     <b-dropdown-item @click="viewProductDetail(item.idProduct)">Ver detalles</b-dropdown-item>
                     <b-dropdown-item @click="registerProductEditionRequest(item.idProduct)">Editar</b-dropdown-item>
                     <b-dropdown-item @click="putStatusProduct(item.idProduct)">{{item.status ? 'Deshabilitar' : 'Habilitar'}}</b-dropdown-item>
+
                   </b-dropdown>
                 </b-col>
               </b-row>
@@ -93,18 +94,12 @@
 <script>
 
   import ProductManagementService from "@/services/product-management/ProductManagementService";
-  import ProductDetails from "@/views/product/ProductDetails.vue";
   import {showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
   import ViewProductDetails from "@/views/product-management/ViewProductDetails.vue";
 
   export default {
     name: "ProductManagement",
     components: {ViewProductDetails},
-    computed: {
-      ProductDetails() {
-        return ProductDetails
-      }
-    },
     data() {
       return {
         objectPagination:{
@@ -113,15 +108,53 @@
           elements: 0,
         },
         items:[],
-        selectProductId:null
+        mainImage:[],
+        selectProductId:null,
+        search:null
       };
     },
     methods:{
       async getProductByUser(){
-        const email = this.$store.getters.getEmail
-        const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
-        this.items = response.data.content
-        this.objectPagination.elements = response.totalElements
+        if(this.search === null || this.search === ""){
+          this.showOverlay()
+          const email = this.$store.getters.getEmail
+          const response = await ProductManagementService.getProductByUser(this.objectPagination,email)
+          if(response){
+            this.items = response.data.content
+            this.mainImage = this.items
+            for (let i = 0; i < this.mainImage.length; i++) {
+              for (let j = 0; j < this.mainImage[i].productGallery.length; j++) {
+                if (this.mainImage[i].productGallery[j].status === 'Principal') {
+                  this.mainImage[i].productGallery = this.mainImage[i].productGallery[j].image;
+                  break;
+                }
+              }
+            }
+            this.objectPagination.elements = response.totalElements
+            this.showOverlay()
+          }else{
+            this.showOverlay()
+            showWarningToast("Ocurrio un error inesperado", "No se pudieron obtener los productos")
+          }
+        }else{
+          const payload ={
+            productName: this.search,
+            userEmail:this.$store.getters.getEmail
+          }
+          const response = await ProductManagementService.getProductByProductName(this.objectPagination,payload)
+          this.items = response.data.content
+          this.mainImage = this.items
+          for (let i = 0; i < this.mainImage.length; i++) {
+            for (let j = 0; j < this.mainImage[i].productGallery.length; j++) {
+              if (this.mainImage[i].productGallery[j].status === 'Principal') {
+                this.mainImage[i].productGallery = this.mainImage[i].productGallery[j].image;
+                break;
+              }
+            }
+          }
+          this.objectPagination.elements = response.totalElements
+        }
+
       },
       async putStatusProduct(idProduct){
         const response = await ProductManagementService.putStatusProduct(idProduct)
@@ -150,6 +183,9 @@
       },
       handleRequestSuccess() {
         this.getProductByUser();
+      },
+      showOverlay(){
+        this.$store.dispatch('changeStatusOverlay');
       },
     },
     mounted() {

@@ -31,11 +31,32 @@
         </b-col>
       </b-row>
 
-      <!-- Cambios solicitados a la información personal -->
+      <!-- Cambios solicitados a la información del vendedor -->
       <b-row>
         <b-col>
-          <h4 class="changes-title">Cambios solicitados a la información personal:</h4>
+          <h4 class="changes-title">Cambios solicitados a la información del vendedor:</h4>
           <b-table striped bordered :items="formattedRequestData" class="changes-table"></b-table>
+        </b-col>
+      </b-row>
+
+      <b-row>
+        <b-col>
+          <h4 class="changes-title">Imágenes del Vendedor:</h4>
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th>Imagen Actual del Vendedor</th>
+              <th>Nueva Imagen del Vendedor</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="image-cell"><img :src="currentImageUrl" alt="Imagen Actual del Vendedor" class="img-fluid vendor-image"></td>
+              <td class="image-cell" v-if="isImageChanged"><img :src="newImageUrl" alt="Nueva Imagen del Vendedor" class="img-fluid vendor-image"></td>
+              <td class="image-cell" v-else>No especificado</td>
+            </tr>
+            </tbody>
+          </table>
         </b-col>
       </b-row>
 
@@ -74,17 +95,16 @@ export default {
     return {
       request: {},
       selectedRequestId: null,
+      currentImage:'',
     };
   },
   methods: {
     formatLabel(key) {
       const translations = {
-        name: 'Nombre',
-        lastName: 'Apellido',
-        secondLastName: 'Segundo Apellido',
-        gender: 'Género',
-        birthday: 'Fecha de Nacimiento',
-        phoneNumber: 'Número de Teléfono'
+        taxIdentificationNumber: 'Número de Identificación Fiscal',
+        secondaryPhoneNumber: 'Teléfono Secundario',
+        imageIdentification: 'Identificación de Imagen',
+        curp: 'CURP'
       };
       return translations[key] || key;
     },
@@ -94,6 +114,7 @@ export default {
         const response = await RequestsDataChangeService.getRequestDataChangeByIdService(this.requestId);
         if (response && response.requestId) {
           this.request = response;
+          this.currentImage = response.imageIdentification || '';
         } else {
         }
       } catch (error) {
@@ -111,12 +132,10 @@ export default {
                 idRequestDataChange: this.request.requestId,
                 status: "Aprobado",
                 rejectionReason: "",
-                name: this.request.newUserInformation.name || null,
-                lastName: this.request.newUserInformation.lastName || null,
-                secondLastName: this.request.newUserInformation.secondLastName || null,
-                birthday: this.request.newUserInformation.birthday || null,
-                phoneNumber: this.request.newUserInformation.phoneNumber || null,
-                gender: this.request.newUserInformation.gender || null,
+                taxIdentificationNumber: this.request.newUserInformation.taxIdentificationNumber,
+                secondaryPhoneNumber: this.request.newUserInformation.secondaryPhoneNumber,
+                imageIdentification: this.request.newUserInformation.imageIdentification,
+                curp: this.request.newUserInformation.curp
               };
 
               const response = await RequestsDataChangeService.putRequestDataChangeService(requestDataChangePutDTO);
@@ -128,29 +147,33 @@ export default {
       );
     },
 
-
     openRejectionModal(requestId) {
       this.selectedRequestId = requestId;
       this.$nextTick(() => {
         this.$bvModal.show("rejectionModal");
       });
     },
+
     modalClosed() {
       this.$emit("modal-closed");
     },
+
     handleRequestSuccess(response) {
       this.$emit("request-success", response);
       this.$bvModal.hide("requestDataChangeModal");
     },
+
     handleRequestError(error) {
       this.$emit("request-error", error);
     },
+
     handleRejection(response) {
       this.$emit("request-success", response);
     },
+
     closeMainModal() {
       this.$bvModal.hide('requestDataChangeModal');
-    },
+    }
   },
   computed: {
     formattedRequestData() {
@@ -158,50 +181,23 @@ export default {
         return [];
       }
 
-      const fieldsToDisplay = ['name', 'lastName', 'secondLastName', 'gender', 'birthday', 'phoneNumber'];
-      const birthdayArray = this.request.newUserInformation.birthday;
-      const formattedBirthdayNew = birthdayArray
-          ? `${birthdayArray[0]}-${String(birthdayArray[1]).padStart(2, '0')}-${String(birthdayArray[2]).padStart(2, '0')}`
-          : 'No especificado';
-
-      const oldBirthdayArray = this.request.birthday;
-      const formattedBirthdayOld = oldBirthdayArray
-          ? `${oldBirthdayArray[0]}-${String(oldBirthdayArray[1]).padStart(2, '0')}-${String(oldBirthdayArray[2]).padStart(2, '0')}`
-          : 'No especificado';
-      const fieldMappings = {
-        name: 'personName',
-        lastName: 'personLastName',
-        secondLastName: 'personSecondLastName',
-        gender: 'gender',
-        birthday: 'birthday',
-        phoneNumber: 'phoneNumber'
-      };
-
-      const data = fieldsToDisplay.map((field) => {
-        const oldKey = fieldMappings[field];
-        let oldValue = this.request[oldKey] !== undefined ? this.request[oldKey] : 'No especificado';
-        let newValue = this.request.newUserInformation[field] || 'No especificado';
-
-        if (field === 'birthday') {
-          oldValue = formattedBirthdayOld;
-          newValue = formattedBirthdayNew;
-        }
-
-        return {
-          Campo: this.formatLabel(field),
-          Anterior: oldValue,
-          Nuevo: newValue,
-        };
-      });
-
-      return data;
+      const fieldsToDisplay = ['taxIdentificationNumber', 'secondaryPhoneNumber', 'curp'];
+      return fieldsToDisplay.map(field => ({
+        Campo: this.formatLabel(field),
+        Anterior: this.request[field] || 'No especificado',
+        Nuevo: this.request.newUserInformation[field] || 'No especificado',
+      }));
+    },
+    currentImageUrl() {
+      return this.currentImage;
+    },
+    newImageUrl() {
+      return (this.request.newUserInformation && this.request.newUserInformation.imageIdentification) ? this.request.newUserInformation.imageIdentification : 'No especificado';
+    },
+    isImageChanged() {
+      return this.newImageUrl !== 'No especificado' && this.newImageUrl !== this.currentImageUrl;
     }
   },
-
-
-
-
-
 };
 </script>
 
@@ -231,5 +227,24 @@ export default {
 }
 .action-buttons .btn-danger:hover {
   opacity: 0.9;
+}
+.vendor-image {
+  max-width: 50%;
+  height: auto;
+  display: inline-block;
+}
+
+.changes-table, .vendor-image-table {
+  width: 100%;
+}
+
+.vendor-image-table th, .vendor-image-table td {
+  text-align: center;
+}
+
+.image-cell {
+  text-align: center;
+  vertical-align: middle;
+  width: 200px;
 }
 </style>

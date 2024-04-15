@@ -1,7 +1,6 @@
 package mx.edu.utez.services_clothing_shop.service.product;
 
-import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductBySearchQueryDTO;
-import mx.edu.utez.services_clothing_shop.controller.product.dto.RequestProductDTO;
+import mx.edu.utez.services_clothing_shop.controller.product.dto.*;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.image_product_status.IImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
@@ -78,6 +77,7 @@ public class ProductService {
         return iProduct.findAllByUser_Email(email, page);
     }
 
+
     @Transactional
     public BeanProduct getProduct(UUID idProduct) {
         return iProduct.findByIdProduct(idProduct);
@@ -95,7 +95,7 @@ public class ProductService {
             throw new CustomException("subcategory.notfound");
         }
 
-        if (payload.getProductGallery().size() <= 2) {
+        if (payload.getProductGallery().size() < 2) {
             throw new CustomException("product.productGallery.size.min");
         }
         if (payload.getProductGallery().size() > 5) {
@@ -128,7 +128,6 @@ public class ProductService {
             } else {
                 productGallery.setStatus(enabledStatus);
             }
-
             iProductGallery.save(productGallery);
         }
 
@@ -147,10 +146,64 @@ public class ProductService {
     }
 
     @Transactional
-    public BeanProduct putProduct(BeanProduct product, List<BeanProductGallery> productGallery) {
-        BeanProduct updatedProduct = iProduct.saveAndFlush(product);
-        updateProductGallery(productGallery);
-        return updatedProduct;
+    public boolean putProduct(RequestPutProductDTO payload) {
+        BeanProduct product = iProduct.findByIdProduct(payload.getIdProduct());
+        if (product == null) {
+            throw new CustomException("product.notfound");
+        }
+        BeanSubcategory subcategory = iSubCategory.findByIdSubcategory(payload.getSubcategory());
+        if (subcategory == null) {
+            throw new CustomException("subcategory.notfound");
+        }
+
+        product.setProductName(payload.getProductName());
+        product.setDescription(payload.getDescription());
+        product.setPrice(payload.getPrice());
+        product.setAmount(payload.getAmount());
+        product.setSubcategory(subcategory);
+        iProduct.saveAndFlush(product);
+
+        //save gallery
+        BeanImageProductStatus defaultStatus = iImageProductStatus.findByStatus("Principal");
+        BeanImageProductStatus enabledStatus = iImageProductStatus.findByStatus("Habilitada");
+        BeanImageProductStatus disabledStatus = iImageProductStatus.findByStatus("Deshabilitada");
+
+        ProductImageEditDTO nuevaImagenPrincipal = null;
+
+        for (ProductImageEditDTO gallery : payload.getProductGallery()) {
+            BeanProductGallery productGallery = iProductGallery.findByImage(gallery.getImage());
+            if (productGallery == null) {
+                productGallery = new BeanProductGallery();
+                productGallery.setProduct(product);
+                productGallery.setImage(gallery.getImage());
+            }
+            if (gallery.getStatus().equals("Principal")) {
+                productGallery.setStatus(defaultStatus);
+            } else if(gallery.getStatus().equals("Deshabilitada")) {
+                productGallery.setStatus(disabledStatus);
+            }else{
+                productGallery.setStatus(enabledStatus);
+            }
+
+            iProductGallery.save(productGallery);
+        }
+
+        BeanRequestStatus pendingStatus = iRequestStatus.findByStatus("Pendiente").get();
+        BeanRequestSellProduct requestSellProduct = new BeanRequestSellProduct();
+        requestSellProduct.setProduct(product);
+        requestSellProduct.setStatus(pendingStatus);
+
+        iRequestsSellProduct.save(requestSellProduct);
+
+        emailService.sendEmail(product.getUser().getEmail(), "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");
+
+        return true;
+    }
+
+    @Transactional
+    public Page<BeanProduct> getProductsByName(String name, String userEmail, Pageable page) {
+        String modifiedName = "%" + name + "%";
+        return iProduct.findAllByProductNameLikeIgnoreCaseAndUserEmail(modifiedName,userEmail, page);
     }
 
     @Transactional

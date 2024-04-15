@@ -80,7 +80,12 @@ export default {
                 '¿Quieres quitar este producto de tus favoritos?', 'Sí, quitar',
                 async () => {
                     await WishListService.deleteWishList(wishlistItem.idWish);
+
+                    setTimeout(() => {
+                        this.getWishList();
+                    }, 1000);
                 }
+
             );
         },
 

@@ -9,7 +9,7 @@
       <b-col cols="12" lg="4">
         <b-form-group>
           <div class="position-relative">
-            <b-form-input @input="getPageProductSalesRequests" v-model="search" id="search" type="text" placeholder="Buscar..." class="pr-5"></b-form-input>
+            <b-form-input @input="getPageProductSalesRequests" v-model="search" id="search" type="text" placeholder="Buscar solicitud por correo del usuario.." class="pr-5"></b-form-input>
             <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
           </div>
         </b-form-group>
@@ -99,20 +99,26 @@ export default {
       if(this.search ===null || this.search === ""){
         this.showOverlay()
         const response = await ProductSalesRequestsService.getPageProductSalesRequests(this.objectPagination)
-        this.showOverlay()
-        this.objectPagination.elements = response.totalElements
-        this.products = response.content;
+        if(response){
+          this.showOverlay()
+          this.objectPagination.elements = response.totalElements
+          this.products = response.content;
+        }else{
+          this.showOverlay()
+          showWarningToast("No se pudo obtener la información de las solicitudes")
+        }
       }else{
         const payload = {
           email: this.search
         }
         const response = await ProductSalesRequestsService.getPageProductSalesRequestsByUserEmail(this.objectPagination, payload)
-        this.objectPagination.elements = response.totalElements
-        this.products = response.content;
+        if(response){
+          this.objectPagination.elements = response.totalElements
+          this.products = response.content;
+        }else{
+          showWarningToast("No se pudo obtener la información de las solicitudes")
+        }
       }
-    },
-    showOverlay(){
-      this.$store.dispatch('changeStatusOverlay');
     },
     openModal(productId) {
       this.selectProductId = productId.idRequestSellProduct;
@@ -127,6 +133,9 @@ export default {
     },
     handleRequestError() {
       showWarningToast("Error al actualizar la solicitud")
+    },
+    showOverlay(){
+      this.$store.dispatch('changeStatusOverlay');
     },
     getVariant(status) {
       switch (status) {
@@ -153,7 +162,4 @@ export default {
   overflow-x: hidden;
 }
 
-.status {
-  color: #28a745;
-}
 </style>

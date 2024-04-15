@@ -151,19 +151,22 @@ export default {
       }
     },
     async checkProductIsWishlisted() {
-      try {
-        const response = await WishListService.getWishList(this.$store.getters.getEmail)
-        if (response && response.data) {
-          const wishlist = response.data;
-          const isWishlisted = wishlist.some(item => item.product.idProduct === this.product.idProduct);
-          this.productIsWishlisted = isWishlisted; 
-          return isWishlisted;
-        } else {
+      if(this.$store.getters.isLoggedIn){
+        try {
+          const response = await WishListService.getWishList(this.$store.getters.getEmail)
+          if (response && response.data) {
+            const wishlist = response.data;
+            const isWishlisted = wishlist.some(item => item.product.idProduct === this.product.idProduct);
+            this.productIsWishlisted = isWishlisted;
+            return isWishlisted;
+          } else {
+            return false;
+          }
+        } catch (error) {
           return false;
         }
-      } catch (error) {
-        return false;
       }
+
     },
 
     showOverlay() {

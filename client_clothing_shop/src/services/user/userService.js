@@ -1,5 +1,4 @@
 import axios from "../../config/http-client.gateway"
-import {showWarningToast} from "@/components/alerts/alerts";
 
 const getPageUsersService = async (pagination) => {
     try {

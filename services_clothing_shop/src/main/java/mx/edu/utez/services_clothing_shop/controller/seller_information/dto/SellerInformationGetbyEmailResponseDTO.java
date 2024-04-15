@@ -1,4 +1,4 @@
-package mx.edu.utez.services_clothing_shop.controller.requests_data_change.dto;
+package mx.edu.utez.services_clothing_shop.controller.seller_information.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class NewInformation {
+@NoArgsConstructor
+public class SellerInformationGetbyEmailResponseDTO {
     private String taxIdentificationNumber;
     private String secondaryPhoneNumber;
     private String imageIdentification;

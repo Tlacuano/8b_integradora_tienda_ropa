@@ -138,7 +138,7 @@
       <b-row class="mt-5">
         <b-col>
           <b-list-group>
-            <b-list-group-item :class="Product.status.status === 'Preparación' ? 'highlight-on-hover selectable' : ''">
+            <b-list-group-item :class="Product.status.status === 'Preparación' ? 'highlight-on-hover selectable' : ''" @click="cancelBuy">
               <b-row>
                 <b-col>
                   Cancelar compra
@@ -207,6 +207,12 @@ export default {
       return price.times(quantity);
     },
 
+    cancelBuy(){
+      if(this.Product.status.status === 'Preparación'){
+        this.$bvModal.hide('my-order-details-modal');
+        this.$bvModal.show('cancel-my-order-modal');
+      }
+    },
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
     },

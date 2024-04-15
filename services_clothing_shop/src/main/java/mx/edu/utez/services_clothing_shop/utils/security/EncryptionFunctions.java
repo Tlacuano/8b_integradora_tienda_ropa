@@ -38,7 +38,7 @@ public class EncryptionFunctions {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(initializationVector);
             cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
 
-            byte[] encryptedByteValue = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
+            byte[] encryptedByteValue  = cipher.doFinal(value.getBytes("utf-8"));
             byte[] encryptedValueWithIv = new byte[initializationVector.length + encryptedByteValue.length];
 
             System.arraycopy(initializationVector, 0, encryptedValueWithIv, 0, initializationVector.length);
@@ -55,7 +55,7 @@ public class EncryptionFunctions {
     public static String decryptString(String value) {
         String dataDecrypt = "";
         try {
-            String urlDecode = URLDecoder.decode(value.replace("\\+", "%2B"), StandardCharsets.UTF_8);
+            String urlDecode = URLDecoder.decode(value.replaceAll("\\+","%2B"), "UTF-8");
             Key key = generateKey();
 
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -68,7 +68,7 @@ public class EncryptionFunctions {
             cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
             byte[] decryptedByteValue = cipher.doFinal(decodeValue, initializationVector.length, decodeValue.length - initializationVector.length);
 
-            dataDecrypt = new String(decryptedByteValue, StandardCharsets.UTF_8);
+            dataDecrypt = new String(decryptedByteValue, "utf-8");
         } catch (Exception e) {
             Logger.getLogger(EncryptionFunctions.class.getName()).severe("Error al desencriptar la cadena: " + e.getMessage());
         }
