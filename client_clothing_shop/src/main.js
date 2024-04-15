@@ -54,15 +54,42 @@ const dictionary = {
             rfc_length: () => 'La longitud debe ser 13 caracteres.',
             rfc_length_moral: () => 'La longitud debe ser 12 caracteres.',
             phone: () => 'El número de teléfono no es válido',
-            product_name_max:()=>'El nombre del producto debe contener máximo 30 caracteres',
+            product_name_max:()=>'El nombre del producto debe contener máximo 50 caracteres',
+            product_name_min: () => 'El nombre del producto debe contener minimo 5 caracteres',
             description_min:()=>'La descripción debe contener minimo 20 caracteres',
             description_nax:()=> 'La descripción debe contener un máximo de 255 caracteres',
-            card_number: () => 'El número de tarjeta debe contener 16 dígitos'
+            card_number: () => 'El número de tarjeta debe contener 16 dígitos',
+            negative_numbers: () => 'No se permiten números negativos',
+            not_zero: () => 'No se permiten valores en cero',
+            alpha:()=>'Este campo solo puede contener letras',
         }
     }
 };
+Validator.extend('negative_numbers', {
+    validate: value => {
+        return value >= 0;
+    }
+});
+Validator.extend('alpha', {
+    validate: value => {
+        const alphaRegex = /^[a-zA-Z]+$/;
+        return alphaRegex.test(value);
+    }
+});
+Validator.extend('not_zero', {
+    validate: value => {
+        return value !== 0;
+    }
+})
+
 
 //for card number
+Validator.extend('card_number', {
+    validate: value => {
+        const cardNumberRegex = /^\d{16}$/;
+        return cardNumberRegex.test(value);
+    }
+});
 Validator.extend('card_number', {
     validate: value => {
         const cardNumberRegex = /^\d{16}$/;
@@ -140,7 +167,12 @@ Validator.extend("name_max", {
 //for productName lenght
 Validator.extend("product_name_max",{
     validate: value => {
-        return value.length <= 25;
+        return value.length <= 50;
+    }
+})
+Validator.extend("product_name_min",{
+    validate: value => {
+        return value.length >= 5;
     }
 })
 

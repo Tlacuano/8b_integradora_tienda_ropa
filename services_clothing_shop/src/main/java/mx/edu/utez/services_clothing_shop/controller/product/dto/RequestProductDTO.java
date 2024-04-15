@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RequestProductDTO {
     @NotBlank(message = "product.name.notnull")
-    @Size(min = 5, max = 30, message = "product.name.size")
+    @Size(min = 5, max = 50, message = "product.name.size")
     private String productName;
     @NotBlank(message = "product.description.notnull")
     @Size(min = 20, max = 255, message = "product.description.size")

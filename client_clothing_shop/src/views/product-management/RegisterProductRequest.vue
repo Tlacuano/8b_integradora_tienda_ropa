@@ -13,7 +13,7 @@
               <b-form-group label="Nombre" label-for="name">
                 <b-form-input
                     name="name"
-                    v-validate="'required|alpha_spaces|product_name_max|min'"
+                    v-validate="'required|alpha_spaces|product_name_max|product_name_min'"
                     v-model="formData.productName"
                     id="name"
                 ></b-form-input>
@@ -24,7 +24,7 @@
           <b-row>
             <b-col>
               <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
-                <b-form-select  name="category" v-model="category" v-validate="'required'" id="category-select" @change="updateSubcategories">
+                <b-form-select  name="category" v-model="category" v-validate="'required|alpha'" id="category-select" @change="updateSubcategories">
                   <option v-for="(category, index) in categories" :key="index" :value="category.category">
                     {{ category.category }}
                   </option>
@@ -55,14 +55,14 @@
           <b-row>
             <b-col>
               <b-form-group label="Precio: " label-for="price">
-                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required'"
+                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required|negative_numbers|not_zero'"
                               type="number"></b-form-input>
               </b-form-group>
               <span style="color: red;">{{ errors.first('price') }}</span>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required'"
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required|negative_numbers|not_zero'"
                               type="number"></b-form-input>
                 <span style="color: red;">{{ errors.first('stock') }}</span>
               </b-form-group>
@@ -87,7 +87,7 @@
 
               <b-col class="preview-container">
                 <div v-if="imagePreviews.length === 0" class="placeholder d-flex align-items-center text-center">
-                  <div class="placeholder-content">Preview</div>
+                  <div class="placeholder-content">Prev...</div>
                 </div>
                 <div v-else v-for="(imagePreview, index) in imagePreviews" :key="index" class="image-preview">
                   <img :src="imagePreview" alt="Preview"/>
@@ -102,7 +102,7 @@
         <b-col cols="12" class="mt-5">
           <b-row class="text-right">
             <b-col>
-              <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
+              <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Registro</b-button>
               <b-button variant="outline-dark" class="btn-cancel" @click="$router.push({name: 'product-management'})">Cancelar</b-button>
             </b-col>
           </b-row>
@@ -141,16 +141,15 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (this.formData.productGallery.length === 0 || this.formData.productGallery.length < 2) {
-        showWarningToast("Debes cargar al menos dos imagenes");
-        return;
-      }
-      if(this.formData.productGallery.length > 5){
-        showWarningToast("No puedes cargar más de 5 imágenes");
-        return;
-      }
-
       this.$validator.validate().then(async valid => {
+        if (this.formData.productGallery.length === 0 || this.formData.productGallery.length < 2) {
+          showWarningToast("Debes cargar al menos dos imagenes");
+          return;
+        }
+        if(this.formData.productGallery.length > 5){
+          showWarningToast("No puedes cargar más de 5 imágenes");
+          return;
+        }
         if (!valid) {
           showWarningToast("Completar los requisitos")
         } else {
@@ -167,7 +166,6 @@ export default {
           }
           const response = await ProductManagementService.postProduct(this.formData)
           if(response){
-            this.showOverlay()
             showSuccessToast("Solcitud enviada correctamente, en breve se revisará tu solicitud")
             setTimeout(() => {
               window.location.reload()
@@ -177,11 +175,9 @@ export default {
             setTimeout(() => {
               window.location.reload()
             }, 2000)
-            this.showOverlay()
           }
           this.showOverlay()
         }
-        this.showOverlay()
       })
     },
 

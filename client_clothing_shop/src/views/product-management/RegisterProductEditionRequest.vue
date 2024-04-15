@@ -13,7 +13,7 @@
               <b-form-group label="Nombre" label-for="name">
                 <b-form-input
                     name="name"
-                    v-validate="'required|alpha_spaces|product_name_max|min'"
+                    v-validate="'required|alpha_spaces|product_name_max|product_name_min'"
                     v-model="formData.productName"
                     id="name"
                 ></b-form-input>
@@ -24,7 +24,7 @@
           <b-row>
             <b-col>
               <b-form-group label="Categoria" label-for="category-select" class="font-weight-bold">
-                <b-form-select name="category" v-model="category" v-validate="'required'" id="category-select"
+                <b-form-select name="category" v-model="category" v-validate="'required|alpha'" id="category-select"
                                @change="updateSubcategories">
                   <option v-for="(category, index) in categories" :key="index" :value="category.category">
                     {{ category.category }}
@@ -59,14 +59,14 @@
           <b-row>
             <b-col>
               <b-form-group label="Precio: " label-for="price">
-                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required'"
+                <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required|negative_numbers|not_zero'"
                               type="number"></b-form-input>
               </b-form-group>
               <span style="color: red;">{{ errors.first('price') }}</span>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required'"
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required|negative_numbers|not_zero'"
                               type="number"></b-form-input>
                 <span style="color: red;">{{ errors.first('stock') }}</span>
               </b-form-group>

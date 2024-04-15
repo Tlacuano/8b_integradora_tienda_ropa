@@ -2,10 +2,7 @@ package mx.edu.utez.services_clothing_shop.controller.product;
 
 import jakarta.validation.Valid;
 import mx.edu.utez.services_clothing_shop.controller.product.dto.*;
-import mx.edu.utez.services_clothing_shop.model.image_product_status.BeanImageProductStatus;
 import mx.edu.utez.services_clothing_shop.model.product.BeanProduct;
-import mx.edu.utez.services_clothing_shop.model.product_gallery.BeanProductGallery;
-import mx.edu.utez.services_clothing_shop.model.subcategory.BeanSubcategory;
 import mx.edu.utez.services_clothing_shop.service.product.ProductService;
 import mx.edu.utez.services_clothing_shop.utils.CustomResponse;
 import org.springframework.data.domain.Page;
@@ -14,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("venta-ropa/api/products")
@@ -136,15 +131,7 @@ public class ProductController {
         return beanProductPage != null ? ResponseEntity.ok(new CustomResponse<>(beanProductPage.map(ResponseProductDTO::toProductDTO), "Productos encontrados", false, 200)) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse<>(null, "Productos no encontrados", true, 404));
     }
 
-    private void parseToBeanProduct(BeanProduct newProduct, String productName, String description, double price, int amount, UUID subcategory2) {
-        newProduct.setProductName(productName);
-        newProduct.setDescription(description);
-        newProduct.setPrice(price);
-        newProduct.setAmount(amount);
-        BeanSubcategory subcategory = new BeanSubcategory();
-        subcategory.setIdSubcategory(subcategory2);
-        newProduct.setSubcategory(subcategory);
-    }
+
 
 
 }
