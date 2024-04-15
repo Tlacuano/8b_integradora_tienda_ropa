@@ -63,9 +63,19 @@ const dictionary = {
             not_zero: () => 'No se permiten valores en cero',
             alpha:()=>'Este campo solo puede contener letras',
             minor_120: () => 'La edad no puede ser mayor a 120 años'
+            cvv: () => 'El CVV debe contener 3 dígitos',
+            rejection_reason_length: () => 'La razón de rechazo no debe exceder los 255 caracteres',
         }
     }
 };
+
+//for rejection reason length
+Validator.extend('rejection_reason_length', {
+    validate: value => {
+        return value.length <= 255;
+    }
+});
+
 Validator.extend('negative_numbers', {
     validate: value => {
         return value >= 0;
@@ -85,12 +95,6 @@ Validator.extend('not_zero', {
 
 
 //for card number
-Validator.extend('card_number', {
-    validate: value => {
-        const cardNumberRegex = /^\d{16}$/;
-        return cardNumberRegex.test(value);
-    }
-});
 Validator.extend('card_number', {
     validate: value => {
         const cardNumberRegex = /^\d{16}$/;

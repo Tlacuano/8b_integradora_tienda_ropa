@@ -57,46 +57,51 @@ public class RequestsBecomeSellerService {
             requestBecomeSellerRepository.updateRequestBecomeSeller(requestId, status, rejectionReason);
             Optional<BeanRequestsBecomeSeller> requestOptional = requestBecomeSellerRepository.findById(requestId);
 
-            if (!status.equals("Aprobado")) {
+            if (status.equals("Aprobado")) {
+                BeanRequestsBecomeSeller request = requestOptional.orElseThrow();
+                requestOptional.ifPresent(beanRequestsBecomeSeller -> emailService.sendEmail(beanRequestsBecomeSeller.getUser().getEmail(),
+                        "Solicitud de vendedor aprobada",
+                        "Solicitud de vendedor aprobada",
+                        rejectionReason,
+                        ""));
+                BeanPerson person = requestBecomeSellerRepository.findPersonByRequestId(requestId);
+
+                if (person == null) {
+                    throw new CustomException("requestBecomeSeller.person.notFound");
+                }
+
+                requestBecomeSellerRepository.insertSellerRole(requestId);
+                BeanSellerInformation sellerInformation = new BeanSellerInformation();
+                String userSellerInformationJSON = request.getUserSellerInformation();
+                ObjectMapper objectMapper = new ObjectMapper();
+                UserSellerInformation userSellerInformation = objectMapper.readValue(userSellerInformationJSON, UserSellerInformation.class);
+
+                if (userSellerInformation == null ||
+                        userSellerInformation.getTaxIdentificationNumber() == null ||
+                        userSellerInformation.getSecondaryPhoneNumber() == null ||
+                        userSellerInformation.getPrivacyPolicyAgreement() == null ||
+                        userSellerInformation.getImageIdentification() == null ||
+                        userSellerInformation.getCurp() == null) {
+                    throw new CustomException("requestBecomeSeller.userSellerInformation.empty");
+                }
+
+                sellerInformation.setTaxIdentificationNumber(userSellerInformation.getTaxIdentificationNumber());
+                sellerInformation.setSecondaryPhoneNumber(userSellerInformation.getSecondaryPhoneNumber());
+                sellerInformation.setPrivacyPolicyAgreement(userSellerInformation.getPrivacyPolicyAgreement());
+                sellerInformation.setImageIdentification(userSellerInformation.getImageIdentification());
+                sellerInformation.setCurp(userSellerInformation.getCurp());
+                sellerInformation.setPerson(person);
+                sellerInformation.setBlockSell(false);
+
+                entityManager.persist(sellerInformation);
+                entityManager.flush();
+            } else {
                 requestOptional.ifPresent(beanRequestsBecomeSeller -> emailService.sendEmail(beanRequestsBecomeSeller.getUser().getEmail(),
                         "Solicitud de vendedor rechazada",
                         "Solicitud de vendedor rechazada",
                         "Un administrador ha revisado tu solicitud y ha decidido rechazarla por la siguiente razón: " + rejectionReason,
                         ""));
             }
-
-            BeanRequestsBecomeSeller request = requestOptional.get();
-            BeanPerson person = requestBecomeSellerRepository.findPersonByRequestId(requestId);
-
-            if (person == null) {
-                throw new CustomException("requestBecomeSeller.person.notFound");
-            }
-
-            requestBecomeSellerRepository.insertSellerRole(requestId);
-            BeanSellerInformation sellerInformation = new BeanSellerInformation();
-            String userSellerInformationJSON = request.getUserSellerInformation();
-            ObjectMapper objectMapper = new ObjectMapper();
-            UserSellerInformation userSellerInformation = objectMapper.readValue(userSellerInformationJSON, UserSellerInformation.class);
-
-            if (userSellerInformation == null ||
-                    userSellerInformation.getTaxIdentificationNumber() == null ||
-                    userSellerInformation.getSecondaryPhoneNumber() == null ||
-                    userSellerInformation.getPrivacyPolicyAgreement() == null ||
-                    userSellerInformation.getImageIdentification() == null ||
-                    userSellerInformation.getCurp() == null) {
-                throw new CustomException("requestBecomeSeller.userSellerInformation.empty");
-            }
-
-            sellerInformation.setTaxIdentificationNumber(userSellerInformation.getTaxIdentificationNumber());
-            sellerInformation.setSecondaryPhoneNumber(userSellerInformation.getSecondaryPhoneNumber());
-            sellerInformation.setPrivacyPolicyAgreement(userSellerInformation.getPrivacyPolicyAgreement());
-            sellerInformation.setImageIdentification(userSellerInformation.getImageIdentification());
-            sellerInformation.setCurp(userSellerInformation.getCurp());
-            sellerInformation.setPerson(person);
-            sellerInformation.setBlockSell(false);
-
-            entityManager.persist(sellerInformation);
-            entityManager.flush();
         } catch (Exception e) {
             throw new CustomException("requestBecomeSeller.put.error");
         }
