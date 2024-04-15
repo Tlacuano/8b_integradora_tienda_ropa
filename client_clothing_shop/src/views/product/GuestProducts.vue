@@ -35,8 +35,8 @@
               tag="article"
               class="mb-2 selectable zoom-on-hover h-100"
               @click="selectProduct(product.idProduct)"
-              img-height="300px"
-              style="width: 90%"
+              img-height="320px"
+              style="width: auto"
 
           >
             <b-card-text class="text-left">
@@ -51,7 +51,6 @@
                 </b-col>
               </b-row>
               <p class="mb-0">$ {{ product.price }} MXN</p>
-              <p class="mb-0">{{ product.amount }} disponibles</p>
             </b-card-text>
           </b-card>
         </b-col>

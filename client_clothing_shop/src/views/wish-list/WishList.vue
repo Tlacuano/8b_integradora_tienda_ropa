@@ -14,7 +14,7 @@
             </b-row>
             <b-row>
                 <b-col class="p-3" v-for="wishlistItem in wishlists" :key="wishlistItem.idWish" cols="12" sm="6" md="4" lg="3">
-                    <b-card :img-src="getImageUrl(wishlistItem.productGallery)" img-alt="Image" img-top tag="article" class="mb-2 selectable zoom-on-hover h-100" @click="selectProduct(wishlistItem.product.idProduct)">
+                    <b-card img-height="350px" :img-src="getImageUrl(wishlistItem.productGallery)" img-alt="Image" img-top tag="article" class="mb-2 selectable zoom-on-hover h-100" @click="selectProduct(wishlistItem.product.idProduct)">
                         <b-card-text class="text-left">
                             <b-row no-gutters>
                                 <b-col cols="8">
