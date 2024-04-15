@@ -63,9 +63,9 @@
           </section>
 
           <section v-show="page===2">
-            <b-row>
+            <b-row class="mt-2">
               <b-col class="text-center">
-                <h3>Verificar correo electrónico</h3>
+                <h2>Verificar correo electrónico</h2>
               </b-col>
             </b-row>
             <b-row class="mt-4">
@@ -264,7 +264,7 @@ export default {
           const response = await UserService.verifyCodeService(payload);
           this.changeStatusOverlay();
 
-          if(response.data){
+          if(response){
             this.form.code = '';
             this.errors.clear();
             this.increaseRegisterPage();

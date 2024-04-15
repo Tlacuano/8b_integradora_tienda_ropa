@@ -1,4 +1,5 @@
 import axios from "../../config/http-client.gateway"
+import {showInfoAlert, showSuccessToast} from "@/components/alerts/alerts";
 
 const getPageUsersService = async (pagination) => {
     try {
@@ -84,6 +85,7 @@ const verifyCodeService = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/users/verify-email", payload);
         return response.data
     }catch (e){
+
     }
 }
 
@@ -100,7 +102,7 @@ const resendEmailCode = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/users/resend-email-code", payload);
         return response.data
     }catch (e){
-
+        showSuccessToast("Correo enviado")
     }
 }
 

@@ -21,81 +21,82 @@
                   @mouseenter="showEditPicture = true"
                   @mouseleave="showEditPicture = false"
               >
-                <template #badge v-if="showEditPicture"  >
+                <template #badge v-if="showEditPicture && deleted"  >
                   <font-awesome-icon icon="fa-solid fa-pen" class="selectable" v-b-modal:put-picture-profile-by-admin-modal/>
                 </template>
               </b-avatar>
+
             </div>
           </b-col>
         </b-row>
 
-        <b-row class="mt-4">
-          <b-col>
-            <b-card no-body class="selectable highlight-on-hover" v-b-modal:put-personal-information-user-modal>
-              <b-row align-h="between" class="p-2 mx-1">
-                <b-col>
-                  <b>
-                    Cambiar información personal
-                  </b>
-                </b-col>
-                <b-col cols="auto" class="text-right">
-                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
+        <section v-if="deleted">
+          <b-row class="mt-4" >
+            <b-col>
+              <b-card no-body class="selectable highlight-on-hover" v-b-modal:put-personal-information-user-modal>
+                <b-row align-h="between" class="p-2 mx-1">
+                  <b-col>
+                    <b>
+                      Cambiar información personal
+                    </b>
+                  </b-col>
+                  <b-col cols="auto" class="text-right">
+                    <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+          <b-row class="mt-1" v-if="user.roles.includes('ROLE_SELLER')">
+            <b-col>
+              <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)" >
+                <b-row align-h="between" class="p-2 mx-1">
+                  <b-col>
+                    <b>
+                      {{ user.sellerInformation.blockSell === true ? 'Desbloquear venta' : 'Bloquear venta' }}
+                    </b>
+                  </b-col>
+                  <b-col cols="auto" class="text-right">
+                    <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+          <b-row class="mt-1">
+            <b-col>
+              <b-card no-body class="selectable highlight-on-hover" @click="changeStatusUser(user.email)">
+                <b-row align-h="between" class="p-2 mx-1">
+                  <b-col>
+                    <b>
+                      {{ user.status === true ? 'Deshabilitar cuenta' : 'Habilitar cuenta' }}
+                    </b>
+                  </b-col>
+                  <b-col cols="auto" class="text-right">
+                    <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+          <b-row class="mt-1">
+            <b-col>
+              <b-card no-body class="selectable highlight-on-hover" v-b-modal:delete-account-admin-modal>
+                <b-row align-h="between" class="p-2 mx-1">
+                  <b-col>
+                    <b>
+                      Eliminar cuenta
+                    </b>
+                  </b-col>
+                  <b-col cols="auto" class="text-right">
+                    <font-awesome-icon icon="fa-solid fa-angle-right"/>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
+          </b-row>
+        </section>
 
-        <b-row class="mt-1" v-if="user.roles.includes('ROLE_SELLER')">
-          <b-col>
-            <b-card no-body class="selectable highlight-on-hover" @click="blockSell(user.email)" >
-              <b-row align-h="between" class="p-2 mx-1">
-                <b-col>
-                  <b>
-                    {{ user.sellerInformation.blockSell === true ? 'Desbloquear venta' : 'Bloquear venta' }}
-                  </b>
-                </b-col>
-                <b-col cols="auto" class="text-right">
-                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
-
-        <b-row class="mt-1">
-          <b-col>
-            <b-card no-body class="selectable highlight-on-hover" @click="changeStatusUser(user.email)">
-              <b-row align-h="between" class="p-2 mx-1">
-                <b-col>
-                  <b>
-                    {{ user.status === true ? 'Deshabilitar cuenta' : 'Habilitar cuenta' }}
-                  </b>
-                </b-col>
-                <b-col cols="auto" class="text-right">
-                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
-
-        <b-row class="mt-1">
-          <b-col>
-            <b-card no-body class="selectable highlight-on-hover" v-b-modal:delete-account-admin-modal>
-              <b-row align-h="between" class="p-2 mx-1">
-                <b-col>
-                  <b>
-                    Eliminar cuenta
-                  </b>
-                </b-col>
-                <b-col cols="auto" class="text-right">
-                  <font-awesome-icon icon="fa-solid fa-angle-right"/>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
 
       </b-col>
 
@@ -413,6 +414,8 @@ export default {
           blockSell: null
         }
       },
+      deleted: false,
+
       orders:{
         pagination:{
           page: 1,
@@ -453,6 +456,8 @@ export default {
       this.user.sellerInformation.privacyPolicyAgreement = response.data.privacyPolicyAgreement;
       this.user.sellerInformation.taxIdentificationNumber = response.data.taxIdentificationNumber;
       this.user.sellerInformation.blockSell = response.data.blockSell;
+
+      this.deleted = this.accountDeleted(this.user.email);
 
       this.showOverlay()
     },
@@ -516,7 +521,10 @@ export default {
       const response = await UserService.getProfileService(payload);
       this.admin = response.data.fullName;
     },
-
+    accountDeleted(email){
+      const domain = email.split('@')[1];
+      return !domain.includes('deleted')
+    },
 
     showOverlay(){
       this.$store.dispatch('changeStatusOverlay');
