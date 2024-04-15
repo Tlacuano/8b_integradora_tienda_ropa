@@ -45,7 +45,7 @@
                 <b-col cols="12">
                   <b>Dirección de envío</b>
                 </b-col>
-                <b-col cols="11">
+                <b-col v-if="addresses.length > 0" cols="11">
                   <p class="text-muted mb-0">{{ selectedAddress.address }}
                     {{ selectedAddress.status === 'Predeterminada' ? '(Predeterminada)' : '' }}</p>
                   <p class="text-muted">
@@ -54,7 +54,10 @@
                     {{ selectedAddress.referencesAddress }}
                   </p>
                 </b-col>
-                <b-col cols="1" class="text-right selector">
+                <b-col v-else cols="11">
+                  <p class="text-muted mb-0">No tienes direcciones registradas</p>
+                </b-col>
+                <b-col v-if="addresses.length > 0" cols="1" class="text-right selector">
                   <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
                     <template #button-content>
                       <font-awesome-icon class="text-black-50" icon="chevron-down"/>
@@ -65,19 +68,25 @@
                     </b-dropdown-item>
                   </b-dropdown>
                 </b-col>
+                <b-col v-else cols="1" class="text-right selector">
+                  <b-button @click="openAddAddressModal" variant="dark">Agregar dirección</b-button>
+                </b-col>
                 <b-col cols="12">
                   <b>Método de pago</b>
                 </b-col>
-                <b-col cols="11">
+                <b-col v-if="paymentCards.length > 0" cols="11">
                   <p class="text-muted mb-0">{{ censorCardNumber(selectedPaymentCard.cardNumber) }}
                     {{ selectedPaymentCard.status === 'Predeterminada' ? '(Predeterminada)' : '' }}</p>
-                  <p class="text-muted">1
-                    {{ selectedPaymentCard.cardholderName }}. Fecha de expiración: {{
+                  <p class="text-muted">
+                    Fecha de expiración: {{
                       selectedPaymentCard.expirationDate
                     }}
                   </p>
                 </b-col>
-                <b-col cols="1" class="text-right selector">
+                <b-col v-else cols="11">
+                  <p class="text-muted mb-0">No tienes tarjetas de crédito registradas</p>
+                </b-col>
+                <b-col v-if="paymentCards.length > 0" cols="1" class="text-right selector">
                   <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
                     <template #button-content>
                       <font-awesome-icon class="text-black-50" icon="chevron-down"/>
@@ -87,6 +96,9 @@
                       {{ censorCardNumber(card.cardNumber) }}
                     </b-dropdown-item>
                   </b-dropdown>
+                </b-col>
+                <b-col v-else cols="1" class="text-right selector">
+                  <b-button @click="openAddCardModal" variant="dark">Agregar tarjeta</b-button>
                 </b-col>
                 <b-col cols="12">
                   <b>Fecha estimada de entrega</b>
@@ -123,14 +135,14 @@
                   <h4>${{ total }}</h4>
                 </b-col>
                 <b-col cols="12">
-                  <b-button @click="createCheckoutSession" variant="dark" block>Finalizar compra</b-button>
+                  <b-button @click="createCheckoutSession" variant="dark" block>Realizar compra</b-button>
                 </b-col>
               </b-row>
             </b-list-group-item>
             <b-list-group-item>
               <b-row no-gutters>
                 <b-col cols="12">
-                  <p class="text-muted mb-0">Al hacer clic en "Finalizar compra", aceptas los Términos y Condiciones
+                  <p class="text-muted mb-0">Al hacer clic en "Realizar compra", aceptas los Términos y Condiciones
                     de uso y la Política de privacidad de la empresa.</p>
                 </b-col>
                 <b-col class="mb-3" cols="12">
@@ -160,6 +172,9 @@
         </b-card>
       </b-col>
     </b-row>
+
+    <AddCardModal @cardAdded="getUserPaymentCards"/>
+    <AddressManagementRegisterModal ref="registrationModal" :email="this.$store.getters.getEmail" @registered="getUserAddresses"/>
   </div>
 </template>
 
@@ -172,6 +187,10 @@ import TransactionService from "@/services/transaction/TransactionService";
 
 export default {
   name: 'TransactionDetails',
+  components: {
+    AddCardModal: () => import('@/views/payment-card/AddCardModal.vue'),
+    AddressManagementRegisterModal: () => import('@/views/address-management/AddressManagementRegisterModal.vue')
+  },
   data() {
     return {
       // Shopping cart
@@ -274,8 +293,17 @@ export default {
       return price.times(quantity);
     },
 
+
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
+    },
+
+    openAddCardModal() {
+      this.$bvModal.show('addCardModal');
+    },
+
+    openAddAddressModal() {
+      this.$bvModal.show('addressManagementRegisterModal');
     },
 
     showOverlay() {
