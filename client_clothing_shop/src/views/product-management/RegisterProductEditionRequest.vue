@@ -58,7 +58,7 @@
           </b-row>
           <b-row>
             <b-col>
-              <b-form-group label="Precio: " label-for="price">
+              <b-form-group label="Precio $MXN: " label-for="price">
                 <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required|negative_numbers|not_zero'"
                               type="number"></b-form-input>
               </b-form-group>
