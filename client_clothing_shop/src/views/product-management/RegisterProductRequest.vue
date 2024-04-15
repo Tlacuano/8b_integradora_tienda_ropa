@@ -80,6 +80,7 @@
                     name="images"
                     placeholder=""
                     browse-text="Búscar"
+                    v-validate="'image'"
                     accept="image/*"></b-form-file>
                 <span style="color: red;">{{ errors.first('images') }}</span>
               </b-form-group>
