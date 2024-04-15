@@ -6,6 +6,7 @@
       hide-footer
       hide-header
       ok-only
+      @hidden="resetFormData"
   >
     <b-container fluid>
 
@@ -102,45 +103,52 @@ export default {
   },
   data() {
     return {
-      address: {
+      address: this.defaultAddress()
+    }
+  },
+  methods: {
+    defaultAddress() {
+      return {
         address: '',
         neighborhood: '',
         street: '',
         referencesAddress: '',
         postalCode: '',
         state: ''
-      }
-    }
-  },
-  methods: {
+      };
+    },
     hideModal() {
       this.$bvModal.hide('addressManagementRegisterModal');
     },
+    resetFormData() {
+      this.address = this.defaultAddress();
+    },
     async registerAddress() {
-      if (!this.$refs.observer.validate()) {
+      const isValid = await this.$refs.observer.validate();
+      if (isValid) {
         const addressToRegister = {
-        address: this.address.address,
-        neighborhood: this.address.neighborhood,
-        street: this.address.street,
-        referencesAddress: this.address.referencesAddress,
-        postalCode: this.address.postalCode,
-        state: this.address.state,
-        email: this.email
-      };
+          address: this.address.address,
+          neighborhood: this.address.neighborhood,
+          street: this.address.street,
+          referencesAddress: this.address.referencesAddress,
+          postalCode: this.address.postalCode,
+          state: this.address.state,
+          email: this.email
+        };
 
-      try {
-        const response = await AddressesManagement.postAddressService(addressToRegister);
-        if (response.status === 201) {
-          this.hideModal();
-          showSuccessToast('Registro Exitoso', 'La dirección ha sido registrada correctamente');
-          this.$emit('registered', response.data);
-        } else {
-          throw new Error('La respuesta no tiene el estado esperado.');
+        try {
+          const response = await AddressesManagement.postAddressService(addressToRegister);
+          if (response.status === 201) {
+            this.hideModal();
+            showSuccessToast('Registro Exitoso', 'La dirección ha sido registrada correctamente');
+            this.$emit('registered', response.data);
+          } else {
+            throw new Error('La respuesta no tiene el estado esperado.');
+          }
+        } catch (error) {
+          showWarningToast('Error', 'No se pudo registrar la dirección');
         }
-      } catch (error) {
-        showWarningToast('Error', 'No se pudo registrar la dirección');
       }
-    }
     },
     show() {
       this.$bvModal.show('addressManagementRegisterModal');

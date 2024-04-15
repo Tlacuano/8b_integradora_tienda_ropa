@@ -81,11 +81,21 @@ public class AddressService {
         BeanPerson person = iAddress.findPersonByUserEmail(payload.getEmail()).orElseThrow(() -> new CustomException("person.email.notfound"));
         newAddress.setPerson(person);
 
-        BeanAddressStatus status = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+        // Verifica si es la primera dirección del usuario
+        List<BeanAddress> existingAddresses = iAddress.findAllByPersonId(person.getIdPerson());
+        BeanAddressStatus status;
+        if (existingAddresses.isEmpty()) {
+            // Si no hay direcciones, la nueva dirección será 'Predeterminada'
+            status = iAddressStatus.findByStatus("Predeterminada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+        } else {
+            // Si ya hay direcciones, la nueva dirección será 'Habilitada'
+            status = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+        }
         newAddress.setStatus(status);
 
         return iAddress.saveAndFlush(newAddress);
     }
+
 
     @Transactional
     public BeanAddress putAddress(RequestPutAddressDTO payload) {
