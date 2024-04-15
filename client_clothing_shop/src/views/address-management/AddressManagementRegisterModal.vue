@@ -21,11 +21,12 @@
           <h3 class="modal-title">Registro de direccion</h3>
         </b-col>
       </b-row>
-
+      <validation-observer ref="observer" v-slot="{ invalid }">
       <b-form id="formulario">
+
         <b-row>
           <b-col cols="6">
-            <b-form-group label="Dirección:">
+            <b-form-group label="Nombre de la dirección:">
               <validation-provider rules="required|min:5|max:100" v-slot="{ errors }">
                 <b-form-input v-model="address.address"></b-form-input>
                 <span class="text-danger">{{ errors[0] }}</span>
@@ -41,7 +42,7 @@
             </b-form-group>
           </b-col>
           <b-col cols="6">
-            <b-form-group label="Calle:">
+            <b-form-group label="Calle y numero:">
               <validation-provider rules="required|max:50" v-slot="{ errors }">
                 <b-form-input v-model="address.street"></b-form-input>
                 <span class="text-danger">{{ errors[0] }}</span>
@@ -80,6 +81,7 @@
           </b-col>
         </b-row>
       </b-form>
+      </validation-observer>
     </b-container>
   </b-modal>
 </template>
@@ -87,12 +89,13 @@
 <script>
 import AddressesManagement from "@/services/adressess-management/AddressesManagement";
 import {showInfoAlert, showSuccessToast} from "../../components/alerts/alerts";
-import { ValidationProvider } from 'vee-validate';
+import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export default {
   name: "AddressManagementRegisterModal",
   components: {
-    ValidationProvider
+    ValidationProvider,
+    ValidationObserver
   },
   props: {
     email: String,
@@ -114,7 +117,8 @@ export default {
       this.$bvModal.hide('addressManagementRegisterModal');
     },
     async registerAddress() {
-      const addressToRegister = {
+      if (!this.$refs.observer.validate()) {
+        const addressToRegister = {
         address: this.address.address,
         neighborhood: this.address.neighborhood,
         street: this.address.street,
@@ -136,6 +140,7 @@ export default {
       } catch (error) {
         showWarningToast('Error', 'No se pudo registrar la dirección');
       }
+    }
     },
     show() {
       this.$bvModal.show('addressManagementRegisterModal');
