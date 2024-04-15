@@ -3,14 +3,8 @@
     <div v-if="!selectedCategory">
       <b-row class="full-page" no-gutters>
         <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="">
-          <b-card
-              :img-src="category.image"
-              class="mb-2 selectable zoom-on-hover"
-              :title="category.category"
-              header-class="text-center"
-              @click="selectCategory(category.category)"
-              overlay
-          >
+          <b-card :img-src="category.image" class="mb-2 selectable zoom-on-hover" :title="category.category"
+            header-class="text-center" @click="selectCategory(category.category)" overlay>
           </b-card>
         </b-col>
       </b-row>
@@ -21,38 +15,25 @@
           <b-form-group>
             <div class="position-relative">
               <b-form-input @keyup.enter="getProducts()" v-model="searchQuery" id="search" type="text"
-                            placeholder="Buscar..." class="pr-5"></b-form-input>
-              <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
+                placeholder="Buscar..." class="pr-5"></b-form-input>
+              <font-awesome-icon icon="magnifying-glass" class="search-icon" />
             </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row v-if="products.length > 0" no-gutters>
-        <b-col
-            v-for="product in products"
-            :key="product.idProduct"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-            class="p-3"
-        >
-          <b-card
-              :img-src="product.productGallery[0].image"
-              img-alt="Image"
-              img-top
-              tag="article"
-              class="mb-2 selectable zoom-on-hover h-100"
-              @click="selectProduct(product.idProduct)"
-          >
+        <b-col v-for="product in products" :key="product.idProduct" cols="12" sm="6" md="4" lg="3" class="p-3">
+          <b-card :img-src="product.productGallery[0].image" img-alt="Image" img-top tag="article"
+            class="mb-2 selectable zoom-on-hover h-100" @click="selectProduct(product.idProduct)">
             <b-card-text class="text-left">
               <b-row no-gutters>
                 <b-col cols="8">
                   <p class="mb-0 font-weight-bold">{{ product.productName }}</p>
                 </b-col>
                 <b-col cols="4" class="text-right">
-                  <b-button pill variant="light" class="wishlist-btn p-0" @click.stop="wishlistProduct">
-                    <b-icon class="icon-container" :icon="false ? 'heart-fill' : 'heart'"/>
+                  <b-button pill variant="light" class="wishlist-btn p-0"
+                    @click.stop="wishlistProduct(product.idProduct)">
+                    <b-icon class="icon-container" :icon="product.inWishlist ? 'heart-fill' : 'heart'" />
                   </b-button>
                 </b-col>
               </b-row>
@@ -69,25 +50,23 @@
       </b-row>
       <b-row>
         <b-col>
-          <b-pagination
-              v-model="objectPagination.page"
-              :total-rows="objectPagination.elements"
-              :per-page="objectPagination.size"
-              aria-controls="my-table"
-          ></b-pagination>
+          <b-pagination v-model="objectPagination.page" :total-rows="objectPagination.elements"
+            :per-page="objectPagination.size" aria-controls="my-table"></b-pagination>
         </b-col>
       </b-row>
     </div>
 
-    <LoginModal/>
+    <LoginModal />
   </div>
 </template>
 
 <script>
 import ProductService from "@/services/product/ProductService";
 import CategoryService from "@/services/category/CategoryService";
-import {codeCrypto} from "@/utils/security/cryptoJs";
-import {mapGetters} from "vuex";
+import WishListService from '@/services/wish-list/WishListService'
+import { codeCrypto } from "@/utils/security/cryptoJs";
+import { mapGetters } from "vuex";
+import { showWarningToast, showSuccessToast } from "@/components/alerts/alerts";
 
 export default {
   name: "GuestProducts",
@@ -151,19 +130,79 @@ export default {
       if (response.status === 200) {
         this.products = response.data.content;
         this.objectPagination.elements = response.data.totalElements;
+        const wishlist = await WishListService.getWishList(this.$store.getters.getEmail);
+        if (wishlist.data && Array.isArray(wishlist.data)) {
+          this.products.forEach(product => {
+            // Verificar si el producto está en la lista de deseos
+            product.inWishlist = wishlist.data.some(wish => wish.product.idProduct === product.idProduct);
+
+            // Asignar la lista de deseos al producto
+            product.wishList = wishlist.data.filter(wish => wish.product.idProduct === product.idProduct);
+          });
+        }
       }
       this.showOverlay();
     },
 
-    wishlistProduct() {
+    wishlistProduct(productId) {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
+      } else {
+        const idProduct = productId;
+        const email = this.$store.getters.getEmail;
+
+        const productIndex = this.products.findIndex(product => product.idProduct === productId); //busca el indice del producto en la lista de productos
+        if (productIndex === -1) {
+          return;
+        }
+
+        if (this.products[productIndex].inWishlist) {
+          this.removeFromWishlist(productId);
+        } else {
+          WishListService.postWishList({ email, idProduct })
+            .then(() => {
+              this.$set(this.products[productIndex], 'inWishlist', true);
+              showSuccessToast('', 'Producto añadido a la lista de deseos');
+            })
+            .catch(() => {
+              showWarningToast('Error', 'Error al agregar el producto a la lista de deseos');
+            });
+        }
       }
+    },
+
+    removeFromWishlist(productId) {
+      const product = this.products.find(product => product.idProduct === productId);
+      if (!product) {
+        return;
+      }
+
+      const productIndex = this.products.findIndex(product => product.idProduct === productId);
+      if (productIndex === -1) {
+        return;
+      }
+
+      const email = this.$store.getters.getEmail;
+      const wishListIndex = product.wishList.findIndex(wish => wish.email === email);
+      if (wishListIndex === -1) {
+        console.error("Product not found in wishlist.");
+      }
+
+      const wishListId = product.wishList[0].idWish;
+      WishListService.deleteWishList(wishListId)
+        .then(() => {
+          this.$set(this.products[productIndex], 'inWishlist', false);
+          this.$forceUpdate();
+          showSuccessToast('', 'Producto eliminado de la lista de deseos');
+        })
+        .catch(() => {
+          showWarningToast('Error', 'Error al eliminar el producto de la lista de deseos');
+        });
     },
 
     selectProduct(productId) {
       const encodedId = codeCrypto(productId);
-      this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
+      this.$router.push({ name: 'UserProductDetails', params: { id: encodedId } });
     },
 
     showOverlay() {
@@ -172,7 +211,7 @@ export default {
 
     selectCategory(category) {
       this.selectedCategory = category;
-      this.$router.push({name: 'UserProductsCategory', params: {category: category}});
+      this.$router.push({ name: 'UserProductsCategory', params: { category: category } });
     },
 
     resetFilters() {
