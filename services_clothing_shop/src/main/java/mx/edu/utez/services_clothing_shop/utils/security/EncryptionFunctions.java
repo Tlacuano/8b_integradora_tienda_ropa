@@ -21,6 +21,7 @@ public class EncryptionFunctions {
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
 
+
     @Value("${secret-key}")
     public void setKey(String key) {
         EncryptionFunctions.key = key;
