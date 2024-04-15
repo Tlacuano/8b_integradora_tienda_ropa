@@ -17,7 +17,13 @@
       </b-col>
     </b-row>
 
-    <b-row class="mt-3 container-requests">
+    <b-row v-if="!requests" class="mt-3 container-requests">
+      <b-col class="text-center">
+        <h3>No hay solicitudes de vendedor</h3>
+      </b-col>
+    </b-row>
+
+    <b-row v-else class="mt-3 container-requests">
       <b-col>
         <b-row>
           <b-col lg="4" v-for="(request, index) in requests" :key="index">

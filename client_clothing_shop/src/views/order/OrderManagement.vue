@@ -17,7 +17,13 @@
       </b-col>
     </b-row>
 
-    <b-row class="mt-3 container-orders">
+    <b-row v-if="!orders" class="mt-3 container-orders">
+      <b-col class="text-center">
+        <h3>No hay pedidos</h3>
+      </b-col>
+    </b-row>
+
+    <b-row v-else class="mt-3 container-orders">
       <b-col>
         <b-row>
           <b-col lg="4" v-for="(order, index) in orders" :key="index">

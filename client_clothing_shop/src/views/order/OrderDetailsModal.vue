@@ -59,7 +59,7 @@
                     <p style="margin-bottom: 0.1rem;">MXN ${{ product.product.price }}</p>
                     <p>Estado: <b-badge :variant="getVariant(product.status)" class="text-ellipsis text-white small">{{ product.status }}</b-badge></p>
                     <hr/>
-                    <b-button v-if="product.status !== 'Entregado' && product.status !== 'Cancelado' && product.status !== 'Reembolsado'"
+                    <b-button v-if="product.status !== 'Entregado' && product.status !== 'Cancelado' && product.status !== 'Reembolsado' && product.status !== 'Enviado'"
                               style="background-color: red; border-color: red;" block @click="openReasonModal(product)">Cancelar compra</b-button>
                   </b-card-text>
                 </b-card-body>

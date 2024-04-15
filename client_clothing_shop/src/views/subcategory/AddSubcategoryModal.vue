@@ -79,7 +79,7 @@ import Vue from "vue";
 import CategoriesService from "../../services/category/CategoryService";
 import CloudinaryService from "../../services/cloudinary/CloudinaryService";
 import SubcategoriesService from "../../services/subcategory/SubcategoryService";
-import {showInfoAlert, showWarningToast} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "AddSubcategoryModal",
@@ -121,11 +121,12 @@ export default Vue.extend({
                     this.clean();
                     this.$emit("subcategory-added");
                     this.$bvModal.hide("addSubcategoryModal");
+                    showSuccessToast("Subcategoría registrada correctamente");
                   } else {
-                    showWarningToast("Error al registrar la subcategoría", "No se pudo registrar la subcategoría");
+                    showWarningToast("Error al registrar la subcategoría");
                   }
                 } else {
-                  showWarningToast("Error al registrar la subcategoría", "No se pudo registrar la subcategoría");
+                  showWarningToast("Error al registrar la subcategoría");
                 }
               }
           );
@@ -143,6 +144,9 @@ export default Vue.extend({
     },
 
     handleFileUpload() {
+      if (!this.form.image) {
+        this.imgPreview = null;
+      }
       this.imgPreview = URL.createObjectURL(this.form.image);
     },
 

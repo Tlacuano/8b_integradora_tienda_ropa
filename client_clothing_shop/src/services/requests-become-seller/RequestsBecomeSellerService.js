@@ -59,11 +59,12 @@ const putStatusRequestService = async (payload) => {
         if (payload.status === "Aprobado") {
             payload.rejectionReason = MESSAGE_ACCEPTED;
         }
-        await axios.doPost("/venta-ropa/api/requests-become-seller/put-request-become-seller", {
+        const response = await axios.doPost("/venta-ropa/api/requests-become-seller/put-request-become-seller", {
             idRequestBecomeSeller: payload.idRequestBecomeSeller,
             status: payload.status,
             rejectionReason: payload.rejectionReason
         });
+        return response.data.status;
     } catch (e) {
     }
 }

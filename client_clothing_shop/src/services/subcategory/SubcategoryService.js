@@ -47,7 +47,7 @@ const putStatusSubcategoryService = async (subcategory) => {
         const response = await axios.doPost("/venta-ropa/api/subcategories/put-status-subcategory", {
             idSubcategory: subcategory
         });
-        return response.data;
+        return response.data.data;
     } catch (e) {
     }
 }

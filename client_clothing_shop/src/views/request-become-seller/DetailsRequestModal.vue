@@ -13,7 +13,7 @@
           </b-col>
         </b-row>
         <b-row class="my-4">
-          <b-col class="modal-info">
+          <b-col md="6" sm="12" class="modal-info">
             <ul>
               <li><strong>Nombre:</strong> {{ request.personName }}</li>
               <li><strong>Apellidos:</strong> {{ request.personLastName + " "  + request.personSecondLastName }}</li>
@@ -25,57 +25,40 @@
               <li v-if="request.status === 'Rechazado'"><strong>Razón del rechazo:</strong> {{ request.rejectionReason }}</li>
             </ul>
           </b-col>
-          <b-col class="d-flex justify-content-center align-items-center">
-            <b-avatar
-                v-if="request.picture"
-                size="18rem"
-                class="text-uppercase"
-                :src="request.picture"
-            />
-            <b-avatar
-                v-else
-                size="10rem"
-                class="text-uppercase"
-                icon="person-circle"
-            />
+          <b-col md="6" sm="12" class="d-flex justify-content-center align-items-center">
+            <b-img v-show="request.userSellerInformation?.imageIdentification" class="image-size" :src="request.userSellerInformation?.imageIdentification"/>
           </b-col>
         </b-row>
-        <b-row v-if="request.status === 'Pendiente'" class="justify-content-center mt-2 mb-2">
+        <b-row v-if="request.status === 'Pendiente' && showRejectionReason === false" class="justify-content-center mt-2 mb-2">
           <b-col>
             <b-button variant="dark" @click="putStatusRequest('Aprobado')" class="w-100 my-2">Aceptar</b-button>
           </b-col>
           <b-col>
-            <b-button @click="openReasonModal" variant="danger" class="w-100 my-2">Rechazar</b-button>
+            <b-button @click="openRejectionField" class="w-100 my-2" style="border-radius: 0.5rem; background-color: red; border-color: red;">Rechazar</b-button>
           </b-col>
         </b-row>
+        <b-collapse v-model="showRejectionReason">
+          <b-row>
+            <b-col class="ml-4">
+              <b-form-textarea
+                  id="textarea-rejection-reason"
+                  v-model="rejectionReason"
+                  placeholder="Escribe aquí la razón de rechazo"
+                  rows="3"
+                  max-rows="6"
+                  v-validate="'required|rejection_reason_length'"
+                  name="rejectionReason"
+              >
+              </b-form-textarea>
+              <span v-show="errors.has('rejectionReason')" class="text-danger">{{ errors.first('rejectionReason') }}</span>
+            </b-col>
+          </b-row>
+          <b-row class="justify-content-center mt-2 mb-2">
+            <b-button @click="putStatusRequest('Rechazado')" variant="dark" class="w-25 mx-5" style="border-radius: 0.5rem">Aceptar</b-button>
+            <b-button @click="closeRejectionField" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
+          </b-row>
+        </b-collapse>
       </b-container>
-    </b-modal>
-
-
-    <b-modal id="rejectionReasonModal" hide-header hide-footer centered>
-      <b-row>
-        <b-col class="text-center">
-          <h3>Indica la razón de rechazo</h3>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col class="ml-4" >
-          <b-form-textarea
-              id="textarea-rejection-reason"
-              v-model="rejectionReason"
-              placeholder="Escribe aquí la razón de rechazo"
-              rows="3"
-              max-rows="6"
-              v-validate="'required|max:255'"
-              name="rejectionReason"
-          />
-          <span v-show="errors.has('rejectionReason')" class="text-danger">{{ errors.first('rejectionReason') }}</span>
-        </b-col>
-      </b-row>
-      <b-row class="justify-content-center mt-2 mb-2">
-        <b-button variant="dark" @click="putStatusRequest('Rechazado')" class="w-25 mx-5" style="border-radius: 0.5rem">Aceptar</b-button>
-        <b-button @click="closeReasonModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
-      </b-row>
     </b-modal>
   </section>
 </template>
@@ -83,7 +66,7 @@
 <script>
 import Vue from 'vue';
 import RequestsBecomeSellerService from "@/services/requests-become-seller/RequestsBecomeSellerService";
-import {showInfoAlert, showSuccessToast} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast, showWarningToast} from "@/components/alerts/alerts";
 
 export default Vue.extend({
   name: "DetailsRequestModal",
@@ -96,7 +79,8 @@ export default Vue.extend({
   data() {
     return {
       request: {},
-      rejectionReason: null
+      rejectionReason: null,
+      showRejectionReason: false
     }
   },
   methods: {
@@ -105,55 +89,49 @@ export default Vue.extend({
     },
 
     async putStatusRequest(status) {
-      await this.$validator.validateAll().then(async result => {
-        if (result) {
-          await showInfoAlert(
-              "¿Estás seguro de cambiar el estado de la solicitud?",
-              "Esta acción no se puede deshacer",
-              "Cambiar",
-              async () => {
-                const payload = {
-                  idRequestBecomeSeller: this.idRequest,
-                  rejectionReason: this.rejectionReason,
-                  status: status
-                }
-                await RequestsBecomeSellerService.putStatusRequestService(payload);
-
-                this.$emit('request-updated');
-                showSuccessToast("Estado de la solicitud actualizado correctamente")
-                this.$bvModal.hide('detailsRequestModal');
-                if (status === "Rechazado") {
-                  this.rejectionReason = null;
-                  this.$bvModal.hide('rejectionReasonModal');
-                }
-              }
-          )
+      if (status === "Rechazado") {
+        const result = await this.$validator.validateAll();
+        if (!result) {
+          return;
         }
-      });
-    },
+      }
+      await showInfoAlert(
+          "¿Estás seguro de cambiar el estado de la solicitud?",
+          "Esta acción no se puede deshacer",
+          "Cambiar",
+          async () => {
+            const payload = {
+              idRequestBecomeSeller: this.idRequest,
+              rejectionReason: this.rejectionReason,
+              status: status
+            }
+            const response = await RequestsBecomeSellerService.putStatusRequestService(payload);
 
-    openReasonModal() {
-      this.$nextTick(() => {
-        this.$bvModal.show("rejectionReasonModal");
-      })
+            if (response === 200) {
+              if (status === "Rechazado") {
+                this.rejectionReason = null;
+              }
+              this.$emit('request-updated');
+              this.$bvModal.hide('detailsRequestModal');
+              showSuccessToast("Estado de la solicitud actualizado correctamente")
+            } else if (!response) {
+              showWarningToast("Error al actualizar el estado de la solicitud")
+            }
+          }
+      )
     },
-
-    closeReasonModal() {
-      this.$bvModal.hide("rejectionReasonModal");
-    }
+    openRejectionField() {
+      this.showRejectionReason = true;
+    },
+    closeRejectionField() {
+      this.showRejectionReason = false;
+      this.rejectionReason = null;
+    },
   }
 })
 </script>
 
 <style scoped>
-.modal-title {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-  padding: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .modal-info {
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
@@ -168,5 +146,11 @@ export default Vue.extend({
 
 .modal-info strong {
   font-weight: bold;
+}
+.image-size {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  min-width: 150px;
 }
 </style>
