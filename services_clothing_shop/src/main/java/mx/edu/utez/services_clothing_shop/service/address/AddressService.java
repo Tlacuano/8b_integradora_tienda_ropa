@@ -81,11 +81,22 @@ public class AddressService {
         BeanPerson person = iAddress.findPersonByUserEmail(payload.getEmail()).orElseThrow(() -> new CustomException("person.email.notfound"));
         newAddress.setPerson(person);
 
-        BeanAddressStatus status = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+        // Verifica si es la primera dirección del usuario
+        List<BeanAddress> existingAddresses = iAddress.findAllByPersonId(person.getIdPerson());
+        BeanAddressStatus status;
+        
+        if (existingAddresses.isEmpty()) {
+            // Si no hay direcciones, la nueva dirección será 'Predeterminada'
+            status = iAddressStatus.findByStatus("Predeterminada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+        } else {
+            // Si ya hay direcciones, la nueva dirección será 'Habilitada'
+            status = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+        }
         newAddress.setStatus(status);
 
         return iAddress.saveAndFlush(newAddress);
     }
+
 
     @Transactional
     public BeanAddress putAddress(RequestPutAddressDTO payload) {
@@ -121,6 +132,17 @@ public class AddressService {
     @Transactional
     public ResponseAllAddressDTO updateAddressStatus(RequestPutStatusAddressDTO payload) {
         BeanAddress addressToUpdate = iAddress.findById(payload.getIdAddress()).orElseThrow(() -> new CustomException("address.notfound"));
+
+        if ("Venta".equals(payload.getStatus())) {
+            List<BeanAddress> addresses = iAddress.findAllByPersonId(payload.getIdPerson());
+            for (BeanAddress address : addresses) {
+                if (!address.getIdAddress().equals(payload.getIdAddress()) && "Venta".equals(address.getStatus().getStatus())) {
+                    BeanAddressStatus defaultStatus = iAddressStatus.findByStatus("Habilitada").orElseThrow(() -> new CustomException(STATUS_NOTFOUND));
+                    address.setStatus(defaultStatus);
+                    iAddress.save(address);
+                }
+            }
+        }
 
         if ("Predeterminada".equals(payload.getStatus())) {
             List<BeanAddress> currentDefaultAddresses = iAddress.findByStatusAndPersonId("Predeterminada", payload.getIdPerson());

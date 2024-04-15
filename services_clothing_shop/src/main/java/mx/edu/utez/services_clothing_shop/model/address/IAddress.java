@@ -30,5 +30,7 @@ public interface IAddress extends JpaRepository<BeanAddress, UUID> {
     @Query("SELECT a FROM BeanAddress a WHERE a.status.status = :status AND a.person.idPerson = :personId")
     List<BeanAddress> findByStatusAndPersonId(@Param("status") String status, @Param("personId") UUID personId);
 
+    @Query("SELECT a FROM BeanAddress a WHERE a.person.idPerson = :personId")
+    List<BeanAddress> findAllByPersonId(@Param("personId") UUID personId);
 
 }

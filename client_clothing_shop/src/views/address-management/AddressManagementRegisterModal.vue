@@ -6,6 +6,7 @@
       hide-footer
       hide-header
       ok-only
+      @hidden="resetFormData"
   >
     <b-container fluid>
 
@@ -21,11 +22,12 @@
           <h3 class="modal-title">Registro de direccion</h3>
         </b-col>
       </b-row>
-
+      <validation-observer ref="observer" v-slot="{ invalid }">
       <b-form id="formulario">
+
         <b-row>
           <b-col cols="6">
-            <b-form-group label="Dirección:">
+            <b-form-group label="Nombre de la dirección:">
               <validation-provider rules="required|min:5|max:100" v-slot="{ errors }">
                 <b-form-input v-model="address.address"></b-form-input>
                 <span class="text-danger">{{ errors[0] }}</span>
@@ -41,7 +43,7 @@
             </b-form-group>
           </b-col>
           <b-col cols="6">
-            <b-form-group label="Calle:">
+            <b-form-group label="Calle y numero:">
               <validation-provider rules="required|max:50" v-slot="{ errors }">
                 <b-form-input v-model="address.street"></b-form-input>
                 <span class="text-danger">{{ errors[0] }}</span>
@@ -80,6 +82,7 @@
           </b-col>
         </b-row>
       </b-form>
+      </validation-observer>
     </b-container>
   </b-modal>
 </template>
@@ -87,54 +90,64 @@
 <script>
 import AddressesManagement from "@/services/adressess-management/AddressesManagement";
 import {showInfoAlert, showSuccessToast} from "../../components/alerts/alerts";
-import { ValidationProvider } from 'vee-validate';
+import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export default {
   name: "AddressManagementRegisterModal",
   components: {
-    ValidationProvider
+    ValidationProvider,
+    ValidationObserver
   },
   props: {
     email: String,
   },
   data() {
     return {
-      address: {
+      address: this.defaultAddress()
+    }
+  },
+  methods: {
+    defaultAddress() {
+      return {
         address: '',
         neighborhood: '',
         street: '',
         referencesAddress: '',
         postalCode: '',
         state: ''
-      }
-    }
-  },
-  methods: {
+      };
+    },
     hideModal() {
       this.$bvModal.hide('addressManagementRegisterModal');
     },
+    resetFormData() {
+      this.address = this.defaultAddress();
+    },
     async registerAddress() {
-      const addressToRegister = {
-        address: this.address.address,
-        neighborhood: this.address.neighborhood,
-        street: this.address.street,
-        referencesAddress: this.address.referencesAddress,
-        postalCode: this.address.postalCode,
-        state: this.address.state,
-        email: this.email
-      };
+      const isValid = await this.$refs.observer.validate();
+      if (isValid) {
+        const addressToRegister = {
+          address: this.address.address,
+          neighborhood: this.address.neighborhood,
+          street: this.address.street,
+          referencesAddress: this.address.referencesAddress,
+          postalCode: this.address.postalCode,
+          state: this.address.state,
+          email: this.email
+        };
 
-      try {
-        const response = await AddressesManagement.postAddressService(addressToRegister);
-        if (response.status === 201) {
-          this.hideModal();
-          showSuccessToast('Registro Exitoso', 'La dirección ha sido registrada correctamente');
-          this.$emit('registered', response.data);
-        } else {
-          throw new Error('La respuesta no tiene el estado esperado.');
+        try {
+          const response = await AddressesManagement.postAddressService(addressToRegister);
+          if (response.status === 201) {
+            this.hideModal();
+            showSuccessToast('Registro Exitoso', 'La dirección ha sido registrada correctamente');
+            this.$emit('registered', response.data);
+          } else {
+            throw new Error('La respuesta no tiene el estado esperado.');
+          }
+        } catch (error) {
+          showWarningToast('Error', 'No se pudo registrar la dirección');
         }
-      } catch (error) {
-        showWarningToast('Error', 'No se pudo registrar la dirección');
       }
     },
     show() {
@@ -148,5 +161,4 @@ export default {
 .modal-title {
   font-weight: bold;
 }
-
 </style>

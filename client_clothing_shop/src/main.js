@@ -62,6 +62,7 @@ const dictionary = {
             negative_numbers: () => 'No se permiten números negativos',
             not_zero: () => 'No se permiten valores en cero',
             alpha:()=>'Este campo solo puede contener letras',
+            minor_120: () => 'La edad no puede ser mayor a 120 años'
         }
     }
 };
@@ -221,6 +222,21 @@ Validator.extend('over_18', {
         }
 
         return age >= 18;
+    }
+});
+
+Validator.extend('minor_120', {
+    validate: value => {
+        const today = new Date();
+        const birthDate = new Date(value);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age < 120;
     }
 });
 
