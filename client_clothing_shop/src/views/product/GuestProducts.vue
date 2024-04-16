@@ -3,15 +3,8 @@
     <div v-show="!selectedCategory">
       <b-row class="full-page" no-gutters>
         <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="">
-          <b-card
-              :img-src="category.image"
-              class="mb-2 selectable zoom-on-hover"
-              :title="category.category"
-              header-class="text-center"
-              @click="selectCategory(category.category)"
-              overlay
-              img-height="700px"
-          >
+          <b-card :img-src="category.image" class="mb-2 selectable zoom-on-hover" :title="category.category"
+            header-class="text-center" @click="selectCategory(category.category)" overlay img-height="700px">
           </b-card>
         </b-col>
       </b-row>
@@ -22,33 +15,17 @@
           <b-form-group>
             <div class="position-relative">
               <b-form-input @keyup.enter="getProducts()" v-model="searchQuery" id="search" type="text"
-                            placeholder="Buscar..." class="pr-5"></b-form-input>
-              <font-awesome-icon icon="magnifying-glass" class="search-icon"/>
+                placeholder="Buscar..." class="pr-5"></b-form-input>
+              <font-awesome-icon icon="magnifying-glass" class="search-icon" />
             </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row v-if="products.length > 0" no-gutters>
-        <b-col
-            v-for="product in products"
-            :key="product.idProduct"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-            class="p-3"
-        >
-          <b-card
-              :img-src="product.productGallery[0].image"
-              img-alt="Image"
-              img-top
-              tag="article"
-              class="mb-2 selectable zoom-on-hover h-100"
-              @click="selectProduct(product.idProduct)"
-              img-height="350px"
-              style="width: 90%"
-
-          >
+        <b-col v-for="product in products" :key="product.idProduct" cols="12" sm="6" md="4" lg="3" class="p-3">
+          <b-card :img-src="product.productGallery[0].image" img-alt="Image" img-top tag="article"
+            class="mb-2 selectable zoom-on-hover h-100" @click="selectProduct(product.idProduct)" img-height="350px"
+            style="width: 90%">
             <b-card-text class="text-left">
               <b-row no-gutters>
                 <b-col cols="8">
@@ -56,7 +33,7 @@
                 </b-col>
                 <b-col cols="4" class="text-right">
                   <b-button pill variant="light" class="wishlist-btn p-0" @click.stop="wishlistProduct(product)">
-                    <b-icon class="icon-container" :icon="product.isInWishlist ? 'heart-fill' : 'heart'"/>
+                    <b-icon class="icon-container" :icon="product.isInWishlist ? 'heart-fill' : 'heart'" />
                   </b-button>
                 </b-col>
               </b-row>
@@ -73,17 +50,13 @@
       </b-row>
       <b-row>
         <b-col>
-          <b-pagination
-              v-model="objectPagination.page"
-              :total-rows="objectPagination.elements"
-              :per-page="objectPagination.size"
-              aria-controls="my-table"
-          ></b-pagination>
+          <b-pagination v-model="objectPagination.page" :total-rows="objectPagination.elements"
+            :per-page="objectPagination.size" aria-controls="my-table"></b-pagination>
         </b-col>
       </b-row>
     </div>
 
-    <LoginModal/>
+    <LoginModal />
   </div>
 </template>
 
@@ -91,8 +64,8 @@
 import ProductService from "@/services/product/ProductService";
 import WishListService from "@/services/wish-list/WishListService";
 import CategoryService from "@/services/category/CategoryService";
-import {codeCrypto} from "@/utils/security/cryptoJs";
-import {mapGetters} from "vuex";
+import { codeCrypto } from "@/utils/security/cryptoJs";
+import { mapGetters } from "vuex";
 
 export default {
   name: "GuestProducts",
@@ -170,6 +143,7 @@ export default {
         const wishlistResponse = await WishListService.getWishList(userEmail);
         if (wishlistResponse.status === 200 && wishlistResponse.data) {
           const wishlistProducts = wishlistResponse.data;
+          this.wishlistProducts = wishlistProducts;
           this.products.forEach(product => {
             this.$set(product, 'isInWishlist', wishlistProducts.some(wishlistProduct => wishlistProduct.product.idProduct === product.idProduct));
           });
@@ -181,15 +155,57 @@ export default {
       }
     },
 
-    wishlistProduct() {
+    async addToWishlist(productId) {
       if (!this.isLoggedIn) {
         this.$bvModal.show("login-modal");
+      }
+      const userEmail = this.$store.getters.getEmail;
+
+      const payload = {
+        idProduct: productId,
+        email: userEmail
+      };
+
+      const response = await WishListService.postWishList(payload);
+      if (response && response.status === 200) {
+        await this.checkWishlist();
+      }
+    },
+
+    async removeFromWishlist(productId) {
+      if (!this.isLoggedIn) {
+        this.$bvModal.show("login-modal");
+      }
+      if (!this.wishlistProducts) {
+        return;
+      }
+
+      const entryToRemove = this.wishlistProducts.find(entry => entry.product.idProduct === productId);
+      if (!entryToRemove) {
+        return;
+      }
+      const wishlistEntryId = entryToRemove.idWish;
+      const response = await WishListService.deleteWishList(wishlistEntryId);
+      if (response.status === 200) {
+        await this.checkWishlist();
+      }
+    },
+
+    async wishlistProduct(product) {
+      if (!this.isLoggedIn) {
+        this.$bvModal.show("login-modal");
+      }
+      const productId = product.idProduct;
+      if (product.isInWishlist) {
+        await this.removeFromWishlist(productId);
+      } else {
+        await this.addToWishlist(productId);
       }
     },
 
     selectProduct(productId) {
       const encodedId = codeCrypto(productId);
-      this.$router.push({name: 'UserProductDetails', params: {id: encodedId}});
+      this.$router.push({ name: 'UserProductDetails', params: { id: encodedId } });
     },
 
     showOverlay() {
@@ -198,7 +214,7 @@ export default {
 
     selectCategory(category) {
       this.selectedCategory = category;
-      this.$router.push({name: 'UserProductsCategory', params: {category: category}});
+      this.$router.push({ name: 'UserProductsCategory', params: { category: category } });
     },
 
     resetFilters() {
