@@ -55,8 +55,8 @@
                   <p class="mb-0 font-weight-bold">{{ product.productName }}</p>
                 </b-col>
                 <b-col cols="4" class="text-right">
-                  <b-button pill variant="light" class="wishlist-btn p-0" @click.stop="wishlistProduct">
-                    <b-icon class="icon-container" :icon="false ? 'heart-fill' : 'heart'"/>
+                  <b-button pill variant="light" class="wishlist-btn p-0" @click.stop="wishlistProduct(product)">
+                    <b-icon class="icon-container" :icon="product.isInWishlist ? 'heart-fill' : 'heart'"/>
                   </b-button>
                 </b-col>
               </b-row>
@@ -89,6 +89,7 @@
 
 <script>
 import ProductService from "@/services/product/ProductService";
+import WishListService from "@/services/wish-list/WishListService";
 import CategoryService from "@/services/category/CategoryService";
 import {codeCrypto} from "@/utils/security/cryptoJs";
 import {mapGetters} from "vuex";
@@ -158,8 +159,26 @@ export default {
       if (response.status === 200) {
         this.products = response.data.content;
         this.objectPagination.elements = response.data.totalElements;
+        await this.checkWishlist();
       }
       this.showOverlay();
+    },
+
+    async checkWishlist() {
+      if (this.isLoggedIn) {
+        const userEmail = this.$store.getters.getEmail;
+        const wishlistResponse = await WishListService.getWishList(userEmail);
+        if (wishlistResponse.status === 200 && wishlistResponse.data) {
+          const wishlistProducts = wishlistResponse.data;
+          this.products.forEach(product => {
+            this.$set(product, 'isInWishlist', wishlistProducts.some(wishlistProduct => wishlistProduct.product.idProduct === product.idProduct));
+          });
+        }
+      } else {
+        this.products.forEach(product => {
+          product.isInWishlist = false;
+        });
+      }
     },
 
     wishlistProduct() {
