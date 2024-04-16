@@ -42,6 +42,7 @@ public class EmailService {
             }
         } catch (MessagingException e) {
             Logger.getLogger(EmailService.class.getName()).severe("Error al enviar correo: " + e.getMessage());
+            throw new CustomException("email.send.error");
         }
     }
 }

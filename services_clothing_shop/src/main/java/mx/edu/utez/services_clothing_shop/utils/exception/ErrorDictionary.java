@@ -215,6 +215,9 @@ public class ErrorDictionary {
         errorMessages.put("transaction.user.notfound", "El usuario no fue encontrado.");
         errorMessages.put("transaction.notfound", "La transacción no fue encontrada.");
         errorMessages.put("transaction.webhook.error", "No hubo respuesta del proveedor de pago.");
+
+        // email servie
+        errorMessages.put("email.send.error", "Error al enviar correo. Revisa tu conexión o si la dirección de correo es correcta.");
     }
 
     public String getErrorMessage(String errorCode) {
