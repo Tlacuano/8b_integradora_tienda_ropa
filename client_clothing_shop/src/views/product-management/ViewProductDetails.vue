@@ -68,7 +68,7 @@
             <b-col class="mt-4" lg="12">
               <b-row>
                 <b-col class="text-left" lg="6">
-                  <div><b>Precio: </b>{{ data.price }}</div>
+                  <div><b>Precio: $</b>{{ data.price }}</div>
                 </b-col>
                 <b-col class="text-right" lg="6">
                   <div><b>Stock: </b>{{ data.amount }}</div>

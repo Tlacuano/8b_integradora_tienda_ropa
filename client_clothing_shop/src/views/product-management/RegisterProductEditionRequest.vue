@@ -60,13 +60,13 @@
             <b-col>
               <b-form-group label="Precio $MXN: " label-for="price">
                 <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required|negative_numbers|not_zero'"
-                              type="number"></b-form-input>
+                              type="number" step="any"></b-form-input>
               </b-form-group>
               <span style="color: red;">{{ errors.first('price') }}</span>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required|negative_numbers|not_zero'"
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required|negative_numbers|not_zero|only_enters'"
                               type="number"></b-form-input>
                 <span style="color: red;">{{ errors.first('stock') }}</span>
               </b-form-group>
@@ -149,7 +149,10 @@
         <b-col cols="12" class="mt-5">
           <b-row class="text-right">
             <b-col>
-              <b-button variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
+              <span class="text-right" v-if="this.status === 'Pendiente'">
+                Producto En Revisión
+              </span>
+              <b-button :disabled="this.status === 'Pendiente'" variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
               <b-button variant="outline-dark" class="btn-cancel" @click="$router.push({name: 'product-management'})">Cancelar</b-button>
             </b-col>
           </b-row>
@@ -176,6 +179,7 @@ export default {
   },
   data() {
     return {
+      status: '',
       showImageModal: false,
       index: 0,
       category: null,
@@ -194,7 +198,8 @@ export default {
             image: '',
             status: ''
           }
-        ]
+        ],
+        idRequestSellProduct:'',
       },
       filteredSubcategories: [],
       newImages: [
@@ -239,6 +244,10 @@ export default {
       }
       if (this.formData.productGallery.length > 5) {
         showWarningToast("No puedes cargar más de 5 imágenes");
+        return;
+      }
+      if (this.status === 'Pendiente') {
+        showWarningToast("El producto ya se encuentra en revisión");
         return;
       }
 
@@ -349,6 +358,7 @@ export default {
       this.showOverlay()
       const response = await ProductManagementService.getProduct({idProduct: this.idProduct})
       if(response){
+        this.status = response.data.status
         this.newImages = response.data.productGallery.slice()
         this.category = response.data.category
         this.formData = response.data
@@ -362,6 +372,7 @@ export default {
             this.formData.productGallery.push(this.newImages[i])
           }
         }
+        delete this.formData.status
         delete this.formData.category
         this.showOverlay()
       }else{

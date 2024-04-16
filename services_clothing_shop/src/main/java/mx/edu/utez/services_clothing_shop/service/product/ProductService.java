@@ -189,10 +189,9 @@ public class ProductService {
         }
 
         BeanRequestStatus pendingStatus = iRequestStatus.findByStatus("Pendiente").get();
-        BeanRequestSellProduct requestSellProduct = new BeanRequestSellProduct();
+        BeanRequestSellProduct requestSellProduct = iRequestsSellProduct.findByIdRequestSellProduct(payload.getIdRequestSellProduct());
         requestSellProduct.setProduct(product);
         requestSellProduct.setStatus(pendingStatus);
-
         iRequestsSellProduct.save(requestSellProduct);
 
         emailService.sendEmail(product.getUser().getEmail(), "Solicitud registrada", "Solitud de edición de producto registrada exitosamente", "Tu producto ya esta en proceso de revisión, te notificaremos cuando se haya modificado en la tienda", "");

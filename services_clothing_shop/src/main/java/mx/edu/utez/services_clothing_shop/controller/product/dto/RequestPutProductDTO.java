@@ -26,6 +26,8 @@ public class RequestPutProductDTO {
     private int amount;
     @NotNull(message = "product.subcategory.notnull")
     private UUID subcategory;
+    @NotNull(message = "requestSellProduct.id.notnull")
+    private UUID idRequestSellProduct;
     @NotEmpty(message = "product.productGallery.nonempty")
     private List<ProductImageEditDTO> productGallery;
 

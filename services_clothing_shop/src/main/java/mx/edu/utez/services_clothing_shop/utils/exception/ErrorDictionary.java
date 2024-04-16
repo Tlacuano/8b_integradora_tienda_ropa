@@ -195,7 +195,12 @@ public class ErrorDictionary {
 
         //error messages request sell product
         errorMessages.put("requestSellProduct.status.invalid", "El estado de la solicitud de venta no es válido.");
+        errorMessages.put("requestSellProduct.status.same", "El estado de la solicitud ya ha sido cambiado.");
+        errorMessages.put("requestSellProduct.id.notnull", "El id de la solicitud de venta es obligatorio.");
         errorMessages.put("requestSellProduct.rejectionReason.invalid", "El motivo de rechazo no es válido.");
+        errorMessages.put("requestSellProduct.status.notnull", "El estado de la solicitud de venta es obligatorio.");
+        errorMessages.put("requestSellProduct.status", "El estado de la solicitud de venta no es válido.");
+
 
         //twilio
         errorMessages.put("twilio.service.error", "Error al enviar el codigo.");
