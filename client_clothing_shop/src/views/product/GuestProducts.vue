@@ -3,8 +3,15 @@
     <div v-show="!selectedCategory">
       <b-row class="full-page" no-gutters>
         <b-col v-for="category in categories" :key="category.idCategory" cols="12" lg="4" class="">
-          <b-card :img-src="category.image" class="mb-2 selectable zoom-on-hover" :title="category.category"
-            header-class="text-center" @click="selectCategory(category.category)" overlay img-height="700px">
+          <b-card
+              :img-src="category.image"
+              class="mb-2 selectable zoom-on-hover"
+              :title="category.category"
+              header-class="text-center"
+              @click="selectCategory(category.category)"
+              overlay
+              img-height="850px"
+          >
           </b-card>
         </b-col>
       </b-row>
