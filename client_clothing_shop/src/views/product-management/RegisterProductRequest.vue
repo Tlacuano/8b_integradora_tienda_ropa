@@ -56,13 +56,13 @@
             <b-col>
               <b-form-group label="Precio $MXN: " label-for="price" >
                 <b-form-input name="price" id="price" v-model.number="formData.price" v-validate="'required|negative_numbers|not_zero'"
-                              type="number"></b-form-input>
+                              type="number" step="any"></b-form-input>
               </b-form-group>
               <span style="color: red;">{{ errors.first('price') }}</span>
             </b-col>
             <b-col>
               <b-form-group label="Stock:" label-for="stock">
-                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required|negative_numbers|not_zero'"
+                <b-form-input name="stock" id="stock" v-model.number="formData.amount" v-validate="'required|negative_numbers|not_zero|only_enters'"
                               type="number"></b-form-input>
                 <span style="color: red;">{{ errors.first('stock') }}</span>
               </b-form-group>

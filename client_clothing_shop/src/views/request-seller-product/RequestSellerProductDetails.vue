@@ -40,7 +40,7 @@
             <strong style="display: inline;">Precio:</strong> <p style="display: inline;">${{product.price}}</p>
           </b-col>
           <b-col class="mb-3">
-            <strong style="display: inline;">Stock:</strong> <p style="display: inline;">${{product.amount}}</p>
+            <strong style="display: inline;">Stock:</strong> <p style="display: inline;">{{product.amount}}</p>
           </b-col>
           <b-col class="mb-3">
             <strong style="display: inline;">Subcategoria:</strong> <p style="display: inline;">{{product.subcategory}}</p>

@@ -20,6 +20,8 @@ public class ResponseProductToEditDTO {
     private int amount;
     private UUID subcategory;
     private String category;
+    private UUID idRequestSellProduct;
+    private String status;
     private List<ProductImageEditDTO> productGallery;
 
     public static ResponseProductToEditDTO toProductDTO(BeanProduct product) {
@@ -31,6 +33,8 @@ public class ResponseProductToEditDTO {
         dto.setAmount(product.getAmount());
         dto.setSubcategory(product.getSubcategory().getIdSubcategory());
         dto.setCategory(product.getSubcategory().getCategory().getCategory());
+        dto.setIdRequestSellProduct(product.getRequestSellProduct().get(0).getIdRequestSellProduct());
+        dto.setStatus(product.getRequestSellProduct().get(0).getStatus().getStatus());
         List<ProductImageEditDTO> productImages = new ArrayList<>();
         for (BeanProductGallery gallery : product.getProductGallery()) {
             productImages.add(new ProductImageEditDTO(gallery.getImage(), gallery.getStatus().getStatus()));

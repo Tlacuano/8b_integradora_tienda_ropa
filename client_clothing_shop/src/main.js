@@ -65,6 +65,8 @@ const dictionary = {
             minor_120: () => 'La edad no puede ser mayor a 120 años',
             cvv: () => 'El CVV debe contener 3 dígitos',
             rejection_reason_length: () => 'La razón de rechazo no debe exceder los 255 caracteres',
+            only_enters: () => 'Solo se permiten números enteros',
+            no_e:()=> 'No se permiten expresiones cientificas',
         }
     }
 };
@@ -73,6 +75,13 @@ const dictionary = {
 Validator.extend('rejection_reason_length', {
     validate: value => {
         return value.length <= 255;
+    }
+});
+
+Validator.extend('only_enters', {
+    validate: value => {
+        const onlyEntersRegex = /^\d+$/;
+        return onlyEntersRegex.test(value);
     }
 });
 
