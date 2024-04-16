@@ -102,7 +102,6 @@ const resendEmailCode = async (payload) => {
         const response = await axios.doPost("/venta-ropa/api/users/resend-email-code", payload);
         return response.data
     }catch (e){
-        showSuccessToast("Correo enviado")
     }
 }
 

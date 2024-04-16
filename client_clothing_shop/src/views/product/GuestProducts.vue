@@ -25,7 +25,7 @@
         <b-col v-for="product in products" :key="product.idProduct" cols="12" sm="6" md="4" lg="3" class="p-3">
           <b-card :img-src="product.productGallery[0].image" img-alt="Image" img-top tag="article"
             class="mb-2 selectable zoom-on-hover h-100" @click="selectProduct(product.idProduct)" img-height="350px"
-            style="width: 90%">
+            style="width: 100%">
             <b-card-text class="text-left">
               <b-row no-gutters>
                 <b-col cols="8">

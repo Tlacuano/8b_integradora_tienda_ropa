@@ -99,6 +99,11 @@ public class UserService {
         String code = SecurityCode.generateCode();
         emailService.sendEmail(user.getEmail(), VERIFICATION_CODE, VERIFICATION_CODE, "Su código de verificación es: ", code);
 
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         newUser.setVerificationCode(code);
         userRepository.save(newUser);
@@ -139,11 +144,6 @@ public class UserService {
     }
 
     @Transactional
-    public void postRoleUser(String roleId, String userId) {
-        userRepository.postRoleUser(roleId, userId);
-    }
-
-    @Transactional
     public void deleteAccount(RequestRestorePasswordDTO payload) {
         BeanUser user = userRepository.findByEmail(payload.getEmail());
         if (user == null) {
@@ -173,7 +173,6 @@ public class UserService {
 
         emailService.sendEmail(user.getEmail(), "Cuenta eliminada", "Lamentamos que te vayas", "Tu cuenta ha sido eliminada exitosamente", "");
     }
-
 
     @Transactional
     public boolean existByEmail(String email) {
@@ -212,7 +211,7 @@ public class UserService {
         BeanUser user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new CustomException(USER_NOT_FOUND);
+            return true;
         }
 
         String code = SecurityCode.generateCode();

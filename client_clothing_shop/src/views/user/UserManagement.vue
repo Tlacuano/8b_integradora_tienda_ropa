@@ -104,7 +104,7 @@
 
 <script>
 import PeopleService from "@/services/user/userService";
-import {showInfoAlert} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast} from "@/components/alerts/alerts";
 import {codeCrypto} from "@/utils/security/cryptoJs";
 
 export default {
@@ -153,7 +153,12 @@ export default {
         "¿Deseas cambiar el estado de la cuenta?",
         "Sí, cambiar",
         async () => {
-          await PeopleService.putStatusUserService(payoad);
+          const response = await PeopleService.putStatusUserService(payoad);
+
+          if(response){
+            showSuccessToast("Estado cambiado con éxito");
+            await this.getPageUsers()
+          }
         }
       )
     },
