@@ -73,6 +73,8 @@ public interface IRequestsSellProduct extends JpaRepository<BeanRequestSellProdu
             "JOIN p.user u " +
             "WHERE u.email LIKE :email")
     Page<RequestSellStatusProjection> findAllByEmailLikeIgnoreCase(@Param("email") String email,Pageable pageable);
+
+    BeanRequestSellProduct findByIdRequestSellProduct(UUID idRequestSellProduct);
 }
 
 
