@@ -152,6 +152,9 @@
               <span class="text-right" v-if="this.status === 'Pendiente'">
                 Producto En Revisión
               </span>
+              <span class="text-right" v-if="this.status === 'Rechazado'">
+                Producto Rechazado
+              </span>
               <b-button :disabled="this.status === 'Pendiente'" variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
               <b-button variant="outline-dark" class="btn-cancel" @click="$router.push({name: 'product-management'})">Cancelar</b-button>
             </b-col>
