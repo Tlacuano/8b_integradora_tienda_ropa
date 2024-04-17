@@ -7,6 +7,9 @@ import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mx.edu.utez.services_clothing_shop.audit.context.ApplicationContextProvider;
+import mx.edu.utez.services_clothing_shop.audit.model.AuditLog;
+import mx.edu.utez.services_clothing_shop.audit.service.AuditLogService;
 import mx.edu.utez.services_clothing_shop.model.user.BeanUser;
 import mx.edu.utez.services_clothing_shop.security.model.AuthDetails;
 import mx.edu.utez.services_clothing_shop.utils.exception.CustomException;
@@ -100,6 +103,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(new ObjectMapper().writeValueAsString(encryptedJson));
         response.setContentType(CONTENT_TYPE);
         response.setStatus(HttpStatus.OK.value());
+
+
+        AuditLog auditLog = new AuditLog();
+        auditLog.setAction("LOGIN");
+        auditLog.setTableName("---");
+        auditLog.setUserName(email);
+        auditLog.setIpAddress(request.getRemoteAddr());
+        auditLog.setNewValue(null);
+
+        ApplicationContextProvider.getApplicationContext().getBean(AuditLogService.class).recordAuditEvent(auditLog);
+
+
+
     }
 
     @Override
