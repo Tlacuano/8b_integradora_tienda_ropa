@@ -67,6 +67,13 @@ public class RequestsReturnProductController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/check-pending-request-return-product")
+    public ResponseEntity<Boolean> checkPendingRequest(@RequestBody CheckPendingRequestDTO requestDTO) {
+        boolean hasPendingRequest = requestsReturnProductService.hasPendingRequest(requestDTO.getIdOrderProduct());
+        return ResponseEntity.ok(hasPendingRequest);
+    }
+
+
     private RequestsReturnGetPageResponseDTO convertToDTO(IRequestsReturnProduct.ReturnRequestProjection request) {
         RequestsReturnGetPageResponseDTO dto = new RequestsReturnGetPageResponseDTO();
         dto.setIdRequestReturnProduct(request.getIdRequestReturnProduct());

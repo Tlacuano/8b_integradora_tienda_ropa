@@ -43,12 +43,25 @@ const putRequestReturnProductStatusService = async (requestData) => {
     }
 };
 
-
+const checkPendingReturnRequest = async (idOrderProduct) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/requests-return-product/check-pending-request-return-product`, {
+            idOrderProduct: idOrderProduct
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.error || "Error desconocido al verificar la solicitud de devolución pendiente");
+        }
+        throw new Error("Error desconocido al verificar la solicitud de devolución pendiente");
+    }
+};
 
 
 export default {
     getPageRequestsReturnProductService,
     getRequestReturnProductByIdService,
     postRequestReturnProductService,
-    putRequestReturnProductStatusService
+    putRequestReturnProductStatusService,
+    checkPendingReturnRequest
 }

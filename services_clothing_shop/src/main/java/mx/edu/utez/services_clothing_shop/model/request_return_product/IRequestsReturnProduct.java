@@ -81,6 +81,7 @@ public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnP
     Optional<BeanOrderHasProducts> findFirstByOrderNumber(@Param("orderNumber") String orderNumber);
 
     boolean existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(String orderNumber, String status);
+    boolean existsByOrderHasProduct_IdOrderProductAndStatus_Status(UUID idOrderProduct, String status);
 
     @Query("SELECT rs FROM BeanRequestStatus rs WHERE rs.status = :status")
     Optional<BeanRequestStatus> findRequestStatusByName(@Param("status") String status);

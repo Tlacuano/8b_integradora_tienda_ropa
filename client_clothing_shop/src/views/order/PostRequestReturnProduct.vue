@@ -92,6 +92,7 @@ export default {
         const response = await RequestsReturnProductService.postRequestReturnProductService(requestData);
         showSuccessToast("Éxito", "Solicitud de devolución creada.");
         this.closeModal();
+        this.$emit('request-submitted-successfully');
       } catch (error) {
         console.log(error.response.data);
         if (error.response && error.response.status === 400) {

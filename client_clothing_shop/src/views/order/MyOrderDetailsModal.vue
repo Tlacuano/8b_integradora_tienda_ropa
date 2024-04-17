@@ -149,13 +149,13 @@
               </b-row>
             </b-list-group-item>
 
-            <b-list-group-item :class="Product.status.status === 'Entregado' ? 'highlight-on-hover selectable' : ''" @click="openReturnRequestModal">
+            <b-list-group-item :class="Product.status.status === 'Entregado' && !hasPendingReturn ? 'highlight-on-hover selectable' : ''" @click="openReturnRequestModal">
               <b-row>
                 <b-col>
                   Solicitar devolución
                 </b-col>
                 <b-col class="text-right" v-if="Product.status.status !== 'Entregado'">
-                  <font-awesome-icon icon="lock" />
+                  <font-awesome-icon icon="lock" v-if="Product.status.status !== 'Entregado' || hasPendingReturn" />
                 </b-col>
               </b-row>
             </b-list-group-item>
@@ -173,14 +173,15 @@
       </b-row>
     </section>
   </b-modal>
-    <return-request-modal :order-number="Order.orderNumber" ref="returnRequestModal"/>
+    <return-request-modal :order-number="Order.orderNumber" ref="returnRequestModal" @request-submitted-successfully="handleRequestSuccess"/>
   </div>
 </template>
 
 <script >
 import Big from "big.js";
 import ReturnRequestModal from "../order/PostRequestReturnProduct.vue";
-
+import RequestsReturnProductService from "@/services/request-return-product/RequestsReturnProductService";
+import { showInfoAlert } from "@/components/alerts/alerts";
 export default {
   components: {
     ReturnRequestModal
@@ -192,11 +193,26 @@ export default {
   name: "MyOrderDetailsModal",
   data() {
     return {
-      orderNumber: this.Order.orderNumber
+      orderNumber: this.Order.orderNumber,
+      hasPendingReturn: null
+    }
+  },
+  watch: {
+    'Product.idOrderProduct': function(newValue, oldValue) {
+      if(newValue !== oldValue) {
+        this.checkPendingReturn();
+      }
     }
   },
   methods: {
-
+    async checkPendingReturn() {
+      try {
+        this.hasPendingReturn = await RequestsReturnProductService.checkPendingReturnRequest(this.Product.idOrderProduct);
+      } catch (error) {
+        console.error("Error checking for pending return requests:", error);
+        this.hasPendingReturn = false;
+      }
+    },
     findMainImage(gallery) {
       const mainImage = gallery.find(image => image.status.status === 'Principal');
       return mainImage.image;
@@ -217,11 +233,27 @@ export default {
       window.open('/privacy-policy', '_blank');
     },
     openReturnRequestModal() {
-      if (this.Order && this.Product && this.Product.status.status === 'Entregado') {
+      if (this.Order && this.Product && this.Product.status.status === 'Entregado' && !this.hasPendingReturn) {
         this.$refs.returnRequestModal.openModal();
-      }
-    }
-  }
+      } else if (this.hasPendingReturn) {
+        this.$swal({
+          title: "Solicitud de Devolución",
+          text: "Ya existe una solicitud de devolución pendiente para este producto.",
+          icon: 'info',
+          confirmButtonText: 'Entendido',
+          showCancelButton: false,
+          confirmButtonColor: "#212529",
+        });      }
+    },
+    handleRequestSuccess() {
+      this.$emit('request-success');
+      this.$bvModal.hide('my-order-details-modal');
+    },
+  },
+  mounted() {
+    this.checkPendingReturn();
+  },
+
   }
 </script>
 
