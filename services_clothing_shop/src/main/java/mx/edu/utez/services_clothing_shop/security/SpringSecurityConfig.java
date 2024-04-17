@@ -121,6 +121,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/get-by-id-request-return-product").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/post-request-return-product").hasRole(BUYER)
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-return-product/put-request-return-product-status").hasAnyRole(ADMIN, SUPERADMIN)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/check-pending-request-return-product").hasAnyRole(BUYER)
 
                                 //Modulo requests-sell-product
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-sell-product/get-page").hasAnyRole(ADMIN, SUPERADMIN)

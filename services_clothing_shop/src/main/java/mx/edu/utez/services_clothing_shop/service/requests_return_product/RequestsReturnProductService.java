@@ -137,6 +137,11 @@ public class RequestsReturnProductService {
         return requestsReturnProductRepository.findRequestsWithOrderInfo(pageable, searchTerm);
     }
 
+    public boolean hasPendingRequest(UUID idOrderProduct) {
+        return requestsReturnProductRepository.existsByOrderHasProduct_IdOrderProductAndStatus_Status(idOrderProduct, "Pendiente");
+    }
+
+
 
     private RequestsReturnProductDTO convertToDTO(BeanRequestReturnProduct request) {
         RequestsReturnProductDTO dto = new RequestsReturnProductDTO();

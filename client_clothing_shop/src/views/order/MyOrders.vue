@@ -84,7 +84,7 @@
 
       </b-col>
     </b-row>
-    <MyOrderDetailsModal :Order="OrderSelected" :Product="ProductSelected"/>
+    <my-order-details-modal :Order="OrderSelected" :Product="ProductSelected" @request-success="refreshOrders"/>
     <CancelMyOrderModal :Product="ProductSelected"/>
   </b-container>
 </template>
@@ -158,6 +158,10 @@ export default {
       const quantity = new Big(product.amount);
       return price.times(quantity);
     },
+    refreshOrders() {
+      window.location.reload();
+      this.$root.$emit('bv::hide::modal', 'my-order-details-modal');
+    }
   },
   mounted() {
     this.getOrders();
