@@ -52,7 +52,7 @@
 
 <script>
 import OrderService from "@/services/order/OrderService";
-import {showInfoAlert} from "@/components/alerts/alerts";
+import {showInfoAlert, showSuccessToast} from "@/components/alerts/alerts";
 
 export default {
   name: 'CancelSellBySellerModal',
@@ -81,11 +81,21 @@ export default {
               "Si cancelas la venta, el producto no se enviará y se le devolverá el dinero al comprador.",
               "Sí, cancelar",
               async () => {
-                await OrderService.cancelSellBySellerService(payload);
+                const response = await OrderService.cancelSellBySellerService(payload);
+
+                if (response) {
+                  showSuccessToast("", "Venta cancelada con éxito");
+
+                  //esperar 1 segundo para que se actualice la vista
+                  setTimeout(() => {
+                    this.window.location.reload();
+                  }, 1000);
+                }
+
+
               }
           );
 
-          this.$bvModal.hide('cancel-sell-by-seller-modal');
         }
       });
     },

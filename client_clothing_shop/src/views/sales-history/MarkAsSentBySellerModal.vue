@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="mark-as-sent-by-seller-modal" hide-header hide-footer centered>
+  <b-modal id="mark-as-sent-by-seller-modal" hide-header hide-footer centered @hidden="resetModal">
     <b-row>
       <b-col class="text-right">
         <font-awesome-icon icon="times" class="selectable text-secondary" @click="$bvModal.hide('mark-as-sent-by-seller-modal')"/>
@@ -67,18 +67,24 @@ export default {
               "Ya no podrás cancelar la venta, ¿estás seguro de marcar como enviado?",
               "Sí, marcar como enviado",
               async () => {
-                await OrderService.markAsSentBySellerService(payload);
+                const response = await OrderService.markAsSentBySellerService(payload);
+                console.log(response);
+                if(response !== undefined){
+                  showSuccessToast("", "El producto ha sido marcado como enviado");
+
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                }
               }
           );
 
-          this.$bvModal.hide('mark-as-sent-by-seller-modal');
-          showSuccessToast("", "El producto ha sido marcado como enviado");
-
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
         }
       });
+    },
+
+    resetModal() {
+      this.password = '';
     }
   }
 }

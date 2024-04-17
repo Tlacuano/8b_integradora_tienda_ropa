@@ -180,6 +180,8 @@
 <script >
 import Big from "big.js";
 import ReturnRequestModal from "../order/PostRequestReturnProduct.vue";
+import RequestsReturnProductService from "@/services/request-return-product/RequestsReturnProductService";
+import {showWarningToast} from "@/components/alerts/alerts";
 
 export default {
   components: {
@@ -216,8 +218,18 @@ export default {
     openPrivacyPolicy() {
       window.open('/privacy-policy', '_blank');
     },
-    openReturnRequestModal() {
+    async openReturnRequestModal() {
       if (this.Order && this.Product && this.Product.status.status === 'Entregado') {
+        const payload = {
+          idOrderProduct: this.Product.idOrderProduct
+        }
+        const response = await RequestsReturnProductService.getByOrderProductService(payload)
+
+        if(response.data){
+          showWarningToast('Ya has solicitado una devolución para este producto')
+          return
+        }
+
         this.$refs.returnRequestModal.openModal();
       }
     }

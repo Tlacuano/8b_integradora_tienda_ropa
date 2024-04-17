@@ -20,6 +20,8 @@ import java.util.UUID;
 public interface IRequestsReturnProduct extends JpaRepository<BeanRequestReturnProduct, UUID> {
 
 
+    BeanRequestReturnProduct findByOrderHasProductAndStatus (BeanOrderHasProducts orderHasProducts, BeanRequestStatus status);
+
     interface ReturnRequestProjection  {
         UUID getIdRequestReturnProduct();
         String getStatus();

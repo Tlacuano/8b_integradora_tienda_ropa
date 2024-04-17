@@ -43,6 +43,14 @@ const putRequestReturnProductStatusService = async (requestData) => {
     }
 };
 
+const getByOrderProductService = async (payload) => {
+    try {
+        const response = await axios.doPost(`/venta-ropa/api/requests-return-product/get-by-order-product`, payload);
+        return response.data;
+    } catch (e) {
+    }
+}
+
 
 
 
@@ -50,5 +58,6 @@ export default {
     getPageRequestsReturnProductService,
     getRequestReturnProductByIdService,
     postRequestReturnProductService,
-    putRequestReturnProductStatusService
+    putRequestReturnProductStatusService,
+    getByOrderProductService
 }

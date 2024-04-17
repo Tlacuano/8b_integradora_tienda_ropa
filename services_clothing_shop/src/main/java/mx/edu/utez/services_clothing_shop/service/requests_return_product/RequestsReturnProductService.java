@@ -105,7 +105,7 @@ public class RequestsReturnProductService {
     @Transactional
     public RequestsReturnProductDTO postRequestReturnProduct(RequestsReturnProductPostRequestDTO requestDTO) {
         BeanOrderHasProducts orderHasProduct = requestsReturnProductRepository.findFirstByOrderNumber(requestDTO.getOrderNumber())
-                .orElseThrow(() -> new CustomException("Order not found"));
+                .orElseThrow(() -> new CustomException("order.notfound"));
 
         boolean existsPendingRequest = requestsReturnProductRepository.existsByOrderHasProduct_Order_OrderNumberAndStatus_Status(
                 requestDTO.getOrderNumber(), "Pendiente");
@@ -145,5 +145,19 @@ public class RequestsReturnProductService {
         dto.setStatusId(request.getStatus().getIdStatus());
         dto.setRejectionReason(request.getRejectionReason());
         return dto;
+    }
+
+    @Transactional
+    public Object getRequestReturnProductByOrderProduct(UUID idOrderProduct) {
+        BeanOrderHasProducts orderHasProduct = orderHasProductsRepository.findById(idOrderProduct)
+                .orElseThrow(() -> new CustomException("order.notfound"));
+
+        BeanRequestStatus requestStatus = requestStatusRepository.findByStatus("Pendiente")
+                .orElseThrow(() -> new CustomException("requestStatus.notfound"));
+
+
+        BeanRequestReturnProduct request = requestsReturnProductRepository.findByOrderHasProductAndStatus(orderHasProduct, requestStatus);
+
+        return request != null;
     }
 }

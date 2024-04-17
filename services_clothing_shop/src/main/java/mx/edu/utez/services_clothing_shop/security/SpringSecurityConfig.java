@@ -121,6 +121,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/get-by-id-request-return-product").hasAnyRole(ADMIN, SUPERADMIN)
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/post-request-return-product").hasRole(BUYER)
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/requests-return-product/put-request-return-product-status").hasAnyRole(ADMIN, SUPERADMIN)
+                                .requestMatchers(HttpMethod.POST, "venta-ropa/api/requests-return-product/get-by-order-product").hasAnyRole(BUYER)
 
                                 //Modulo requests-sell-product
                                 .requestMatchers(HttpMethod.GET, "venta-ropa/api/requests-sell-product/get-page").hasAnyRole(ADMIN, SUPERADMIN)
@@ -144,6 +145,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/return-product-galleries/post-return-product-gallery").hasRole(BUYER)
                                 .requestMatchers(HttpMethod.PUT, "venta-ropa/api/return-product-galleries/put-return-product-gallery").hasAnyRole(ADMIN, BUYER)
                                 .requestMatchers(HttpMethod.DELETE, "venta-ropa/api/return-product-galleries/delete-return-product-gallery").hasAnyRole(ADMIN, BUYER)
+
 
                                 //Modulo reviews
                                 .requestMatchers(HttpMethod.POST, "venta-ropa/api/reviews/get-reviews-by-order-product-id").permitAll()

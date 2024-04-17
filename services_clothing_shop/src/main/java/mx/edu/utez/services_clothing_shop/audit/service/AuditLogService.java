@@ -14,7 +14,6 @@ public class AuditLogService {
         this.iAuditLog = iAuditLog;
     }
 
-    @Async
     public void recordAuditEvent(AuditLog auditLog) {
         iAuditLog.save(auditLog);
     }

@@ -18,7 +18,7 @@ async function showAlert(title, text, type, confirmButtonText, onConfirm) {
               const response = await onConfirm();
               await store.dispatch('changeStatusOverlay');
 
-              if(response) {
+              if(response !== undefined) {
                   Vue.swal({
                       toast: true,
                       position: "top-end",

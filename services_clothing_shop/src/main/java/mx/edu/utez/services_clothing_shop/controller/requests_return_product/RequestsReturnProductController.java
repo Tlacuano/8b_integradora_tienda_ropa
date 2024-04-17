@@ -76,4 +76,17 @@ public class RequestsReturnProductController {
         return dto;
     }
 
+    @PostMapping("/get-by-order-product")
+    public ResponseEntity<Object> getRequestReturnProductByOrderProduct(@RequestBody RequestReturnProductByOrderProductDTO requestDTO) {
+       return new ResponseEntity<>(
+               new CustomResponse<>(
+                          requestsReturnProductService.getRequestReturnProductByOrderProduct(requestDTO.getIdOrderProduct()),
+                          "Request found",
+                          false,
+                          200
+               ),
+                HttpStatus.OK
+       );
+    }
+
 }

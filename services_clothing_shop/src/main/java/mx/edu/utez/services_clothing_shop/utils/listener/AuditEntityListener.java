@@ -3,6 +3,7 @@ package mx.edu.utez.services_clothing_shop.utils.listener;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PreUpdate;
 import jakarta.servlet.http.HttpServletRequest;
 import mx.edu.utez.services_clothing_shop.audit.context.ApplicationContextProvider;
 import mx.edu.utez.services_clothing_shop.audit.model.AuditLog;
@@ -27,7 +28,7 @@ public class AuditEntityListener {
         recordAuditAction(target, "DELETE", null);
     }
 
-    @PostUpdate
+    @PreUpdate
     private void beforeUpdate(Object target) {
 
         String newValue = Convert.toJSON(target);
