@@ -10,7 +10,7 @@ const instance = axios.create({
     baseURL: SERVER_URL,
     timeout: 10000,
 });
-
+//un comenta
 const baseURL = import.meta.env.VITE_API_URL;
 
 instance.interceptors.request.use(
