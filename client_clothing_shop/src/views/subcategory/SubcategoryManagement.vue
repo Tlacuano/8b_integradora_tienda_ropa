@@ -31,11 +31,10 @@
           <b-col cols="auto" v-for="(subcategory, index) in subcategories" :key="index">
             <b-card
                 class="highlight-on-hover mb-2"
-                img-bottom
             >
               <b-card-text class="d-flex justify-content-between align-items-center" style="max-height: 0.1rem;">
                 <div class="d-flex align-items-center">
-                  <h5 class="mr-3">{{ subcategory.subcategory }}</h5>
+                  <h5 class="mr-3 text-truncate">{{ subcategory.subcategory }}</h5>
                 </div>
                 <div class="d-flex align-items-center">
                   <font-awesome-icon
@@ -179,14 +178,15 @@ export default Vue.extend({
 
 <style>
 .container-subcategories {
-  height: calc(100vh - 270px);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
 .image-card {
-  max-height: 300px;
-  width: 100%;
+  max-height: 350px;
+  max-width: 380px;
   object-fit: cover;
 }
 

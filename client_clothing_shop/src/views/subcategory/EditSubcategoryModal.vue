@@ -1,74 +1,80 @@
 <template>
   <section>
     <b-modal id="editSubcategoryModal" hide-header hide-footer centered size="lg" @show="chargeData">
-      <b-row>
-        <b-col class="text-center">
-          <h3>Editar subcategoría</h3>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col>
-          <b-form>
-            <b-form-group
-                label="Nombre de la subcategoría"
-                label-for="subcategory"
-            >
-              <b-form-input
-                  id="subcategory"
-                  :placeholder="subcategory.subcategory"
-                  v-model="form.subcategory"
-                  v-validate="'required|alpha_spaces|min:5|name_max'"
-                  name="subcategory"
-              />
-              <span v-show="errors.has('subcategory')" class="text-danger">{{ errors.first('subcategory') }}</span>
-            </b-form-group>
+      <b-card class="custom-card">
+        <b-row >
+          <b-col class="text-center">
+            <h3>Editar subcategoría</h3>
+          </b-col>
+        </b-row>
+        <b-row class="mt-3">
+          <b-col>
+            <b-form>
+              <b-form-group
+                  label="Nombre de la subcategoría"
+                  label-for="subcategory"
+              >
+                <b-form-input
+                    id="subcategory"
+                    :placeholder="subcategory.subcategory"
+                    v-model="form.subcategory"
+                    v-validate="'required|alpha_spaces|min:5|name_max'"
+                    name="subcategory"
+                />
+                <span v-show="errors.has('subcategory')" class="text-danger">{{ errors.first('subcategory') }}</span>
+              </b-form-group>
 
-            <b-form-group
-                label="Imagen de la subcategoría"
-                label-for="image"
-            >
-              <b-form-file
-                  id="image"
-                  v-model="newImage"
-                  accept="image/jpeg, image/png, image/jpg"
-                  :state="Boolean(newImage)"
-                  placeholder="Seleccione una imagen"
-                  @input="handleFileUpload"
-                  name="image"
-                  v-validate="'image|mimes:jpeg,jpg,png|image_size'"
-              />
-              <span v-show="errors.has('image')" class="text-danger">{{ errors.first('image') }}</span>
-            </b-form-group>
+              <b-form-group
+                  label="Imagen de la subcategoría"
+                  label-for="image"
+              >
+                <b-form-file
+                    id="image"
+                    v-model="newImage"
+                    accept="image/jpeg, image/png, image/jpg"
+                    :state="Boolean(newImage)"
+                    placeholder="Seleccione una imagen"
+                    @input="handleFileUpload"
+                    name="image"
+                    v-validate="'image|mimes:jpeg,jpg,png|image_size'"
+                />
+                <span v-show="errors.has('image')" class="text-danger">{{ errors.first('image') }}</span>
+              </b-form-group>
 
-            <b-form-group
-                label="Categoría"
-                label-for="category"
-            >
-              <b-form-select
-                  id="category"
-                  v-model="form.category"
-                  :options="categories"
-                  value-field="idCategory"
-                  text-field="category"
-                  name="category"
-                  v-validate="'required'"
+              <b-form-group
+                  label="Categoría"
+                  label-for="category"
+              >
+                <b-form-select
+                    id="category"
+                    v-model="form.category"
+                    :options="categories"
+                    value-field="idCategory"
+                    text-field="category"
+                    name="category"
+                    v-validate="'required'"
+                />
+                <span v-show="errors.has('category')" class="text-danger">{{ errors.first('category') }}</span>
+              </b-form-group>
+            </b-form>
+          </b-col>
+          <b-col class="text-center align-self-center">
+            <div class="image-container">
+              <b-img
+                  v-if="imgPreview || subcategory.image"
+                  :src="imgPreview ? imgPreview : subcategory.image"
+                  thumbnail
+                  class="image-preview"
               />
-              <span v-show="errors.has('category')" class="text-danger">{{ errors.first('category') }}</span>
-            </b-form-group>
-          </b-form>
-        </b-col>
-        <b-col class="text-center">
-          <b-img
-              :src="imgPreview ? imgPreview : subcategory.image"
-              thumbnail
-              style="max-width: 50%; max-height: 95%;"
-          />
-        </b-col>
-      </b-row>
-      <b-row class="justify-content-center">
-        <b-button variant="dark" @click="editSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem">Guardar</b-button>
-        <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
-      </b-row>
+              <div v-else class="no-image-message">No se ha seleccionado ninguna imagen</div>
+            </div>
+          </b-col>
+        </b-row>
+        <b-row class="mt-3 justify-content-center">
+          <b-button variant="dark" @click="editSubcategory" class="w-25 mx-5" style="border-radius: 0.5rem">Guardar</b-button>
+          <b-button variant="dark" @click="closeModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
+        </b-row>
+      </b-card>
     </b-modal>
   </section>
 </template>
@@ -182,3 +188,27 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style scoped>
+.custom-card {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 10px;
+}
+.image-preview {
+  border: 2px solid #ced4da;
+  border-radius: 5px;
+  max-height: 20rem;
+}
+.image-container {
+  position: relative;
+}
+.no-image-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6c757d;
+  font-style: italic;
+}
+</style>
