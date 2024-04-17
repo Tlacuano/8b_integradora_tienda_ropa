@@ -73,7 +73,6 @@
             </b-col>
           </b-row>
 
-
         </b-col>
         <b-col class="" lg="6">
           <b-row>
@@ -115,7 +114,6 @@
                   <img :src="selectedImage" alt="Selected Image" style="max-width: 100%; max-height: 100%;">
                 </b-col>
               </b-row>
-
               <b-row>
                 <b-col cols="3" class="mt-3">
                   <div v-if="loading">
@@ -138,7 +136,6 @@
                     <span class="principal-indicator-text">La imagen principal no se puede deshabilitar</span>
                     <b-button class="mt-4" :disabled="loading" variant="outline-dark" @click="closeImageModal">Cerrar</b-button>
                   </template>
-
                 </b-col>
               </b-row>
             </b-modal>
@@ -147,14 +144,24 @@
       </b-row>
       <b-row>
         <b-col cols="12" class="mt-5">
+          <b-row v-if="this.status==='Aprobado'">
+            <b-col  class="mt-4">
+              <strong>Estado de la solicitud: </strong><b-badge variant="success">{{this.status}}</b-badge>
+            </b-col>
+          </b-row>
+          <b-row v-if="this.status==='Rechazado'">
+            <b-col  class="mt-4">
+              <strong>Estado de la solicitud: </strong><b-badge variant="danger">{{this.status}}</b-badge>
+            </b-col>
+          </b-row>
+
+          <b-row v-if="this.status==='Pendiente'">
+            <b-col  class="mt-4">
+              <strong>Estado de la solicitud: </strong><b-badge variant="warning">{{this.status}}</b-badge>
+            </b-col>
+          </b-row>
           <b-row class="text-right">
             <b-col>
-              <span class="text-right" v-if="this.status === 'Pendiente'">
-                Producto En Revisión
-              </span>
-              <span class="text-right" v-if="this.status === 'Rechazado'">
-                Producto Rechazado
-              </span>
               <b-button :disabled="this.status === 'Pendiente'" variant="dark" class="btn-success mr-2" type="submit">Solicitar Edición</b-button>
               <b-button variant="outline-dark" class="btn-cancel" @click="$router.push({name: 'product-management'})">Cancelar</b-button>
             </b-col>
