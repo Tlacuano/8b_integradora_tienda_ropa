@@ -175,7 +175,7 @@ Validator.extend('phone', {
 //for subcategory name lenght
 Validator.extend("name_max", {
     validate: value => {
-        return value.length <= 15;
+        return value.length <= 30;
     }
 })
 //for productName lenght

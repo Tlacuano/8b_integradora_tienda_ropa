@@ -46,9 +46,9 @@
             <div style="max-height: 400px; overflow-y: auto;">
               <b-card img-left no-body v-for="(product, index) in products" :key="index" class="mb-2">
                 <b-carousel :interval="4000" controls indicators background="#ababab" style="text-shadow: 1px 1px 2px #333;"
-                            @sliding-start="onSlideStar" @sliding-end="onSlideEnd" class="carousel-image mt-2 ml-2 mb-2">
+                            @sliding-start="onSlideStar" @sliding-end="onSlideEnd" class="carousel mt-2 ml-2 mb-2">
                   <b-carousel-slide v-for="(productGallery, index) in product.product.productGallery" :key="index"
-                                    :img-src="productGallery.image"/>
+                                    :img-src="productGallery.image" class="carousel-image"/>
                 </b-carousel>
                 <b-card-body>
                   <b-card-text>
@@ -91,7 +91,7 @@
         </b-col>
       </b-row>
       <b-row class="justify-content-center mt-2 mb-2">
-        <b-button :disabled="rejectionReason !== null" variant="dark" @click="cancelOrder" class="w-25 mx-5" style="border-radius: 0.5rem">Aceptar</b-button>
+        <b-button variant="dark" @click="cancelOrder" class="w-25 mx-5" style="border-radius: 0.5rem">Aceptar</b-button>
         <b-button @click="closeReasonModal" class="w-25 mx-5" style="border-radius: 0.5rem; background-color: red; border-color: red;">Cancelar</b-button>
       </b-row>
     </b-modal>
@@ -154,6 +154,7 @@ export default Vue.extend({
                   showSuccessToast("Compra cancelada correctamente")
                   this.orderProduct.status = "Cancelado";
                   this.$bvModal.hide("rejectionReasonModal");
+                  this.rejectionReason = null;
                 } else {
                   showWarningToast("No se pudo cancelar la compra")
                 }
@@ -205,6 +206,7 @@ export default Vue.extend({
 
     closeReasonModal() {
       this.$bvModal.hide("rejectionReasonModal");
+      this.rejectionReason = null;
     }
   },
 });
@@ -214,7 +216,12 @@ export default Vue.extend({
 .font-weight-bold {
   font-weight: bold;
 }
-.carousel-image {
+.carousel {
   max-width: 48%;
+  max-height: 250px;
+}
+.carousel-image {
+  max-width: 100%;
+  max-height: 247px;
 }
 </style>
