@@ -24,7 +24,7 @@ public class AuditLog {
     @Column(name = "table_name")
     private String tableName;
 
-    @Column(name = "new_value", columnDefinition = "TEXT")
+    @Column(name = "new_value", columnDefinition = "JSON")
     private String newValue;
 
     @Column(name = "user_name")

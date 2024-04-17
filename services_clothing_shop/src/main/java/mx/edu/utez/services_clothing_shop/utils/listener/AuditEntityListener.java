@@ -52,16 +52,17 @@ public class AuditEntityListener {
         auditLog.setTableName(target.getClass().getSimpleName());
 
         // Encrypt the values
-        String newValueCode = newValue != null ? EncryptionFunctions.encryptString(newValue) : newValue;
-        auditLog.setNewValue(newValueCode);
+        String newValueCode = newValue != null ? Convert.toJSON(newValue) : newValue;
+        String newValueEmbeddedRemoved = Convert.removeEmbedded(newValueCode);
+
+
+        auditLog.setNewValue(newValueEmbeddedRemoved);
 
 
         // Encrypt the user and IP address
-        String userNameCode = user != null ? EncryptionFunctions.encryptString(user) : user;
-        auditLog.setUserName(userNameCode);
+        auditLog.setUserName(user);
 
-        String ipAddressCode = ip != null ? EncryptionFunctions.encryptString(ip) : ip;
-        auditLog.setIpAddress(ipAddressCode);
+        auditLog.setIpAddress(ip);
 
         ApplicationContextProvider.getApplicationContext().getBean(AuditLogService.class).recordAuditEvent(auditLog);
     }
